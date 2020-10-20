@@ -11,3 +11,4 @@ D[bla$bou==2]<-15
 2+2==4
 
 #Oui, tout à fait Monsieur !! Ca apparait comme par magie chez moi après un "pull". Et je vais "push" mes modifs (je change d'ailleurs ton équation).
+#bon c'est un test de Damien qui se la pète lui aussi y'a pas de raison
