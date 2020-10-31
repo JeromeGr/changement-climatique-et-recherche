@@ -224,3 +224,61 @@ ggplot(climat[climat$visioapresconf_recode !="",]) +
   labs(x="", y="", title=
          "Depuis le confinement, plus ou moins favorable à la visio ?")
 
+
+
+# Selon vous, quels seraient les risques liés à une politique de réduction 
+# des émissions de gaz à effet de serre liées à la fabrication et au fonctionnement du matériel 
+# destiné aux expériences et aux observations scientifiques ? 
+# solrisqreducavion ----
+
+freq(climat$solrisqreducmateriel.publi.)
+
+ggplot(climat[climat$solrisqreducmateriel.publi. !="",]) + 
+  geom_bar(aes(x = fct_rev(solrisqreducmateriel.publi.), 
+               y = 100*..prop.., group = 1 
+  ), fill="white", color = "orange") +
+  theme_minimal()+coord_flip()+
+  labs(x="", y="", title=
+         "Selon vous, quels seraient les risques liés à une politique de réduction 
+       des émissions de gaz à effet de serre liées à la fabrication et au fonctionnement du matériel 
+       destiné aux expériences et aux observations scientifiques ? (sur les 50% des répondants concernés)")
+
+
+# Quelles actions les institutions et laboratoires de recherche devraient-ils mettre en œuvre pour réduire leurs émissions de gaz à effet de serre ?
+
+freq(climat$solinstit.train.)
+
+ggplot(climat[climat$solinstit.limitevols. !="",]) + 
+  geom_bar(aes(x = fct_rev(solinstit.limitevols.), 
+               y = 100*..prop.., group = 1 
+  ), fill="white", color = "orange") +
+  theme_minimal()+coord_flip()+
+  labs(x="", y="", title=
+         "Actions à mettre en oeuvre : limite de vols par personne")
+
+ggplot(climat[climat$solinstit.bilanges. !="",]) + 
+  geom_bar(aes(x = fct_rev(solinstit.bilanges.), 
+               y = 100*..prop.., group = 1 
+  ), fill="white", color = "orange") +
+  theme_minimal()+coord_flip()+
+  labs(x="", y="", title=
+         "Actions à mettre en oeuvre : Bilan GES")
+
+ggplot(climat[climat$solinstit.conf. !="",]) + 
+  geom_bar(aes(x = fct_rev(solinstit.conf.), 
+               y = 100*..prop.., group = 1 
+  ), fill="white", color = "orange") +
+  theme_minimal()+coord_flip()+
+  labs(x="", y="", title=
+         "Actions à mettre en oeuvre: poids des confs dans les évaluations de carrière")
+
+
+
+ggplot(climat[climat$solinstit.selection. !="",]) + 
+  geom_bar(aes(x = fct_rev(solinstit.selection.), 
+               y = 100*..prop.., group = 1 
+  ), fill="white", color = "orange") +
+  theme_minimal()+coord_flip()+
+  labs(x="", y="", title=
+         "Actions à mettre en oeuvre: poids des confs dans les évaluations de carrière")
+
