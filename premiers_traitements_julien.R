@@ -205,7 +205,6 @@ ggplot(climat[climat$diminution_domicile_travail !="",]) +
 
 # visio depuis le confinement
 
-iorder(climat$visioapresconf)
 ## Réordonnancement de climat$visioapresconf en climat$visioapresconf_recode
 climat$visioapresconf_recode <- factor(climat$visioapresconf,
   levels = c(
@@ -280,5 +279,5 @@ ggplot(climat[climat$solinstit.selection. !="",]) +
   ), fill="white", color = "orange") +
   theme_minimal()+coord_flip()+
   labs(x="", y="", title=
-         "Actions à mettre en oeuvre: poids des confs dans les évaluations de carrière")
+         "Actions à mettre en oeuvre: critères de sélection")
 
