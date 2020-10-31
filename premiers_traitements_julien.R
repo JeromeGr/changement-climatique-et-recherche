@@ -269,7 +269,7 @@ ggplot(climat[climat$solinstit.conf. !="",]) +
   ), fill="white", color = "orange") +
   theme_minimal()+coord_flip()+
   labs(x="", y="", title=
-         "Actions à mettre en oeuvre: poids des confs dans les évaluations de carrière")
+         "Actions à mettre en oeuvre: poids des conférences dans les évaluations de carrière")
 
 
 
