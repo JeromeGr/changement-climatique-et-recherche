@@ -12,6 +12,14 @@ climat <- read.csv("climat1410.csv", fileEncoding ="UTF-8")
 climat$vols_dicho <- ifelse(climat$volsnb=="0", "pas_vol", "vol")
 climat$vols_dicho[is.na(climat$volsnb)] <- NA
 
+# heures de vol approximatives en prenant le centre de chaque intervalle
+climat$volshnum <- with(climat,
+                        case_when(volsnb == 0 ~ 0,
+                                  volsh == "De 1h à 10h" ~ 5,
+                                  volsh == "De 11h à 20h" ~ 15,
+                                  volsh == "De 20h à 50h" ~ 35,
+                                  volsh == "Plus de 50h" ~ 60))
+
 # situation professionnelle sitpro réordonnée par logique hiérarchique ----
 climat$sitpro <- factor(climat$sitpro,
                         levels = c(
@@ -96,3 +104,19 @@ climat$discipline_agregee <- fct_recode(
   "Autres santé"="91 : Sciences de la rééducation et de la réadaptation"
 )
 
+# participation à une ANR, ERC, etc.
+for(inst in c("anr", "europe", "france", "inter", "prive")) {
+  for(sit in c("r", "m")) {
+    var <- paste0("projets.", inst, "_", sit, ".")
+    var2 <- paste0("projets.", inst, "_", sit)
+    inst2 <- c(anr="projet ANR",
+               europe="projet européen",
+               france="projet France",
+               inter="projet international",
+               prive="projet privé")[inst]
+    sit2 <- c(r="Reponsable", m="Membre")[sit]
+    climat[[var2]] <- if_else(is.na(climat[[var]]) | climat[[var]] == 0,
+                              paste(sit2, inst2, "non"),
+                              paste(sit2, inst2, "oui"))
+  }
+}

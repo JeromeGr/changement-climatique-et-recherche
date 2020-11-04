@@ -325,3 +325,65 @@ ggplot(climat[climat$solinstit.selection. !="",]) +
   labs(x="", y="% des répondants")+
   ylim(0,65)
 
+# heures de vol approximatives par statut
+group_by(climat, sitpro) %>%
+  summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
+  ggplot(aes(x=fct_rev(sitpro), y = volshnum)) +
+  geom_segment(aes(x=fct_rev(sitpro), xend=fct_rev(sitpro), 
+               y=0, yend=volshnum), color="grey")+
+  geom_point(color="steelblue", size=3) +
+  theme_light() +
+  theme(panel.border = element_blank(),
+        axis.ticks.x = element_blank()) +
+  xlab("") +
+  ylab("heures de vol par an")+
+  geom_hline(yintercept=mean(climat$volshnum, na.rm=TRUE), colour = "red") +
+  coord_flip()+
+  scale_y_continuous(breaks=seq(0, 50, by=5)) +
+  labs(caption="La ligne rouge indique la valeur sur la totalité des répondants")
+
+
+# heures de vol approximatives par ANR/ERC/etc.
+group_by(climat, sitpro) %>%
+  summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
+  ggplot(aes(x=fct_rev(sitpro), y = volshnum)) +
+  geom_segment(aes(x=fct_rev(sitpro), xend=fct_rev(sitpro), 
+                   y=0, yend=volshnum), color="grey")+
+  geom_point(color="steelblue", size=3) +
+  theme_light() +
+  theme(panel.border = element_blank(),
+        axis.ticks.x = element_blank()) +
+  xlab("") +
+  ylab("heures de vol par an")+
+  geom_hline(yintercept=mean(climat$volshnum, na.rm=TRUE), colour = "red") +
+  coord_flip()+
+  scale_y_continuous(breaks=seq(0, 50, by=5)) +
+  labs(caption="La ligne rouge indique la valeur sur la totalité des répondants")
+
+volsproj <- rbind(group_by(climat, projets.anr_r) %>%
+                    summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
+                    rename(projets=projets.anr_r),
+                  group_by(climat, projets.anr_m) %>%
+                    summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
+                    rename(projets=projets.anr_m),
+                  group_by(climat, projets.europe_r) %>%
+                    summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
+                    rename(projets=projets.europe_r),
+                  group_by(climat, projets.europe_m) %>%
+                    summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
+                    rename(projets=projets.europe_m))
+
+group_by(volsproj, projets) %>%
+  ggplot(aes(x=fct_rev(projets), y = volshnum)) +
+  geom_segment(aes(x=fct_rev(projets), xend=fct_rev(projets), 
+                   y=0, yend=volshnum), color="grey")+
+  geom_point(color="steelblue", size=3) +
+  theme_light() +
+  theme(panel.border = element_blank(),
+        axis.ticks.x = element_blank()) +
+  xlab("") + 
+  ylab("heures de vol par an")+
+  geom_hline(yintercept=mean(climat$volshnum, na.rm=TRUE), colour = "red") +
+  coord_flip()+
+  scale_y_continuous(breaks=seq(0, 50, by=5)) +
+  labs(caption="La ligne rouge indique la valeur sur la totalité des répondants")
