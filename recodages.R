@@ -4,7 +4,7 @@ library(tidyverse)
 
 #chargement de la base
 
-climat <- read.csv("climat1410.csv", encoding ="UTF-8")
+climat <- read.csv("climat1410.csv", fileEncoding ="UTF-8")
 
 
 

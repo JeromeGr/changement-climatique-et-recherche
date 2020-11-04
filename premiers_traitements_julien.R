@@ -22,7 +22,7 @@ ggplot(a[a$Var2=="vol",],
   geom_segment(
     aes(x=fct_rev(Var1), xend=fct_rev(Var1), 
         y=0, yend=Freq), color="grey")+
-  geom_point( color="orange", size=4) +
+  geom_point( color="steelblue", size=4) +
   theme_light() +
   theme(
     panel.grid.major.x = element_blank(),
@@ -88,7 +88,7 @@ ggplot(climat,aes(x=hindex,
   xlim(0,100)+ylim(0,51)
 
 
-# programmes de recherche et vols ----
+# programmes de recherche (ANR and co) et vols ----
 
 # on construit un grand vecteur (une liste) avec les proportions qui nous intéressent
 projets <- rbind(
@@ -146,7 +146,7 @@ ggplot(projets,
     axis.ticks.x = element_blank()) +
   xlab("") +
   ylab("% de volants")+
-  geom_hline(yintercept=50.2,  colour = "red") +
+  geom_hline(yintercept=50.2,  colour = "steelblue") +
   coord_flip()+
   labs(title="Au moins un vol * participation à un programme de recherche", 
        caption="La ligne rouge indique la valeur sur la totalité des répondants")
@@ -154,35 +154,57 @@ ggplot(projets,
 
 # changements profonds dans nos métiers ----
 
+# OK !!!
+# mettre sans opinion en dernier !!!
+
 freq(climat$chgtpratique)
-ggplot(climat[climat$chgtpratique !="",]) + 
-  geom_bar(aes(x = chgtpratique, 
-               y = 100*..prop.., group = 1 
-               ), fill="white", color = "orange") +
-  theme_minimal()+coord_flip()+
-  labs(x="", y="", title=
-      "Pensez-vous que l'urgence climatique exige des changements profonds dans la pratique de nos métiers ?")
-  
-
-# un tiers de réduction des émissions ----
-
-climat$recherche2030 <- factor(climat$solreducrech, 
-                               labels=c(
-                                 "Non réponse",
-                                 "Bénéficier d'un statut dérogatoire (moins que les autres)",
+climat$chgtpratique <- factor(climat$chgtpratique, 
+                               labels=c("",
+                                 "Sans opinion",
+                                 "Non, pas du tout d’accord",
+                                 "Non, plutôt pas d’accord",
                                  "Montrer l'exemple (plus que les autres)",
                                  "Comme les autres"
                                ))
-ggplot(climat[climat$recherche2030 !="",]) + 
+ggplot(climat[climat$chgtpratique !="",]) + 
+  geom_bar(aes(x = chgtpratique, 
+               y = 100*..prop.., group = 1 
+               ), fill="white", color = "steelblue") +
+  theme_minimal()+coord_flip()+
+  labs(x="", y="% des répondants")
+#Pensez-vous que l'urgence climatique exige des changements profonds dans la pratique de nos métiers ?
+
+
+# un tiers de réduction des émissions ----
+# OK !!!
+freq(climat$solreducrech)
+climat$recherche2030 <- factor(climat$solreducrech, 
+                               labels=c(
+                                 "Non réponse",
+                                 "Bénéficier d'un statut dérogatoire \n
+                                 (réduire moins que les autres)",
+                                 "Montrer l'exemple \n
+                                 (réduire plus que les autres)",
+                                 "Réduire comme les autres"
+                               ))
+climat$recherche2030 <- factor(climat$recherche2030, 
+                               levels=c(
+                                 "Non réponse",
+                                 "Bénéficier d'un statut dérogatoire \n
+                                 (réduire moins que les autres)",
+                                 "Réduire comme les autres",
+                                 "Montrer l'exemple \n
+                                 (réduire plus que les autres)"
+                               ))
+ggplot(climat[climat$recherche2030 !="Non réponse",]) + 
   geom_bar(aes(x = recherche2030, 
                y = 100*..prop.., group = 1 
-  ), fill="white", color = "orange") +
+  ), fill="white", color = "steelblue") +
   theme_minimal()+coord_flip()+
-  labs(x="", y="", title=
-         "La recherche doit réduire ses émissions plus ou moins que les autres secteurs ")
+  labs(x="", y="% des répondants")
 
 
-# La France s’est engagée à réduire d’un tiers ses émissions de gaz à effet de serre d’ici à 2030. Dans ce cadre, pensez-vous que : 
+# La France s’est engagée à réduire d’un tiers ses émissions de gaz à effet de serre d’ici à 2030. Dans ce cadre, pensez-vous que la recherche doit : 
 
 
 # diminution 5 dernières années domicile travail ----
@@ -194,17 +216,19 @@ climat$diminution_domicile_travail <- factor(climat$solevolges.domicile.,
     ""
   ))
 
-ggplot(climat[climat$diminution_domicile_travail !="",]) + 
+ggplot(climat[climat$diminution_domicile_travail !="" &
+                climat$diminution_domicile_travail!="Non concerné·e",]) + 
   geom_bar(aes(x = fct_rev(diminution_domicile_travail), 
                y = 100*..prop.., group = 1 
-  ), fill="white", color = "orange") +
+  ), fill="white", color = "steelblue") +
   theme_minimal()+coord_flip()+
-  labs(x="", y="", title=
-         "En termes de déplacement domicile-travail, vos émissions :")
+  labs(x="", y="% des répondants concernés")
+  # OK !!!
 
+# "En termes de déplacement domicile-travail, vos émissions :"
 
 # visio depuis le confinement
-
+# OK !!!
 ## Réordonnancement de climat$visioapresconf en climat$visioapresconf_recode
 climat$visioapresconf_recode <- factor(climat$visioapresconf,
   levels = c(
@@ -218,11 +242,11 @@ climat$visioapresconf_recode <- factor(climat$visioapresconf,
 ggplot(climat[climat$visioapresconf_recode !="",]) + 
   geom_bar(aes(x = fct_rev(visioapresconf_recode), 
                y = 100*..prop.., group = 1 
-  ), fill="white", color = "orange") +
+  ), fill="white", color = "steelblue") +
   theme_minimal()+coord_flip()+
-  labs(x="", y="", title=
-         "Depuis le confinement, plus ou moins favorable à la visio ?")
+  labs(x="", y="% des répondants")
 
+# "Depuis le confinement, plus ou moins favorable à la visio ?"
 
 
 # Selon vous, quels seraient les risques liés à une politique de réduction 
@@ -231,53 +255,73 @@ ggplot(climat[climat$visioapresconf_recode !="",]) +
 # solrisqreducavion ----
 
 freq(climat$solrisqreducmateriel.publi.)
+climat$solrisqreducmateriel.publi_rec <- factor(climat$solrisqreducmateriel.publi.,
+                                       levels = c("",
+                                         "Non concerné·e",
+                                         "Sans opinion",
+                                         "C’est peu probable", 
+                                         "C’est probable mais ce n’est pas un problème", 
+                                         "C’est probable et c’est un problème"
+                                       )
+)
 
-ggplot(climat[climat$solrisqreducmateriel.publi. !="",]) + 
+ggplot(climat[climat$solrisqreducmateriel.publi. !="" &
+                climat$solrisqreducmateriel.publi.  != "Non concerné·e",]) + 
   geom_bar(aes(x = fct_rev(solrisqreducmateriel.publi.), 
                y = 100*..prop.., group = 1 
-  ), fill="white", color = "orange") +
+  ), fill="white", color = "steelblue") +
   theme_minimal()+coord_flip()+
-  labs(x="", y="", title=
-         "Selon vous, quels seraient les risques liés à une politique de réduction 
-       des émissions de gaz à effet de serre liées à la fabrication et au fonctionnement du matériel 
-       destiné aux expériences et aux observations scientifiques ? (sur les 50% des répondants concernés)")
+  labs(x="", y="% des répondants concernés")
+
+# OK !!!
+# "Selon vous, quels seraient les risques liés à une politique de réduction 
+#      des émissions de gaz à effet de serre liées à la fabrication et au fonctionnement du matériel 
+#      destiné aux expériences et aux observations scientifiques ? (sur les 50% des répondants concernés)"
+# réduire votre nombre de publications
 
 
 # Quelles actions les institutions et laboratoires de recherche devraient-ils mettre en œuvre pour réduire leurs émissions de gaz à effet de serre ?
 
-freq(climat$solinstit.train.)
+# freq(climat$solinstit.train.)
 
+#, title=
+# "Limite de vols par personne"
 ggplot(climat[climat$solinstit.limitevols. !="",]) + 
   geom_bar(aes(x = fct_rev(solinstit.limitevols.), 
                y = 100*..prop.., group = 1 
-  ), fill="white", color = "orange") +
+  ), fill="white", color = "steelblue") +
   theme_minimal()+coord_flip()+
-  labs(x="", y="", title=
-         "Actions à mettre en oeuvre : limite de vols par personne")
+  labs(x="", y="% des répondants")+
+  ylim(0,65)
 
+#Bilan GES"
 ggplot(climat[climat$solinstit.bilanges. !="",]) + 
   geom_bar(aes(x = fct_rev(solinstit.bilanges.), 
                y = 100*..prop.., group = 1 
-  ), fill="white", color = "orange") +
+  ), fill="white", color = "steelblue") +
   theme_minimal()+coord_flip()+
-  labs(x="", y="", title=
-         "Actions à mettre en oeuvre : Bilan GES")
+  labs(x="", y="% des répondants")+
+  ylim(0,65)
 
+#, title=
+# "Poids des conférences dans les évaluations de carrière"
 ggplot(climat[climat$solinstit.conf. !="",]) + 
   geom_bar(aes(x = fct_rev(solinstit.conf.), 
                y = 100*..prop.., group = 1 
-  ), fill="white", color = "orange") +
+  ), fill="white", color = "steelblue") +
   theme_minimal()+coord_flip()+
-  labs(x="", y="", title=
-         "Actions à mettre en oeuvre: poids des conférences dans les évaluations de carrière")
+  labs(x="", y="% des répondants")+
+  ylim(0,65)
 
 
 
+# , title=
+  # "Emissions dans les critères de sélection des projets à financer"
 ggplot(climat[climat$solinstit.selection. !="",]) + 
   geom_bar(aes(x = fct_rev(solinstit.selection.), 
                y = 100*..prop.., group = 1 
-  ), fill="white", color = "orange") +
-  theme_minimal()+coord_flip()+
-  labs(x="", y="", title=
-         "Actions à mettre en oeuvre: critères de sélection")
+  ), fill="white", color = "steelblue") +
+  theme_minimal()+coord_flip()+ 
+  labs(x="", y="% des répondants")+
+  ylim(0,65)
 
