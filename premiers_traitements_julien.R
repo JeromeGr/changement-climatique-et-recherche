@@ -360,22 +360,36 @@ group_by(climat, sitpro) %>%
   scale_y_continuous(breaks=seq(0, 50, by=5)) +
   labs(caption="La ligne rouge indique la valeur sur la totalité des répondants")
 
-volsproj <- rbind(group_by(climat, projets.anr_r) %>%
+# volsproj <- rbind(group_by(climat, projets.anr_r) %>%
+#                     summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
+#                     rename(projets=projets.anr_r),
+#                   group_by(climat, projets.anr_m) %>%
+#                     summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
+#                     rename(projets=projets.anr_m),
+#                   group_by(climat, projets.europe_r) %>%
+#                     summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
+#                     rename(projets=projets.europe_r),
+#                   group_by(climat, projets.europe_m) %>%
+#                     summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
+#                     rename(projets=projets.europe_m))
+# vars <- paste0("projets.", c("anr_r", "europe_r", "france_r", "inter_r", "prive_r",
+#                              "anr_m", "europe_m", "france_m", "inter_m", "prive_m"), ".")
+volsproj <- rbind(filter(climat, is.na(projets.anr_r.) & is.na(projets.anr_m.) & is.na(projets.europe_r.) & is.na(projets.europe_m.)) %>%
                     summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
-                    rename(projets=projets.anr_r),
-                  group_by(climat, projets.anr_m) %>%
+                    mutate(projets="Ni l'un ni l'autre"),
+                  filter(climat, !is.na(projets.anr_r.) & !is.na(projets.anr_m.) & is.na(projets.europe_r.) & is.na(projets.europe_m.)) %>%
                     summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
-                    rename(projets=projets.anr_m),
-                  group_by(climat, projets.europe_r) %>%
+                    mutate(projets="Projet ANR"),
+                  filter(climat, is.na(projets.anr_r.) & is.na(projets.anr_m.) & !is.na(projets.europe_r.) & !is.na(projets.europe_m.)) %>%
                     summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
-                    rename(projets=projets.europe_r),
-                  group_by(climat, projets.europe_m) %>%
+                    mutate(projets="Projet européen"),
+                  filter(climat, !is.na(projets.anr_r.) & !is.na(projets.anr_m.) & !is.na(projets.europe_r.) & !is.na(projets.europe_m.)) %>%
                     summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
-                    rename(projets=projets.europe_m))
+                    mutate(projets="Projet ANR et projet européen"))
 
 group_by(volsproj, projets) %>%
-  ggplot(aes(x=fct_rev(projets), y = volshnum)) +
-  geom_segment(aes(x=fct_rev(projets), xend=fct_rev(projets), 
+  ggplot(aes(x=fct_reorder(projets, volshnum), y = volshnum)) +
+  geom_segment(aes(x=fct_reorder(projets, volshnum), xend=fct_rev(projets), 
                    y=0, yend=volshnum), color="grey")+
   geom_point(color="steelblue", size=3) +
   theme_light() +
