@@ -377,13 +377,13 @@ group_by(climat, sitpro) %>%
 volsproj <- rbind(filter(climat, is.na(projets.anr_r.) & is.na(projets.anr_m.) & is.na(projets.europe_r.) & is.na(projets.europe_m.)) %>%
                     summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
                     mutate(projets="Ni l'un ni l'autre"),
-                  filter(climat, !is.na(projets.anr_r.) & !is.na(projets.anr_m.) & is.na(projets.europe_r.) & is.na(projets.europe_m.)) %>%
+                  filter(climat, (!is.na(projets.anr_r.) | !is.na(projets.anr_m.)) & is.na(projets.europe_r.) & is.na(projets.europe_m.)) %>%
                     summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
                     mutate(projets="Projet ANR"),
-                  filter(climat, is.na(projets.anr_r.) & is.na(projets.anr_m.) & !is.na(projets.europe_r.) & !is.na(projets.europe_m.)) %>%
+                  filter(climat, is.na(projets.anr_r.) & is.na(projets.anr_m.) & (!is.na(projets.europe_r.) | !is.na(projets.europe_m.))) %>%
                     summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
                     mutate(projets="Projet européen"),
-                  filter(climat, !is.na(projets.anr_r.) & !is.na(projets.anr_m.) & !is.na(projets.europe_r.) & !is.na(projets.europe_m.)) %>%
+                  filter(climat, (!is.na(projets.anr_r.) | !is.na(projets.anr_m.)) & (!is.na(projets.europe_r.) | !is.na(projets.europe_m.))) %>%
                     summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
                     mutate(projets="Projet ANR et projet européen"))
 
