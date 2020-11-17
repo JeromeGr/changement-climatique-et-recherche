@@ -106,6 +106,7 @@ climat$discipline_agregee <- fct_recode(
 
 # participation à une ANR, ERC, etc.
 for(inst in c("anr", "europe", "france", "inter", "prive")) {
+  varnon <- paste0("projets.", inst, "_n.")
   for(sit in c("r", "m")) {
     var <- paste0("projets.", inst, "_", sit, ".")
     var2 <- paste0("projets.", inst, "_", sit)
@@ -114,9 +115,19 @@ for(inst in c("anr", "europe", "france", "inter", "prive")) {
                france="projet France",
                inter="projet international",
                prive="projet privé")[inst]
-    sit2 <- c(r="Reponsable", m="Membre")[sit]
-    climat[[var2]] <- if_else(is.na(climat[[var]]) | climat[[var]] == 0,
+    sit2 <- c(r="Responsable", m="Membre")[sit]
+    # NA signifie non coché (mélange non réponse et Non :
+    # on les sépare selon que la colonne Non a été cochée ou non)
+    # 1 signifie coché
+    # 0 signifie que le répondant n'est pas allé jusqu'à cette question/page
+    # Si Oui et Non ont été cochés tous les deux, on retient Oui
+    # Vérification avec :
+    # table(paste(climat$projets.anr_m., climat$projets.anr_n.), climat$projets.anr_m, useNA="a")
+    climat[[var2]] <- if_else(is.na(climat[[var]]) &
+                                (!is.na(climat[[varnon]]) & climat[[varnon]] == 1),
                               paste(sit2, inst2, "non"),
-                              paste(sit2, inst2, "oui"))
+                              if_else(climat[[var]] == 1,
+                                      paste(sit2, inst2, "oui"),
+                                      NA_character_))
   }
 }
