@@ -107,6 +107,12 @@ climat$discipline_agregee <- fct_recode(
 # participation à une ANR, ERC, etc.
 for(inst in c("anr", "europe", "france", "inter", "prive")) {
   varnon <- paste0("projets.", inst, "_n.")
+  varr <- paste0("projets.", inst, "_r.")
+  varm <- paste0("projets.", inst, "_m.")
+  # Indique si au moins une case a été cochée sur la ligne (Responsable, membre, non)
+  unecochee <- (!is.na(climat[[varnon]]) & climat[[varnon]] == 1) |
+               (!is.na(climat[[varr]]) & climat[[varr]] == 1) |
+               (!is.na(climat[[varm]]) & climat[[varm]] == 1)
   for(sit in c("r", "m")) {
     var <- paste0("projets.", inst, "_", sit, ".")
     var2 <- paste0("projets.", inst, "_", sit)
@@ -116,15 +122,14 @@ for(inst in c("anr", "europe", "france", "inter", "prive")) {
                inter="projet international",
                prive="projet privé")[inst]
     sit2 <- c(r="Responsable", m="Membre")[sit]
-    # NA signifie non coché (mélange non réponse et Non :
-    # on les sépare selon que la colonne Non a été cochée ou non)
+    # NA signifie non coché, ce qui mélange Non réponse et Non :
+    # on les sépare selon qu'une (autre) case a été cochée sur la ligne ou non
     # 1 signifie coché
     # 0 signifie que le répondant n'est pas allé jusqu'à cette question/page
     # Si Oui et Non ont été cochés tous les deux, on retient Oui
     # Vérification avec :
-    # table(paste(climat$projets.anr_m., climat$projets.anr_n.), climat$projets.anr_m, useNA="a")
-    climat[[var2]] <- if_else(is.na(climat[[var]]) &
-                                (!is.na(climat[[varnon]]) & climat[[varnon]] == 1),
+    # table(paste(climat$projets.anr_r., climat$projets.anr_m., climat$projets.anr_n.), climat$projets.anr_m, useNA="a")
+    climat[[var2]] <- if_else(is.na(climat[[var]]) & unecochee,
                               paste(sit2, inst2, "non"),
                               if_else(climat[[var]] == 1,
                                       paste(sit2, inst2, "oui"),
