@@ -1,6 +1,9 @@
 library(questionr)
 library(tidyverse)
 
+#Chemin du dossier personnalisé pour chacun
+#Jérôme
+setwd("/Users/jeromegreffion/Dropbox/changement-climatique-et-recherche")
 
 #chargement de la base
 
@@ -103,6 +106,86 @@ climat$discipline_agregee <- fct_recode(
   "Autres santé"="90 : Maïeutique",
   "Autres santé"="91 : Sciences de la rééducation et de la réadaptation"
 )
+
+
+
+#Recodage discipline pour avoir  une subdivision plus fine avec des effectifs plus homogènes (et des intitulés plus explicites, plus que sciences 1 et 2 par ex)
+
+climat$discipline_agr2 <- fct_recode(
+  climat$discipline,
+  "Droit, économie, gestion"="01 : Droit privé et sciences criminelles",
+  "Droit, économie, gestion"="02 : Droit public",
+  "Droit, économie, gestion"="03 : Histoire du droit et des institutions",
+  "Droit, économie, gestion"="04 : Science politique",
+  "Droit, économie, gestion"="05 : Sciences économiques",
+  "Droit, économie, gestion"="06 : Sciences de gestion",
+  "Autres lettres et sciences humaines"="07 : Sciences du langage : linguistique et phonétique générales",
+  "Autres lettres et sciences humaines"="08 : Langues et littératures anciennes",
+  "Autres lettres et sciences humaines"="09 : Langue et littérature françaises",
+  "Autres lettres et sciences humaines"="11 : Langues et littératures anglaises et anglo-saxonnes",
+  "Autres lettres et sciences humaines"="12 : Langues et littératures germaniques et scandinaves",
+  "Autres lettres et sciences humaines"="13 : Langues et littératures slaves",
+  "Autres lettres et sciences humaines"="14 : Langues et littératures romanes : espagnol, italien, portugais, autres langues romanes",
+  "Autres lettres et sciences humaines"="15 : Langues et littératures arabes, chinoises, japonaises, hébraïques, d'autres domaines linguistiques",
+  "Autres lettres et sciences humaines"="16 : Psychologie, psychologie clinique, psychologie sociale",
+  "Autres lettres et sciences humaines"="17 : Philosophie",
+  "Autres lettres et sciences humaines"="18 : Architecture et Arts : plastiques, du spectacle, musique, musicologie, esthétique, sciences de l'art",
+  "Socio, démo, anthropo"="19 : Sociologie, démographie",
+  "Socio, démo, anthropo"="20 : Anthropologie biologique, ethnologie, préhistoire",
+  "Histoire, géo, urba"="21 : Histoire et civilisations : histoire et archéologie des mondes anciens et des mondes médiévaux",
+  "Histoire, géo, urba"="22 : Histoire et civilisations : histoire des mondes modernes, histoire du monde contemporain",
+  "Histoire, géo, urba"="23 : Géographie physique, humaine, économique et régionale",
+  "Histoire, géo, urba"="24 : Aménagement de l'espace, urbanisme",
+  "Mathématiques"="25 : Mathématiques",
+  "Mathématiques"="26 : Mathématiques appliquées et applications des mathématiques",
+  "Informatique"="27 : Informatique",
+  "Physique"="28 : Milieux denses et matériaux",
+  "Physique"="29 : Constituants élémentaires",
+  "Physique"="30 : Milieux dilués et optique",
+  "Chimie"="31 : Chimie théorique, physique, analytique",
+  "Chimie"="32 : Chimie organique, inorganique, industrielle",
+  "Chimie"="33 : Chimie des matériaux",
+  "Astro, terre, atmo, océans"="34 : Astronomie, astrophysique",
+  "Astro, terre, atmo, océans"="35 : Structure et évolution de la Terre et des autres planètes",
+  "Astro, terre, atmo, océans"="36 : Terre solide : géodynamique des enveloppes supérieures, paléobiosphère",
+  "Astro, terre, atmo, océans"="37 : Météorologie, océanographie physique et physique de l'environnement",
+  "Médecine, pharma, santé"="42 : Morphologie et morphogenèse",
+  "Médecine, pharma, santé"="43 : Biophysique et imagerie médicale",
+  "Médecine, pharma, santé"="44 : Biochimie, biologie cellulaire et moléculaire, physiologie et nutrition",
+  "Médecine, pharma, santé"="45 : Microbiologie, maladies transmissibles et hygiène",
+  "Médecine, pharma, santé"="46 : Santé publique, environnement et société",
+  "Médecine, pharma, santé"="47 : Cancérologie, génétique, hématologie, immunologie",
+  "Médecine, pharma, santé"="48 : Anesthésiologie, réanimation, médecine d'urgence, pharmacologie et thérapeutique",
+  "Médecine, pharma, santé"="49 : Pathologie nerveuse et musculaire, pathologie mentale, handicap et rééducation",
+  "Médecine, pharma, santé"="51 : Pathologie cardiorespiratoire et vasculaire",
+  "Médecine, pharma, santé"="54 : Développement et pathologie de l'enfant, gynécologie-obstétrique, endocrinologie et reproduction",
+  "Médecine, pharma, santé"="57 : Sciences biologiques, médecine et chirurgie buccales",
+  "Médecine, pharma, santé"="58 : Sciences physiques et physiologiques endodontiques et prothétiques",
+  "Génies : méca, info, élec, énergie"="60 : Mécanique, génie mécanique, génie civil",
+  "Génies : méca, info, élec, énergie"="61 : Génie informatique, automatique et traitement du signal",
+  "Génies : méca, info, élec, énergie"="62 : Énergétique, génie des procédés",
+  "Génies : méca, info, élec, énergie"="63 : Génie Électrique, Électronique, optronique et systèmes",
+  "Biologie"="64 : Biochimie et biologie moléculaire",
+  "Biologie"="65 : Biologie cellulaire",
+  "Biologie"="66 : Physiologie",
+  "Biologie"="67 : Biologie des populations et écologie",
+  "Biologie"="68 : Biologie des organismes",
+  "Biologie"="69 : Neurosciences",
+  "Autres lettres et sciences humaines"="70 : Sciences de l'éducation",
+  "Autres lettres et sciences humaines"="71 : Sciences de l'information et de la communication",
+  "Autres lettres et sciences humaines"="72 : Épistémologie, histoire des sciences et des techniques",
+  "Autres lettres et sciences humaines"="73 : Cultures et langues régionales",
+  "Autres lettres et sciences humaines"="74 : Sciences et techniques des activités physiques et sportives",
+  "Médecine, pharma, santé"="80/85 : Sciences physico-chimiques et ingénierie appliquée à la santé (ex-39)",
+  "Médecine, pharma, santé"="81/86 : Sciences du médicament et des autres produits de santé (ex-40)",
+  "Médecine, pharma, santé"="82/87 : Sciences biologiques, fondamentales et cliniques (ex-41)",
+  "Médecine, pharma, santé"="90 : Maïeutique",
+  "Médecine, pharma, santé"="91 : Sciences de la rééducation et de la réadaptation"
+)
+
+
+
+
 
 # participation à une ANR, ERC, etc.
 for(inst in c("anr", "europe", "france", "inter", "prive")) {
