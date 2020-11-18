@@ -13,75 +13,6 @@ climat<-climat %>% filter((nbpublisang!=666 | is.na(nbpublisang)))
 ################################
 #Recodage pour la régression
 
-#Regroupement catégories d'âge (pour avoir des catégories plus homogènes en termes de nombre de personnes)
-climat$ageAgr<-climat$age
-climat$ageAgr[climat$age %in% c("70 ans ou plus", "65-69 ans")]<-"65 ans et plus"
-climat$ageAgr[climat$age %in% c("18-24 ans", "25-29 ans")]<-"Moins de 29 ans"
-climat$ageAgr[climat$age %in% c("55-59 ans", "60-64 ans")]<-"55-64 ans"
-
-#Regroupement participation à projet financé (attention, il y a une erreur : les 0 sont comptés comme des 1 avec ce code, or ils devraient être regroupés avec les NA)
-#climat$Part_ANR_ERC[is.na(climat$projets.anr_r.) & is.na(climat$projets.anr_m.) & is.na(climat$projets.europe_r.) 
-#                    & is.na(climat$projets.europe_m.)]<-"Ni financement ANR ou Europe"
-#climat$Part_ANR_ERC[(!is.na(climat$projets.anr_r.) | !is.na(climat$projets.anr_m.)) & is.na(climat$projets.europe_r.) 
-#                    & is.na(climat$projets.europe_m.)]<-"Projet ANR"
-#climat$Part_ANR_ERC[is.na(climat$projets.anr_r.) & is.na(climat$projets.anr_m.) & (!is.na(climat$projets.europe_r.) 
-#                    | !is.na(climat$projets.europe_m.))]<-"Projet européen"               
-#climat$Part_ANR_ERC[(!is.na(climat$projets.anr_r.) | !is.na(climat$projets.anr_m.)) & (!is.na(climat$projets.europe_r.) 
-     #               | !is.na(climat$projets.europe_m.))]<-"Projet ANR et projet européen"             
-climat$proj
-#Classification plus complète (et en tenant compte des 0)
-climat$particip_ANR<-0
-climat$particip_ANR[climat$projets.anr_r. ==1 | climat$projets.anr_m. ==1]<-1
-climat$particip_Fr<-0
-climat$particip_Fr[climat$projets.france_r.==1 | climat$projets.france_m.==1]<-1
-climat$particip_Europ<-0
-climat$particip_Europ[climat$projets.europe_r. ==1 | climat$projets.europe_m. ==1]<-1
-climat$particip_Intern<-0
-climat$particip_Intern[climat$projets.inter_r. ==1 | climat$projets.inter_m. ==1]<-1
-climat$particip_prive<-0
-climat$particip_prive[climat$projets.prive_r.  ==1 | climat$projets.prive_m. ==1]<-1
-
-freq(climat$particip_ANR)
-freq(climat$particip_Fr)
-freq(climat$particip_Europ)
-freq(climat$particip_Intern)
-freq(climat$particip_prive)
-
-prop(table(climat$particip_ANR,climat$particip_Fr))
-prop(table(climat$particip_ANR,climat$particip_Europ))
-prop(table(climat$particip_Fr,climat$particip_Europ))
-prop(table(climat$particip_Intern,climat$particip_Europ))
-
-climat$Part_ANR_ERC[climat$projets.anr_r. %in% c(0, NA) & climat$projets.anr_m. %in% c(0, NA) & climat$projets.france_r. %in% c(0, NA) & climat$projets.france_m. %in% c(0, NA) 
-                    & climat$projets.europe_r. %in% c(0, NA) & climat$projets.europe_m. %in% c(0, NA) & climat$projets.inter_r.  %in% c(0, NA) & climat$projets.inter_m. %in% c(0, NA) 
-                    &   climat$projets.prive_r.  %in% c(0, NA) & climat$projets.prive_m. %in% c(0, NA)]<-"Ne participe à aucun projet financé"
-climat$Part_ANR_ERC[(climat$projets.anr_r. ==1 | climat$projets.anr_m. ==1) & climat$projets.france_r. %in% c(0, NA) & climat$projets.france_m. %in% c(0, NA) 
-                    & climat$projets.europe_r. %in% c(0, NA) & climat$projets.europe_m. %in% c(0, NA) & climat$projets.inter_r.  %in% c(0, NA) & climat$projets.inter_m. %in% c(0, NA) 
-                    &   climat$projets.prive_r.  %in% c(0, NA) & climat$projets.prive_m. %in% c(0, NA)]<-"Seult finance ANR"
-climat$Part_ANR_ERC[climat$projets.anr_r. %in% c(0, NA) & climat$projets.anr_m. %in% c(0, NA) & (climat$projets.france_r.==1 | climat$projets.france_m.==1) 
-                    & climat$projets.europe_r. %in% c(0, NA) & climat$projets.europe_m. %in% c(0, NA) & climat$projets.inter_r.  %in% c(0, NA) & climat$projets.inter_m. %in% c(0, NA) 
-                    &   climat$projets.prive_r.  %in% c(0, NA) & climat$projets.prive_m. %in% c(0, NA)]<-"Seult finance français (hors ANR)"
-climat$Part_ANR_ERC[climat$projets.anr_r. %in% c(0, NA) & climat$projets.anr_m. %in% c(0, NA) & climat$projets.france_r. %in% c(0, NA) & climat$projets.france_m. %in% c(0, NA) 
-                    & (climat$projets.europe_r. ==1 | climat$projets.europe_m. ==1) & climat$projets.inter_r.  %in% c(0, NA) & climat$projets.inter_m. %in% c(0, NA) 
-                    &   climat$projets.prive_r.  %in% c(0, NA) & climat$projets.prive_m. %in% c(0, NA)]<-"Seult finance européen"
-climat$Part_ANR_ERC[climat$projets.anr_r. %in% c(0, NA) & climat$projets.anr_m. %in% c(0, NA) & climat$projets.france_r. %in% c(0, NA) & climat$projets.france_m. %in% c(0, NA) 
-                    & climat$projets.europe_r. %in% c(0, NA) & climat$projets.europe_m. %in% c(0, NA) & (climat$projets.inter_r. ==1 | climat$projets.inter_m. ==1) 
-                    &   climat$projets.prive_r.  %in% c(0, NA) & climat$projets.prive_m. %in% c(0, NA)]<-"Seult finance internat (hors europe)"
-climat$Part_ANR_ERC[climat$projets.anr_r. %in% c(0, NA) & climat$projets.anr_m. %in% c(0, NA) & climat$projets.france_r. %in% c(0, NA) & climat$projets.france_m. %in% c(0, NA) 
-                    & climat$projets.europe_r. %in% c(0, NA) & climat$projets.europe_m. %in% c(0, NA) & climat$projets.inter_r.  %in% c(0, NA) & climat$projets.inter_m. %in% c(0, NA) 
-                    &   (climat$projets.prive_r.  ==1 | climat$projets.prive_m. ==1)]<-"Seult finance privé"
-
-#tester avec tableau croisé les cas les plus fréquents
-#Peut être créer des variables intermédiaires ex : Participation[climat$projets.europe_r. ==1 | climat$projets.europe_m. ==1]<-financement européen
-# Ou alors découper : nombre de financement. Type de financement. Et responsable/membre
-
-
-freq(climat$Part_ANR_ERC)
-freq(climat$projets.prive_r.)
-prop(table(climat$projets.france_m,climat$projets.europe_m))
-
-#Membre ou responsable d'un projet financé
-climat$Profin_Mb_Resp
 
 #REvenu : on agrège les catégories avec peu de monde
 climat$revenuAgr<-climat$revenu
@@ -162,24 +93,8 @@ climat$discipline_agr3 <- fct_recode(climat$discipline,
 )
 
 
-#Calcul du revenu par tête dans le foyer
-#Une demie part par enfant
-climat$couple1[climat$couple=="Oui"]<-1
-climat$couple1[climat$couple=="Non"]<-0
-#Calcul du nombre de personnes dans le foyer, (calcul "fiscal" avec les enfants =1/2)
-climat$tailleFiscFoyer<-1+climat$couple1+climat$enfantsnb/2
-
-climat$revenuTete[climat$revenu=="Moins de 1 500 euros par mois"]<-750/climat$tailleFiscFoyer[climat$revenu=="Moins de 1 500 euros par mois"]
-climat$revenuTete[climat$revenu=="De 1 500 à 2 499 euros par mois"]<-2000/climat$tailleFiscFoyer[climat$revenu=="De 1 500 à 2 499 euros par mois"]
-climat$revenuTete[climat$revenu=="De 2 500 à 3 499 euros par mois"]<-3000/climat$tailleFiscFoyer[climat$revenu=="De 2 500 à 3 499 euros par mois"]
-climat$revenuTete[climat$revenu=="De 3 500 à 4 499 euros par mois"]<-4000/climat$tailleFiscFoyer[climat$revenu=="De 3 500 à 4 499 euros par mois"]
-climat$revenuTete[climat$revenu=="De 6 000 à 7 999 euros par mois"]<-7000/climat$tailleFiscFoyer[climat$revenu=="De 6 000 à 7 999 euros par mois"]
-climat$revenuTete[climat$revenu=="De 8 000 à 9 999 euros par mois"]<-9000/climat$tailleFiscFoyer[climat$revenu=="De 8 000 à 9 999 euros par mois"]
-climat$revenuTete[climat$revenu=="De 10 000 à 15 000 euros par mois"]<-12500/climat$tailleFiscFoyer[climat$revenu=="De 10 000 à 15 000 euros par mois"]
-climat$revenuTete[climat$revenu=="Plus de 15 000 par mois"]<-20000/climat$tailleFiscFoyer[climat$revenu=="Plus de 15 000 par mois"]
-
 #######################
-#Je fixe les modalités de référence dans les régressions
+#Modalités de référence dans les régressions
 climat$sexe <- as.factor(climat$sexe)
 climat$sexe <- relevel(climat$sexe, ref = "un homme")
 
@@ -203,6 +118,19 @@ climat$discipline <- relevel(climat$discipline , ref = "25 : Mathématiques")
 climat$carriere <- as.factor(climat$carriere)
 climat$carriere <- relevel(climat$carriere , ref = "Non")
 
+climat$Profin_Mb_Resp <- as.factor(climat$Profin_Mb_Resp)
+climat$Profin_Mb_Resp <- relevel(climat$Profin_Mb_Resp , ref = "Ni membre ni resp d'un 1 projet financé")
+
+climat$solinstit.limitevols. <- as.factor(climat$solinstit.limitevols.)
+climat$solinstit.limitevols. <- relevel(climat$solinstit.limitevols. , ref = "C’est prioritaire")
+
+climat$solinstit.vols6h. <- as.factor(climat$solinstit.vols6h.)
+climat$solinstit.vols6h. <- relevel(climat$solinstit.vols6h. , ref = "C’est prioritaire")
+
+climat$solinstit.train. <- as.factor(climat$solinstit.train.)
+climat$solinstit.train. <- relevel(climat$solinstit.train. , ref = "C’est prioritaire")
+
+
 ##########################################
 #Régressions
 mean(climat$volshnum, na.rm=T)
@@ -218,19 +146,9 @@ res.reg6 <- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + nbpublis, 
 res.reg7 <- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + Part_ANR_ERC + nbpublis, data=climat)
 res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + revenuTete + enfantsnb + couple , data=climat)
 
-#Suite
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + carriere , data=climat)
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + particip_ANR + particip_Fr + particip_Europ + particip_Intern + particip_prive , data=climat)
-
-summary(res.reg8)
-freq(climat$moment)
-
 #Sous discipline Socio pour comparer enquête socio
 climatSocio<-climat %>% filter(discipline_agr3=="Socio, démo")
 res.reg10<- lm(volshnum ~ sexe + ageAgr  + sitpro + revenuTete + enfantsnb + couple , data=climatSocio)
-
-
-summary(res.reg8)
 
 htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6, res.reg7, res.reg8, res.reg10), 
         stars = c(0.001, 0.01, 0.05, 0.1), digits = 2, #single.row = TRUE,
@@ -289,24 +207,22 @@ htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6, res.reg7
         file="/Users/jeromegreffion/Dropbox/changement-climatique-et-recherche/Resultats/Regressions duree de vol agregee 2019, all staff.doc")
 
 
-#Personnel en position de publier
+#Test des corrélations avec d'autres variables : étape dans la carrière, projet financé (type ; resp/membre),
+res.reg1<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3, data=climat)
+res.reg2<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + carriere , data=climat)
+res.reg3<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + nbpublis, data=climat)
+res.reg4<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + nbpublis + carriere, data=climat)
+res.reg5<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + particip_ANR + particip_Fr + particip_Europ + particip_Intern + particip_prive , data=climat)
+res.reg6<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + particip_ANR + particip_Fr + particip_Europ + particip_Intern + particip_prive + revenuTete , data=climat)
+res.reg7<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + particip_ANR + particip_Fr + particip_Europ + particip_Intern + particip_prive + nbpublis , data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + particip_ANR + particip_Fr + particip_Europ + particip_Intern + particip_prive + nbpublis + carriere , data=climat)
+res.reg9<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + Profin_Mb_Resp , data=climat)
+res.reg10<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + Profin_Mb_Resp + nbpublis + carriere , data=climat)
 
-climatPersPubli<-climat %>% filter(!(sitpro %in% c("Technicien·ne", "Adjoint·e technique", "Autre")))
+summary(res.reg8)
 
-res.Perspubli1 <- lm(volshnum ~ sexe + ageAgr, data=climatPersPubli)
-res.Perspubli2 <- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 , data=climatPersPubli)
-res.Perspubli3 <- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + nbpublis, data=climatPersPubli)
-res.Perspubli4 <- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + Part_ANR_ERC, data=climatPersPubli)
-res.Perspubli5<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + nbpublis + Part_ANR_ERC, data=climatPersPubli)
-
-
-summary(res.Perspubli4)
-
-
-
-htmlreg(list(res.Perspubli1, res.Perspubli2, res.Perspubli3, res.Perspubli4, res.Perspubli5), 
+htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6, res.reg7, res.reg8, res.reg9, res.reg10), 
         stars = c(0.001, 0.01, 0.05, 0.1), digits = 2, #single.row = TRUE,
-        #custom.header = list("All staff" = 1:4, "Publishing staff" = 5:9),
         custom.coef.map = list("sexeune femme"= "Woman (ref = man)",
                                "sexeautre"="Sex : other",
                                "ageAgrMoins de 29 ans"= "less than 29 years old (Ref = 50-54 years old",
@@ -331,14 +247,7 @@ htmlreg(list(res.Perspubli1, res.Perspubli2, res.Perspubli3, res.Perspubli4, res
                                "sitproChargé·e d’études/de mission"= "Research officer",
                                "sitproAdjoint·e technique"="Technical assistant",
                                "sitproAutre"="Other",
-                               "discipline_agregeeDroit, économie, gestion"="Droit, économie, gestion (Ref = Sciences (1))",
-                               "discipline_agregeeLettres et sciences humaines (1)"="Lettres et sciences humaines (1)",
-                               "discipline_agregeeMédecine, odontologie" ="Médecine, odontologie",
-                               "discipline_agregeeSciences (2)"="Sciences (2)",
-                               "discipline_agregeeLettres et sciences humaines (2)"="Lettres et sciences humaines (2)",
-                               "discipline_agregeePharmacie"="Pharmacie",
-                               "discipline_agregeeAutres santé"="Autres santé",
-                               "discipline_agr3Droit, économie, gestion"="Droit, économie, gestion",
+                               "discipline_agr3Droit, économie, gestion"="Droit, économie, gestion (Ref = physique)",
                                "discipline_agr3Autres lettres et sciences humaines"="Autres lettres et sciences humaines",
                                "discipline_agr3Archi/arts, anthropo ethno"="Archi/arts, anthropo ethno",
                                "discipline_agr3Socio, démo"="Socio, démo",
@@ -353,23 +262,64 @@ htmlreg(list(res.Perspubli1, res.Perspubli2, res.Perspubli3, res.Perspubli4, res
                                "discipline_agr3Biologie"="Biologie",
                                "discipline_agr3Biologie des populations et écologie"="Biologie des populations et écologie",
                                "nbpublis"="Number of publications in 2017-mid2020",
-                               "Part_ANR_ERCProjet ANR"="Participation projet ANR (Ref = ni projet ANR ni européen)",
-                               "Part_ANR_ERCProjet européen"="Participation projet européen",
-                               "Part_ANR_ERCProjet ANR et projet européen" ="Participation projet ANR et projet européen"),
+                               "nbpublisang"="Number of publications in english in 2017-mid2020",
+                               "particip_ANR"="Participe à projet(s) financé ANR",
+                               "particip_Fr"="Participe à projet(s) av financt public Fr",
+                               "particip_Europ"="Participe à projet(s) av financt europ",
+                               "particip_Intern"="Participe à projet(s) av financt internation",
+                               "particip_prive"="Participe à projet(s) av financt privé",
+                               "Profin_Mb_RespMembre d'au moins 1 projet financé"="Membre de projet(s) financé(s) (ref = Ni mb ni responsable)",
+                               "Profin_Mb_RespResponsable d'au moins 1 projet financé"="Membre de projet(s) financé(s) (ref = Ni mb ni responsable)",
+                               "carriereOui"="Cherche à être promu, recrut, titularisé",
+                               "revenuTete"="Revenu par individu du foyer",
+                               "enfantsnb"= "nombre d'enfants",
+                               "coupleNon"="ne vit pas en couple"),
         symbol = "+",
         caption ="",
-        #caption = "Tableau 5 : Régressions linéaires multiples sur le nombre d'heures de vol en 2019", caption.above=TRUE, 
+        caption = "Tableau 5 : Régressions linéaires multiples sur le nombre d'heures de vol en 2019", caption.above=TRUE, 
         single.row = TRUE, 
         #custom.gof.rows = NULL,
-        file="/Users/jeromegreffion/Dropbox/changement-climatique-et-recherche/Resultats/Regressions duree de vol agregee 2019, publishing staff.doc")
+        file="/Users/jeromegreffion/Dropbox/changement-climatique-et-recherche/Resultats/Reg duree de vol agr 2019, carr, publi, financt.doc")
 
 
+#Corrélation avec les variables d'opinion
+
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solinstit.limitevols., data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solinstit.vols6h., data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solinstit.train., data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.qual., data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.fin., data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.fin., data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.fin., data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.fin., data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.fin., data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.fin., data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.fin., data=climat)
+summary(res.reg8)
+
+climat$solinstit.train.
+climat$solinstit.vols6h.
+
+climat$solrisqreducavion.qual.
+
+climat$solrisqreducavion.qual. <- as.factor(climat$solrisqreducavion.qual.)
+climat$solrisqreducavion.qual. <- relevel(climat$solrisqreducavion.qual. , ref = "C’est peu probable")
+
+climat$solrisqreducavion.fin. <- as.factor(climat$solrisqreducavion.fin.)
+climat$solrisqreducavion.fin. <- relevel(climat$solrisqreducavion.fin. , ref = "C’est peu probable")
 
 
+freq(climat$solinstit.train.)
+freq(climat$solinstit.vols6h.)
+rprop(table(climat$solinstit.train.))
 
 
+rbind(prop.table(table(climat$solinstit.train.)), prop.table(table(climat$solinstit.vols6h.)))
 
 
+#Personnel en position de publier
+
+climatPersPubli<-climat %>% filter(!(sitpro %in% c("Technicien·ne", "Adjoint·e technique", "Autre")))
 
 
 #############################################################################@@@
@@ -382,3 +332,33 @@ htmlreg(list(res.Perspubli1, res.Perspubli2, res.Perspubli3, res.Perspubli4, res
 "discipline_agregeeLettres et sciences humaines (2)"="Lettres et sciences humaines (2)",
 "discipline_agregeePharmacie"="Pharmacie",
 "discipline_agregeeAutres santé"="Autres santé",
+
+climat$Part_ANR_ERC[climat$projets.anr_r. %in% c(0, NA) & climat$projets.anr_m. %in% c(0, NA) & climat$projets.france_r. %in% c(0, NA) & climat$projets.france_m. %in% c(0, NA) 
+                    & climat$projets.europe_r. %in% c(0, NA) & climat$projets.europe_m. %in% c(0, NA) & climat$projets.inter_r.  %in% c(0, NA) & climat$projets.inter_m. %in% c(0, NA) 
+                    &   climat$projets.prive_r.  %in% c(0, NA) & climat$projets.prive_m. %in% c(0, NA)]<-"Ne participe à aucun projet financé"
+climat$Part_ANR_ERC[(climat$projets.anr_r. ==1 | climat$projets.anr_m. ==1) & climat$projets.france_r. %in% c(0, NA) & climat$projets.france_m. %in% c(0, NA) 
+                    & climat$projets.europe_r. %in% c(0, NA) & climat$projets.europe_m. %in% c(0, NA) & climat$projets.inter_r.  %in% c(0, NA) & climat$projets.inter_m. %in% c(0, NA) 
+                    &   climat$projets.prive_r.  %in% c(0, NA) & climat$projets.prive_m. %in% c(0, NA)]<-"Seult finance ANR"
+climat$Part_ANR_ERC[climat$projets.anr_r. %in% c(0, NA) & climat$projets.anr_m. %in% c(0, NA) & (climat$projets.france_r.==1 | climat$projets.france_m.==1) 
+                    & climat$projets.europe_r. %in% c(0, NA) & climat$projets.europe_m. %in% c(0, NA) & climat$projets.inter_r.  %in% c(0, NA) & climat$projets.inter_m. %in% c(0, NA) 
+                    &   climat$projets.prive_r.  %in% c(0, NA) & climat$projets.prive_m. %in% c(0, NA)]<-"Seult finance français (hors ANR)"
+climat$Part_ANR_ERC[climat$projets.anr_r. %in% c(0, NA) & climat$projets.anr_m. %in% c(0, NA) & climat$projets.france_r. %in% c(0, NA) & climat$projets.france_m. %in% c(0, NA) 
+                    & (climat$projets.europe_r. ==1 | climat$projets.europe_m. ==1) & climat$projets.inter_r.  %in% c(0, NA) & climat$projets.inter_m. %in% c(0, NA) 
+                    &   climat$projets.prive_r.  %in% c(0, NA) & climat$projets.prive_m. %in% c(0, NA)]<-"Seult finance européen"
+climat$Part_ANR_ERC[climat$projets.anr_r. %in% c(0, NA) & climat$projets.anr_m. %in% c(0, NA) & climat$projets.france_r. %in% c(0, NA) & climat$projets.france_m. %in% c(0, NA) 
+                    & climat$projets.europe_r. %in% c(0, NA) & climat$projets.europe_m. %in% c(0, NA) & (climat$projets.inter_r. ==1 | climat$projets.inter_m. ==1) 
+                    &   climat$projets.prive_r.  %in% c(0, NA) & climat$projets.prive_m. %in% c(0, NA)]<-"Seult finance internat (hors europe)"
+climat$Part_ANR_ERC[climat$projets.anr_r. %in% c(0, NA) & climat$projets.anr_m. %in% c(0, NA) & climat$projets.france_r. %in% c(0, NA) & climat$projets.france_m. %in% c(0, NA) 
+                    & climat$projets.europe_r. %in% c(0, NA) & climat$projets.europe_m. %in% c(0, NA) & climat$projets.inter_r.  %in% c(0, NA) & climat$projets.inter_m. %in% c(0, NA) 
+                    &   (climat$projets.prive_r.==1 | climat$projets.prive_m. ==1)]<-"Seult finance privé"
+
+#Regroupement participation à projet financé (attention, il y a une erreur : les 0 sont comptés comme des 1 avec ce code, or ils devraient être regroupés avec les NA)
+#climat$Part_ANR_ERC[is.na(climat$projets.anr_r.) & is.na(climat$projets.anr_m.) & is.na(climat$projets.europe_r.) 
+#                    & is.na(climat$projets.europe_m.)]<-"Ni financement ANR ou Europe"
+#climat$Part_ANR_ERC[(!is.na(climat$projets.anr_r.) | !is.na(climat$projets.anr_m.)) & is.na(climat$projets.europe_r.) 
+#                    & is.na(climat$projets.europe_m.)]<-"Projet ANR"
+#climat$Part_ANR_ERC[is.na(climat$projets.anr_r.) & is.na(climat$projets.anr_m.) & (!is.na(climat$projets.europe_r.) 
+#                    | !is.na(climat$projets.europe_m.))]<-"Projet européen"               
+#climat$Part_ANR_ERC[(!is.na(climat$projets.anr_r.) | !is.na(climat$projets.anr_m.)) & (!is.na(climat$projets.europe_r.) 
+#               | !is.na(climat$projets.europe_m.))]<-"Projet ANR et projet européen"             
+
