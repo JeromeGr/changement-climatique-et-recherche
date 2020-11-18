@@ -5,6 +5,11 @@ library(tidyverse)
 
 climat <- read.csv("climat1410.csv", fileEncoding ="UTF-8", na.strings="")
 
+#Regroupement catégories d'âge (pour avoir des catégories plus homogènes en termes de nombre de personnes)
+climat$ageAgr<-climat$age
+climat$ageAgr[climat$age %in% c("70 ans ou plus", "65-69 ans")]<-"65 ans et plus"
+climat$ageAgr[climat$age %in% c("18-24 ans", "25-29 ans")]<-"Moins de 29 ans"
+climat$ageAgr[climat$age %in% c("55-59 ans", "60-64 ans")]<-"55-64 ans"
 
 
 # vols_dicho : a volé ou n'a pas volé ----
@@ -215,3 +220,43 @@ for(inst in c("anr", "europe", "france", "inter", "prive")) {
                                       NA_character_))
   }
 }
+
+#Financements : regroupement membres et responsables
+climat$particip_ANR<-0
+climat$particip_ANR[climat$projets.anr_r =="Responsable projet ANR oui" | climat$projets.anr_m =="Membre projet ANR oui"]<-1
+climat$particip_Fr<-0
+climat$particip_Fr[climat$projets.france_r=="Responsable projet France oui" | climat$projets.france_m=="Membre projet France oui"]<-1
+climat$particip_Europ<-0
+climat$particip_Europ[climat$projets.europe_r =="Responsable projet européen oui" | climat$projets.europe_m =="Membre projet européen oui"]<-1
+climat$particip_Intern<-0
+climat$particip_Intern[climat$projets.inter_r =="Responsable projet international oui" | climat$projets.inter_m =="Membre projet international oui"]<-1
+climat$particip_prive<-0
+climat$particip_prive[climat$projets.prive_r  =="Responsable projet privé oui" | climat$projets.prive_m =="Membre projet privé oui"]<-1
+
+
+#Membre ou responsable d'un projet financé
+climat$Profin_Mb_Resp[climat$projets.anr_r =="Responsable projet ANR oui" | climat$projets.france_r=="Responsable projet France oui" | 
+                        climat$projets.europe_r =="Responsable projet européen oui" | climat$projets.inter_r =="Responsable projet international oui" | 
+                        climat$projets.prive_r  =="Responsable projet privé oui" ]<-"Responsable d'au moins 1 projet financé"
+climat$Profin_Mb_Resp[is.na(climat$Profin_Mb_Resp) & (climat$projets.anr_m =="Membre projet ANR oui" | climat$projets.france_m=="Membre projet France oui" |
+                                                        climat$projets.europe_m =="Membre projet européen oui" | climat$projets.inter_m =="Membre projet international oui" | 
+                                                        climat$projets.prive_r  =="Responsable projet privé oui") ]<-"Membre d'au moins 1 projet financé"
+climat$Profin_Mb_Resp[is.na(climat$Profin_Mb_Resp)]<-"Ni membre ni resp d'un 1 projet financé"
+
+
+
+#Calcul du revenu par tête dans le foyer
+#Une demie part par enfant
+climat$couple1[climat$couple=="Oui"]<-1
+climat$couple1[climat$couple=="Non"]<-0
+#Calcul du nombre de personnes dans le foyer, (calcul "fiscal" avec les enfants =1/2)
+climat$tailleFiscFoyer<-1+climat$couple1+climat$enfantsnb/2
+
+climat$revenuTete[climat$revenu=="Moins de 1 500 euros par mois"]<-750/climat$tailleFiscFoyer[climat$revenu=="Moins de 1 500 euros par mois"]
+climat$revenuTete[climat$revenu=="De 1 500 à 2 499 euros par mois"]<-2000/climat$tailleFiscFoyer[climat$revenu=="De 1 500 à 2 499 euros par mois"]
+climat$revenuTete[climat$revenu=="De 2 500 à 3 499 euros par mois"]<-3000/climat$tailleFiscFoyer[climat$revenu=="De 2 500 à 3 499 euros par mois"]
+climat$revenuTete[climat$revenu=="De 3 500 à 4 499 euros par mois"]<-4000/climat$tailleFiscFoyer[climat$revenu=="De 3 500 à 4 499 euros par mois"]
+climat$revenuTete[climat$revenu=="De 6 000 à 7 999 euros par mois"]<-7000/climat$tailleFiscFoyer[climat$revenu=="De 6 000 à 7 999 euros par mois"]
+climat$revenuTete[climat$revenu=="De 8 000 à 9 999 euros par mois"]<-9000/climat$tailleFiscFoyer[climat$revenu=="De 8 000 à 9 999 euros par mois"]
+climat$revenuTete[climat$revenu=="De 10 000 à 15 000 euros par mois"]<-12500/climat$tailleFiscFoyer[climat$revenu=="De 10 000 à 15 000 euros par mois"]
+climat$revenuTete[climat$revenu=="Plus de 15 000 par mois"]<-20000/climat$tailleFiscFoyer[climat$revenu=="Plus de 15 000 par mois"]
