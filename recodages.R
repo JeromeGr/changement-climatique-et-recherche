@@ -7,7 +7,7 @@ setwd("/Users/jeromegreffion/Dropbox/changement-climatique-et-recherche")
 
 #chargement de la base
 
-climat <- read.csv("climat1410.csv", fileEncoding ="UTF-8")
+climat <- read.csv("climat1410.csv", fileEncoding ="UTF-8", na.strings="")
 
 
 
