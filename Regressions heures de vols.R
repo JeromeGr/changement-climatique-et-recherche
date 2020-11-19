@@ -12,7 +12,13 @@ climat<-climat %>% filter((nbpublisang!=666 | is.na(nbpublisang)))
 
 ################################
 #Recodage pour la régression
-
+freq(climat$solevolges.conf.)
+climat$Evol_GesVol.conf.[climat$solevolges.conf.=="Été à peu près stables"]<-0
+climat$Evol_GesVol.conf.[climat$solevolges.conf.=="Fortement augmenté"]<-3
+climat$Evol_GesVol.conf.[climat$solevolges.conf.=="Un peu augmenté"]<-1
+climat$Evol_GesVol.conf.[climat$solevolges.conf.=="Fortement diminué"]<--3
+climat$Evol_GesVol.conf.[climat$solevolges.conf.=="Un peu diminué"]<--1
+freq(climat$Evol_GesVol.conf.)
 
 #REvenu : on agrège les catégories avec peu de monde
 climat$revenuAgr<-climat$revenu
@@ -130,6 +136,25 @@ climat$solinstit.vols6h. <- relevel(climat$solinstit.vols6h. , ref = "C’est pr
 climat$solinstit.train. <- as.factor(climat$solinstit.train.)
 climat$solinstit.train. <- relevel(climat$solinstit.train. , ref = "C’est prioritaire")
 
+climat$solrisqreducavion.qual. <- as.factor(climat$solrisqreducavion.qual.)
+climat$solrisqreducavion.qual. <- relevel(climat$solrisqreducavion.qual. , ref = "C’est peu probable")
+climat$solrisqreducavion.fin. <- as.factor(climat$solrisqreducavion.fin.)
+climat$solrisqreducavion.fin. <- relevel(climat$solrisqreducavion.fin. , ref = "C’est peu probable")
+climat$solrisqreducavion.diffusion. <- as.factor(climat$solrisqreducavion.diffusion.)
+climat$solrisqreducavion.diffusion. <- relevel(climat$solrisqreducavion.diffusion. , ref = "C’est peu probable")
+climat$solrisqreducavion.donnees. <- as.factor(climat$solrisqreducavion.donnees.)
+climat$solrisqreducavion.donnees. <- relevel(climat$solrisqreducavion.donnees. , ref = "C’est peu probable")
+climat$solrisqreducavion.avantages. <- as.factor(climat$solrisqreducavion.avantages.)
+climat$solrisqreducavion.avantages. <- relevel(climat$solrisqreducavion.avantages. , ref = "C’est peu probable")
+climat$solrisqreducavion.insertion. <- as.factor(climat$solrisqreducavion.insertion.)
+climat$solrisqreducavion.insertion. <- relevel(climat$solrisqreducavion.insertion. , ref = "C’est peu probable")
+climat$solrisqreducavion.isoler. <- as.factor(climat$solrisqreducavion.isoler.)
+climat$solrisqreducavion.isoler. <- relevel(climat$solrisqreducavion.isoler. , ref = "C’est peu probable")
+climat$solrisqreducavion.bureaucratie. <- as.factor(climat$solrisqreducavion.bureaucratie.)
+climat$solrisqreducavion.bureaucratie. <- relevel(climat$solrisqreducavion.bureaucratie. , ref = "C’est peu probable")
+
+climat$paie <- as.factor(climat$paie)
+climat$paie <- relevel(climat$paie , ref = "Mal payé·e")
 
 ##########################################
 #Régressions
@@ -139,18 +164,21 @@ freq(climat$sitpro)
 #Premier doc "all staff"
 res.reg1 <- lm(volshnum ~ sexe + ageAgr, data=climat)
 res.reg2<- lm(volshnum ~ sexe + ageAgr  + sitpro, data=climat)
-res.reg3 <- lm(volshnum ~ sexe + ageAgr  + discipline_agr3 , data=climat)
-res.reg4 <- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3, data=climat)
-res.reg5 <- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + Part_ANR_ERC , data=climat)
-res.reg6 <- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + nbpublis, data=climat)
-res.reg7 <- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + Part_ANR_ERC + nbpublis, data=climat)
+res.reg3<- lm(volshnum ~ sexe + ageAgr  + sitpro + revenuTete  , data=climat)
+res.reg4<- lm(volshnum ~ sexe + ageAgr  + sitpro + enfantsnb + couple , data=climat)
+res.reg5 <- lm(volshnum ~ sexe + ageAgr  + discipline_agr3 , data=climat)
+res.reg6 <- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3, data=climat)
+res.reg7 <- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + nbpublis, data=climat)
 res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + revenuTete + enfantsnb + couple , data=climat)
+
+
+freq(climat$avionperso)
 
 #Sous discipline Socio pour comparer enquête socio
 climatSocio<-climat %>% filter(discipline_agr3=="Socio, démo")
-res.reg10<- lm(volshnum ~ sexe + ageAgr  + sitpro + revenuTete + enfantsnb + couple , data=climatSocio)
+res.reg9<- lm(volshnum ~ sexe + ageAgr  + sitpro + revenuTete + enfantsnb + couple , data=climatSocio)
 
-htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6, res.reg7, res.reg8, res.reg10), 
+htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6, res.reg7, res.reg8, res.reg9), 
         stars = c(0.001, 0.01, 0.05, 0.1), digits = 2, #single.row = TRUE,
         custom.header = list("All staff" = 1:8, "Socio" = 9),
         custom.coef.map = list("sexeune femme"= "Woman (ref = man)",
@@ -192,19 +220,26 @@ htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6, res.reg7
                                "discipline_agr3Biologie"="Biologie",
                                "discipline_agr3Biologie des populations et écologie"="Biologie des populations et écologie",
                                "nbpublis"="Number of publications in 2017-mid2020",
-                               "Part_ANR_ERCProjet ANR"="Participation projet ANR (Ref = ni projet ANR ni européen)",
-                               "Part_ANR_ERCProjet européen"="Participation projet européen",
-                               "Part_ANR_ERCProjet ANR et projet européen" ="Participation projet ANR et projet européen",
-                               "revenuAgrDe 1 500 à 2 499 euros par mois"="1 500 à 2 499 euros par mois",
                                "revenuTete"="Revenu par individu du foyer",
                                "enfantsnb"= "nombre d'enfants",
                                "coupleNon"="ne vit pas en couple"),
         symbol = "+",
-        caption ="",
-        #caption = "Tableau 5 : Régressions linéaires multiples sur le nombre d'heures de vol en 2019", caption.above=TRUE, 
+        caption = "Tableau 1 : Régressions linéaires multiples sur le nombre d'heures de vol en 2019", caption.above=TRUE, 
         single.row = TRUE, 
         #custom.gof.rows = NULL,
-        file="/Users/jeromegreffion/Dropbox/changement-climatique-et-recherche/Resultats/Regressions duree de vol agregee 2019, all staff.doc")
+        file="/Users/jeromegreffion/Dropbox/changement-climatique-et-recherche/Resultats/Regressions duree de vol agr 2019, discip, sitpro, rev.doc")
+
+
+#Pratiques perso avion
+freq(climat$avionperso)
+freq(climat$avionpersochgt)
+res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro + paie, data=climat)
+res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro + avionperso, data=climat)
+res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro + avionperso + revenuTete, data=climat)
+res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro + avionpersochgt, data=climat)
+res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro + avionperso + avionpersochgt, data=climat)
+res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro + avionperso + avionpersochgt + revenuTete, data=climat)
+summary(res.reg9)
 
 
 #Test des corrélations avec d'autres variables : étape dans la carrière, projet financé (type ; resp/membre),
@@ -213,15 +248,19 @@ res.reg2<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + carriere , 
 res.reg3<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + nbpublis, data=climat)
 res.reg4<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + nbpublis + carriere, data=climat)
 res.reg5<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + particip_ANR + particip_Fr + particip_Europ + particip_Intern + particip_prive , data=climat)
-res.reg6<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + particip_ANR + particip_Fr + particip_Europ + particip_Intern + particip_prive + revenuTete , data=climat)
-res.reg7<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + particip_ANR + particip_Fr + particip_Europ + particip_Intern + particip_prive + nbpublis , data=climat)
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + particip_ANR + particip_Fr + particip_Europ + particip_Intern + particip_prive + nbpublis + carriere , data=climat)
-res.reg9<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + Profin_Mb_Resp , data=climat)
-res.reg10<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + Profin_Mb_Resp + nbpublis + carriere , data=climat)
+res.reg6<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + particip_ANR + particip_Fr + particip_Europ + particip_Intern + particip_prive + nbpublis , data=climat)
+res.reg7<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + particip_ANR + particip_Fr + particip_Europ + particip_Intern + particip_prive + nbpublis + carriere , data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + Profin_Mb_Resp , data=climat)
+res.reg9<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + Profin_Mb_Resp + nbpublis + carriere , data=climat)
+res.reg10<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + projets.anr_m + projets.anr_r + projets.france_m + projets.france_r + projets.europe_m + projets.europe_r + projets.inter_m + projets.inter_r +projets.prive_m + projets.prive_r, data=climat)
+res.reg11<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + nbpublis + carriere + projets.anr_m + projets.anr_r + projets.france_m + projets.france_r + projets.europe_m + projets.europe_r + projets.inter_m + projets.inter_r +projets.prive_m + projets.prive_r, data=climat)
 
-summary(res.reg8)
+summary(res.reg10)
 
-htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6, res.reg7, res.reg8, res.reg9, res.reg10), 
+freq(climat$projet.anr_m)
+freq(climat$sexe, na.rm=TRUE)
+?freq
+htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6, res.reg7, res.reg8, res.reg9, res.reg10, res.reg11), 
         stars = c(0.001, 0.01, 0.05, 0.1), digits = 2, #single.row = TRUE,
         custom.coef.map = list("sexeune femme"= "Woman (ref = man)",
                                "sexeautre"="Sex : other",
@@ -269,44 +308,47 @@ htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6, res.reg7
                                "particip_Intern"="Participe à projet(s) av financt internation",
                                "particip_prive"="Participe à projet(s) av financt privé",
                                "Profin_Mb_RespMembre d'au moins 1 projet financé"="Membre de projet(s) financé(s) (ref = Ni mb ni responsable)",
-                               "Profin_Mb_RespResponsable d'au moins 1 projet financé"="Membre de projet(s) financé(s) (ref = Ni mb ni responsable)",
+                               "Profin_Mb_RespResponsable d'au moins 1 projet financé"="Responsable de projet(s) financé(s)",
                                "carriereOui"="Cherche à être promu, recrut, titularisé",
+                               "projets.anr_mMembre projet ANR oui"="Membre projet(s) financt ANR (Ref = Ne participe pas)",
+                               "projets.anr_rResponsable projet ANR oui"="Responsable projet(s) financt ANR",
+                               "projets.france_mMembre projet France oui"="Membre projet(s) financt France (Ref = Ne participe pas)",
+                               "projets.france_rResponsable projet France oui"="Responsable projet(s) financt France",
+                               "projets.europe_mMembre projet européen oui"="Membre projet(s) financt européen (Ref = Ne participe pas)",
+                               "projets.europe_rResponsable projet européen oui"="Responsable projet(s) financt européen",
+                               "projets.inter_mMembre projet international oui"="Membre projet(s) financt international (Ref = Ne participe pas)",
+                               "projets.inter_rResponsable projet international oui"="Responsable projet(s) financt international",
+                               "projets.prive_mMembre projet privé oui"="Membre projet(s) financt privé (Ref = Ne participe pas)",
+                               "projets.prive_rResponsable projet privé oui"="Responsable projet(s) financt privé",
                                "revenuTete"="Revenu par individu du foyer",
                                "enfantsnb"= "nombre d'enfants",
                                "coupleNon"="ne vit pas en couple"),
         symbol = "+",
-        caption ="",
-        caption = "Tableau 5 : Régressions linéaires multiples sur le nombre d'heures de vol en 2019", caption.above=TRUE, 
+        caption = "Tableau 2 : Régressions linéaires multiples sur le nombre d'heures de vol en 2019", caption.above=TRUE, 
         single.row = TRUE, 
         #custom.gof.rows = NULL,
         file="/Users/jeromegreffion/Dropbox/changement-climatique-et-recherche/Resultats/Reg duree de vol agr 2019, carr, publi, financt.doc")
 
 
 #Corrélation avec les variables d'opinion
-
+#Solutions
 res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solinstit.limitevols., data=climat)
 res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solinstit.vols6h., data=climat)
 res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solinstit.train., data=climat)
+summary(res.reg8)
+#Risques
 res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.qual., data=climat)
 res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.fin., data=climat)
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.fin., data=climat)
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.fin., data=climat)
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.fin., data=climat)
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.fin., data=climat)
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.fin., data=climat)
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.fin., data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.diffusion., data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.donnees., data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.avantages., data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.isoler., data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.insertion., data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.bureaucratie., data=climat)
+
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.avantages. + paie, data=climat)
 summary(res.reg8)
 
-climat$solinstit.train.
-climat$solinstit.vols6h.
-
-climat$solrisqreducavion.qual.
-
-climat$solrisqreducavion.qual. <- as.factor(climat$solrisqreducavion.qual.)
-climat$solrisqreducavion.qual. <- relevel(climat$solrisqreducavion.qual. , ref = "C’est peu probable")
-
-climat$solrisqreducavion.fin. <- as.factor(climat$solrisqreducavion.fin.)
-climat$solrisqreducavion.fin. <- relevel(climat$solrisqreducavion.fin. , ref = "C’est peu probable")
 
 
 freq(climat$solinstit.train.)
@@ -316,6 +358,22 @@ rprop(table(climat$solinstit.train.))
 
 rbind(prop.table(table(climat$solinstit.train.)), prop.table(table(climat$solinstit.vols6h.)))
 
+
+
+
+
+
+#Evolution de la quantité de vols
+res.reg8<- lm(Evol_GesVol.conf. ~ sexe + ageAgr  + sitpro + discipline_agr3 , data=climat)
+res.reg8<- lm(Evol_GesVol.conf. ~ sexe + ageAgr  + sitpro + discipline_agr3 +volshnum, data=climat)
+
+mean(climat$Evol_GesVol.conf., na.rm=T)
+
+
+summary(res.reg8)
+
+
+climat$Evol_GesVol.conf.
 
 #Personnel en position de publier
 
@@ -362,3 +420,8 @@ climat$Part_ANR_ERC[climat$projets.anr_r. %in% c(0, NA) & climat$projets.anr_m. 
 #climat$Part_ANR_ERC[(!is.na(climat$projets.anr_r.) | !is.na(climat$projets.anr_m.)) & (!is.na(climat$projets.europe_r.) 
 #               | !is.na(climat$projets.europe_m.))]<-"Projet ANR et projet européen"             
 
+
+"Part_ANR_ERCProjet ANR"="Participation projet ANR (Ref = ni projet ANR ni européen)",
+"Part_ANR_ERCProjet européen"="Participation projet européen",
+"Part_ANR_ERCProjet ANR et projet européen" ="Participation projet ANR et projet européen",
+"revenuAgrDe 1 500 à 2 499 euros par mois"="1 500 à 2 499 euros par mois",
