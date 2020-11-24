@@ -6,7 +6,7 @@ ech <- read.csv("../Labintel/échantillon.csv")
 erreurs1 <- read.table("../Labintel/Erreurs enquete.labos1point5@services.cnrs.fr 06-07-20.txt")
 erreurs2 <- read.table("../Labintel/Erreurs questionnaire.labos1point5@services.cnrs.fr 06-07-20.txt")
 
-climat <- read.csv("~/Private/results-survey113464_151120.csv", fileEncoding ="UTF-8", na.strings="")
+climat <- read.csv("~/Private/results-survey113464_231120.csv", fileEncoding="UTF-8", na.strings="")
 
 
 # Sympa met les adresses en minuscules
@@ -19,10 +19,13 @@ ech <- filter(ech, !duplicated(courriel))
 ech <- left_join(ech, climat, by=c("courriel"="email"))
 stopifnot(all(climat$courriel %in% ech$email))
 
-# Taux de réponses complètes et partielles
+# Taux d'ouvertures du questionnaire
 freq(!is.na(ech$lastpage))
 # Equivalent à :
 # freq(ech$courriel %in% climat$email)
+
+# Taux de réponses complètes et partielles (validation de la page 1 au moins)
+freq(!is.na(ech$lastpage) & ech$lastpage >= 1)
 
 # Taux de réponses complètes
 # La seconde condition permet de tenir compte

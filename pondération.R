@@ -30,7 +30,7 @@ fiches <- arrange(fiches, recode(type, "Autre personnel"="Z"), institut2, delega
 fiches <- subset(fiches, !duplicated(courriel) | courriel == "")
 
 names(fiches) <- paste0(names(fiches), ".labintel")
-climat <- read.csv("~/Private/results-survey113464_151120.csv", fileEncoding ="UTF-8", na.strings="")
+climat <- read.csv("~/Private/results-survey113464_231120.csv", fileEncoding ="UTF-8", na.strings="")
 stopifnot(all(climat$email %in% fiches$courriel.labintel))
 climat <- left_join(climat, fiches, by=c("email"="courriel.labintel"))
 
