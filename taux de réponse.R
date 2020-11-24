@@ -1,0 +1,31 @@
+library(tidyverse)
+library(questionr)
+
+ech <- read.csv("../Labintel/échantillon.csv")
+
+erreurs1 <- read.table("../Labintel/Erreurs enquete.labos1point5@services.cnrs.fr 06-07-20.txt")
+erreurs2 <- read.table("../Labintel/Erreurs questionnaire.labos1point5@services.cnrs.fr 06-07-20.txt")
+
+climat <- read.csv("~/Private/results-survey113464_151120.csv", fileEncoding ="UTF-8", na.strings="")
+
+
+# Sympa met les adresses en minuscules
+stopifnot(all(c(erreurs1$V1, erreurs2$V1) %in% tolower(ech$courriel)))
+ech <- filter(ech, !tolower(courriel) %in% c(erreurs1$V1, erreurs2$V1))
+
+# Quelques adresses en doublon (que Sympa ne garde qu'une fois)
+ech <- filter(ech, !duplicated(courriel))
+
+ech <- left_join(ech, climat, by=c("courriel"="email"))
+stopifnot(all(climat$courriel %in% ech$email))
+
+# Taux de réponses complètes et partielles
+freq(!is.na(ech$lastpage))
+# Equivalent à :
+# freq(ech$courriel %in% climat$email)
+
+# Taux de réponses complètes
+# La seconde condition permet de tenir compte
+# des personnes hors-champ qui ont commencé à répondre
+freq((!is.na(ech$lastpage) & ech$lastpage == 8) |
+         (!is.na(ech$rechpub) & ech$rechpub == "Non"))

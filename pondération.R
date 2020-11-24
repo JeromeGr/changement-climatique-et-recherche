@@ -25,8 +25,9 @@ fiches$institut2 <- fct_collapse(fiches$institut2,
 # On met les Autre personnel en dernier avant de supprimer les doublons
 # pour garder la fiche qui donne le plus d'information
 # Idem pour les autres variables, les NA vont à la fin
+# On garde les fiches sans adresse courriel
 fiches <- arrange(fiches, recode(type, "Autre personnel"="Z"), institut2, delegation, sexe)
-fiches <- subset(fiches, !duplicated(courriel))
+fiches <- subset(fiches, !duplicated(courriel) | courriel == "")
 
 names(fiches) <- paste0(names(fiches), ".labintel")
 climat <- read.csv("~/Private/results-survey113464_151120.csv", fileEncoding ="UTF-8", na.strings="")
