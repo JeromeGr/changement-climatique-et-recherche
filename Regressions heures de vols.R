@@ -72,7 +72,9 @@ climat$discipline_agr3 <- fct_recode(climat$discipline,
   "Médecine, pharma, santé"="47 : Cancérologie, génétique, hématologie, immunologie",
   "Médecine, pharma, santé"="48 : Anesthésiologie, réanimation, médecine d'urgence, pharmacologie et thérapeutique",
   "Médecine, pharma, santé"="49 : Pathologie nerveuse et musculaire, pathologie mentale, handicap et rééducation",
+  "Médecine, pharma, santé"="50 : Pathologie ostéo-articulaire, dermatologie et chirurgie plastique",
   "Médecine, pharma, santé"="51 : Pathologie cardiorespiratoire et vasculaire",
+  "Médecine, pharma, santé"="52 : Maladies des appareils digestif et urinaire",
   "Médecine, pharma, santé"="54 : Développement et pathologie de l'enfant, gynécologie-obstétrique, endocrinologie et reproduction",
   "Médecine, pharma, santé"="57 : Sciences biologiques, médecine et chirurgie buccales",
   "Médecine, pharma, santé"="58 : Sciences physiques et physiologiques endodontiques et prothétiques",
@@ -156,6 +158,9 @@ climat$solrisqreducavion.bureaucratie. <- relevel(climat$solrisqreducavion.burea
 climat$paie <- as.factor(climat$paie)
 climat$paie <- relevel(climat$paie , ref = "Mal payé·e")
 
+climat$employeur <- as.factor(climat$employeur)
+climat$employeur <- relevel(climat$employeur , ref = "Une université")
+
 ##########################################
 #Régressions
 mean(climat$volshnum, na.rm=T)
@@ -229,6 +234,11 @@ htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6, res.reg7
         #custom.gof.rows = NULL,
         file="/Users/jeromegreffion/Dropbox/changement-climatique-et-recherche/Resultats/Regressions duree de vol agr 2019, discip, sitpro, rev.doc")
 
+#Employeur
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + employeur, data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 , data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 +  employeur, data=climat)
+summary(res.reg8)
 
 #Pratiques perso avion
 freq(climat$avionperso)
@@ -241,8 +251,12 @@ res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro + avionperso + avionpersochgt,
 res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro + avionperso + avionpersochgt + revenuTete, data=climat)
 summary(res.reg9)
 
+#Score écolo
+res.reg9 <- lm(volshnum ~ sexe + ageAgr  + ScoreEcolo, data=climat)
+res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro + ScoreEcolo , data=climat)
+res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro +discipline_agr3 + ScoreEcolo , data=climat)
 
-#Test des corrélations avec d'autres variables : étape dans la carrière, projet financé (type ; resp/membre),
+#Etape dans la carrière, projet financé (type ; resp/membre),
 res.reg1<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3, data=climat)
 res.reg2<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + carriere , data=climat)
 res.reg3<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + nbpublis, data=climat)
