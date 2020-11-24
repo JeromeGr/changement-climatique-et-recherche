@@ -3,7 +3,7 @@ library(tidyverse)
 
 #chargement de la base
 
-climat <- read.csv("climat1410.csv", fileEncoding ="UTF-8", na.strings="")
+climat <- read.csv("climat2311.csv", fileEncoding ="UTF-8", na.strings="")
 
 #Regroupement catégories d'âge (pour avoir des catégories plus homogènes en termes de nombre de personnes)
 climat$ageAgr<-climat$age
@@ -82,7 +82,9 @@ climat$discipline_agregee <- fct_recode(
   "Médecine, odontologie"="47 : Cancérologie, génétique, hématologie, immunologie",
   "Médecine, odontologie"="48 : Anesthésiologie, réanimation, médecine d'urgence, pharmacologie et thérapeutique",
   "Médecine, odontologie"="49 : Pathologie nerveuse et musculaire, pathologie mentale, handicap et rééducation",
-  "Médecine, odontologie"="51 : Pathologie cardiorespiratoire et vasculaire",
+  "Médecine, pharma, santé"="50 : Pathologie ostéo-articulaire, dermatologie et chirurgie plastique",
+  "Médecine, pharma, santé"="51 : Pathologie cardiorespiratoire et vasculaire",
+  "Médecine, pharma, santé"="52 : Maladies des appareils digestif et urinaire",
   "Médecine, odontologie"="54 : Développement et pathologie de l'enfant, gynécologie-obstétrique, endocrinologie et reproduction",
   "Médecine, odontologie"="57 : Sciences biologiques, médecine et chirurgie buccales",
   "Médecine, odontologie"="58 : Sciences physiques et physiologiques endodontiques et prothétiques",
