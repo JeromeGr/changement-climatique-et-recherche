@@ -5,10 +5,37 @@ library(tidyverse)
 
 climat <- read.csv("climat2311.csv", fileEncoding ="UTF-8", na.strings="")
 
-#On pourrait virer ceux dont la questionnaire est vide durée =0
-climat<-climat%>%filter(interviewtime!=0)
 
-# Et on vire le troll (je sais pas pourquoi il faut rajouter de garder les NAs sinon on les perd)
+# Élimination des hors-champ
+# is.na(rechpub) peut indiquer à la fois un statut d'office classé en Oui,
+# ou une non réponse : on exclut les non réponses (surtout des personnes qui n'ont repondu à rien)
+climat <- filter(climat,
+                 rechpub == "Oui" |
+                   docto == "Oui" |
+                   sitpro %in% c("Chargé·e de recherche", "Directeur·rice de recherche", 
+                                 "Doctorant·e contractuel·le", "Ingénieur·e d'études",
+                                 "Maître·sse de conférences",  "Ingénieur·e de recherche",
+                                 "Professeur·e des universités",  "Post-doctorant·e",
+                                 "Assistant ingénieur·e", "Doctorant·e CIFRE",
+                                 "ATER", "Adjoint·e technique") |
+                   !is.na(bap) | 
+                   employeur %in% c("CNRS", "Une grande école ou un grand établissement",
+                                    "Une université", "Inserm", "CEA", "IRD",
+                                    "Cirad", "Inrae", "Inria", "CNES", "Ifremer", 
+                                    "ONERA", "Ined") |
+                   tutelles.CNRS. == "Oui" | tutelles.Univ. == "Oui" |
+                   tutelles.Ecole. == "Oui" | tutelles.Inserm. == "Oui" |
+                   tutelles.Inrae. == "Oui" | tutelles.Inria. == "Oui" |
+                   tutelles.IRD. == "Oui" | tutelles.Ined. == "Oui" |
+                   tutelles.CEA. == "Oui" | tutelles.CNES. == "Oui"|
+                   tutelles.ONERA. == "Oui" | tutelles.Cirad. == "Oui" |
+                   tutelles.Ifremer. == "Oui" |
+                   sitpro.other. == "Indépendante, chercheuse associée dans un labo")
+
+# À ce stade on ne doit avoir que des personnes qui ont répondu au moins à quelques questions
+stopifnot(all(climat$interviewtime > 0))
+
+# Et on vire le troll (il faut rajouter de garder les NAs sinon on les perd)
 climat<-climat %>% filter((nbpublisang!=666 | is.na(nbpublisang)))
 
 #Regroupement catégories d'âge (pour avoir des catégories plus homogènes en termes de nombre de personnes)
