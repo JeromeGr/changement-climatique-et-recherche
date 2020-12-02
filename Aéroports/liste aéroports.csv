@@ -1,0 +1,582 @@
+municipality,citynames
+Port Moresby,Port Moresby
+Reykjavík,Reykjavík
+Prishtina,Pristina
+Edmonton,Edmonton
+Halifax,Halifax
+Ottawa,Ottawa
+Montréal,Montréal
+Vancouver,Vancouver
+Winnipeg,Winnipeg
+Calgary,Calgary
+Victoria,Victoria (Canada)
+St. John's,St. John's (Canada)
+Toronto,Toronto
+Algiers,Alger
+Ouagadougou,Ouagadougou
+Accra,Accra
+Abuja,Abuja
+Uyo,Uyo
+Kano,Kano
+Lagos,Lagos
+Niamey,Niamey
+Tunis,Tunis
+Brussels,Bruxelles
+Liège,Liège
+Berlin,Berlin
+Dresden,Dresde
+Frankfurt am Main,Francfort-sur-le-Main
+Münster,Münster
+Hamburg,Hambourg
+Cologne,Cologne
+Düsseldorf,Düsseldorf
+Munich,Munich
+Nuremberg,Nuremberg
+Leipzig,Leipzig
+Stuttgart,Stuttgart
+Hannover,Hanovre
+Bremen,Brême
+Dortmund,Dortmund
+Baden-Baden,Baden-Baden
+Tallinn,Tallinn
+Helsinki,Helsinki
+Belfast,Belfast
+Birmingham,Birmingham (Grande-Bretagne)
+Manchester,Manchester (Grande-Bretagne)
+Doncaster,Doncaster
+Cardiff,Cardiff
+Bristol,Bristol
+Liverpool,Liverpool
+London,Londres (Grande-Bretagne)
+Bournemouth,Bournemouth
+Southampton,Southampton
+Leeds,Leeds
+Newcastle,Newcastle
+Nottingham,Nottingham
+Aberdeen,Aberdeen (Grande-Bretagne)
+Glasgow,Glasgow (Grande-Bretagne)
+Edinburgh,Edinburgh
+Norwich,Norwich
+Exeter,Exeter
+Brize Norton,Brize Norton
+Amsterdam,Amsterdam
+Eindhoven,Eindhoven
+Cork,Cork
+Dublin,Dublin
+Shannon,Shannon
+Billund,Billund
+Copenhagen,Copenhague
+Aalborg,Aalborg
+Luxembourg,Luxembourg
+Bodø,Bodø
+Bergen,Bergen
+Oslo,Oslo
+Tromsø,Tromsø
+Trondheim,Trondheim
+Stavanger,Stavanger
+Gdańsk,Dantzig
+Kraków,Cracovie
+Katowice,Katowice
+Warsaw,Varsovie
+Poznań,Poznań
+Wrocław,Wrocław
+Gothenburg,Gothenburg
+Malmö,Malmö
+Luleå,Luleå
+Stockholm,Stockholm
+Riga,Riga
+Vilnius,Vilnius
+Cape Town,Cape Town
+George,George
+Johannesburg,Johannesburg
+Durban,Durban
+Gaborone,Gaborone
+Manzini,Manzini
+Port Louis,Port Louis
+Lusaka,Lusaka
+Antananarivo,Antananarivo
+Luanda,Luanda
+Maputo,Maputo
+Mahe Island,Mahe Island
+N'Djamena,N'Djamena
+Harare,Harare
+Windhoek,Windhoek
+Kinshasa,Kinshasa
+Bamako,Bamako
+"Sta Cruz de la Palma, La Palma Island","Sta Cruz de la Palma, La Palma Island"
+Gran Canaria Island,Gran Canaria Island
+Tenerife Island,Tenerife Island
+Freetown,Freetown
+Monrovia,Monrovia
+Casablanca,Casablanca
+Dakar,Dakar
+Nouakchott,Nouakchott
+Espargos,Espargos
+Addis Ababa,Addis Ababa
+Hargeisa,Hargeisa
+Cairo,Cairo
+Hurghada,Hurghada
+Luxor,Louxor
+Nairobi,Nairobi
+Mombasa,Mombasa
+Tripoli,Tripoli
+Kigali,Kigali
+Juba,Juba
+Khartoum,Khartoum
+Dar es Salaam,Dar es Salaam
+Zanzibar,Zanzibar
+Kampala,Kampala
+Samarinda,Samarinda
+Albuquerque,Albuquerque
+Augusta,Augusta (Georgia)
+Amarillo,Amarillo
+Atlanta,Atlanta
+Austin,Austin
+Asheville,Asheville
+Hartford,Hartford
+Seattle,Seattle
+Bangor,Bangor
+Birmingham,Birmingham (Alabama)
+Billings,Billings
+Belleville,Belleville
+Bloomington/Normal,Bloomington/Normal
+Nashville,Nashville
+Boise,Boise
+Boston,Boston
+Buffalo,Buffalo
+Baltimore,Baltimore
+Columbia,Columbia (Caroline du Sud)
+Chattanooga,Chattanooga
+Charleston,Charleston (Caroline du Sud)
+Cedar Rapids,Cedar Rapids
+Cleveland,Cleveland
+Charlotte,Charlotte
+Columbus,Columbus (Ohio)
+Colorado Springs,Colorado Springs
+Corpus Christi,Corpus Christi
+Charleston,Charleston (Virginie-Occidentale)
+Cincinnati,Cincinnati
+Daytona Beach,Daytona Beach
+Dallas,Dallas
+Dayton,Dayton
+Dubuque,Dubuque
+Washington,Washington
+Denver,Denver
+Dallas-Fort Worth,Dallas-Fort Worth
+Duluth,Duluth
+Des Moines,Des Moines
+Detroit,Detroit
+Erie,Erie
+Newark,Newark
+Fort Lauderdale,Fort Lauderdale
+Fort Smith,Fort Smith (Arkansas)
+Fort Wayne,Fort Wayne
+Spokane,Spokane
+Gulfport,Gulfport
+Green Bay,Green Bay
+Greensboro,Greensboro
+Greenville,Greenville (Caroline du Sud)
+Hibbing,Hibbing
+Houston,Houston
+Huntsville,Huntsville
+Huntington,Huntington
+Wichita,Wichita
+Indianapolis,Indianapolis
+Jackson,Jackson (Mississippi)
+Jacksonville,Jacksonville
+New York,New York
+Joplin,Joplin
+Las Vegas,Las Vegas
+Los Angeles,Los Angeles
+Lubbock,Lubbock
+Lexington,Lexington
+Lafayette,Lafayette
+Little Rock,Little Rock
+Saginaw,Saginaw
+Kansas City,Kansas City
+Orlando,Orlando
+Chicago,Chicago
+Memphis,Memphis
+Montgomery,Montgomery
+Manchester,Manchester (New Hampshire)
+Miami,Miami
+Milwaukee,Milwaukee
+Moline,Moline
+Monroe,Monroe
+Mobile,Mobile
+Madison,Madison (Wisconsin)
+Minneapolis,Minneapolis
+New Orleans,New Orleans
+Oakland,Oakland
+Oklahoma City,Oklahoma City
+Omaha,Omaha
+Ontario,Ontario
+Norfolk,Norfolk
+West Palm Beach,West Palm Beach
+Portland,Portland (Oregon)
+Newport News,Newport News
+Philadelphia,Philadelphia
+Phoenix,Phoenix
+Peoria,Peoria
+Pittsburgh,Pittsburgh
+Providence,Providence
+Portland,Portland (Maine)
+Raleigh/Durham,Raleigh/Durham
+Chicago/Rockford,Chicago/Rockford
+Richmond,Richmond
+Reno,Reno
+Roanoke,Roanoke
+Rochester,Rochester (New York)
+Rochester,Rochester (Minnesota)
+Fort Myers,Fort Myers
+San Diego,San Diego
+San Antonio,San Antonio
+Savannah,Savannah
+South Bend,South Bend
+Louisville,Louisville
+San Francisco,San Francisco
+Springfield,Springfield (Missouri)
+San Jose,San Jose (Californie)
+Salt Lake City,Salt Lake City
+Sacramento,Sacramento
+Santa Ana,Santa Ana
+Springfield,Springfield (Illinois)
+Wichita Falls,Wichita Falls
+Sarasota/Bradenton,Sarasota/Bradenton
+St Louis,St Louis
+Sioux City,Sioux City
+Syracuse,Syracuse
+Tallahassee,Tallahassee
+Toledo,Toledo (Ohio)
+Tampa,Tampa
+Bristol/Johnson/Kingsport,Bristol/Johnson/Kingsport
+Tulsa,Tulsa
+Tucson,Tucson
+Knoxville,Knoxville
+Valparaiso,Valparaiso
+Tirana,Tirana
+Burgas,Burgas
+Sofia,Sofia
+Varna,Varna
+Larnarca,Larnarca
+Paphos,Paphos
+Zagreb,Zagreb
+Alicante,Alicante
+Barcelona,Barcelone (Espagne)
+Madrid,Madrid
+Málaga,Málaga
+Palma De Mallorca,Palma de Majorque
+Santiago de Compostela,Saint-Jacques de Compostelle
+Agen/La Garenne,Agen/La Garenne
+Bordeaux/Mérignac,Bordeaux/Mérignac
+Bergerac/Roumanière,Bergerac/Roumanière
+La Rochelle/Île de Ré,La Rochelle/Île de Ré
+Poitiers/Biard,Poitiers/Biard
+Limoges/Bellegarde,Limoges/Bellegarde
+Toulouse/Blagnac,Toulouse/Blagnac
+Pau/Pyrénées (Uzein),Pau/Pyrénées (Uzein)
+Tarbes/Lourdes/Pyrénées,Tarbes/Lourdes/Pyrénées
+Angoulême/Brie/Champniers,Angoulême/Brie/Champniers
+Biarritz/Anglet/Bayonne,Biarritz/Anglet/Bayonne
+Castres/Mazamet,Castres/Mazamet
+Rodez/Marcillac,Rodez/Marcillac
+Île d'Yeu,Île d'Yeu
+Dole/Tavaux,Dole/Tavaux
+Le Puy/Loudes,Le Puy/Loudes
+Metz / Nancy,Metz / Nancy
+Angers/Marcé,Angers/Marcé
+Bastia/Poretta,Bastia/Poretta
+Calvi/Sainte-Catherine,Calvi/Sainte-Catherine
+Figari Sud-Corse,Figari Sud-Corse
+Ajaccio/Napoléon Bonaparte,Ajaccio/Napoléon Bonaparte
+Chambéry/Aix-les-Bains,Chambéry/Aix-les-Bains
+Clermont-Ferrand/Auvergne,Clermont-Ferrand/Auvergne
+Lyon,Lyon
+Annecy/Meythet,Annecy/Meythet
+Saint-Étienne-de-Saint-Geoirs,Saint-Étienne-de-Saint-Geoirs
+Aurillac,Aurillac
+Cannes/Mandelieu,Cannes/Mandelieu
+Saint-Étienne/Bouthéon,Saint-Étienne/Bouthéon
+Carcassonne/Salvaza,Carcassonne/Salvaza
+Marseille,Marseille
+Nice,Nice
+Perpignan/Rivesaltes,Perpignan/Rivesaltes
+Montpellier/Méditerranée,Montpellier/Méditerranée
+Béziers/Vias,Béziers/Vias
+Avignon/Caumont,Avignon/Caumont
+Beauvais/Tillé,Beauvais/Tillé
+Le Havre/Octeville,Le Havre/Octeville
+Rouen/Vallée de Seine,Rouen/Vallée de Seine
+Tours/Val de Loire (Loire Valley),Tours/Val de Loire (Loire Valley)
+Paris,Paris
+Lille/Lesquin,Lille/Lesquin
+Brest/Guipavas,Brest/Guipavas
+Cherbourg/Maupertus,Cherbourg/Maupertus
+Dinard/Pleurtuit/Saint-Malo,Dinard/Pleurtuit/Saint-Malo
+Lorient/Lann/Bihoué,Lorient/Lann/Bihoué
+Caen/Carpiquet,Caen/Carpiquet
+Rennes/Saint-Jacques,Rennes/Saint-Jacques
+Lannion,Lannion
+Quimper/Pluguffan,Quimper/Pluguffan
+Nantes,Nantes
+Bâle/Mulhouse,Bâle/Mulhouse
+Dijon/Longvic,Dijon/Longvic
+Épinal/Mirecourt,Épinal/Mirecourt
+Brive la Gaillarde,Brive la Gaillarde
+Strasbourg,Strasbourg
+Toulon/Hyères/Le Palyvestre,Toulon/Hyères/Le Palyvestre
+Nîmes/Garons,Nîmes/Garons
+La Môle,La Môle
+Athens,Athènes (Grèce)
+Heraklion,Heraklion
+Thessaloniki,Thessalonique
+Budapest,Budapest
+Bari,Bari
+Catania,Catane
+Palermo,Palerme
+Cagliari,Caglier
+Milan,Milan
+Bergamo,Bergame
+Torino,Turin
+Genova,Gênes
+Bologna,Bologne
+Treviso,Trévise
+Verona,Vérone
+Venice,Venise
+Rome,Rome
+Nápoli,Naples
+Pisa,Pise
+Ljubljana,Ljubljana
+Prague,Prague
+Tel Aviv,Tel Aviv
+Eilat,Eilat
+Valletta,La Vallette
+Vienna,Vienne
+Faro,Faro
+Praia da Vitória,Praia da Vitória
+Ponta Delgada,Ponta Delgada
+Porto,Porto
+Lisbon,Lisbonne
+Sarajevo,Sarajevo
+Bucharest,Bucarest
+Geneva,Genève
+Zurich,Zurich
+Ankara,Ankara
+Adana,Adana
+Antalya,Antalya
+Gaziantep,Gaziantep
+Istanbul,Istanbul
+İzmir,İzmir
+Dalaman,Dalaman
+Erzurum,Erzurum
+Trabzon,Trabzon
+Isparta,Isparta
+Bodrum,Bodrum
+Skopje,Skopje
+Belgrade,Belgrade
+Podgorica,Podgorica
+Bratislava,Bratislava
+Punta Cana,Punta Cana
+Santo Domingo,Saint Domingue (Rép. dominicaine)
+Guatemala City,Guatemala City
+Kingston,Kingston (Jamaïque)
+Acapulco,Acapulco
+Guadalajara,Guadalajara
+Hermosillo,Hermosillo
+Mexico City,Mexico City
+Monterrey,Monterrey
+Puerto Vallarta,Puerto Vallarta
+San José del Cabo,San José del Cabo
+Tijuana,Tijuana
+Cancún,Cancún
+Tocumen,Tocumen
+Liberia,Liberia
+San Salvador (San Luis Talpa),San Salvador (San Luis Talpa)
+Havana,Havana
+Varadero,Varadero
+Georgetown,Georgetown (Iles Caïman)
+Nassau,Nassau
+Belize City,Belize City
+Avarua,Avarua
+Papeete,Papeete
+Auckland,Auckland
+Christchurch,Christchurch
+Wellington,Wellington
+Manama,Manama
+Ad Dammam,Ad Dammam
+Jeddah,Jeddah
+Medina,Medina
+Riyadh,Riyadh
+Tehran,Tehran
+Mashhad,Mashhad
+Shiraz,Shiraz
+Tabriz,Tabriz
+Amman,Amman
+Kuwait City,Koweit City
+Beirut,Beyrouth
+Duqm,Duqm
+Abu Dhabi,Abou Dabi
+Dubai,Dubai
+Jebel Ali,Jebel Ali
+Sharjah,Sharjah
+Muscat,Muscat
+Islamabad,Islamabad
+Sialkot,Sialkot
+Baghdad,Bagdad
+Basrah,Bassorah
+Aleppo,Alep
+Damascus,Damas
+Latakia,Lattaquié
+Doha,Doha
+Fairbanks,Fairbanks
+Anchorage,Anchorage
+"Hagåtña, Guam International Airport","Hagåtña, Guam International Airport"
+Cagayan de Oro City,Cagayan de Oro City
+Lal-lo,Lal-lo
+Honolulu,Honolulu
+Shang-I,Shang-I
+Kaohsiung City,Kaohsiung City
+Taipei,Taipei
+Tokyo,Tokyo
+Osaka,Osaka
+Chitose / Tomakomai,Chitose / Tomakomai
+Fukuoka,Fukuoka
+Kagoshima,Kagoshima
+Tokoname,Tokoname
+Makinohara / Shimada,Makinohara / Shimada
+Piseo-ri (Muan),Piseo-ri (Muan)
+Kunsan,Kunsan
+Jeju City,Jeju City
+Busan,Busan/Pusan
+Seoul,Seoul
+Cheongju,Cheongju
+Naha,Naha
+Angeles/Mabalacat,Angeles/Mabalacat
+Manila,Manille
+Davao City,Davao City
+Lapu-Lapu City,Lapu-Lapu City
+Grozny,Grozny
+Buenos Aires,Buenos Aires
+Belém,Belém
+Brasília,Brasília
+Belo Horizonte,Belo Horizonte
+Curitiba,Curitiba
+Manaus,Manaus
+Florianópolis,Florianópolis
+Rio De Janeiro,Rio De Janeiro
+São Paulo,São Paulo
+Natal,Natal
+Salvador,Salvador
+Santiago,Santiago (Chili)
+Latacunga,Latacunga
+Quito,Quito
+Bogota,Bogota
+Santa Cruz,Santa Cruz (Bolivie)
+Lima,Lima
+Cusco,Cusco
+Montevideo,Montevideo
+Caracas,Caracas
+Pointe-à-Pitre,Pointe-à-Pitre
+San Juan,San Juan (Porto Rico)
+Enfidha,Enfidha
+Saint Martin,Saint Martin
+Almaty,Almaty
+Astana,Astana
+Bishkek,Bichkek
+Karaganda,Karaganda
+Baku,Bakou
+Yerevan,Erevan
+Tbilisi,Tbilissi
+Khabarovsk,Khabarovsk
+Kiev,Kiev
+Simferopol,Simferopol
+Kharkiv,Kharkiv
+Odessa,Odessa
+St. Petersburg,Saint Pétersbourg
+Minsk,Minsk
+Krasnoyarsk,Krasnoïarsk
+Novosibirsk,Novossibirsk
+Rostov-on-Don,Rostov-sur-le-Don
+Sochi,Sotchi
+Yekaterinburg,Iekaterinbourg
+Ashgabat,Achgabat
+Tashkent,Tachkent
+Moscow,Moscou
+Kazan,Kazan
+Ufa,Ufa
+Samara,Samara
+Mumbai,Bombay/Mumbai
+Vasco da Gama,Vasco da Gama
+Colombo,Colombo
+,
+Phnom Penh,Phnom Penh
+Siem Reap,Siem Reap
+Kolkata,Kolkata
+Dhaka,Dhaka
+Hong Kong,Hong Kong
+Amritsar,Amritsar
+New Delhi,New Delhi
+Macau,Macau
+Kathmandu,Katmandou
+Bangalore,Bangalore
+Kochi,Kochi
+Calicut,Calicut
+Hyderabad,Hyderabad (Inde)
+Chennai,Chennai
+Thiruvananthapuram,Thiruvananthapuram
+Malé,Malé
+Bangkok,Bangkok
+Chiang Mai,Chiang Mai
+Phuket,Phuket
+Da Nang,Da Nang
+Hanoi,Hanoi
+Ho Chi Minh City,Ho-Chi-Minh-Ville/Saïgon
+Mandalay,Mandalay
+Yangon,Yangon
+Ujung Pandang-Celebes Island,Ujung Pandang-Celebes Island
+Denpasar-Bali Island,Denpasar-Bali Island
+Jayapura-Papua Island,Jayapura-Papua Island
+Surabaya,Surabaya
+Sorong-Papua Island,Sorong-Papua Island
+Bandar Seri Begawan,Bandar Seri Begawan
+Jakarta,Djakarta
+Kuala Lumpur,Kuala Lumpur
+Singapore,Singapour
+Brisbane,Brisbane
+Melbourne,Melbourne (Australie)
+Yantai,Yantai
+Adelaide,Adelaide
+Perth,Perth
+Canberra,Canberra
+Sydney,Sydney (Australie)
+Beijing,Pékin/Beijing
+Hohhot,Hohhot
+Tianjin,Tianjin
+Taiyuan,Taiyuan
+Guangzhou,Canton
+Changsha,Changsha
+Guilin City,Guilin City
+Nanning,Nanning
+Shenzhen,Shenzhen
+Zhengzhou,Zhengzhou
+Wuhan,Wuhan
+Haikou,Haikou
+Sanya,Sanya
+Xi'an,Xi'an
+Ulan Bator,Oulan-Bator
+Kunming,Kunming
+Xiamen,Xiamen
+Fuzhou,Fuzhou
+Hangzhou,Hangzhou
+Jinan,Jinan
+Ningbo,Ningbo
+Nanjing,Nanjing
+Shanghai,Shanghai
+Wenzhou,Wenzhou
+Chongqing,Chongqing
+Guiyang,Guiyang
+Chengdu,Chengdu
+Ürümqi,Ürümqi
+Harbin,Harbin
+Dalian,Dalian
+Shenyang,Shenyang
