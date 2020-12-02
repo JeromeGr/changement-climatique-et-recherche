@@ -3,7 +3,7 @@ library(tidyverse)
 
 #chargement de la base
 
-climat <- read.csv("climat2311.csv", fileEncoding ="UTF-8", na.strings="")
+climat <- read.csv("climat0210.csv", fileEncoding ="UTF-8", na.strings="")
 
 
 # Élimination des hors-champ

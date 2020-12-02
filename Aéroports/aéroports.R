@@ -1,3 +1,5 @@
+# climat doit être chargé séparément
+
 library(tidyverse)
 
 airports <- read.csv("Aéroports/airports.csv", na.strings="")
@@ -23,9 +25,6 @@ traductions <- filter(traductions, municipality != "")
 
 liste <- left_join(liste, traductions, by="municipality")
 liste$ville <- coalesce(liste$traduction, liste$municipality)
-
-climat <- read.csv("~/Private/results-survey113464_231120.csv",
-                   fileEncoding="UTF-8", na.strings="")
 
 # Liste recodée à la main
 # Quand la ville mentionnée n'a pas d'aéroport, ou un aéroport sans code IATA,

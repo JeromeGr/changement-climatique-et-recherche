@@ -6,7 +6,7 @@ ech <- read.csv("../Labintel/échantillon.csv")
 erreurs1 <- read.table("../Labintel/Erreurs enquete.labos1point5@services.cnrs.fr 06-07-20.txt")
 erreurs2 <- read.table("../Labintel/Erreurs questionnaire.labos1point5@services.cnrs.fr 06-07-20.txt")
 
-climat <- read.csv("~/Private/results-survey113464_231120.csv", fileEncoding="UTF-8", na.strings="")
+climat <- read.csv("~/Private/results-survey113464_021220.csv", fileEncoding="UTF-8", na.strings="")
 
 
 # Sympa met les adresses en minuscules
