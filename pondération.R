@@ -13,7 +13,8 @@ library(survey)
 
 fiches <- read.csv2("../Labintel/fiches.csv",
                     fileEncoding="WINDOWS-1252",
-                    na.strings=c("NA", "&nbsp;"))
+                    na.strings=c("NA", "&nbsp;"),
+                    row.names=1)
 
 # Très peu de non renseignés, on les mélange avec la plus grande délégation
 fiches$delegation[is.na(fiches$delegation)] <- "02, Paris-Centre"
@@ -30,9 +31,19 @@ fiches <- arrange(fiches, recode(type, "Autre personnel"="Z"), institut2, delega
 fiches <- subset(fiches, !duplicated(courriel) | courriel == "")
 
 names(fiches) <- paste0(names(fiches), ".labintel")
-climat <- read.csv("~/Private/results-survey113464_231120.csv", fileEncoding ="UTF-8", na.strings="")
+climat <- read.csv("~/Private/results-survey113464_021220.csv", fileEncoding ="UTF-8", na.strings="")
 stopifnot(all(climat$email %in% fiches$courriel.labintel))
 climat <- left_join(climat, fiches, by=c("email"="courriel.labintel"))
+
+# Anonymisation
+climat <- select(climat, !any_of(c("num.labintel", "nom.labintel",
+                                   "dateentree.labintel", "fonction.labintel",
+                                   "emploitype.labintel")))
+# Attribution d'un identifiant aléatoire à chaque unité
+climat$appartenance.labintel <- as.integer(factor(climat$appartenance.labintel,
+                                           levels=sample(unique(climat$appartenance.labintel))))
+climat$unite.labintel <- as.integer(factor(climat$unite.labintel,
+                                           levels=sample(unique(climat$unite.labintel))))
 
 # Ne supprimer qu'après la fusion avec climat, sinon certaines adresses courriel peuvent manquer
 fiches <- subset(fiches, !duplicated(paste(nom.labintel, categorie.labintel)))
