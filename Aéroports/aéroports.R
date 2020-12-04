@@ -67,7 +67,7 @@ for(i in 1:5) {
                      lon1=airports$longitude_deg[depart],
                      lon2=airports$longitude_deg[arrivee])
     climat[[paste0("vols", i, "dist")]] <-
-        with(tmp, geosphere::distHaversine(cbind(lon1, lat1), cbind(lon2, lat2))/1000)
+        with(tmp, round(geosphere::distHaversine(cbind(lon1, lat1), cbind(lon2, lat2))/1000/100)*100)
 }
 
 # Vérification manuelle des risques d'ambiguïté :
