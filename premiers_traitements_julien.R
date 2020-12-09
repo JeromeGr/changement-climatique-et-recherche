@@ -401,3 +401,36 @@ group_by(volsproj, projets) %>%
   coord_flip()+
   scale_y_continuous(breaks=seq(0, 50, by=5)) +
   labs(caption="La ligne rouge indique la valeur sur la totalité des répondants")
+
+
+
+# taux de NA par question
+a <- apply(climat, 2, is.na)
+freq(a[,78])
+sum(a[a=="TRUE"])
+b <- apply(a, 2, function(a) sum(a=="TRUE"))
+
+str(b)
+
+tab <- as.data.frame(b)
+tab <- tab[tab$b<1200,]
+tab$question <- as.factor(rownames(tab))
+str(tab)
+ggplot(tab[1:40,], aes(x=b, y=rownames(tab[1:40,])))+
+  geom_bar(stat="identity")
+
+plot(tab[,1], type="l")
+
+freq(climat$sitpro)
+
+summary(climat$lastpage)
+
+plot(climat$lastpage)
+ggplot(d) +
+  aes(x = heures.tv) +
+  xlab("Heures") +
+  ylab("Fonction de répartition cumulée")
+ggplot(climat)+
+  aes(x=lastpage)+
+  stat_ecdf() 
+  
