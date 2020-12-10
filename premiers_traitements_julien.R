@@ -434,3 +434,29 @@ ggplot(climat)+
   aes(x=lastpage)+
   stat_ecdf() 
   
+
+
+library(questionr)
+library(tidyverse)
+data(hdv2003)
+
+d <- purrr::map_dfr(climat, is.na) %>%
+  pivot_longer(everything())
+
+## Graphique en proportion
+
+tmp <- d %>%
+  group_by(name) %>%
+  count(value)
+ggplot(tmp[1:10,], aes(y = name, x = n, fill = value)) +
+  geom_col()
+
+## Graphique en position
+  
+tmp <- d %>%
+  group_by(name) %>%
+  mutate(rank = row_number())
+
+ggplot(tmp, aes(x = rank, y = name, fill = value)) +
+  geom_tile()
+
