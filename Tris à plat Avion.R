@@ -1,8 +1,8 @@
 #Tableau récapitulatif : toutes les réponses aux solutions concernant l'avion
 
-tsolAv<-as.data.frame(rbind(table(climat$solinstit.train.), prop.table(table(climat$solinstit.train.)), 
-                       table(climat$solinstit.limitevols.), prop.table(table(climat$solinstit.limitevols.)), 
-                       table(climat$solinstit.vols6h.), prop.table(table(climat$solinstit.vols6h.))))
+tsolAv<-as.data.frame(rbind(table(climat$solinstit.train), prop.table(table(climat$solinstit.train)),
+                       table(climat$solinstit.limitevols), prop.table(table(climat$solinstit.limitevols)),
+                       table(climat$solinstit.vols6h), prop.table(table(climat$solinstit.vols6h))))
 
 tsolAv[c(2,4,6),]<-round(tsolAv[c(2,4,6),]*100)
 
@@ -22,11 +22,11 @@ write.table(tsolAv, file = "/Users/jeromegreffion/Dropbox/changement-climatique-
 
 #Tri à plat risque réductions des vols
 
-tRisqRedAv<-as.data.frame(rbind(prop.table(table(climat$solrisqreducavion.qual.)),
-                            prop.table(table(climat$solrisqreducavion.fin.)), prop.table(table(climat$solrisqreducavion.diffusion.)), 
-                            prop.table(table(climat$solrisqreducavion.donnees.)), prop.table(table(climat$solrisqreducavion.avantages.)), 
-                            prop.table(table(climat$solrisqreducavion.isoler.)), prop.table(table(climat$solrisqreducavion.avantages.)),
-                            prop.table(table(climat$solrisqreducavion.bureaucratie.))))
+tRisqRedAv<-as.data.frame(rbind(prop.table(table(climat$solrisqreducavion.qual)),
+                            prop.table(table(climat$solrisqreducavion.fin)), prop.table(table(climat$solrisqreducavion.diffusion)), 
+                            prop.table(table(climat$solrisqreducavion.donnees)), prop.table(table(climat$solrisqreducavion.avantages)), 
+                            prop.table(table(climat$solrisqreducavion.isoler)), prop.table(table(climat$solrisqreducavion.avantages)),
+                            prop.table(table(climat$solrisqreducavion.bureaucratie))))
 
 tRisqRedAv<-round(tRisqRedAv*100)
 
@@ -41,12 +41,12 @@ write.table(tRisqRedAv, file = "/Users/jeromegreffion/Dropbox/changement-climati
 
 #Tri à plat renoncement déplacement pro à l'étranger
 climat$renon
-tRenoncDepPro<-as.data.frame(rbind(prop.table(table(climat$renoncedep.prive.)),
-                                prop.table(table(climat$renoncedep.pro.)), prop.table(table(climat$renoncedep.confort.)), 
-                                prop.table(table(climat$renoncedep.env.)), prop.table(table(climat$renoncedep.mission.)), 
-                                prop.table(table(climat$renoncedep.visio.))))
+tRenoncDepPro<-as.data.frame(rbind(prop.table(table(climat$renoncedep.prive)),
+                                prop.table(table(climat$renoncedep.pro)), prop.table(table(climat$renoncedep.confort)),
+                                prop.table(table(climat$renoncedep.env)), prop.table(table(climat$renoncedep.mission)),
+                                prop.table(table(climat$renoncedep.visio))))
 
-freq(climat$renoncedep.prive.)
+freq(climat$renoncedep.prive)
 
 tRenoncDepPro<-round(tRenoncDepPro*100)
 
