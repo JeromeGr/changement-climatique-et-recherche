@@ -4,3 +4,7 @@
 .RData
 .Ruserdata
 *.csv
+*.RData
+*.pdf
+*.html
+*.log
