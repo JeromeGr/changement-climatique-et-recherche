@@ -374,6 +374,30 @@ group_by(climat, sitpro) %>%
 #                     rename(projets=projets.europe_m))
 # vars <- paste0("projets.", c("anr_r", "europe_r", "france_r", "inter_r", "prive_r",
 #                              "anr_m", "europe_m", "france_m", "inter_m", "prive_m"))
+
+#volsproj <- rbind(filter(climat, projets.anr_r == "Responsable projet ANR non" &
+#                                 projets.anr_m == "Membre projet ANR non" &
+#                                 projets.europe_r == "Responsable projet européen non" &
+#                                 projets.europe_m == "Membre projet européen non") %>%
+#                    summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
+#                    mutate(projets="Ni l'un ni l'autre"),
+#                  filter(climat, (projets.anr_r == "Responsable projet ANR oui" |
+#                                  projets.anr_m == "Membre projet ANR oui") &
+#                                  projets.europe_r == "Responsable projet européen non" &
+#                                  projets.europe_m == "Membre projet européen non") %>%
+#                    summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
+#                    mutate(projets="Projet ANR uniquement"),
+                  # filter(climat, projets.anr_r == "Responsable projet ANR non" &
+                  #                projets.anr_m == "Membre projet ANR non" &
+                  #                (projets.europe_r == "Responsable projet européen oui" |
+                  #                 projets.europe_m == "Membre projet européen oui")) %>%
+                  #   summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
+                  #   mutate(projets="Projet européen uniquement"),
+                  # filter(climat, (projets.anr_r == "Responsable projet ANR oui" |
+                  #                 projets.anr_m == "Membre projet ANR oui") &
+                  #                (projets.europe_r == "Responsable projet européen oui" |
+                  #                 projets.europe_m == "Membre projet européen oui")) %>%
+
 volsproj <- rbind(filter(climat, is.na(projets.anr_r) & is.na(projets.anr_m) & is.na(projets.europe_r) & is.na(projets.europe_m)) %>%
                     summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
                     mutate(projets="Ni l'un ni l'autre"),
