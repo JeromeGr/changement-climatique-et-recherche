@@ -1,6 +1,8 @@
 ---
-title: "Premiers résultats de l’enquête « Les personnels de la recherche face au changement climatique »"
-output: html_notebook
+title: Premiers résultats de l’enquête « Les personnels de la recherche face au changement
+  climatique »
+output:
+  html_notebook: default
 ---
 
 ```{r preparation}
