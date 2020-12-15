@@ -83,6 +83,7 @@ climat$discipline_agr <- fct_recode(
   "Langues et littératures"="07 : Sciences du langage : linguistique et phonétique générales",
   "Langues et littératures"="08 : Langues et littératures anciennes",
   "Langues et littératures"="09 : Langue et littérature françaises",
+  "Langues et littératures"="10 : Littératures comparées",
   "Langues et littératures"="11 : Langues et littératures anglaises et anglo-saxonnes",
   "Langues et littératures"="12 : Langues et littératures germaniques et scandinaves",
   "Langues et littératures"="13 : Langues et littératures slaves",
@@ -106,10 +107,10 @@ climat$discipline_agr <- fct_recode(
   "Chimie"="31 : Chimie théorique, physique, analytique",
   "Chimie"="32 : Chimie organique, inorganique, industrielle",
   "Chimie"="33 : Chimie des matériaux",
-  "Sciences de la Terre"="34 : Astronomie, astrophysique",
-  "Sciences de la Terre"="35 : Structure et évolution de la Terre et des autres planètes",
-  "Sciences de la Terre"="36 : Terre solide : géodynamique des enveloppes supérieures, paléobiosphère",
-  "Sciences de la Terre"="37 : Météorologie, océanographie physique et physique de l'environnement",
+  "Sciences de la Terre et de l'Univers"="34 : Astronomie, astrophysique",
+  "Sciences de la Terre et de l'Univers"="35 : Structure et évolution de la Terre et des autres planètes",
+  "Sciences de la Terre et de l'Univers"="36 : Terre solide : géodynamique des enveloppes supérieures, paléobiosphère",
+  "Sciences de la Terre et de l'Univers"="37 : Météorologie, océanographie physique et physique de l'environnement",
   "Santé"="42 : Morphologie et morphogenèse",
   "Santé"="43 : Biophysique et imagerie médicale",
   "Santé"="44 : Biochimie, biologie cellulaire et moléculaire, physiologie et nutrition",
@@ -121,7 +122,10 @@ climat$discipline_agr <- fct_recode(
   "Santé"="50 : Pathologie ostéo-articulaire, dermatologie et chirurgie plastique",
   "Santé"="51 : Pathologie cardiorespiratoire et vasculaire",
   "Santé"="52 : Maladies des appareils digestif et urinaire",
+  "Santé"="53 : Médecine interne, gériatrie, chirurgie générale et médecine générale",
   "Santé"="54 : Développement et pathologie de l'enfant, gynécologie-obstétrique, endocrinologie et reproduction",
+  "Santé"="55 : Pathologie de la tête et du cou",
+  "Santé"="56 : Développement, croissance et prévention",
   "Santé"="57 : Sciences biologiques, médecine et chirurgie buccales",
   "Santé"="58 : Sciences physiques et physiologiques endodontiques et prothétiques",
   "Génies : méca, info, élec, énergie"="60 : Mécanique, génie mécanique, génie civil",
@@ -139,11 +143,14 @@ climat$discipline_agr <- fct_recode(
   "Sciences humaines"="72 : Épistémologie, histoire des sciences et des techniques",
   "Sciences humaines"="73 : Cultures et langues régionales",
   "Sciences humaines"="74 : Sciences et techniques des activités physiques et sportives",
+  "Sciences humaines"="76 : Théologie catholique",
+  "Sciences humaines"="77 : Théologie protestante",
   "Santé"="80/85 : Sciences physico-chimiques et ingénierie appliquée à la santé (ex-39)",
   "Santé"="81/86 : Sciences du médicament et des autres produits de santé (ex-40)",
   "Santé"="82/87 : Sciences biologiques, fondamentales et cliniques (ex-41)",
   "Santé"="90 : Maïeutique",
-  "Santé"="91 : Sciences de la rééducation et de la réadaptation"
+  "Santé"="91 : Sciences de la rééducation et de la réadaptation",
+  "Santé"="92 : Sciences infirmières"
 )
 
 
@@ -161,6 +168,7 @@ climat$discipline_agr2 <- fct_recode(
   "Autres lettres et sciences humaines"="07 : Sciences du langage : linguistique et phonétique générales",
   "Autres lettres et sciences humaines"="08 : Langues et littératures anciennes",
   "Autres lettres et sciences humaines"="09 : Langue et littérature françaises",
+  "Autres lettres et sciences humaines"="10 : Littératures comparées",
   "Autres lettres et sciences humaines"="11 : Langues et littératures anglaises et anglo-saxonnes",
   "Autres lettres et sciences humaines"="12 : Langues et littératures germaniques et scandinaves",
   "Autres lettres et sciences humaines"="13 : Langues et littératures slaves",
@@ -197,9 +205,12 @@ climat$discipline_agr2 <- fct_recode(
   "Santé"="48 : Anesthésiologie, réanimation, médecine d'urgence, pharmacologie et thérapeutique",
   "Santé"="49 : Pathologie nerveuse et musculaire, pathologie mentale, handicap et rééducation",
   "Santé"="50 : Pathologie ostéo-articulaire, dermatologie et chirurgie plastique",
-  "Santé"="52 : Maladies des appareils digestif et urinaire",
   "Santé"="51 : Pathologie cardiorespiratoire et vasculaire",
+  "Santé"="52 : Maladies des appareils digestif et urinaire",
+  "Santé"="53 : Médecine interne, gériatrie, chirurgie générale et médecine générale",
   "Santé"="54 : Développement et pathologie de l'enfant, gynécologie-obstétrique, endocrinologie et reproduction",
+  "Santé"="55 : Pathologie de la tête et du cou",
+  "Santé"="56 : Développement, croissance et prévention",
   "Santé"="57 : Sciences biologiques, médecine et chirurgie buccales",
   "Santé"="58 : Sciences physiques et physiologiques endodontiques et prothétiques",
   "Génies : méca, info, élec, énergie"="60 : Mécanique, génie mécanique, génie civil",
@@ -217,11 +228,14 @@ climat$discipline_agr2 <- fct_recode(
   "Autres lettres et sciences humaines"="72 : Épistémologie, histoire des sciences et des techniques",
   "Autres lettres et sciences humaines"="73 : Cultures et langues régionales",
   "Autres lettres et sciences humaines"="74 : Sciences et techniques des activités physiques et sportives",
+  "Autres lettres et sciences humaines"="76 : Théologie catholique",
+  "Autres lettres et sciences humaines"="77 : Théologie protestante",
   "Santé"="80/85 : Sciences physico-chimiques et ingénierie appliquée à la santé (ex-39)",
   "Santé"="81/86 : Sciences du médicament et des autres produits de santé (ex-40)",
   "Santé"="82/87 : Sciences biologiques, fondamentales et cliniques (ex-41)",
   "Santé"="90 : Maïeutique",
-  "Santé"="91 : Sciences de la rééducation et de la réadaptation"
+  "Santé"="91 : Sciences de la rééducation et de la réadaptation",
+  "Santé"="92 : Sciences infirmières"
 )
 
 #Pour tenir compte de la spécificité de sous disciplines en matière de temps de vol 
@@ -237,6 +251,7 @@ climat$discipline_agr3 <- fct_recode(climat$discipline,
 "Autres lettres et sciences humaines"="07 : Sciences du langage : linguistique et phonétique générales",
 "Autres lettres et sciences humaines"="08 : Langues et littératures anciennes",
 "Autres lettres et sciences humaines"="09 : Langue et littérature françaises",
+"Autres lettres et sciences humaines"="10 : Littératures comparées",
 "Autres lettres et sciences humaines"="11 : Langues et littératures anglaises et anglo-saxonnes",
 "Autres lettres et sciences humaines"="12 : Langues et littératures germaniques et scandinaves",
 "Autres lettres et sciences humaines"="13 : Langues et littératures slaves",
@@ -275,7 +290,10 @@ climat$discipline_agr3 <- fct_recode(climat$discipline,
 "Santé"="50 : Pathologie ostéo-articulaire, dermatologie et chirurgie plastique",
 "Santé"="51 : Pathologie cardiorespiratoire et vasculaire",
 "Santé"="52 : Maladies des appareils digestif et urinaire",
+"Santé"="53 : Médecine interne, gériatrie, chirurgie générale et médecine générale",
 "Santé"="54 : Développement et pathologie de l'enfant, gynécologie-obstétrique, endocrinologie et reproduction",
+"Santé"="55 : Pathologie de la tête et du cou",
+"Santé"="56 : Développement, croissance et prévention",
 "Santé"="57 : Sciences biologiques, médecine et chirurgie buccales",
 "Santé"="58 : Sciences physiques et physiologiques endodontiques et prothétiques",
 "Génies : méca, info, élec, énergie"="60 : Mécanique, génie mécanique, génie civil",
@@ -293,11 +311,14 @@ climat$discipline_agr3 <- fct_recode(climat$discipline,
 "Autres lettres et sciences humaines"="72 : Épistémologie, histoire des sciences et des techniques",
 "Autres lettres et sciences humaines"="73 : Cultures et langues régionales",
 "Autres lettres et sciences humaines"="74 : Sciences et techniques des activités physiques et sportives",
+"Autres lettres et sciences humaines"="76 : Théologie catholique",
+"Autres lettres et sciences humaines"="77 : Théologie protestante",
 "Santé"="80/85 : Sciences physico-chimiques et ingénierie appliquée à la santé (ex-39)",
 "Santé"="81/86 : Sciences du médicament et des autres produits de santé (ex-40)",
 "Santé"="82/87 : Sciences biologiques, fondamentales et cliniques (ex-41)",
 "Santé"="90 : Maïeutique",
-"Santé"="91 : Sciences de la rééducation et de la réadaptation"
+"Santé"="91 : Sciences de la rééducation et de la réadaptation",
+"Santé"="92 : Sciences infirmières"
 )
 
 
@@ -396,7 +417,8 @@ climat$couple <- relevel(climat$couple, ref = "Oui")
 
 climat$sitpro2 <- relevel(climat$sitpro, ref = "Maître·sse de conférences")
 
-climat$discipline_agr <- relevel(climat$discipline_agreg, ref = "Physique")
+climat$discipline_agr <- relevel(climat$discipline_agr, ref = "Physique")
+climat$discipline_agr2 <- relevel(climat$discipline_agr, ref = "Physique")
 climat$discipline_agr3 <- relevel(climat$discipline_agr3, ref = "Physique")
 
 climat$discipline <- as.factor(climat$discipline)
