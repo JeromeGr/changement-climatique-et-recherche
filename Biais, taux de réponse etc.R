@@ -104,8 +104,8 @@ res.reg1<- lm(EffetMarianne ~ sexe + ageAgr + enfantsnb, data=climat)
 res.reg1<- lm(EffetMarianne ~ sexe + ageAgr + ScoreEcoloPond , data=climat)
 res.reg1<- lm(EffetMarianne ~ sexe + ageAgr + preoccupeNum, data=climat)
 res.reg1<- lm(EffetMarianne ~ preoccupeNum, data=climat)
-res.reg1<- lm(EffetMarianne ~ sexe + ageAgr  + sitpro , data=climat)
-res.reg1<- lm(EffetMarianne ~ sexe + ageAgr  + sitpro + ScoreEcoloPond , data=climat)
+res.reg1<- lm(EffetMarianne ~ sexe + ageAgr  + sitpro2 , data=climat)
+res.reg1<- lm(EffetMarianne ~ sexe + ageAgr  + sitpro2 + ScoreEcoloPond , data=climat)
 res.reg1<- lm(EffetMarianne ~ sexe + ageAgr  + discipline_agr3, data=climat)
 res.reg1<- lm(EffetMarianne ~ sexe + ageAgr  + discipline_agr3 + ScoreEcoloPond, data=climat)
 res.reg1<- lm(EffetMarianne ~ sexe + ageAgr  + employeur, data=climat)
@@ -121,7 +121,7 @@ summary(res.reg1)
 #Préoccupé et vagues
 mean(climat$preoccupeNum, na.rm=T)
 res.reg1 <- lm(preoccupeNum ~ NumVague , data=climat)
-res.reg1 <- lm(preoccupeNum ~ NumVague + sexe + ageAgr + sitpro, data=climat)
+res.reg1 <- lm(preoccupeNum ~ NumVague + sexe + ageAgr + sitpro2, data=climat)
 res.reg1 <- lm(preoccupeNum ~ sexe + ageAgr, data=climat)
 
 #Revenu par tête et vagues
@@ -130,13 +130,13 @@ res.reg1 <- lm(revenuTete ~ NumVague , data=climat)
 #Enfant et vagues
 res.reg1 <- lm(enfantsnb ~ NumVague , data=climat)
 res.reg1 <- lm(enfantsnb ~ NumVague + sexe + ageAgr , data=climat)
-res.reg1 <- lm(enfantsnb ~ NumVague + sexe + ageAgr + sitpro, data=climat)
+res.reg1 <- lm(enfantsnb ~ NumVague + sexe + ageAgr + sitpro2, data=climat)
 freq(climat$enfantsage, total=T)
 
 #Nombre de publis
 res.reg1 <- lm(nbpublis ~ NumVague , data=climat)
 res.reg1 <- lm(enfantsnb ~ NumVague + sexe + ageAgr , data=climat)
-res.reg1 <- lm(nbpublis ~ NumVague + sexe + ageAgr + sitpro, data=climat)
+res.reg1 <- lm(nbpublis ~ NumVague + sexe + ageAgr + sitpro2, data=climat)
 
 
 

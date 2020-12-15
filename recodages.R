@@ -3,17 +3,7 @@ library(tidyverse)
 
 #chargement de la base
 
-climat <- read.csv("climat0212.csv", fileEncoding="UTF-8", na.strings=c("", "N/A"))
-
-# Supprimer les points à la fin des noms de variables
-names(climat) <- gsub("\\.$", "", names(climat))
-
-# Chargement des intitulés des questions comme labels des variables
-questions <- read.csv("intitulés des questions.csv", row.names="code")
-rownames(questions) <- gsub("\\[", ".", gsub("\\]$", "", rownames(questions)))
-for(var in names(climat)) {
-  attr(climat[[var]], "label") <- questions[var, "question"]
-}
+load("climat.RData")
 
 # Élimination des hors-champ
 # is.na(rechpub) peut indiquer à la fois un statut d'office classé en Oui,
@@ -47,8 +37,11 @@ stopifnot(all(climat$interviewtime > 0))
 # Et on vire le troll (il faut rajouter de garder les NAs sinon on les perd)
 climat<-climat %>% filter((nbpublisang!=666 | is.na(nbpublisang)))
 
+# La modalité Moins de 18 ans est vide : la retirer
+climat$age <- droplevels(climat$age)
+
 #Regroupement catégories d'âge (pour avoir des catégories plus homogènes en termes de nombre de personnes)
-climat$ageAgr<-climat$age
+climat$ageAgr<-as.character(climat$age)
 climat$ageAgr[climat$age %in% c("70 ans ou plus", "65-69 ans")]<-"65 ans et plus"
 climat$ageAgr[climat$age %in% c("18-24 ans", "25-29 ans")]<-"Moins de 29 ans"
 climat$ageAgr[climat$age %in% c("55-59 ans", "60-64 ans")]<-"55-64 ans"
@@ -73,8 +66,7 @@ climat$sitpro <- factor(climat$sitpro,
                           "Chargé·e de recherche", "Maître·sse de conférences", "Post-doctorant·e",
                           "ATER", "Doctorant·e contractuel·le", "Doctorant·e CIFRE", "Ingénieur·e de recherche",
                           "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
-                          "Chargé·e d’études/de mission", "Adjoint·e technique", "Autre",
-                          ""
+                          "Chargé·e d'études/de mission", "Adjoint·e technique", "Autre"
                         ))
 
 # discipline_agregee ----
@@ -387,7 +379,7 @@ climat$revenuTete[climat$revenu=="Plus de 15 000 par mois" & !is.na(climat$reven
 #######################
 #Modalités de référence dans les régressions
 climat$sexe <- as.factor(climat$sexe)
-climat$sexe <- relevel(climat$sexe, ref = "un homme")
+climat$sexe <- relevel(climat$sexe, ref = "Homme")
 
 climat$ageAgr <- as.factor(climat$ageAgr)
 climat$ageAgr <- relevel(climat$ageAgr, ref = "50-54 ans")
@@ -395,10 +387,10 @@ climat$ageAgr <- relevel(climat$ageAgr, ref = "50-54 ans")
 climat$couple <- as.factor(climat$couple)
 climat$couple <- relevel(climat$couple, ref = "Oui")
 
-climat$revenuAgr <- as.factor(climat$revenuAgr)
-climat$revenuAgr <- relevel(climat$revenuAgr, ref = "De 4 500 à 5 999 euros par mois")
+#climat$revenuAgr <- as.factor(climat$revenuAgr)
+#climat$revenuAgr <- relevel(climat$revenuAgr, ref = "De 4 500 à 5 999 euros par mois")
 
-climat$sitpro <- relevel(climat$sitpro, ref = "Maître·sse de conférences")
+climat$sitpro2 <- relevel(climat$sitpro, ref = "Maître·sse de conférences")
 
 climat$discipline_agregee <- relevel(climat$discipline_agregee , ref = "Sciences (1)") 
 climat$discipline_agr3 <- relevel(climat$discipline_agr3 , ref = "Physique")
@@ -413,30 +405,30 @@ climat$Profin_Mb_Resp <- as.factor(climat$Profin_Mb_Resp)
 climat$Profin_Mb_Resp <- relevel(climat$Profin_Mb_Resp , ref = "Ni membre ni resp d'un 1 projet financé")
 
 climat$solinstit.limitevols <- as.factor(climat$solinstit.limitevols)
-climat$solinstit.limitevols <- relevel(climat$solinstit.limitevols, ref = "C’est prioritaire")
+climat$solinstit.limitevols <- relevel(climat$solinstit.limitevols, ref = "C'est prioritaire")
 
 climat$solinstit.vols6h <- as.factor(climat$solinstit.vols6h)
-climat$solinstit.vols6h <- relevel(climat$solinstit.vols6h, ref = "C’est prioritaire")
+climat$solinstit.vols6h <- relevel(climat$solinstit.vols6h, ref = "C'est prioritaire")
 
 climat$solinstit.train <- as.factor(climat$solinstit.train)
-climat$solinstit.train <- relevel(climat$solinstit.train, ref = "C’est prioritaire")
+climat$solinstit.train <- relevel(climat$solinstit.train, ref = "C'est prioritaire")
 
 climat$solrisqreducavion.qual <- as.factor(climat$solrisqreducavion.qual)
-climat$solrisqreducavion.qual <- relevel(climat$solrisqreducavion.qual, ref = "C’est peu probable")
+climat$solrisqreducavion.qual <- relevel(climat$solrisqreducavion.qual, ref = "C'est peu probable")
 climat$solrisqreducavion.fin <- as.factor(climat$solrisqreducavion.fin)
-climat$solrisqreducavion.fin <- relevel(climat$solrisqreducavion.fin, ref = "C’est peu probable")
+climat$solrisqreducavion.fin <- relevel(climat$solrisqreducavion.fin, ref = "C'est peu probable")
 climat$solrisqreducavion.diffusion <- as.factor(climat$solrisqreducavion.diffusion)
-climat$solrisqreducavion.diffusion <- relevel(climat$solrisqreducavion.diffusion, ref = "C’est peu probable")
+climat$solrisqreducavion.diffusion <- relevel(climat$solrisqreducavion.diffusion, ref = "C'est peu probable")
 climat$solrisqreducavion.donnees <- as.factor(climat$solrisqreducavion.donnees)
-climat$solrisqreducavion.donnees <- relevel(climat$solrisqreducavion.donnees, ref = "C’est peu probable")
+climat$solrisqreducavion.donnees <- relevel(climat$solrisqreducavion.donnees, ref = "C'est peu probable")
 climat$solrisqreducavion.avantages <- as.factor(climat$solrisqreducavion.avantages)
-climat$solrisqreducavion.avantages <- relevel(climat$solrisqreducavion.avantages, ref = "C’est peu probable")
+climat$solrisqreducavion.avantages <- relevel(climat$solrisqreducavion.avantages, ref = "C'est peu probable")
 climat$solrisqreducavion.insertion <- as.factor(climat$solrisqreducavion.insertion)
-climat$solrisqreducavion.insertion <- relevel(climat$solrisqreducavion.insertion, ref = "C’est peu probable")
+climat$solrisqreducavion.insertion <- relevel(climat$solrisqreducavion.insertion, ref = "C'est peu probable")
 climat$solrisqreducavion.isoler <- as.factor(climat$solrisqreducavion.isoler)
-climat$solrisqreducavion.isoler <- relevel(climat$solrisqreducavion.isoler, ref = "C’est peu probable")
+climat$solrisqreducavion.isoler <- relevel(climat$solrisqreducavion.isoler, ref = "C'est peu probable")
 climat$solrisqreducavion.bureaucratie <- as.factor(climat$solrisqreducavion.bureaucratie)
-climat$solrisqreducavion.bureaucratie <- relevel(climat$solrisqreducavion.bureaucratie, ref = "C’est peu probable")
+climat$solrisqreducavion.bureaucratie <- relevel(climat$solrisqreducavion.bureaucratie, ref = "C'est peu probable")
 
 climat$paie <- as.factor(climat$paie)
 climat$paie <- relevel(climat$paie , ref = "Mal payé·e")
@@ -444,5 +436,5 @@ climat$paie <- relevel(climat$paie , ref = "Mal payé·e")
 climat$employeur <- as.factor(climat$employeur)
 climat$employeur <- relevel(climat$employeur , ref = "Une université")
 
-climat$NumVague <- as.factor(climat$NumVague)
-climat$NumVague <- relevel(climat$NumVague, ref = "Après premier message")
+#climat$NumVague <- as.factor(climat$NumVague)
+#climat$NumVague <- relevel(climat$NumVague, ref = "Après premier message")

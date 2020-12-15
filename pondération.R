@@ -86,8 +86,8 @@ round(cbind(prop.table(svytable(~ sitpro, svyclimat.unweighted)),
 svyciprop(~ I(preoccupe == "Extrêmement préoccupé·e"), svyclimat.unweighted)
 svyciprop(~ I(preoccupe == "Extrêmement préoccupé·e"), svyclimat)
 
-svyciprop(~ I(grepl("^La recherche publique doit montrer l’exemple", solreducrech)), svyclimat.unweighted)
-svyciprop(~ I(grepl("^La recherche publique doit montrer l’exemple", solreducrech)), svyclimat)
+svyciprop(~ I(grepl("^La recherche publique doit montrer l'exemple", solreducrech)), svyclimat.unweighted)
+svyciprop(~ I(grepl("^La recherche publique doit montrer l'exemple", solreducrech)), svyclimat)
 
 svymean(~ nbpublis, na.rm=TRUE,
         subset(svyclimat.unweighted,

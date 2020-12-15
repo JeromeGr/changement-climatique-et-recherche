@@ -31,20 +31,20 @@ freq(climat$sitpro)
 #Tout le monde
 #Premier doc "all staff"
 res.reg1 <- lm(volshnum ~ sexe + ageAgr, data=climat)
-res.reg2<- lm(volshnum ~ sexe + ageAgr  + sitpro, data=climat)
-res.reg3<- lm(volshnum ~ sexe + ageAgr  + sitpro + revenuTete  , data=climat)
-res.reg4<- lm(volshnum ~ sexe + ageAgr  + sitpro + enfantsnb + couple , data=climat)
+res.reg2<- lm(volshnum ~ sexe + ageAgr  + sitpro2, data=climat)
+res.reg3<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + revenuTete  , data=climat)
+res.reg4<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + enfantsnb + couple , data=climat)
 res.reg5 <- lm(volshnum ~ sexe + ageAgr  + discipline_agr3 , data=climat)
-res.reg6 <- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3, data=climat)
-res.reg7 <- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + nbpublis, data=climat)
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + revenuTete + enfantsnb + couple , data=climat)
+res.reg6 <- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3, data=climat)
+res.reg7 <- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + nbpublis, data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + revenuTete + enfantsnb + couple , data=climat)
 
 
 freq(climat$avionperso)
 
 #Sous discipline Socio pour comparer enquête socio
 climatSocio<-climat %>% filter(discipline_agr3=="Socio, démo")
-res.reg9<- lm(volshnum ~ sexe + ageAgr  + sitpro + revenuTete + enfantsnb + couple , data=climatSocio)
+res.reg9<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + revenuTete + enfantsnb + couple , data=climatSocio)
 
 htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6, res.reg7, res.reg8, res.reg9), 
         stars = c(0.001, 0.01, 0.05, 0.1), digits = 2, #single.row = TRUE,
@@ -58,21 +58,21 @@ htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6, res.reg7
                                "ageAgr45-49 ans"= "45-49 years old",
                                "ageAgr55-64 ans"= "55-64 years old",
                                "ageAgr65 ans et plus"= "More than 65 years old",
-                               "sitproDirecteur·rice de recherche"="Directeur·rice de recherche (Ref = Maître·sse de conférences)",
-                               "sitproProfesseur·e des universités"= "University professor ",
-                               "sitproChargé·e de recherche"="Researcher",
-                               "sitproMaître·sse de conférences"="Lecturer",
-                               "sitproPost-doctorant·e"= "Post doctoral student",
-                               "sitproATER"="ATER",
-                               "sitproDoctorant·e contractuel·le"="contractual doctoral student",
-                               "sitproDoctorant·e CIFRE"= "CIFRE contractual doctoral student",
-                               "sitproIngénieur·e de recherche"="Research engineer",
-                               "sitproIngénieur·e d'études"="Design engineer",
-                               "sitproAssistant ingénieur·e"="Assistant engineer",
-                               "sitproTechnicien·ne"="Technician",
-                               "sitproChargé·e d’études/de mission"= "Research officer",
-                               "sitproAdjoint·e technique"="Technical assistant",
-                               "sitproAutre"="Other",
+                               "sitpro2Directeur·rice de recherche"="Directeur·rice de recherche (Ref = Maître·sse de conférences)",
+                               "sitpro2Professeur·e des universités"= "University professor ",
+                               "sitpro2Chargé·e de recherche"="Researcher",
+                               "sitpro2Maître·sse de conférences"="Lecturer",
+                               "sitpro2Post-doctorant·e"= "Post doctoral student",
+                               "sitpro2ATER"="ATER",
+                               "sitpro2Doctorant·e contractuel·le"="contractual doctoral student",
+                               "sitpro2Doctorant·e CIFRE"= "CIFRE contractual doctoral student",
+                               "sitpro2Ingénieur·e de recherche"="Research engineer",
+                               "sitpro2Ingénieur·e d'études"="Design engineer",
+                               "sitpro2Assistant ingénieur·e"="Assistant engineer",
+                               "sitpro2Technicien·ne"="Technician",
+                               "sitpro2Chargé·e d'études/de mission"= "Research officer",
+                               "sitpro2Adjoint·e technique"="Technical assistant",
+                               "sitpro2Autre"="Other",
                                "discipline_agr3Droit, économie, gestion"="Droit, économie, gestion (Ref = physique)",
                                "discipline_agr3Autres lettres et sciences humaines"="Autres lettres et sciences humaines",
                                "discipline_agr3Archi/arts, anthropo ethno"="Archi/arts, anthropo ethno",
@@ -99,38 +99,38 @@ htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6, res.reg7
 
 #Employeur
 res.reg8<- lm(volshnum ~ sexe + ageAgr  + employeur, data=climat)
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 , data=climat)
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 +  employeur, data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 , data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 +  employeur, data=climat)
 summary(res.reg8)
 
 #Pratiques perso avion
 freq(climat$avionperso)
 freq(climat$avionpersochgt)
-res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro + paie, data=climat)
-res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro + avionperso, data=climat)
-res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro + avionperso + revenuTete, data=climat)
-res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro + avionpersochgt, data=climat)
-res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro + avionperso + avionpersochgt, data=climat)
-res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro + avionperso + avionpersochgt + revenuTete, data=climat)
+res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro2 + paie, data=climat)
+res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro2 + avionperso, data=climat)
+res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro2 + avionperso + revenuTete, data=climat)
+res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro2 + avionpersochgt, data=climat)
+res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro2 + avionperso + avionpersochgt, data=climat)
+res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro2 + avionperso + avionpersochgt + revenuTete, data=climat)
 summary(res.reg9)
 
 #Score écolo
 res.reg9 <- lm(volshnum ~ sexe + ageAgr  + ScoreEcolo, data=climat)
-res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro + ScoreEcolo , data=climat)
-res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro +discipline_agr3 + ScoreEcolo , data=climat)
+res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro2 + ScoreEcolo , data=climat)
+res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro2 +discipline_agr3 + ScoreEcolo , data=climat)
 
 #Etape dans la carrière, projet financé (type ; resp/membre),
-res.reg1<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3, data=climat)
-res.reg2<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + carriere , data=climat)
-res.reg3<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + nbpublis, data=climat)
-res.reg4<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + nbpublis + carriere, data=climat)
-res.reg5<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + particip_ANR + particip_Fr + particip_Europ + particip_Intern + particip_prive , data=climat)
-res.reg6<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + particip_ANR + particip_Fr + particip_Europ + particip_Intern + particip_prive + nbpublis , data=climat)
-res.reg7<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + particip_ANR + particip_Fr + particip_Europ + particip_Intern + particip_prive + nbpublis + carriere , data=climat)
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + Profin_Mb_Resp , data=climat)
-res.reg9<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + Profin_Mb_Resp + nbpublis + carriere , data=climat)
-res.reg10<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2, data=climat)
-res.reg11<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + nbpublis + carriere + projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2, data=climat)
+res.reg1<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3, data=climat)
+res.reg2<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + carriere , data=climat)
+res.reg3<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + nbpublis, data=climat)
+res.reg4<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + nbpublis + carriere, data=climat)
+res.reg5<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + particip_ANR + particip_Fr + particip_Europ + particip_Intern + particip_prive , data=climat)
+res.reg6<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + particip_ANR + particip_Fr + particip_Europ + particip_Intern + particip_prive + nbpublis , data=climat)
+res.reg7<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + particip_ANR + particip_Fr + particip_Europ + particip_Intern + particip_prive + nbpublis + carriere , data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + Profin_Mb_Resp , data=climat)
+res.reg9<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + Profin_Mb_Resp + nbpublis + carriere , data=climat)
+res.reg10<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2, data=climat)
+res.reg11<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + nbpublis + carriere + projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2, data=climat)
 
 summary(res.reg10)
 
@@ -148,21 +148,21 @@ htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6, res.reg7
                                "ageAgr45-49 ans"= "45-49 years old",
                                "ageAgr55-64 ans"= "55-64 years old",
                                "ageAgr65 ans et plus"= "More than 65 years old",
-                               "sitproDirecteur·rice de recherche"="Directeur·rice de recherche (Ref = Maître·sse de conférences)",
-                               "sitproProfesseur·e des universités"= "University professor ",
-                               "sitproChargé·e de recherche"="Researcher",
-                               "sitproMaître·sse de conférences"="Lecturer",
-                               "sitproPost-doctorant·e"= "Post doctoral student",
-                               "sitproATER"="ATER",
-                               "sitproDoctorant·e contractuel·le"="contractual doctoral student",
-                               "sitproDoctorant·e CIFRE"= "CIFRE contractual doctoral student",
-                               "sitproIngénieur·e de recherche"="Research engineer",
-                               "sitproIngénieur·e d'études"="Design engineer",
-                               "sitproAssistant ingénieur·e"="Assistant engineer",
-                               "sitproTechnicien·ne"="Technician",
-                               "sitproChargé·e d’études/de mission"= "Research officer",
-                               "sitproAdjoint·e technique"="Technical assistant",
-                               "sitproAutre"="Other",
+                               "sitpro2Directeur·rice de recherche"="Directeur·rice de recherche (Ref = Maître·sse de conférences)",
+                               "sitpro2Professeur·e des universités"= "University professor ",
+                               "sitpro2Chargé·e de recherche"="Researcher",
+                               "sitpro2Maître·sse de conférences"="Lecturer",
+                               "sitpro2Post-doctorant·e"= "Post doctoral student",
+                               "sitpro2ATER"="ATER",
+                               "sitpro2Doctorant·e contractuel·le"="contractual doctoral student",
+                               "sitpro2Doctorant·e CIFRE"= "CIFRE contractual doctoral student",
+                               "sitpro2Ingénieur·e de recherche"="Research engineer",
+                               "sitpro2Ingénieur·e d'études"="Design engineer",
+                               "sitpro2Assistant ingénieur·e"="Assistant engineer",
+                               "sitpro2Technicien·ne"="Technician",
+                               "sitpro2Chargé·e d'études/de mission"= "Research officer",
+                               "sitpro2Adjoint·e technique"="Technical assistant",
+                               "sitpro2Autre"="Other",
                                "discipline_agr3Droit, économie, gestion"="Droit, économie, gestion (Ref = physique)",
                                "discipline_agr3Autres lettres et sciences humaines"="Autres lettres et sciences humaines",
                                "discipline_agr3Archi/arts, anthropo ethno"="Archi/arts, anthropo ethno",
@@ -209,21 +209,21 @@ htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6, res.reg7
 
 #Corrélation avec les variables d'opinion
 #Solutions
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solinstit.limitevols, data=climat)
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solinstit.vols6h, data=climat)
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solinstit.train, data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + solinstit.limitevols, data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + solinstit.vols6h, data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + solinstit.train, data=climat)
 summary(res.reg8)
 #Risques
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.qual, data=climat)
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.fin, data=climat)
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.diffusion, data=climat)
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.donnees, data=climat)
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.avantages, data=climat)
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.isoler, data=climat)
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.insertion, data=climat)
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.bureaucratie, data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + solrisqreducavion.qual, data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + solrisqreducavion.fin, data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + solrisqreducavion.diffusion, data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + solrisqreducavion.donnees, data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + solrisqreducavion.avantages, data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + solrisqreducavion.isoler, data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + solrisqreducavion.insertion, data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + solrisqreducavion.bureaucratie, data=climat)
 
-res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro + discipline_agr3 + solrisqreducavion.avantages + paie, data=climat)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + solrisqreducavion.avantages + paie, data=climat)
 summary(res.reg8)
 
 
@@ -241,8 +241,8 @@ rbind(prop.table(table(climat$solinstit.train)), prop.table(table(climat$solinst
 
 
 #Evolution de la quantité de vols
-res.reg8<- lm(Evol_GesVol.conf ~ sexe + ageAgr  + sitpro + discipline_agr3 , data=climat)
-res.reg8<- lm(Evol_GesVol.conf ~ sexe + ageAgr  + sitpro + discipline_agr3 +volshnum, data=climat)
+res.reg8<- lm(Evol_GesVol.conf ~ sexe + ageAgr  + sitpro2 + discipline_agr3 , data=climat)
+res.reg8<- lm(Evol_GesVol.conf ~ sexe + ageAgr  + sitpro2 + discipline_agr3 +volshnum, data=climat)
 
 mean(climat$Evol_GesVol.conf, na.rm=T)
 

@@ -161,8 +161,8 @@ freq(climat$chgtpratique)
 climat$chgtpratique <- factor(climat$chgtpratique, 
                                labels=c("",
                                  "Sans opinion",
-                                 "Non, pas du tout d’accord",
-                                 "Non, plutôt pas d’accord",
+                                 "Non, pas du tout d'accord",
+                                 "Non, plutôt pas d'accord",
                                  "Montrer l'exemple (plus que les autres)",
                                  "Comme les autres"
                                ))
@@ -232,7 +232,7 @@ ggplot(climat[climat$diminution_domicile_travail !="" &
 ## Réordonnancement de climat$visioapresconf en climat$visioapresconf_recode
 climat$visioapresconf_recode <- factor(climat$visioapresconf,
   levels = c(
-    "Beaucoup plus favorable", "Un peu plus favorable", "Mon avis n’a pas changé",
+    "Beaucoup plus favorable", "Un peu plus favorable", "Mon avis n'a pas changé",
     "Un peu moins favorable", "Beaucoup moins favorable", "Sans opinion",
     ""
   )
@@ -259,9 +259,9 @@ climat$solrisqreducmateriel.publi_rec <- factor(climat$solrisqreducmateriel.publ
                                        levels = c("",
                                          "Non concerné·e",
                                          "Sans opinion",
-                                         "C’est peu probable", 
-                                         "C’est probable mais ce n’est pas un problème", 
-                                         "C’est probable et c’est un problème"
+                                         "C'est peu probable", 
+                                         "C'est probable mais ce n'est pas un problème", 
+                                         "C'est probable et c'est un problème"
                                        )
 )
 
