@@ -1,0 +1,77 @@
+---
+title: "Premiers résultats de l’enquête « Les personnels de la recherche face au changement climatique »"
+output: html_notebook
+---
+
+```{r preparation}
+library(tidyverse)
+library(ggplot2)
+load("climat.RData")
+source("recodages.R")
+```
+
+# Informations générales
+
+# Votre position vis-à-vis de l’environnement et de la recherche
+
+# Vos pratiques et celles de votre laboratoire
+
+# Vos transports à des fins professionnelles
+
+# La visioconférence
+
+# Votre avis personnel par rapport à l’écologie en général
+
+# Les solutions concrètes dans la recherche
+
+## Réduction des émissions de la recherche d'ici à 2030
+La France s’est engagée à réduire d’un tiers ses émissions de gaz à effet de serre d’ici à 2030. Dans ce cadre, pensez-vous que :
+
+- La recherche publique doit montrer l’exemple en matière de diminution des émissions de gaz à effet de serre en les réduisant de plus d’un tiers
+- La recherche publique doit réduire ses émissions de gaz à effet de serre d’un tiers environ
+- En raison de son rôle, la recherche publique peut bénéficier d’un statut dérogatoire, c’est-à-dire fournir des efforts moindres en termes de réduction des émissions de gaz à effet de serre
+
+```{r}
+climat$solreducrech2 <- fct_recode(climat$solreducrech,
+  "De plus d'un tiers" = "La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui",
+  "D'un tiers environ" = "La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ",
+  "De moins d'un tiers" = "En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"
+)
+ggplot(drop_na(climat, solreducrech2),
+       aes(y=fct_rev(solreducrech2), x=..prop.., group=1)) +
+    geom_bar() +
+    scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+    labs(x="Proportion des répondant·es", y="",
+         title="D'ici 2030, la recherche publique doit réduire ses émissions...")
+```
+
+# Solutions institutionnelles
+
+Quelles actions les institutions et laboratoires de recherche devraient-ils mettre en œuvre pour réduire leurs émissions de gaz à effet de serre ?
+
+```{r}
+dat <- rbind(data.frame(variable="Ajouter les émissions carbone parmi les principaux\ncritères de sélection des projets à financer", valeur=climat$solinstit.selection),
+             data.frame(variable="Imposer une limite au nombre de vols\nen avion par personne", valeur=climat$solinstit.limitevols),
+             data.frame(variable="Proscrire les vols en avion lorsque\nle trajet en train prend moins de 6 heures", valeur=climat$solinstit.vols6h),
+             data.frame(variable="Dresser et diffuser régulièrement\ndes bilans carbone détaillés", valeur=climat$solinstit.bilanges)) %>%
+    mutate(variable=factor(variable, levels=unique(variable)),
+           valeur=fct_relevel(valeur, c("C'est prioritaire", "C'est secondaire", "Sans opinion", "Il ne faut pas le mettre en œuvre")))
+
+drop_na(dat) %>%
+    ggplot(aes(x=variable)) +
+    geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
+    scale_fill_manual(values=c("#d7191c", "light grey", "#a6d96a", "#1a9641")) +
+    scale_y_continuous(labels=scales::percent_format(),
+                       sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
+    coord_flip() + labs(fill="") +
+    theme_minimal() +
+    theme(legend.position="bottom", plot.title=element_text(size=11)) +
+    guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
+    labs(y="Proportion des répondant·es", x="",
+         title="Actions à mettre en œuvre\npour réduire les émissions carbone :")
+```
+
+
+# Informations concernant votre activité et votre situation personnelle
+
+# Quiz sur les émissions de gaz à effet de serre
