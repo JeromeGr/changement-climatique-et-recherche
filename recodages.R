@@ -3,8 +3,17 @@ library(tidyverse)
 
 #chargement de la base
 
-climat <- read.csv("climat0210.csv", fileEncoding ="UTF-8", na.strings="")
+climat <- read.csv("climat0212.csv", fileEncoding="UTF-8", na.strings=c("", "N/A"))
 
+# Supprimer les points à la fin des noms de variables
+names(climat) <- gsub("\\.$", "", names(climat))
+
+# Chargement des intitulés des questions comme labels des variables
+questions <- read.csv("intitulés des questions.csv", row.names="code")
+rownames(questions) <- gsub("\\[", ".", gsub("\\]$", "", rownames(questions)))
+for(var in names(climat)) {
+  attr(climat[[var]], "label") <- questions[var, "question"]
+}
 
 # Élimination des hors-champ
 # is.na(rechpub) peut indiquer à la fois un statut d'office classé en Oui,
@@ -23,14 +32,14 @@ climat <- filter(climat,
                                     "Une université", "Inserm", "CEA", "IRD",
                                     "Cirad", "Inrae", "Inria", "CNES", "Ifremer", 
                                     "ONERA", "Ined") |
-                   tutelles.CNRS. == "Oui" | tutelles.Univ. == "Oui" |
-                   tutelles.Ecole. == "Oui" | tutelles.Inserm. == "Oui" |
-                   tutelles.Inrae. == "Oui" | tutelles.Inria. == "Oui" |
-                   tutelles.IRD. == "Oui" | tutelles.Ined. == "Oui" |
-                   tutelles.CEA. == "Oui" | tutelles.CNES. == "Oui"|
-                   tutelles.ONERA. == "Oui" | tutelles.Cirad. == "Oui" |
-                   tutelles.Ifremer. == "Oui" |
-                   sitpro.other. == "Indépendante, chercheuse associée dans un labo")
+                   tutelles.CNRS == "Oui" | tutelles.Univ == "Oui" |
+                   tutelles.Ecole == "Oui" | tutelles.Inserm == "Oui" |
+                   tutelles.Inrae == "Oui" | tutelles.Inria == "Oui" |
+                   tutelles.IRD == "Oui" | tutelles.Ined == "Oui" |
+                   tutelles.CEA == "Oui" | tutelles.CNES == "Oui"|
+                   tutelles.ONERA == "Oui" | tutelles.Cirad == "Oui" |
+                   tutelles.Ifremer == "Oui" |
+                   sitpro.other == "Indépendante, chercheuse associée dans un labo")
 
 # À ce stade on ne doit avoir que des personnes qui ont répondu au moins à quelques questions
 stopifnot(all(climat$interviewtime > 0))
@@ -303,16 +312,16 @@ climat$discipline_agr3 <- fct_recode(climat$discipline,
 
 # participation à une ANR, ERC, etc.
 for(inst in c("anr", "europe", "france", "inter", "prive")) {
-  varnon <- paste0("projets.", inst, "_n.")
-  varr <- paste0("projets.", inst, "_r.")
-  varm <- paste0("projets.", inst, "_m.")
+  varnon <- paste0("projets.", inst, "_n")
+  varr <- paste0("projets.", inst, "_r")
+  varm <- paste0("projets.", inst, "_m")
   # Indique si au moins une case a été cochée sur la ligne (Responsable, membre, non)
   unecochee <- (!is.na(climat[[varnon]]) & climat[[varnon]] == 1) |
                (!is.na(climat[[varr]]) & climat[[varr]] == 1) |
                (!is.na(climat[[varm]]) & climat[[varm]] == 1)
   for(sit in c("r", "m")) {
-    var <- paste0("projets.", inst, "_", sit, ".")
-    var2 <- paste0("projets.", inst, "_", sit)
+    var <- paste0("projets.", inst, "_", sit)
+    var2 <- paste0("projets.", inst, "_", sit, "2")
     inst2 <- c(anr="projet ANR",
                europe="projet européen",
                france="projet France",
@@ -325,7 +334,8 @@ for(inst in c("anr", "europe", "france", "inter", "prive")) {
     # 0 signifie que le répondant n'est pas allé jusqu'à cette question/page
     # Si Oui et Non ont été cochés tous les deux, on retient Oui
     # Vérification avec :
-    # table(paste(climat$projets.anr_r., climat$projets.anr_m., climat$projets.anr_n.), climat$projets.anr_m, useNA="a")
+    # table(paste(climat$projets.anr_r, climat$projets.anr_m, climat$projets.anr_n),
+    #             climat$projets.anr_m2, useNA="a")
     climat[[var2]] <- if_else(is.na(climat[[var]]) & unecochee,
                               paste(sit2, inst2, "non"),
                               if_else(climat[[var]] == 1,
@@ -336,24 +346,24 @@ for(inst in c("anr", "europe", "france", "inter", "prive")) {
 
 #Financements : regroupement membres et responsables
 climat$particip_ANR<-0
-climat$particip_ANR[climat$projets.anr_r =="Responsable projet ANR oui" | climat$projets.anr_m =="Membre projet ANR oui"]<-1
+climat$particip_ANR[climat$projets.anr_r2 == "Responsable projet ANR oui" | climat$projets.anr_m2 == "Membre projet ANR oui"]<-1
 climat$particip_Fr<-0
-climat$particip_Fr[climat$projets.france_r=="Responsable projet France oui" | climat$projets.france_m=="Membre projet France oui"]<-1
+climat$particip_Fr[climat$projets.france_r2 == "Responsable projet France oui" | climat$projets.france_m2 =="Membre projet France oui"]<-1
 climat$particip_Europ<-0
-climat$particip_Europ[climat$projets.europe_r =="Responsable projet européen oui" | climat$projets.europe_m =="Membre projet européen oui"]<-1
+climat$particip_Europ[climat$projets.europe_r2 =="Responsable projet européen oui" | climat$projets.europe_m2 == "Membre projet européen oui"]<-1
 climat$particip_Intern<-0
-climat$particip_Intern[climat$projets.inter_r =="Responsable projet international oui" | climat$projets.inter_m =="Membre projet international oui"]<-1
+climat$particip_Intern[climat$projets.inter_r2 == "Responsable projet international oui" | climat$projets.inter_m2 == "Membre projet international oui"]<-1
 climat$particip_prive<-0
-climat$particip_prive[climat$projets.prive_r  =="Responsable projet privé oui" | climat$projets.prive_m =="Membre projet privé oui"]<-1
+climat$particip_prive[climat$projets.prive_r2 == "Responsable projet privé oui" | climat$projets.prive_m2 == "Membre projet privé oui"]<-1
 
 
 #Membre ou responsable d'un projet financé
-climat$Profin_Mb_Resp[climat$projets.anr_r =="Responsable projet ANR oui" | climat$projets.france_r=="Responsable projet France oui" | 
-                        climat$projets.europe_r =="Responsable projet européen oui" | climat$projets.inter_r =="Responsable projet international oui" | 
-                        climat$projets.prive_r  =="Responsable projet privé oui" ]<-"Responsable d'au moins 1 projet financé"
-climat$Profin_Mb_Resp[is.na(climat$Profin_Mb_Resp) & (climat$projets.anr_m =="Membre projet ANR oui" | climat$projets.france_m=="Membre projet France oui" |
-                                                        climat$projets.europe_m =="Membre projet européen oui" | climat$projets.inter_m =="Membre projet international oui" | 
-                                                        climat$projets.prive_r  =="Responsable projet privé oui") ]<-"Membre d'au moins 1 projet financé"
+climat$Profin_Mb_Resp[climat$projets.anr_r2 =="Responsable projet ANR oui" | climat$projets.france_r2 == "Responsable projet France oui" | 
+                        climat$projets.europe_r2 =="Responsable projet européen oui" | climat$projets.inter_r2 == "Responsable projet international oui" | 
+                        climat$projets.prive_r2  =="Responsable projet privé oui" ]<-"Responsable d'au moins 1 projet financé"
+climat$Profin_Mb_Resp[is.na(climat$Profin_Mb_Resp) & (climat$projets.anr_m2 == "Membre projet ANR oui" | climat$projets.france_m2 == "Membre projet France oui" |
+                                                        climat$projets.europe_m2 == "Membre projet européen oui" | climat$projets.inter_m2 == "Membre projet international oui" | 
+                                                        climat$projets.prive_r2  == "Responsable projet privé oui") ]<-"Membre d'au moins 1 projet financé"
 climat$Profin_Mb_Resp[is.na(climat$Profin_Mb_Resp)]<-"Ni membre ni resp d'un 1 projet financé"
 
 
@@ -402,31 +412,31 @@ climat$carriere <- relevel(climat$carriere , ref = "Non")
 climat$Profin_Mb_Resp <- as.factor(climat$Profin_Mb_Resp)
 climat$Profin_Mb_Resp <- relevel(climat$Profin_Mb_Resp , ref = "Ni membre ni resp d'un 1 projet financé")
 
-climat$solinstit.limitevols. <- as.factor(climat$solinstit.limitevols.)
-climat$solinstit.limitevols. <- relevel(climat$solinstit.limitevols. , ref = "C’est prioritaire")
+climat$solinstit.limitevols <- as.factor(climat$solinstit.limitevols)
+climat$solinstit.limitevols <- relevel(climat$solinstit.limitevols, ref = "C’est prioritaire")
 
-climat$solinstit.vols6h. <- as.factor(climat$solinstit.vols6h.)
-climat$solinstit.vols6h. <- relevel(climat$solinstit.vols6h. , ref = "C’est prioritaire")
+climat$solinstit.vols6h <- as.factor(climat$solinstit.vols6h)
+climat$solinstit.vols6h <- relevel(climat$solinstit.vols6h, ref = "C’est prioritaire")
 
-climat$solinstit.train. <- as.factor(climat$solinstit.train.)
-climat$solinstit.train. <- relevel(climat$solinstit.train. , ref = "C’est prioritaire")
+climat$solinstit.train <- as.factor(climat$solinstit.train)
+climat$solinstit.train <- relevel(climat$solinstit.train, ref = "C’est prioritaire")
 
-climat$solrisqreducavion.qual. <- as.factor(climat$solrisqreducavion.qual.)
-climat$solrisqreducavion.qual. <- relevel(climat$solrisqreducavion.qual. , ref = "C’est peu probable")
-climat$solrisqreducavion.fin. <- as.factor(climat$solrisqreducavion.fin.)
-climat$solrisqreducavion.fin. <- relevel(climat$solrisqreducavion.fin. , ref = "C’est peu probable")
-climat$solrisqreducavion.diffusion. <- as.factor(climat$solrisqreducavion.diffusion.)
-climat$solrisqreducavion.diffusion. <- relevel(climat$solrisqreducavion.diffusion. , ref = "C’est peu probable")
-climat$solrisqreducavion.donnees. <- as.factor(climat$solrisqreducavion.donnees.)
-climat$solrisqreducavion.donnees. <- relevel(climat$solrisqreducavion.donnees. , ref = "C’est peu probable")
-climat$solrisqreducavion.avantages. <- as.factor(climat$solrisqreducavion.avantages.)
-climat$solrisqreducavion.avantages. <- relevel(climat$solrisqreducavion.avantages. , ref = "C’est peu probable")
-climat$solrisqreducavion.insertion. <- as.factor(climat$solrisqreducavion.insertion.)
-climat$solrisqreducavion.insertion. <- relevel(climat$solrisqreducavion.insertion. , ref = "C’est peu probable")
-climat$solrisqreducavion.isoler. <- as.factor(climat$solrisqreducavion.isoler.)
-climat$solrisqreducavion.isoler. <- relevel(climat$solrisqreducavion.isoler. , ref = "C’est peu probable")
-climat$solrisqreducavion.bureaucratie. <- as.factor(climat$solrisqreducavion.bureaucratie.)
-climat$solrisqreducavion.bureaucratie. <- relevel(climat$solrisqreducavion.bureaucratie. , ref = "C’est peu probable")
+climat$solrisqreducavion.qual <- as.factor(climat$solrisqreducavion.qual)
+climat$solrisqreducavion.qual <- relevel(climat$solrisqreducavion.qual, ref = "C’est peu probable")
+climat$solrisqreducavion.fin <- as.factor(climat$solrisqreducavion.fin)
+climat$solrisqreducavion.fin <- relevel(climat$solrisqreducavion.fin, ref = "C’est peu probable")
+climat$solrisqreducavion.diffusion <- as.factor(climat$solrisqreducavion.diffusion)
+climat$solrisqreducavion.diffusion <- relevel(climat$solrisqreducavion.diffusion, ref = "C’est peu probable")
+climat$solrisqreducavion.donnees <- as.factor(climat$solrisqreducavion.donnees)
+climat$solrisqreducavion.donnees <- relevel(climat$solrisqreducavion.donnees, ref = "C’est peu probable")
+climat$solrisqreducavion.avantages <- as.factor(climat$solrisqreducavion.avantages)
+climat$solrisqreducavion.avantages <- relevel(climat$solrisqreducavion.avantages, ref = "C’est peu probable")
+climat$solrisqreducavion.insertion <- as.factor(climat$solrisqreducavion.insertion)
+climat$solrisqreducavion.insertion <- relevel(climat$solrisqreducavion.insertion, ref = "C’est peu probable")
+climat$solrisqreducavion.isoler <- as.factor(climat$solrisqreducavion.isoler)
+climat$solrisqreducavion.isoler <- relevel(climat$solrisqreducavion.isoler, ref = "C’est peu probable")
+climat$solrisqreducavion.bureaucratie <- as.factor(climat$solrisqreducavion.bureaucratie)
+climat$solrisqreducavion.bureaucratie <- relevel(climat$solrisqreducavion.bureaucratie, ref = "C’est peu probable")
 
 climat$paie <- as.factor(climat$paie)
 climat$paie <- relevel(climat$paie , ref = "Mal payé·e")
