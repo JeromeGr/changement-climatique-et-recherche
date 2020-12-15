@@ -2,6 +2,7 @@
 title: Premiers résultats de l’enquête « Les personnels de la recherche face au changement
   climatique »
 output:
+  word_document: default
   html_notebook: default
 ---
 
@@ -19,6 +20,41 @@ source("recodages.R")
 # Vos pratiques et celles de votre laboratoire
 
 # Vos transports à des fins professionnelles
+
+Pour l'année 2019 (du 1er janvier au 31 décembre), nombre d'heures de vol en avion.
+```{r}
+climat$volsh2<-climat$volsh
+levels(climat$volsh2)<-c("0h", levels(climat$volsh2))
+climat$volsh2[climat$volsnb==0]<-"0h"
+
+ggplot(drop_na(climat, volsh2),
+       aes(y=fct_rev(volsh2), x=..prop.., group=1)) +
+  geom_bar() +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  labs(x="Proportion des répondant·es", y="Nombre d'heures de vol en 2019")
+```
+
+Nombre de jours travaillés sur place
+
+```{r}
+DFNbJourTravailles<- climat %>% 
+  select(c(paste0("volsnb", seq(1, 5))), c(paste0("volsjours", seq(1, 5)))) %>%
+  pivot_longer(cols = c(paste0("volsjours", seq(1, 5))), 
+               names_to = "NuméroVol", 
+               values_to = "NbJourTravaillés")
+
+DFNbJourTravailles<-DFNbJourTravailles %>% group_by(NbJourTravaillés) %>% summarize(Nbsejours=n())
+
+#Mais si on veut tenir compte du nombre d'aller retour pour avoir le nombre de séjours réels (volsnb), c'est à dire tenir compte de ceux qui font le même aller-retour pour le même motif plusieurs fois
+#Je veux le pivotage de deux groupes de colonnes ensemble
+#Voir : https://community.rstudio.com/t/pivot-longer-on-multiple-column-sets-pairs/43958/10
+DFNbJourTravailles<- climat %>% 
+  select(c(paste0("volsnb", seq(1, 5))), c(paste0("volsjours", seq(1, 5)))) %>%
+  pivot_longer(everything(), 
+               names_to = c("set", ".value"), 
+               names_pattern = "(\\D+)(\\d+)")
+#Là ça marche plus : HELP !
+```
 
 # La visioconférence
 
