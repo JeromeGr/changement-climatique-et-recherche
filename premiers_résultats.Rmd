@@ -105,6 +105,11 @@ ggplot(DFNbJourTravailles,  aes(x=prop, y=volsjours )) + geom_col() +
   labs(y="", x="",
        title="Part de la distance totale parcourue en avion par l'ensemble\n des répondants, selon le temps travaillé sur place") 
 
+
+
+###Attention : par défaut, il faudrait fixer les volnb indiqués NA à la valeur 1 (oubli des gens)
+
+
 ```
 
 Motif principal des déplacements professionnels en avion
@@ -158,6 +163,30 @@ ggplot(DFDistMoyAvion,  aes(x=DistMoy, y=fct_reorder(volsmotif, DistMoy) )) + ge
        title="Distance moyenne parcourue en avion par motif principal\n du déplacement") 
 
 ```
+
+Proportion de la distance totale parcourue en avion par les répondants avec des trajets en train de moins de 3H (estimation)
+
+```{r echo=FALSE}
+DFDistAvion<- climat %>% 
+  select(paste0("volsnb", 1:5), paste0("volsdist", 1:5), paste0("volsh", 1:5)) %>%
+  pivot_longer(everything(),
+               names_to = c(".value", "set"),
+               names_sep = -1) 
+#On regarde Volh<2 car c'est le temps pour l'aller retour. On maximise en disant que jusqu'à une heure, on a un train de moins de 3h
+DFDistAvion$VolInf3h[DFDistAvion$volsh<2]<-"Trajet effectuable en moins de 3h en train"
+DFDistAvion$VolInf3h[DFDistAvion$volsh>=2]<-"Trajet effectuable en plus de 3h en train"
+
+DFDistAvion<-DFDistAvion%>% group_by(VolInf3h) %>%
+  summarize(DistTotale=sum(volsdist*volsnb, na.rm=T)) %>%
+  drop_na(VolInf3h) %>%
+  mutate(prop=DistTotale/sum(DistTotale))
+
+ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(VolInf3h, prop) )) + geom_col() +
+  labs(y="", x="",
+       title="Part estimée de la distance totale parcourue en avion\n par l'ensemble des répondants, selon la durée du trajet\n en train correspondant") 
+
+```
+
 
 
 Pour ceux qui ont pris l'avion en 2019 : En 2019, avez-vous pris l’avion pour un trajet professionnel qui prend moins de 6 heures en train (hors déplacements domicile-travail) ?
