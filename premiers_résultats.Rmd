@@ -38,8 +38,8 @@ Nombre de jours travaillés sur place
 
 ```{r}
 DFNbJourTravailles<- climat %>% 
-  select(c(paste0("volsnb", seq(1, 5))), c(paste0("volsjours", seq(1, 5)))) %>%
-  pivot_longer(cols = c(paste0("volsjours", seq(1, 5))), 
+  select(paste0("volsnb", 1:5), paste0("volsjours", 1:5)) %>%
+  pivot_longer(cols = paste0("volsjours", 1:5), 
                names_to = "NuméroVol", 
                values_to = "NbJourTravaillés")
 
@@ -49,11 +49,13 @@ DFNbJourTravailles<-DFNbJourTravailles %>% group_by(NbJourTravaillés) %>% summa
 #Je veux le pivotage de deux groupes de colonnes ensemble
 #Voir : https://community.rstudio.com/t/pivot-longer-on-multiple-column-sets-pairs/43958/10
 DFNbJourTravailles<- climat %>% 
-  select(c(paste0("volsnb", seq(1, 5))), c(paste0("volsjours", seq(1, 5)))) %>%
-  pivot_longer(everything(), 
-               names_to = c("set", ".value"), 
-               names_pattern = "(\\D+)(\\d+)")
-#Là ça marche plus : HELP !
+  select(paste0("volsnb", 1:5), paste0("volsjours", 1:5)) %>%
+  pivot_longer(everything(),
+               names_to = c(".value", "set"),
+               names_sep = -1) %>%
+  count(volsjours, wt=volsnb) %>%
+  drop_na(n) %>%
+  mutate(prop=n/sum(n))
 ```
 
 # La visioconférence
