@@ -92,21 +92,21 @@ ggplot(climat,aes(x=hindex,
 
 # on construit un grand vecteur (une liste) avec les proportions qui nous intéressent
 projets <- rbind(
-  lprop(table(climat$projets.anr_r.,climat$vols_dicho))[1,2],
-  lprop(table(climat$projets.anr_m.,climat$vols_dicho))[1,2],
-  lprop(table(climat$projets.anr_n.,climat$vols_dicho))[1,2],
-  lprop(table(climat$projets.france_r.,climat$vols_dicho))[1,2],
-  lprop(table(climat$projets.france_m.,climat$vols_dicho))[1,2],
-  lprop(table(climat$projets.france_n.,climat$vols_dicho))[1,2],
-  lprop(table(climat$projets.europe_r.,climat$vols_dicho))[1,2],
-  lprop(table(climat$projets.europe_m.,climat$vols_dicho))[1,2],
-  lprop(table(climat$projets.europe_n.,climat$vols_dicho))[1,2],
-  lprop(table(climat$projets.inter_r.,climat$vols_dicho))[1,2],
-  lprop(table(climat$projets.inter_m.,climat$vols_dicho))[1,2],
-  lprop(table(climat$projets.inter_n.,climat$vols_dicho))[1,2],
-  lprop(table(climat$projets.prive_r.,climat$vols_dicho))[1,2],
-  lprop(table(climat$projets.prive_m.,climat$vols_dicho))[1,2],
-  lprop(table(climat$projets.prive_n.,climat$vols_dicho))[1,2])
+  lprop(table(climat$projets.anr_r,climat$vols_dicho))[1,2],
+  lprop(table(climat$projets.anr_m,climat$vols_dicho))[1,2],
+  lprop(table(climat$projets.anr_n,climat$vols_dicho))[1,2],
+  lprop(table(climat$projets.france_r,climat$vols_dicho))[1,2],
+  lprop(table(climat$projets.france_m,climat$vols_dicho))[1,2],
+  lprop(table(climat$projets.france_n,climat$vols_dicho))[1,2],
+  lprop(table(climat$projets.europe_r,climat$vols_dicho))[1,2],
+  lprop(table(climat$projets.europe_m,climat$vols_dicho))[1,2],
+  lprop(table(climat$projets.europe_n,climat$vols_dicho))[1,2],
+  lprop(table(climat$projets.inter_r,climat$vols_dicho))[1,2],
+  lprop(table(climat$projets.inter_m,climat$vols_dicho))[1,2],
+  lprop(table(climat$projets.inter_n,climat$vols_dicho))[1,2],
+  lprop(table(climat$projets.prive_r,climat$vols_dicho))[1,2],
+  lprop(table(climat$projets.prive_m,climat$vols_dicho))[1,2],
+  lprop(table(climat$projets.prive_n,climat$vols_dicho))[1,2])
 
 # on met des intitulés clairs et dans l'ordre de la liste ci dessus
 a <- c(
@@ -161,8 +161,8 @@ freq(climat$chgtpratique)
 climat$chgtpratique <- factor(climat$chgtpratique, 
                                labels=c("",
                                  "Sans opinion",
-                                 "Non, pas du tout d’accord",
-                                 "Non, plutôt pas d’accord",
+                                 "Non, pas du tout d'accord",
+                                 "Non, plutôt pas d'accord",
                                  "Montrer l'exemple (plus que les autres)",
                                  "Comme les autres"
                                ))
@@ -209,7 +209,7 @@ ggplot(climat[climat$recherche2030 !="Non réponse",]) +
 
 # diminution 5 dernières années domicile travail ----
 
-climat$diminution_domicile_travail <- factor(climat$solevolges.domicile.,
+climat$diminution_domicile_travail <- factor(climat$solevolges.domicile,
   levels = c(
     "Fortement diminué", "Un peu diminué", "Été à peu près stables",
     "Un peu augmenté", "Fortement augmenté", "Je ne sais pas", "Non concerné·e",
@@ -232,7 +232,7 @@ ggplot(climat[climat$diminution_domicile_travail !="" &
 ## Réordonnancement de climat$visioapresconf en climat$visioapresconf_recode
 climat$visioapresconf_recode <- factor(climat$visioapresconf,
   levels = c(
-    "Beaucoup plus favorable", "Un peu plus favorable", "Mon avis n’a pas changé",
+    "Beaucoup plus favorable", "Un peu plus favorable", "Mon avis n'a pas changé",
     "Un peu moins favorable", "Beaucoup moins favorable", "Sans opinion",
     ""
   )
@@ -254,20 +254,20 @@ ggplot(climat[climat$visioapresconf_recode !="",]) +
 # destiné aux expériences et aux observations scientifiques ? 
 # solrisqreducavion ----
 
-freq(climat$solrisqreducmateriel.publi.)
-climat$solrisqreducmateriel.publi_rec <- factor(climat$solrisqreducmateriel.publi.,
+freq(climat$solrisqreducmateriel.publi)
+climat$solrisqreducmateriel.publi_rec <- factor(climat$solrisqreducmateriel.publi,
                                        levels = c("",
                                          "Non concerné·e",
                                          "Sans opinion",
-                                         "C’est peu probable", 
-                                         "C’est probable mais ce n’est pas un problème", 
-                                         "C’est probable et c’est un problème"
+                                         "C'est peu probable", 
+                                         "C'est probable mais ce n'est pas un problème", 
+                                         "C'est probable et c'est un problème"
                                        )
 )
 
-ggplot(climat[climat$solrisqreducmateriel.publi. !="" &
-                climat$solrisqreducmateriel.publi.  != "Non concerné·e",]) + 
-  geom_bar(aes(x = fct_rev(solrisqreducmateriel.publi.), 
+ggplot(climat[climat$solrisqreducmateriel.publi !="" &
+                climat$solrisqreducmateriel.publi  != "Non concerné·e",]) + 
+  geom_bar(aes(x = fct_rev(solrisqreducmateriel.publi), 
                y = 100*..prop.., group = 1 
   ), fill="white", color = "steelblue") +
   theme_minimal()+coord_flip()+
@@ -282,12 +282,12 @@ ggplot(climat[climat$solrisqreducmateriel.publi. !="" &
 
 # Quelles actions les institutions et laboratoires de recherche devraient-ils mettre en œuvre pour réduire leurs émissions de gaz à effet de serre ?
 
-# freq(climat$solinstit.train.)
+# freq(climat$solinstit.train)
 
 #, title=
 # "Limite de vols par personne"
-ggplot(climat[climat$solinstit.limitevols. !="",]) + 
-  geom_bar(aes(x = fct_rev(solinstit.limitevols.), 
+ggplot(climat[climat$solinstit.limitevols !="",]) + 
+  geom_bar(aes(x = fct_rev(solinstit.limitevols),
                y = 100*..prop.., group = 1 
   ), fill="white", color = "steelblue") +
   theme_minimal()+coord_flip()+
@@ -295,8 +295,8 @@ ggplot(climat[climat$solinstit.limitevols. !="",]) +
   ylim(0,65)
 
 #Bilan GES"
-ggplot(climat[climat$solinstit.bilanges. !="",]) + 
-  geom_bar(aes(x = fct_rev(solinstit.bilanges.), 
+ggplot(climat[climat$solinstit.bilanges !="",]) + 
+  geom_bar(aes(x = fct_rev(solinstit.bilanges),
                y = 100*..prop.., group = 1 
   ), fill="white", color = "steelblue") +
   theme_minimal()+coord_flip()+
@@ -305,8 +305,8 @@ ggplot(climat[climat$solinstit.bilanges. !="",]) +
 
 #, title=
 # "Poids des conférences dans les évaluations de carrière"
-ggplot(climat[climat$solinstit.conf. !="",]) + 
-  geom_bar(aes(x = fct_rev(solinstit.conf.), 
+ggplot(climat[climat$solinstit.conf !="",]) + 
+  geom_bar(aes(x = fct_rev(solinstit.conf),
                y = 100*..prop.., group = 1 
   ), fill="white", color = "steelblue") +
   theme_minimal()+coord_flip()+
@@ -317,8 +317,8 @@ ggplot(climat[climat$solinstit.conf. !="",]) +
 
 # , title=
   # "Emissions dans les critères de sélection des projets à financer"
-ggplot(climat[climat$solinstit.selection. !="",]) + 
-  geom_bar(aes(x = fct_rev(solinstit.selection.), 
+ggplot(climat[climat$solinstit.selection !="",]) + 
+  geom_bar(aes(x = fct_rev(solinstit.selection),
                y = 100*..prop.., group = 1 
   ), fill="white", color = "steelblue") +
   theme_minimal()+coord_flip()+ 
@@ -373,17 +373,41 @@ group_by(climat, sitpro) %>%
 #                     summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
 #                     rename(projets=projets.europe_m))
 # vars <- paste0("projets.", c("anr_r", "europe_r", "france_r", "inter_r", "prive_r",
-#                              "anr_m", "europe_m", "france_m", "inter_m", "prive_m"), ".")
-volsproj <- rbind(filter(climat, is.na(projets.anr_r.) & is.na(projets.anr_m.) & is.na(projets.europe_r.) & is.na(projets.europe_m.)) %>%
+#                              "anr_m", "europe_m", "france_m", "inter_m", "prive_m"))
+
+#volsproj <- rbind(filter(climat, projets.anr_r == "Responsable projet ANR non" &
+#                                 projets.anr_m == "Membre projet ANR non" &
+#                                 projets.europe_r == "Responsable projet européen non" &
+#                                 projets.europe_m == "Membre projet européen non") %>%
+#                    summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
+#                    mutate(projets="Ni l'un ni l'autre"),
+#                  filter(climat, (projets.anr_r == "Responsable projet ANR oui" |
+#                                  projets.anr_m == "Membre projet ANR oui") &
+#                                  projets.europe_r == "Responsable projet européen non" &
+#                                  projets.europe_m == "Membre projet européen non") %>%
+#                    summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
+#                    mutate(projets="Projet ANR uniquement"),
+                  # filter(climat, projets.anr_r == "Responsable projet ANR non" &
+                  #                projets.anr_m == "Membre projet ANR non" &
+                  #                (projets.europe_r == "Responsable projet européen oui" |
+                  #                 projets.europe_m == "Membre projet européen oui")) %>%
+                  #   summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
+                  #   mutate(projets="Projet européen uniquement"),
+                  # filter(climat, (projets.anr_r == "Responsable projet ANR oui" |
+                  #                 projets.anr_m == "Membre projet ANR oui") &
+                  #                (projets.europe_r == "Responsable projet européen oui" |
+                  #                 projets.europe_m == "Membre projet européen oui")) %>%
+
+volsproj <- rbind(filter(climat, is.na(projets.anr_r) & is.na(projets.anr_m) & is.na(projets.europe_r) & is.na(projets.europe_m)) %>%
                     summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
                     mutate(projets="Ni l'un ni l'autre"),
-                  filter(climat, (!is.na(projets.anr_r.) | !is.na(projets.anr_m.)) & is.na(projets.europe_r.) & is.na(projets.europe_m.)) %>%
+                  filter(climat, (!is.na(projets.anr_r) | !is.na(projets.anr_m)) & is.na(projets.europe_r) & is.na(projets.europe_m)) %>%
                     summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
                     mutate(projets="Projet ANR"),
-                  filter(climat, is.na(projets.anr_r.) & is.na(projets.anr_m.) & (!is.na(projets.europe_r.) | !is.na(projets.europe_m.))) %>%
+                  filter(climat, is.na(projets.anr_r) & is.na(projets.anr_m) & (!is.na(projets.europe_r) | !is.na(projets.europe_m))) %>%
                     summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
                     mutate(projets="Projet européen"),
-                  filter(climat, (!is.na(projets.anr_r.) | !is.na(projets.anr_m.)) & (!is.na(projets.europe_r.) | !is.na(projets.europe_m.))) %>%
+                  filter(climat, (!is.na(projets.anr_r) | !is.na(projets.anr_m)) & (!is.na(projets.europe_r) | !is.na(projets.europe_m))) %>%
                     summarize(volshnum=mean(volshnum, na.rm=TRUE)) %>%
                     mutate(projets="Projet ANR et projet européen"))
 

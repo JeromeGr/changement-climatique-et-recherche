@@ -3,8 +3,7 @@ library(tidyverse)
 
 #chargement de la base
 
-climat <- read.csv("climat0210.csv", fileEncoding ="UTF-8", na.strings="")
-
+load("climat.RData")
 
 # Élimination des hors-champ
 # is.na(rechpub) peut indiquer à la fois un statut d'office classé en Oui,
@@ -23,14 +22,14 @@ climat <- filter(climat,
                                     "Une université", "Inserm", "CEA", "IRD",
                                     "Cirad", "Inrae", "Inria", "CNES", "Ifremer", 
                                     "ONERA", "Ined") |
-                   tutelles.CNRS. == "Oui" | tutelles.Univ. == "Oui" |
-                   tutelles.Ecole. == "Oui" | tutelles.Inserm. == "Oui" |
-                   tutelles.Inrae. == "Oui" | tutelles.Inria. == "Oui" |
-                   tutelles.IRD. == "Oui" | tutelles.Ined. == "Oui" |
-                   tutelles.CEA. == "Oui" | tutelles.CNES. == "Oui"|
-                   tutelles.ONERA. == "Oui" | tutelles.Cirad. == "Oui" |
-                   tutelles.Ifremer. == "Oui" |
-                   sitpro.other. == "Indépendante, chercheuse associée dans un labo")
+                   tutelles.CNRS == "Oui" | tutelles.Univ == "Oui" |
+                   tutelles.Ecole == "Oui" | tutelles.Inserm == "Oui" |
+                   tutelles.Inrae == "Oui" | tutelles.Inria == "Oui" |
+                   tutelles.IRD == "Oui" | tutelles.Ined == "Oui" |
+                   tutelles.CEA == "Oui" | tutelles.CNES == "Oui"|
+                   tutelles.ONERA == "Oui" | tutelles.Cirad == "Oui" |
+                   tutelles.Ifremer == "Oui" |
+                   sitpro.other == "Indépendante, chercheuse associée dans un labo")
 
 # À ce stade on ne doit avoir que des personnes qui ont répondu au moins à quelques questions
 stopifnot(all(climat$interviewtime > 0))
@@ -38,12 +37,29 @@ stopifnot(all(climat$interviewtime > 0))
 # Et on vire le troll (il faut rajouter de garder les NAs sinon on les perd)
 climat<-climat %>% filter((nbpublisang!=666 | is.na(nbpublisang)))
 
+# La modalité Moins de 18 ans est vide : la retirer
+climat$age <- droplevels(climat$age)
+
 #Regroupement catégories d'âge (pour avoir des catégories plus homogènes en termes de nombre de personnes)
-climat$ageAgr<-climat$age
+climat$ageAgr<-as.character(climat$age)
 climat$ageAgr[climat$age %in% c("70 ans ou plus", "65-69 ans")]<-"65 ans et plus"
 climat$ageAgr[climat$age %in% c("18-24 ans", "25-29 ans")]<-"Moins de 29 ans"
 climat$ageAgr[climat$age %in% c("55-59 ans", "60-64 ans")]<-"55-64 ans"
 
+# variable combinant existence et causes du changement climatique
+climat$acthum2 <- factor(climat$acthum,
+                         levels=c("Oui, elles en sont l'unique cause", 
+                                  "Oui, elles jouent un grand rôle",
+                                  "Oui, elles jouent un petit rôle",
+                                  "Non, elles ne jouent aucun rôle",
+                                  "Il n'y a pas de changement climatique",
+                                  "Sans opinion"))
+climat$acthum2[substr(climat$changclim, 1, 3) == "Non"] <- "Il n'y a pas de changement climatique"
+climat$acthum2[climat$changclim == "Sans opinion"] <- "Sans opinion"
+
+climat$preoccupe2 <- climat$preoccupe
+climat$preoccupe2[substr(climat$changclim, 1, 3) == "Non"] <- "Pas du tout préoccupé·e"
+climat$preoccupe2[climat$changclim == "Sans opinion"] <- "Sans opinion"
 
 # vols_dicho : a volé ou n'a pas volé ----
 climat$vols_dicho <- ifelse(climat$volsnb=="0", "pas_vol", "vol")
@@ -64,12 +80,13 @@ climat$sitpro <- factor(climat$sitpro,
                           "Chargé·e de recherche", "Maître·sse de conférences", "Post-doctorant·e",
                           "ATER", "Doctorant·e contractuel·le", "Doctorant·e CIFRE", "Ingénieur·e de recherche",
                           "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
-                          "Chargé·e d’études/de mission", "Adjoint·e technique", "Autre",
-                          ""
+                          "Chargé·e d'études/de mission", "Adjoint·e technique", "Autre"
                         ))
 
-# discipline_agregee ----
-climat$discipline_agregee <- fct_recode(
+# Discipline agrégée
+# Noms inspirés de https://data.esr.gouv.fr/FR/T895/P311/tableau_des_enseignants_de_l_enseignement_superieur_public_niveau_etablissement_-_ressources_humaines#TDB
+
+climat$discipline_agr <- fct_recode(
   climat$discipline,
   "Droit, économie, gestion"="01 : Droit privé et sciences criminelles",
   "Droit, économie, gestion"="02 : Droit public",
@@ -77,75 +94,82 @@ climat$discipline_agregee <- fct_recode(
   "Droit, économie, gestion"="04 : Science politique",
   "Droit, économie, gestion"="05 : Sciences économiques",
   "Droit, économie, gestion"="06 : Sciences de gestion",
-  "Lettres et sciences humaines (1)"="07 : Sciences du langage : linguistique et phonétique générales",
-  "Lettres et sciences humaines (1)"="08 : Langues et littératures anciennes",
-  "Lettres et sciences humaines (1)"="09 : Langue et littérature françaises",
-  "Lettres et sciences humaines (1)"="11 : Langues et littératures anglaises et anglo-saxonnes",
-  "Lettres et sciences humaines (1)"="12 : Langues et littératures germaniques et scandinaves",
-  "Lettres et sciences humaines (1)"="13 : Langues et littératures slaves",
-  "Lettres et sciences humaines (1)"="14 : Langues et littératures romanes : espagnol, italien, portugais, autres langues romanes",
-  "Lettres et sciences humaines (1)"="15 : Langues et littératures arabes, chinoises, japonaises, hébraïques, d'autres domaines linguistiques",
-  "Lettres et sciences humaines (1)"="16 : Psychologie, psychologie clinique, psychologie sociale",
-  "Lettres et sciences humaines (1)"="17 : Philosophie",
-  "Lettres et sciences humaines (1)"="18 : Architecture et Arts : plastiques, du spectacle, musique, musicologie, esthétique, sciences de l'art",
-  "Lettres et sciences humaines (1)"="19 : Sociologie, démographie",
-  "Lettres et sciences humaines (1)"="20 : Anthropologie biologique, ethnologie, préhistoire",
-  "Lettres et sciences humaines (1)"="21 : Histoire et civilisations : histoire et archéologie des mondes anciens et des mondes médiévaux",
-  "Lettres et sciences humaines (1)"="22 : Histoire et civilisations : histoire des mondes modernes, histoire du monde contemporain",
-  "Lettres et sciences humaines (1)"="23 : Géographie physique, humaine, économique et régionale",
-  "Lettres et sciences humaines (1)"="24 : Aménagement de l'espace, urbanisme",
-  "Sciences (1)"="25 : Mathématiques",
-  "Sciences (1)"="26 : Mathématiques appliquées et applications des mathématiques",
-  "Sciences (1)"="27 : Informatique",
-  "Sciences (1)"="28 : Milieux denses et matériaux",
-  "Sciences (1)"="29 : Constituants élémentaires",
-  "Sciences (1)"="30 : Milieux dilués et optique",
-  "Sciences (1)"="31 : Chimie théorique, physique, analytique",
-  "Sciences (1)"="32 : Chimie organique, inorganique, industrielle",
-  "Sciences (1)"="33 : Chimie des matériaux",
-  "Sciences (1)"="34 : Astronomie, astrophysique",
-  "Sciences (1)"="35 : Structure et évolution de la Terre et des autres planètes",
-  "Sciences (1)"="36 : Terre solide : géodynamique des enveloppes supérieures, paléobiosphère",
-  "Sciences (1)"="37 : Météorologie, océanographie physique et physique de l'environnement",
-  "Médecine, odontologie"="42 : Morphologie et morphogenèse",
-  "Médecine, odontologie"="43 : Biophysique et imagerie médicale",
-  "Médecine, odontologie"="44 : Biochimie, biologie cellulaire et moléculaire, physiologie et nutrition",
-  "Médecine, odontologie"="45 : Microbiologie, maladies transmissibles et hygiène",
-  "Médecine, odontologie"="46 : Santé publique, environnement et société",
-  "Médecine, odontologie"="47 : Cancérologie, génétique, hématologie, immunologie",
-  "Médecine, odontologie"="48 : Anesthésiologie, réanimation, médecine d'urgence, pharmacologie et thérapeutique",
-  "Médecine, odontologie"="49 : Pathologie nerveuse et musculaire, pathologie mentale, handicap et rééducation",
-  "Médecine, pharma, santé"="50 : Pathologie ostéo-articulaire, dermatologie et chirurgie plastique",
-  "Médecine, pharma, santé"="51 : Pathologie cardiorespiratoire et vasculaire",
-  "Médecine, pharma, santé"="52 : Maladies des appareils digestif et urinaire",
-  "Médecine, odontologie"="54 : Développement et pathologie de l'enfant, gynécologie-obstétrique, endocrinologie et reproduction",
-  "Médecine, odontologie"="57 : Sciences biologiques, médecine et chirurgie buccales",
-  "Médecine, odontologie"="58 : Sciences physiques et physiologiques endodontiques et prothétiques",
-  "Sciences (2)"="60 : Mécanique, génie mécanique, génie civil",
-  "Sciences (2)"="61 : Génie informatique, automatique et traitement du signal",
-  "Sciences (2)"="62 : Énergétique, génie des procédés",
-  "Sciences (2)"="63 : Génie Électrique, Électronique, optronique et systèmes",
-  "Sciences (2)"="64 : Biochimie et biologie moléculaire",
-  "Sciences (2)"="65 : Biologie cellulaire",
-  "Sciences (2)"="66 : Physiologie",
-  "Sciences (2)"="67 : Biologie des populations et écologie",
-  "Sciences (2)"="68 : Biologie des organismes",
-  "Sciences (2)"="69 : Neurosciences",
-  "Lettres et sciences humaines (2)"="70 : Sciences de l'éducation",
-  "Lettres et sciences humaines (2)"="71 : Sciences de l'information et de la communication",
-  "Lettres et sciences humaines (2)"="72 : Épistémologie, histoire des sciences et des techniques",
-  "Lettres et sciences humaines (2)"="73 : Cultures et langues régionales",
-  "Lettres et sciences humaines (2)"="74 : Sciences et techniques des activités physiques et sportives",
-  "Pharmacie"="80/85 : Sciences physico-chimiques et ingénierie appliquée à la santé (ex-39)",
-  "Pharmacie"="81/86 : Sciences du médicament et des autres produits de santé (ex-40)",
-  "Pharmacie"="82/87 : Sciences biologiques, fondamentales et cliniques (ex-41)",
-  "Autres santé"="90 : Maïeutique",
-  "Autres santé"="91 : Sciences de la rééducation et de la réadaptation"
+  "Langues et littératures"="07 : Sciences du langage : linguistique et phonétique générales",
+  "Langues et littératures"="08 : Langues et littératures anciennes",
+  "Langues et littératures"="09 : Langue et littérature françaises",
+  "Langues et littératures"="10 : Littératures comparées",
+  "Langues et littératures"="11 : Langues et littératures anglaises et anglo-saxonnes",
+  "Langues et littératures"="12 : Langues et littératures germaniques et scandinaves",
+  "Langues et littératures"="13 : Langues et littératures slaves",
+  "Langues et littératures"="14 : Langues et littératures romanes : espagnol, italien, portugais, autres langues romanes",
+  "Langues et littératures"="15 : Langues et littératures arabes, chinoises, japonaises, hébraïques, d'autres domaines linguistiques",
+  "Sciences humaines"="16 : Psychologie, psychologie clinique, psychologie sociale",
+  "Sciences humaines"="17 : Philosophie",
+  "Sciences humaines"="18 : Architecture et Arts : plastiques, du spectacle, musique, musicologie, esthétique, sciences de l'art",
+  "Sciences humaines"="19 : Sociologie, démographie",
+  "Sciences humaines"="20 : Anthropologie biologique, ethnologie, préhistoire",
+  "Sciences humaines"="21 : Histoire et civilisations : histoire et archéologie des mondes anciens et des mondes médiévaux",
+  "Sciences humaines"="22 : Histoire et civilisations : histoire des mondes modernes, histoire du monde contemporain",
+  "Sciences humaines"="23 : Géographie physique, humaine, économique et régionale",
+  "Sciences humaines"="24 : Aménagement de l'espace, urbanisme",
+  "Mathématiques et informatique"="25 : Mathématiques",
+  "Mathématiques et informatique"="26 : Mathématiques appliquées et applications des mathématiques",
+  "Mathématiques et informatique"="27 : Informatique",
+  "Physique"="28 : Milieux denses et matériaux",
+  "Physique"="29 : Constituants élémentaires",
+  "Physique"="30 : Milieux dilués et optique",
+  "Chimie"="31 : Chimie théorique, physique, analytique",
+  "Chimie"="32 : Chimie organique, inorganique, industrielle",
+  "Chimie"="33 : Chimie des matériaux",
+  "Sciences de la Terre et de l'Univers"="34 : Astronomie, astrophysique",
+  "Sciences de la Terre et de l'Univers"="35 : Structure et évolution de la Terre et des autres planètes",
+  "Sciences de la Terre et de l'Univers"="36 : Terre solide : géodynamique des enveloppes supérieures, paléobiosphère",
+  "Sciences de la Terre et de l'Univers"="37 : Météorologie, océanographie physique et physique de l'environnement",
+  "Santé"="42 : Morphologie et morphogenèse",
+  "Santé"="43 : Biophysique et imagerie médicale",
+  "Santé"="44 : Biochimie, biologie cellulaire et moléculaire, physiologie et nutrition",
+  "Santé"="45 : Microbiologie, maladies transmissibles et hygiène",
+  "Santé"="46 : Santé publique, environnement et société",
+  "Santé"="47 : Cancérologie, génétique, hématologie, immunologie",
+  "Santé"="48 : Anesthésiologie, réanimation, médecine d'urgence, pharmacologie et thérapeutique",
+  "Santé"="49 : Pathologie nerveuse et musculaire, pathologie mentale, handicap et rééducation",
+  "Santé"="50 : Pathologie ostéo-articulaire, dermatologie et chirurgie plastique",
+  "Santé"="51 : Pathologie cardiorespiratoire et vasculaire",
+  "Santé"="52 : Maladies des appareils digestif et urinaire",
+  "Santé"="53 : Médecine interne, gériatrie, chirurgie générale et médecine générale",
+  "Santé"="54 : Développement et pathologie de l'enfant, gynécologie-obstétrique, endocrinologie et reproduction",
+  "Santé"="55 : Pathologie de la tête et du cou",
+  "Santé"="56 : Développement, croissance et prévention",
+  "Santé"="57 : Sciences biologiques, médecine et chirurgie buccales",
+  "Santé"="58 : Sciences physiques et physiologiques endodontiques et prothétiques",
+  "Génies : méca, info, élec, énergie"="60 : Mécanique, génie mécanique, génie civil",
+  "Génies : méca, info, élec, énergie"="61 : Génie informatique, automatique et traitement du signal",
+  "Génies : méca, info, élec, énergie"="62 : Énergétique, génie des procédés",
+  "Génies : méca, info, élec, énergie"="63 : Génie Électrique, Électronique, optronique et systèmes",
+  "Biologie"="64 : Biochimie et biologie moléculaire",
+  "Biologie"="65 : Biologie cellulaire",
+  "Biologie"="66 : Physiologie",
+  "Biologie"="67 : Biologie des populations et écologie",
+  "Biologie"="68 : Biologie des organismes",
+  "Biologie"="69 : Neurosciences",
+  "Sciences humaines"="70 : Sciences de l'éducation",
+  "Sciences humaines"="71 : Sciences de l'information et de la communication",
+  "Sciences humaines"="72 : Épistémologie, histoire des sciences et des techniques",
+  "Sciences humaines"="73 : Cultures et langues régionales",
+  "Sciences humaines"="74 : Sciences et techniques des activités physiques et sportives",
+  "Sciences humaines"="76 : Théologie catholique",
+  "Sciences humaines"="77 : Théologie protestante",
+  "Santé"="80/85 : Sciences physico-chimiques et ingénierie appliquée à la santé (ex-39)",
+  "Santé"="81/86 : Sciences du médicament et des autres produits de santé (ex-40)",
+  "Santé"="82/87 : Sciences biologiques, fondamentales et cliniques (ex-41)",
+  "Santé"="90 : Maïeutique",
+  "Santé"="91 : Sciences de la rééducation et de la réadaptation",
+  "Santé"="92 : Sciences infirmières"
 )
 
 
 
-#Recodage discipline pour avoir  une subdivision plus fine avec des effectifs plus homogènes (et des intitulés plus explicites, plus que sciences 1 et 2 par ex)
+#Recodage discipline pour avoir une subdivision plus fine avec des effectifs plus homogènes
 
 climat$discipline_agr2 <- fct_recode(
   climat$discipline,
@@ -158,6 +182,7 @@ climat$discipline_agr2 <- fct_recode(
   "Autres lettres et sciences humaines"="07 : Sciences du langage : linguistique et phonétique générales",
   "Autres lettres et sciences humaines"="08 : Langues et littératures anciennes",
   "Autres lettres et sciences humaines"="09 : Langue et littérature françaises",
+  "Autres lettres et sciences humaines"="10 : Littératures comparées",
   "Autres lettres et sciences humaines"="11 : Langues et littératures anglaises et anglo-saxonnes",
   "Autres lettres et sciences humaines"="12 : Langues et littératures germaniques et scandinaves",
   "Autres lettres et sciences humaines"="13 : Langues et littératures slaves",
@@ -181,22 +206,27 @@ climat$discipline_agr2 <- fct_recode(
   "Chimie"="31 : Chimie théorique, physique, analytique",
   "Chimie"="32 : Chimie organique, inorganique, industrielle",
   "Chimie"="33 : Chimie des matériaux",
-  "Astro, terre, atmo, océans"="34 : Astronomie, astrophysique",
-  "Astro, terre, atmo, océans"="35 : Structure et évolution de la Terre et des autres planètes",
-  "Astro, terre, atmo, océans"="36 : Terre solide : géodynamique des enveloppes supérieures, paléobiosphère",
-  "Astro, terre, atmo, océans"="37 : Météorologie, océanographie physique et physique de l'environnement",
-  "Médecine, pharma, santé"="42 : Morphologie et morphogenèse",
-  "Médecine, pharma, santé"="43 : Biophysique et imagerie médicale",
-  "Médecine, pharma, santé"="44 : Biochimie, biologie cellulaire et moléculaire, physiologie et nutrition",
-  "Médecine, pharma, santé"="45 : Microbiologie, maladies transmissibles et hygiène",
-  "Médecine, pharma, santé"="46 : Santé publique, environnement et société",
-  "Médecine, pharma, santé"="47 : Cancérologie, génétique, hématologie, immunologie",
-  "Médecine, pharma, santé"="48 : Anesthésiologie, réanimation, médecine d'urgence, pharmacologie et thérapeutique",
-  "Médecine, pharma, santé"="49 : Pathologie nerveuse et musculaire, pathologie mentale, handicap et rééducation",
-  "Médecine, pharma, santé"="51 : Pathologie cardiorespiratoire et vasculaire",
-  "Médecine, pharma, santé"="54 : Développement et pathologie de l'enfant, gynécologie-obstétrique, endocrinologie et reproduction",
-  "Médecine, pharma, santé"="57 : Sciences biologiques, médecine et chirurgie buccales",
-  "Médecine, pharma, santé"="58 : Sciences physiques et physiologiques endodontiques et prothétiques",
+  "Sciences de la Terre et de l'Univers"="34 : Astronomie, astrophysique",
+  "Sciences de la Terre et de l'Univers"="35 : Structure et évolution de la Terre et des autres planètes",
+  "Sciences de la Terre et de l'Univers"="36 : Terre solide : géodynamique des enveloppes supérieures, paléobiosphère",
+  "Sciences de la Terre et de l'Univers"="37 : Météorologie, océanographie physique et physique de l'environnement",
+  "Santé"="42 : Morphologie et morphogenèse",
+  "Santé"="43 : Biophysique et imagerie médicale",
+  "Santé"="44 : Biochimie, biologie cellulaire et moléculaire, physiologie et nutrition",
+  "Santé"="45 : Microbiologie, maladies transmissibles et hygiène",
+  "Santé"="46 : Santé publique, environnement et société",
+  "Santé"="47 : Cancérologie, génétique, hématologie, immunologie",
+  "Santé"="48 : Anesthésiologie, réanimation, médecine d'urgence, pharmacologie et thérapeutique",
+  "Santé"="49 : Pathologie nerveuse et musculaire, pathologie mentale, handicap et rééducation",
+  "Santé"="50 : Pathologie ostéo-articulaire, dermatologie et chirurgie plastique",
+  "Santé"="51 : Pathologie cardiorespiratoire et vasculaire",
+  "Santé"="52 : Maladies des appareils digestif et urinaire",
+  "Santé"="53 : Médecine interne, gériatrie, chirurgie générale et médecine générale",
+  "Santé"="54 : Développement et pathologie de l'enfant, gynécologie-obstétrique, endocrinologie et reproduction",
+  "Santé"="55 : Pathologie de la tête et du cou",
+  "Santé"="56 : Développement, croissance et prévention",
+  "Santé"="57 : Sciences biologiques, médecine et chirurgie buccales",
+  "Santé"="58 : Sciences physiques et physiologiques endodontiques et prothétiques",
   "Génies : méca, info, élec, énergie"="60 : Mécanique, génie mécanique, génie civil",
   "Génies : méca, info, élec, énergie"="61 : Génie informatique, automatique et traitement du signal",
   "Génies : méca, info, élec, énergie"="62 : Énergétique, génie des procédés",
@@ -212,11 +242,14 @@ climat$discipline_agr2 <- fct_recode(
   "Autres lettres et sciences humaines"="72 : Épistémologie, histoire des sciences et des techniques",
   "Autres lettres et sciences humaines"="73 : Cultures et langues régionales",
   "Autres lettres et sciences humaines"="74 : Sciences et techniques des activités physiques et sportives",
-  "Médecine, pharma, santé"="80/85 : Sciences physico-chimiques et ingénierie appliquée à la santé (ex-39)",
-  "Médecine, pharma, santé"="81/86 : Sciences du médicament et des autres produits de santé (ex-40)",
-  "Médecine, pharma, santé"="82/87 : Sciences biologiques, fondamentales et cliniques (ex-41)",
-  "Médecine, pharma, santé"="90 : Maïeutique",
-  "Médecine, pharma, santé"="91 : Sciences de la rééducation et de la réadaptation"
+  "Autres lettres et sciences humaines"="76 : Théologie catholique",
+  "Autres lettres et sciences humaines"="77 : Théologie protestante",
+  "Santé"="80/85 : Sciences physico-chimiques et ingénierie appliquée à la santé (ex-39)",
+  "Santé"="81/86 : Sciences du médicament et des autres produits de santé (ex-40)",
+  "Santé"="82/87 : Sciences biologiques, fondamentales et cliniques (ex-41)",
+  "Santé"="90 : Maïeutique",
+  "Santé"="91 : Sciences de la rééducation et de la réadaptation",
+  "Santé"="92 : Sciences infirmières"
 )
 
 #Pour tenir compte de la spécificité de sous disciplines en matière de temps de vol 
@@ -232,6 +265,7 @@ climat$discipline_agr3 <- fct_recode(climat$discipline,
 "Autres lettres et sciences humaines"="07 : Sciences du langage : linguistique et phonétique générales",
 "Autres lettres et sciences humaines"="08 : Langues et littératures anciennes",
 "Autres lettres et sciences humaines"="09 : Langue et littérature françaises",
+"Autres lettres et sciences humaines"="10 : Littératures comparées",
 "Autres lettres et sciences humaines"="11 : Langues et littératures anglaises et anglo-saxonnes",
 "Autres lettres et sciences humaines"="12 : Langues et littératures germaniques et scandinaves",
 "Autres lettres et sciences humaines"="13 : Langues et littératures slaves",
@@ -259,20 +293,23 @@ climat$discipline_agr3 <- fct_recode(climat$discipline,
 "Astro, géologie"="35 : Structure et évolution de la Terre et des autres planètes",
 "Astro, géologie"="36 : Terre solide : géodynamique des enveloppes supérieures, paléobiosphère",
 "Météo, océano, physiqu environt"="37 : Météorologie, océanographie physique et physique de l'environnement",
-"Médecine, pharma, santé"="42 : Morphologie et morphogenèse",
-"Médecine, pharma, santé"="43 : Biophysique et imagerie médicale",
-"Médecine, pharma, santé"="44 : Biochimie, biologie cellulaire et moléculaire, physiologie et nutrition",
-"Médecine, pharma, santé"="45 : Microbiologie, maladies transmissibles et hygiène",
-"Médecine, pharma, santé"="46 : Santé publique, environnement et société",
-"Médecine, pharma, santé"="47 : Cancérologie, génétique, hématologie, immunologie",
-"Médecine, pharma, santé"="48 : Anesthésiologie, réanimation, médecine d'urgence, pharmacologie et thérapeutique",
-"Médecine, pharma, santé"="49 : Pathologie nerveuse et musculaire, pathologie mentale, handicap et rééducation",
-"Médecine, pharma, santé"="50 : Pathologie ostéo-articulaire, dermatologie et chirurgie plastique",
-"Médecine, pharma, santé"="51 : Pathologie cardiorespiratoire et vasculaire",
-"Médecine, pharma, santé"="52 : Maladies des appareils digestif et urinaire",
-"Médecine, pharma, santé"="54 : Développement et pathologie de l'enfant, gynécologie-obstétrique, endocrinologie et reproduction",
-"Médecine, pharma, santé"="57 : Sciences biologiques, médecine et chirurgie buccales",
-"Médecine, pharma, santé"="58 : Sciences physiques et physiologiques endodontiques et prothétiques",
+"Santé"="42 : Morphologie et morphogenèse",
+"Santé"="43 : Biophysique et imagerie médicale",
+"Santé"="44 : Biochimie, biologie cellulaire et moléculaire, physiologie et nutrition",
+"Santé"="45 : Microbiologie, maladies transmissibles et hygiène",
+"Santé"="46 : Santé publique, environnement et société",
+"Santé"="47 : Cancérologie, génétique, hématologie, immunologie",
+"Santé"="48 : Anesthésiologie, réanimation, médecine d'urgence, pharmacologie et thérapeutique",
+"Santé"="49 : Pathologie nerveuse et musculaire, pathologie mentale, handicap et rééducation",
+"Santé"="50 : Pathologie ostéo-articulaire, dermatologie et chirurgie plastique",
+"Santé"="51 : Pathologie cardiorespiratoire et vasculaire",
+"Santé"="52 : Maladies des appareils digestif et urinaire",
+"Santé"="53 : Médecine interne, gériatrie, chirurgie générale et médecine générale",
+"Santé"="54 : Développement et pathologie de l'enfant, gynécologie-obstétrique, endocrinologie et reproduction",
+"Santé"="55 : Pathologie de la tête et du cou",
+"Santé"="56 : Développement, croissance et prévention",
+"Santé"="57 : Sciences biologiques, médecine et chirurgie buccales",
+"Santé"="58 : Sciences physiques et physiologiques endodontiques et prothétiques",
 "Génies : méca, info, élec, énergie"="60 : Mécanique, génie mécanique, génie civil",
 "Génies : méca, info, élec, énergie"="61 : Génie informatique, automatique et traitement du signal",
 "Génies : méca, info, élec, énergie"="62 : Énergétique, génie des procédés",
@@ -288,31 +325,38 @@ climat$discipline_agr3 <- fct_recode(climat$discipline,
 "Autres lettres et sciences humaines"="72 : Épistémologie, histoire des sciences et des techniques",
 "Autres lettres et sciences humaines"="73 : Cultures et langues régionales",
 "Autres lettres et sciences humaines"="74 : Sciences et techniques des activités physiques et sportives",
-"Médecine, pharma, santé"="80/85 : Sciences physico-chimiques et ingénierie appliquée à la santé (ex-39)",
-"Médecine, pharma, santé"="81/86 : Sciences du médicament et des autres produits de santé (ex-40)",
-"Médecine, pharma, santé"="82/87 : Sciences biologiques, fondamentales et cliniques (ex-41)",
-"Médecine, pharma, santé"="90 : Maïeutique",
-"Médecine, pharma, santé"="91 : Sciences de la rééducation et de la réadaptation"
+"Autres lettres et sciences humaines"="76 : Théologie catholique",
+"Autres lettres et sciences humaines"="77 : Théologie protestante",
+"Santé"="80/85 : Sciences physico-chimiques et ingénierie appliquée à la santé (ex-39)",
+"Santé"="81/86 : Sciences du médicament et des autres produits de santé (ex-40)",
+"Santé"="82/87 : Sciences biologiques, fondamentales et cliniques (ex-41)",
+"Santé"="90 : Maïeutique",
+"Santé"="91 : Sciences de la rééducation et de la réadaptation",
+"Santé"="92 : Sciences infirmières"
 )
 
 
 
-
+climat$opinionecolo.effondrement2 <- climat$opinionecolo.effondrement
+climat$opinionecolo.effondrement2[climat$opinionecolo.cata %in%
+                                    c("Plutôt pas d'accord",
+                                      "Pas du tout d'accord")] <- "Pas du tout d'accord"
+climat$opinionecolo.effondrement2[climat$opinionecolo.cata == "Sans opinion"] <- "Sans opinion"
 
 
 
 # participation à une ANR, ERC, etc.
 for(inst in c("anr", "europe", "france", "inter", "prive")) {
-  varnon <- paste0("projets.", inst, "_n.")
-  varr <- paste0("projets.", inst, "_r.")
-  varm <- paste0("projets.", inst, "_m.")
+  varnon <- paste0("projets.", inst, "_n")
+  varr <- paste0("projets.", inst, "_r")
+  varm <- paste0("projets.", inst, "_m")
   # Indique si au moins une case a été cochée sur la ligne (Responsable, membre, non)
   unecochee <- (!is.na(climat[[varnon]]) & climat[[varnon]] == 1) |
                (!is.na(climat[[varr]]) & climat[[varr]] == 1) |
                (!is.na(climat[[varm]]) & climat[[varm]] == 1)
   for(sit in c("r", "m")) {
-    var <- paste0("projets.", inst, "_", sit, ".")
-    var2 <- paste0("projets.", inst, "_", sit)
+    var <- paste0("projets.", inst, "_", sit)
+    var2 <- paste0("projets.", inst, "_", sit, "2")
     inst2 <- c(anr="projet ANR",
                europe="projet européen",
                france="projet France",
@@ -325,7 +369,8 @@ for(inst in c("anr", "europe", "france", "inter", "prive")) {
     # 0 signifie que le répondant n'est pas allé jusqu'à cette question/page
     # Si Oui et Non ont été cochés tous les deux, on retient Oui
     # Vérification avec :
-    # table(paste(climat$projets.anr_r., climat$projets.anr_m., climat$projets.anr_n.), climat$projets.anr_m, useNA="a")
+    # table(paste(climat$projets.anr_r, climat$projets.anr_m, climat$projets.anr_n),
+    #             climat$projets.anr_m2, useNA="a")
     climat[[var2]] <- if_else(is.na(climat[[var]]) & unecochee,
                               paste(sit2, inst2, "non"),
                               if_else(climat[[var]] == 1,
@@ -336,24 +381,24 @@ for(inst in c("anr", "europe", "france", "inter", "prive")) {
 
 #Financements : regroupement membres et responsables
 climat$particip_ANR<-0
-climat$particip_ANR[climat$projets.anr_r =="Responsable projet ANR oui" | climat$projets.anr_m =="Membre projet ANR oui"]<-1
+climat$particip_ANR[climat$projets.anr_r2 == "Responsable projet ANR oui" | climat$projets.anr_m2 == "Membre projet ANR oui"]<-1
 climat$particip_Fr<-0
-climat$particip_Fr[climat$projets.france_r=="Responsable projet France oui" | climat$projets.france_m=="Membre projet France oui"]<-1
+climat$particip_Fr[climat$projets.france_r2 == "Responsable projet France oui" | climat$projets.france_m2 =="Membre projet France oui"]<-1
 climat$particip_Europ<-0
-climat$particip_Europ[climat$projets.europe_r =="Responsable projet européen oui" | climat$projets.europe_m =="Membre projet européen oui"]<-1
+climat$particip_Europ[climat$projets.europe_r2 =="Responsable projet européen oui" | climat$projets.europe_m2 == "Membre projet européen oui"]<-1
 climat$particip_Intern<-0
-climat$particip_Intern[climat$projets.inter_r =="Responsable projet international oui" | climat$projets.inter_m =="Membre projet international oui"]<-1
+climat$particip_Intern[climat$projets.inter_r2 == "Responsable projet international oui" | climat$projets.inter_m2 == "Membre projet international oui"]<-1
 climat$particip_prive<-0
-climat$particip_prive[climat$projets.prive_r  =="Responsable projet privé oui" | climat$projets.prive_m =="Membre projet privé oui"]<-1
+climat$particip_prive[climat$projets.prive_r2 == "Responsable projet privé oui" | climat$projets.prive_m2 == "Membre projet privé oui"]<-1
 
 
 #Membre ou responsable d'un projet financé
-climat$Profin_Mb_Resp[climat$projets.anr_r =="Responsable projet ANR oui" | climat$projets.france_r=="Responsable projet France oui" | 
-                        climat$projets.europe_r =="Responsable projet européen oui" | climat$projets.inter_r =="Responsable projet international oui" | 
-                        climat$projets.prive_r  =="Responsable projet privé oui" ]<-"Responsable d'au moins 1 projet financé"
-climat$Profin_Mb_Resp[is.na(climat$Profin_Mb_Resp) & (climat$projets.anr_m =="Membre projet ANR oui" | climat$projets.france_m=="Membre projet France oui" |
-                                                        climat$projets.europe_m =="Membre projet européen oui" | climat$projets.inter_m =="Membre projet international oui" | 
-                                                        climat$projets.prive_r  =="Responsable projet privé oui") ]<-"Membre d'au moins 1 projet financé"
+climat$Profin_Mb_Resp[climat$projets.anr_r2 =="Responsable projet ANR oui" | climat$projets.france_r2 == "Responsable projet France oui" | 
+                        climat$projets.europe_r2 =="Responsable projet européen oui" | climat$projets.inter_r2 == "Responsable projet international oui" | 
+                        climat$projets.prive_r2  =="Responsable projet privé oui" ]<-"Responsable d'au moins 1 projet financé"
+climat$Profin_Mb_Resp[is.na(climat$Profin_Mb_Resp) & (climat$projets.anr_m2 == "Membre projet ANR oui" | climat$projets.france_m2 == "Membre projet France oui" |
+                                                        climat$projets.europe_m2 == "Membre projet européen oui" | climat$projets.inter_m2 == "Membre projet international oui" | 
+                                                        climat$projets.prive_r2  == "Responsable projet privé oui") ]<-"Membre d'au moins 1 projet financé"
 climat$Profin_Mb_Resp[is.na(climat$Profin_Mb_Resp)]<-"Ni membre ni resp d'un 1 projet financé"
 
 
@@ -377,7 +422,7 @@ climat$revenuTete[climat$revenu=="Plus de 15 000 par mois" & !is.na(climat$reven
 #######################
 #Modalités de référence dans les régressions
 climat$sexe <- as.factor(climat$sexe)
-climat$sexe <- relevel(climat$sexe, ref = "un homme")
+climat$sexe <- relevel(climat$sexe, ref = "Homme")
 
 climat$ageAgr <- as.factor(climat$ageAgr)
 climat$ageAgr <- relevel(climat$ageAgr, ref = "50-54 ans")
@@ -385,13 +430,14 @@ climat$ageAgr <- relevel(climat$ageAgr, ref = "50-54 ans")
 climat$couple <- as.factor(climat$couple)
 climat$couple <- relevel(climat$couple, ref = "Oui")
 
-climat$revenuAgr <- as.factor(climat$revenuAgr)
-climat$revenuAgr <- relevel(climat$revenuAgr, ref = "De 4 500 à 5 999 euros par mois")
+#climat$revenuAgr <- as.factor(climat$revenuAgr)
+#climat$revenuAgr <- relevel(climat$revenuAgr, ref = "De 4 500 à 5 999 euros par mois")
 
-climat$sitpro <- relevel(climat$sitpro, ref = "Maître·sse de conférences")
+climat$sitpro2 <- relevel(climat$sitpro, ref = "Maître·sse de conférences")
 
-climat$discipline_agregee <- relevel(climat$discipline_agregee , ref = "Sciences (1)") 
-climat$discipline_agr3 <- relevel(climat$discipline_agr3 , ref = "Physique")
+climat$discipline_agr <- relevel(climat$discipline_agr, ref = "Physique")
+climat$discipline_agr2 <- relevel(climat$discipline_agr, ref = "Physique")
+climat$discipline_agr3 <- relevel(climat$discipline_agr3, ref = "Physique")
 
 climat$discipline <- as.factor(climat$discipline)
 climat$discipline <- relevel(climat$discipline , ref = "25 : Mathématiques")
@@ -402,31 +448,31 @@ climat$carriere <- relevel(climat$carriere , ref = "Non")
 climat$Profin_Mb_Resp <- as.factor(climat$Profin_Mb_Resp)
 climat$Profin_Mb_Resp <- relevel(climat$Profin_Mb_Resp , ref = "Ni membre ni resp d'un 1 projet financé")
 
-climat$solinstit.limitevols. <- as.factor(climat$solinstit.limitevols.)
-climat$solinstit.limitevols. <- relevel(climat$solinstit.limitevols. , ref = "C’est prioritaire")
+climat$solinstit.limitevols <- as.factor(climat$solinstit.limitevols)
+climat$solinstit.limitevols <- relevel(climat$solinstit.limitevols, ref = "C'est prioritaire")
 
-climat$solinstit.vols6h. <- as.factor(climat$solinstit.vols6h.)
-climat$solinstit.vols6h. <- relevel(climat$solinstit.vols6h. , ref = "C’est prioritaire")
+climat$solinstit.vols6h <- as.factor(climat$solinstit.vols6h)
+climat$solinstit.vols6h <- relevel(climat$solinstit.vols6h, ref = "C'est prioritaire")
 
-climat$solinstit.train. <- as.factor(climat$solinstit.train.)
-climat$solinstit.train. <- relevel(climat$solinstit.train. , ref = "C’est prioritaire")
+climat$solinstit.train <- as.factor(climat$solinstit.train)
+climat$solinstit.train <- relevel(climat$solinstit.train, ref = "C'est prioritaire")
 
-climat$solrisqreducavion.qual. <- as.factor(climat$solrisqreducavion.qual.)
-climat$solrisqreducavion.qual. <- relevel(climat$solrisqreducavion.qual. , ref = "C’est peu probable")
-climat$solrisqreducavion.fin. <- as.factor(climat$solrisqreducavion.fin.)
-climat$solrisqreducavion.fin. <- relevel(climat$solrisqreducavion.fin. , ref = "C’est peu probable")
-climat$solrisqreducavion.diffusion. <- as.factor(climat$solrisqreducavion.diffusion.)
-climat$solrisqreducavion.diffusion. <- relevel(climat$solrisqreducavion.diffusion. , ref = "C’est peu probable")
-climat$solrisqreducavion.donnees. <- as.factor(climat$solrisqreducavion.donnees.)
-climat$solrisqreducavion.donnees. <- relevel(climat$solrisqreducavion.donnees. , ref = "C’est peu probable")
-climat$solrisqreducavion.avantages. <- as.factor(climat$solrisqreducavion.avantages.)
-climat$solrisqreducavion.avantages. <- relevel(climat$solrisqreducavion.avantages. , ref = "C’est peu probable")
-climat$solrisqreducavion.insertion. <- as.factor(climat$solrisqreducavion.insertion.)
-climat$solrisqreducavion.insertion. <- relevel(climat$solrisqreducavion.insertion. , ref = "C’est peu probable")
-climat$solrisqreducavion.isoler. <- as.factor(climat$solrisqreducavion.isoler.)
-climat$solrisqreducavion.isoler. <- relevel(climat$solrisqreducavion.isoler. , ref = "C’est peu probable")
-climat$solrisqreducavion.bureaucratie. <- as.factor(climat$solrisqreducavion.bureaucratie.)
-climat$solrisqreducavion.bureaucratie. <- relevel(climat$solrisqreducavion.bureaucratie. , ref = "C’est peu probable")
+climat$solrisqreducavion.qual <- as.factor(climat$solrisqreducavion.qual)
+climat$solrisqreducavion.qual <- relevel(climat$solrisqreducavion.qual, ref = "C'est peu probable")
+climat$solrisqreducavion.fin <- as.factor(climat$solrisqreducavion.fin)
+climat$solrisqreducavion.fin <- relevel(climat$solrisqreducavion.fin, ref = "C'est peu probable")
+climat$solrisqreducavion.diffusion <- as.factor(climat$solrisqreducavion.diffusion)
+climat$solrisqreducavion.diffusion <- relevel(climat$solrisqreducavion.diffusion, ref = "C'est peu probable")
+climat$solrisqreducavion.donnees <- as.factor(climat$solrisqreducavion.donnees)
+climat$solrisqreducavion.donnees <- relevel(climat$solrisqreducavion.donnees, ref = "C'est peu probable")
+climat$solrisqreducavion.avantages <- as.factor(climat$solrisqreducavion.avantages)
+climat$solrisqreducavion.avantages <- relevel(climat$solrisqreducavion.avantages, ref = "C'est peu probable")
+climat$solrisqreducavion.insertion <- as.factor(climat$solrisqreducavion.insertion)
+climat$solrisqreducavion.insertion <- relevel(climat$solrisqreducavion.insertion, ref = "C'est peu probable")
+climat$solrisqreducavion.isoler <- as.factor(climat$solrisqreducavion.isoler)
+climat$solrisqreducavion.isoler <- relevel(climat$solrisqreducavion.isoler, ref = "C'est peu probable")
+climat$solrisqreducavion.bureaucratie <- as.factor(climat$solrisqreducavion.bureaucratie)
+climat$solrisqreducavion.bureaucratie <- relevel(climat$solrisqreducavion.bureaucratie, ref = "C'est peu probable")
 
 climat$paie <- as.factor(climat$paie)
 climat$paie <- relevel(climat$paie , ref = "Mal payé·e")
@@ -434,5 +480,5 @@ climat$paie <- relevel(climat$paie , ref = "Mal payé·e")
 climat$employeur <- as.factor(climat$employeur)
 climat$employeur <- relevel(climat$employeur , ref = "Une université")
 
-climat$NumVague <- as.factor(climat$NumVague)
-climat$NumVague <- relevel(climat$NumVague, ref = "Après premier message")
+#climat$NumVague <- as.factor(climat$NumVague)
+#climat$NumVague <- relevel(climat$NumVague, ref = "Après premier message")

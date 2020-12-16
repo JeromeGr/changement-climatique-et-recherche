@@ -31,21 +31,21 @@ climat$NumVague["2020-11-16"<=climat$dateDebut]<-"Après quatrième relance"
 
 #Construction d'un "score écolo"
 climat$ScoreEcolo<-0
-climat$ScoreEcolo[climat$dixannees.bilan.=="Oui" & !is.na(climat$dixannees.bilan.)]<-climat$ScoreEcolo[climat$dixannees.bilan.=="Oui" & !is.na(climat$dixannees.bilan)]+1
-climat$ScoreEcolo[climat$dixannees.giec.=="Oui" & !is.na(climat$dixannees.giec.)]<-climat$ScoreEcolo[climat$dixannees.giec.=="Oui" & !is.na(climat$dixannees.giec.)]+1
-climat$ScoreEcolo[climat$dixannees.asso.=="Oui"& !is.na(climat$dixannees.asso.)]<-climat$ScoreEcolo[climat$dixannees.asso.=="Oui" & !is.na(climat$dixannees.asso.)]+1
-climat$ScoreEcolo[climat$dixannees.marche.=="Oui" & !is.na(climat$dixannees.marche.)]<-climat$ScoreEcolo[climat$dixannees.marche.=="Oui" & !is.na(climat$dixannees.marche.)]+1
-climat$ScoreEcolo[climat$dixannees.vote.=="Oui" & !is.na(climat$dixannees.vote.)]<-climat$ScoreEcolo[climat$dixannees.vote.=="Oui" & !is.na(climat$dixannees.vote.)]+1
-climat$ScoreEcolo[is.na(climat$dixannees.bilan.) & is.na(climat$dixannees.giec.) &is.na(climat$dixannees.asso.) & is.na(climat$dixannees.marche.) & is.na(climat$dixannees.vote.)]<-NA
+climat$ScoreEcolo[climat$dixannees.bilan=="Oui" & !is.na(climat$dixannees.bilan)]<-climat$ScoreEcolo[climat$dixannees.bilan=="Oui" & !is.na(climat$dixannees.bilan)]+1
+climat$ScoreEcolo[climat$dixannees.giec=="Oui" & !is.na(climat$dixannees.giec)]<-climat$ScoreEcolo[climat$dixannees.giec=="Oui" & !is.na(climat$dixannees.giec)]+1
+climat$ScoreEcolo[climat$dixannees.asso=="Oui"& !is.na(climat$dixannees.asso)]<-climat$ScoreEcolo[climat$dixannees.asso=="Oui" & !is.na(climat$dixannees.asso)]+1
+climat$ScoreEcolo[climat$dixannees.marche=="Oui" & !is.na(climat$dixannees.marche)]<-climat$ScoreEcolo[climat$dixannees.marche=="Oui" & !is.na(climat$dixannees.marche)]+1
+climat$ScoreEcolo[climat$dixannees.vote=="Oui" & !is.na(climat$dixannees.vote)]<-climat$ScoreEcolo[climat$dixannees.vote=="Oui" & !is.na(climat$dixannees.vote)]+1
+climat$ScoreEcolo[is.na(climat$dixannees.bilan) & is.na(climat$dixannees.giec) &is.na(climat$dixannees.asso) & is.na(climat$dixannees.marche) & is.na(climat$dixannees.vote)]<-NA
 
 #Autre façon de calculer un score écolo
 climat$ScoreEcoloPond<-0
-climat$ScoreEcoloPond[climat$dixannees.bilan.=="Oui" & !is.na(climat$dixannees.bilan.)]<-climat$ScoreEcoloPond[climat$dixannees.bilan.=="Oui" & !is.na(climat$dixannees.bilan)]+2
-climat$ScoreEcoloPond[climat$dixannees.giec.=="Oui" & !is.na(climat$dixannees.giec.)]<-climat$ScoreEcoloPond[climat$dixannees.giec.=="Oui" & !is.na(climat$dixannees.giec.)]+1
-climat$ScoreEcoloPond[climat$dixannees.asso.=="Oui"& !is.na(climat$dixannees.asso.)]<-climat$ScoreEcoloPond[climat$dixannees.asso.=="Oui" & !is.na(climat$dixannees.asso.)]+2
-climat$ScoreEcoloPond[climat$dixannees.marche.=="Oui" & !is.na(climat$dixannees.marche.)]<-climat$ScoreEcoloPond[climat$dixannees.marche.=="Oui" & !is.na(climat$dixannees.marche.)]+2
-climat$ScoreEcoloPond[climat$dixannees.vote.=="Oui" & !is.na(climat$dixannees.vote.)]<-climat$ScoreEcoloPond[climat$dixannees.vote.=="Oui" & !is.na(climat$dixannees.vote.)]+1
-climat$ScoreEcoloPond[is.na(climat$dixannees.bilan.) & is.na(climat$dixannees.giec.) &is.na(climat$dixannees.asso.) & is.na(climat$dixannees.marche.) & is.na(climat$dixannees.vote.)]<-NA
+climat$ScoreEcoloPond[climat$dixannees.bilan=="Oui" & !is.na(climat$dixannees.bilan)]<-climat$ScoreEcoloPond[climat$dixannees.bilan=="Oui" & !is.na(climat$dixannees.bilan)]+2
+climat$ScoreEcoloPond[climat$dixannees.giec=="Oui" & !is.na(climat$dixannees.giec)]<-climat$ScoreEcoloPond[climat$dixannees.giec=="Oui" & !is.na(climat$dixannees.giec)]+1
+climat$ScoreEcoloPond[climat$dixannees.asso=="Oui"& !is.na(climat$dixannees.asso)]<-climat$ScoreEcoloPond[climat$dixannees.asso=="Oui" & !is.na(climat$dixannees.asso)]+2
+climat$ScoreEcoloPond[climat$dixannees.marche=="Oui" & !is.na(climat$dixannees.marche)]<-climat$ScoreEcoloPond[climat$dixannees.marche=="Oui" & !is.na(climat$dixannees.marche)]+2
+climat$ScoreEcoloPond[climat$dixannees.vote=="Oui" & !is.na(climat$dixannees.vote)]<-climat$ScoreEcoloPond[climat$dixannees.vote=="Oui" & !is.na(climat$dixannees.vote)]+1
+climat$ScoreEcoloPond[is.na(climat$dixannees.bilan) & is.na(climat$dixannees.giec) &is.na(climat$dixannees.asso) & is.na(climat$dixannees.marche) & is.na(climat$dixannees.vote)]<-NA
 
 #Passage en numérique de la variable "inquiétude"
 climat$preoccupeNum[climat$preoccupe=="Pas du tout préoccupé·e"]<-0
@@ -104,8 +104,8 @@ res.reg1<- lm(EffetMarianne ~ sexe + ageAgr + enfantsnb, data=climat)
 res.reg1<- lm(EffetMarianne ~ sexe + ageAgr + ScoreEcoloPond , data=climat)
 res.reg1<- lm(EffetMarianne ~ sexe + ageAgr + preoccupeNum, data=climat)
 res.reg1<- lm(EffetMarianne ~ preoccupeNum, data=climat)
-res.reg1<- lm(EffetMarianne ~ sexe + ageAgr  + sitpro , data=climat)
-res.reg1<- lm(EffetMarianne ~ sexe + ageAgr  + sitpro + ScoreEcoloPond , data=climat)
+res.reg1<- lm(EffetMarianne ~ sexe + ageAgr  + sitpro2 , data=climat)
+res.reg1<- lm(EffetMarianne ~ sexe + ageAgr  + sitpro2 + ScoreEcoloPond , data=climat)
 res.reg1<- lm(EffetMarianne ~ sexe + ageAgr  + discipline_agr3, data=climat)
 res.reg1<- lm(EffetMarianne ~ sexe + ageAgr  + discipline_agr3 + ScoreEcoloPond, data=climat)
 res.reg1<- lm(EffetMarianne ~ sexe + ageAgr  + employeur, data=climat)
@@ -121,7 +121,7 @@ summary(res.reg1)
 #Préoccupé et vagues
 mean(climat$preoccupeNum, na.rm=T)
 res.reg1 <- lm(preoccupeNum ~ NumVague , data=climat)
-res.reg1 <- lm(preoccupeNum ~ NumVague + sexe + ageAgr + sitpro, data=climat)
+res.reg1 <- lm(preoccupeNum ~ NumVague + sexe + ageAgr + sitpro2, data=climat)
 res.reg1 <- lm(preoccupeNum ~ sexe + ageAgr, data=climat)
 
 #Revenu par tête et vagues
@@ -130,13 +130,13 @@ res.reg1 <- lm(revenuTete ~ NumVague , data=climat)
 #Enfant et vagues
 res.reg1 <- lm(enfantsnb ~ NumVague , data=climat)
 res.reg1 <- lm(enfantsnb ~ NumVague + sexe + ageAgr , data=climat)
-res.reg1 <- lm(enfantsnb ~ NumVague + sexe + ageAgr + sitpro, data=climat)
+res.reg1 <- lm(enfantsnb ~ NumVague + sexe + ageAgr + sitpro2, data=climat)
 freq(climat$enfantsage, total=T)
 
 #Nombre de publis
 res.reg1 <- lm(nbpublis ~ NumVague , data=climat)
 res.reg1 <- lm(enfantsnb ~ NumVague + sexe + ageAgr , data=climat)
-res.reg1 <- lm(nbpublis ~ NumVague + sexe + ageAgr + sitpro, data=climat)
+res.reg1 <- lm(nbpublis ~ NumVague + sexe + ageAgr + sitpro2, data=climat)
 
 
 
@@ -163,11 +163,11 @@ res.reg1 <- lm(ScoreEcoloPond ~ NumVague + sexe + ageAgr, data=climat)
 
 mean(climat$ScoreEcolo, na.rm=T)
 
-freq(climat$dixannees.bilan.)
-freq(climat$dixannees.giec.)
-freq(climat$dixannees.asso.)
-freq(climat$dixannees.marche.)
-freq(climat$dixannees.vote.)
+freq(climat$dixannees.bilan)
+freq(climat$dixannees.giec)
+freq(climat$dixannees.asso)
+freq(climat$dixannees.marche)
+freq(climat$dixannees.vote)
 
 #Heures de vols et vagues
 res.reg1 <- lm(volshnum ~ NumVague, data=climat)
