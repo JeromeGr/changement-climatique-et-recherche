@@ -72,12 +72,12 @@ ggplot(drop_na(climat, preoccupe),
 Pour l'année 2019 (du 1er janvier au 31 décembre), nombre d'heures de vol en avion
 
 ```{r echo=FALSE}
-climat$volsh2<-climat$volsh
-levels(climat$volsh2)<-c("0h", levels(climat$volsh2))
-climat$volsh2[climat$volsnb==0]<-"0h"
+climat$volshTot<-climat$volsh
+levels(climat$volshTot)<-c("0h", levels(climat$volshTot))
+climat$volshTot[climat$volsnb==0]<-"0h"
 
-ggplot(drop_na(climat, volsh2),
-       aes(y=fct_rev(volsh2), x=..prop.., group=1)) +
+ggplot(drop_na(climat, volshTot),
+       aes(y=fct_rev(volshTot), x=..prop.., group=1)) +
   geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
   coord_cartesian(xlim=c(0, 0.78)) +
