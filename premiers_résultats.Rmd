@@ -21,7 +21,7 @@ source("recodages.R")
 
 # Vos transports à des fins professionnelles
 
-Pour l'année 2019 (du 1er janvier au 31 décembre), nombre d'heures de vol en avion.
+Pour l'année 2019 (du 1er janvier au 31 décembre), nombre d'heures de vol en avion
 ```{r echo=FALSE}
 climat$volsh2<-climat$volsh
 levels(climat$volsh2)<-c("0h", levels(climat$volsh2))
@@ -34,9 +34,10 @@ ggplot(drop_na(climat, volsh2),
   labs(x="Proportion des répondant·es", y="Nombre d'heures de vol en 2019")
 ```
 
-Nombre de jours travaillés sur place
+Nombre de jours travaillés sur place lors d'un déplacement professionnel en avion
 
 ```{r echo=FALSE}
+#En fonction du nombre de déplacements pro
 #On tient compte du nombre d'aller retour pour avoir le nombre de séjours réels (volsnb)
 #Pour tout demi aller-retour, il faut aussi compter un séjour entier (ceiling)
 DFNbJourTravailles<- climat %>% 
@@ -48,8 +49,88 @@ DFNbJourTravailles<- climat %>%
   drop_na(volsjours) %>%
   mutate(prop=n/sum(n))
 
-ggplot(DFNbJourTravailles,  aes(y=prop, x=volsjours ) + geom_bar()  )
+ggplot(DFNbJourTravailles,  aes(x=prop, y=volsjours )) + geom_col() +
+  labs(y="", x="",
+       title="Part des déplacements professionnels en avion effectués \n par l'ensemble des répondants,\n selon le temps travaillé sur place") 
 
+#En fonction de la distance totale parcourue
+DFNbJourTravailles<- climat %>% 
+  select(paste0("volsnb", 1:5), paste0("volsjours", 1:5), paste0("volsdist", 1:5)) %>%
+  pivot_longer(everything(),
+               names_to = c(".value", "set"),
+               names_sep = -1) %>% group_by(volsjours) %>%
+  summarize(DistTotale=sum(volsdist*volsnb, na.rm=T)) %>%
+  drop_na(volsjours) %>%
+  mutate(prop=DistTotale/sum(DistTotale))
+
+ggplot(DFNbJourTravailles,  aes(x=prop, y=volsjours )) + geom_col() +
+  labs(y="", x="",
+       title="Part de la distance totale parcourue en avion par l'ensemble\n des répondants, selon le temps travaillé sur place") 
+
+```
+
+Motif principal des déplacements professionnels en avion
+
+```{r echo=FALSE}
+#En fonction du nombre de déplacements pro
+#On tient compte du nombre d'aller retour pour avoir le nombre de séjours réels (volsnb)
+#Pour tout demi aller-retour, il faut aussi compter un séjour entier (ceiling)
+DFDistAvion<- climat %>% 
+  select(paste0("volsnb", 1:5), paste0("volsmotif", 1:5)) %>%
+  pivot_longer(everything(),
+               names_to = c(".value", "set"),
+               names_sep = -1) %>%
+  count(volsmotif, wt=ceiling(volsnb)) %>%
+  drop_na(volsmotif) %>%
+  mutate(prop=n/sum(n))
+
+ggplot(DFDistAvion,  aes(x=prop, y=volsmotif )) + geom_col() +
+  labs(y="Motif principal du déplacement en avion", x="% des déplacements effectués en avion par les répondants",
+       title="Motif principal pour les déplacements professionnels\n effectués en avion") 
+
+#En fonction de la distance totale parcourue
+DFDistAvion<- climat %>% 
+  select(paste0("volsnb", 1:5), paste0("volsmotif", 1:5), paste0("volsdist", 1:5)) %>%
+  pivot_longer(everything(),
+               names_to = c(".value", "set"),
+               names_sep = -1) %>% group_by(volsmotif) %>%
+  summarize(DistTotale=sum(volsdist*volsnb, na.rm=T)) %>%
+  drop_na(volsmotif) %>%
+  mutate(prop=DistTotale/sum(DistTotale))
+
+ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volsmotif, prop) )) + geom_col() +
+  labs(y="", x="% des kms parcourus en avion par les répondants",
+       title="Part de la distance totale parcourue en avion\n par l'ensemble des répondants, selon le motif principal\n du déplacement professionnel") 
+
+```
+
+Distance moyenne parcourue en avion par motif principal du déplacement en avion
+
+```{r echo=FALSE}
+DFDistMoyAvion<- climat %>% 
+  select(paste0("volsnb", 1:5), paste0("volsmotif", 1:5), paste0("volsdist", 1:5)) %>%
+  pivot_longer(everything(),
+               names_to = c(".value", "set"),
+               names_sep = -1) %>% group_by(volsmotif) %>%
+  summarize(DistMoy=mean(volsdist, na.rm=T)) %>%
+  drop_na(volsmotif)
+
+ggplot(DFDistMoyAvion,  aes(x=DistMoy, y=fct_reorder(volsmotif, DistMoy) )) + geom_col() +
+  labs(y="Motif principal du déplacement en avion", x="Distance moyenne parcourue en avion",
+       title="Distance moyenne parcourue en avion par motif principal\n du déplacement") 
+
+```
+
+
+Pour ceux qui ont pris l'avion en 2019 : En 2019, avez-vous pris l’avion pour un trajet professionnel qui prend moins de 6 heures en train (hors déplacements domicile-travail) ?
+
+```{r echo=FALSE}
+ggplot(drop_na(climat, aviontrain),
+       aes(y=fct_rev(aviontrain), x=..prop.., group=1)) +
+  geom_bar() +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  labs(x="Proportion des répondant·es ayant pris l'avion en 2019", y="", 
+       title ="En 2019, avez-vous pris l’avion pour un trajet professionnel qui prend moins\n de 6 heures en train (hors déplacements domicile-travail) ?")
 ```
 
 # La visioconférence
