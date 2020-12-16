@@ -22,7 +22,7 @@ source("recodages.R")
 # Vos transports à des fins professionnelles
 
 Pour l'année 2019 (du 1er janvier au 31 décembre), nombre d'heures de vol en avion.
-```{r}
+```{r echo=FALSE}
 climat$volsh2<-climat$volsh
 levels(climat$volsh2)<-c("0h", levels(climat$volsh2))
 climat$volsh2[climat$volsnb==0]<-"0h"
@@ -36,26 +36,20 @@ ggplot(drop_na(climat, volsh2),
 
 Nombre de jours travaillés sur place
 
-```{r}
-DFNbJourTravailles<- climat %>% 
-  select(paste0("volsnb", 1:5), paste0("volsjours", 1:5)) %>%
-  pivot_longer(cols = paste0("volsjours", 1:5), 
-               names_to = "NuméroVol", 
-               values_to = "NbJourTravaillés")
-
-DFNbJourTravailles<-DFNbJourTravailles %>% group_by(NbJourTravaillés) %>% summarize(Nbsejours=n())
-
-#Mais si on veut tenir compte du nombre d'aller retour pour avoir le nombre de séjours réels (volsnb), c'est à dire tenir compte de ceux qui font le même aller-retour pour le même motif plusieurs fois
-#Je veux le pivotage de deux groupes de colonnes ensemble
-#Voir : https://community.rstudio.com/t/pivot-longer-on-multiple-column-sets-pairs/43958/10
+```{r echo=FALSE}
+#On tient compte du nombre d'aller retour pour avoir le nombre de séjours réels (volsnb)
+#Pour tout demi aller-retour, il faut aussi compter un séjour entier (ceiling)
 DFNbJourTravailles<- climat %>% 
   select(paste0("volsnb", 1:5), paste0("volsjours", 1:5)) %>%
   pivot_longer(everything(),
                names_to = c(".value", "set"),
                names_sep = -1) %>%
-  count(volsjours, wt=volsnb) %>%
-  drop_na(n) %>%
+  count(volsjours, wt=ceiling(volsnb)) %>%
+  drop_na(volsjours) %>%
   mutate(prop=n/sum(n))
+
+ggplot(DFNbJourTravailles,  aes(y=prop, x=volsjours ) + geom_bar()  )
+
 ```
 
 # La visioconférence
