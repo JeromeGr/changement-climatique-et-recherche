@@ -46,6 +46,20 @@ climat$ageAgr[climat$age %in% c("70 ans ou plus", "65-69 ans")]<-"65 ans et plus
 climat$ageAgr[climat$age %in% c("18-24 ans", "25-29 ans")]<-"Moins de 29 ans"
 climat$ageAgr[climat$age %in% c("55-59 ans", "60-64 ans")]<-"55-64 ans"
 
+# variable combinant existence et causes du changement climatique
+climat$acthum2 <- factor(climat$acthum,
+                         levels=c("Oui, elles en sont l'unique cause", 
+                                  "Oui, elles jouent un grand rôle",
+                                  "Oui, elles jouent un petit rôle",
+                                  "Non, elles ne jouent aucun rôle",
+                                  "Il n'y a pas de changement climatique",
+                                  "Sans opinion"))
+climat$acthum2[substr(climat$changclim, 1, 3) == "Non"] <- "Il n'y a pas de changement climatique"
+climat$acthum2[climat$changclim == "Sans opinion"] <- "Sans opinion"
+
+climat$preoccupe2 <- climat$preoccupe
+climat$preoccupe2[substr(climat$changclim, 1, 3) == "Non"] <- "Pas du tout préoccupé·e"
+climat$preoccupe2[climat$changclim == "Sans opinion"] <- "Sans opinion"
 
 # vols_dicho : a volé ou n'a pas volé ----
 climat$vols_dicho <- ifelse(climat$volsnb=="0", "pas_vol", "vol")
@@ -323,7 +337,11 @@ climat$discipline_agr3 <- fct_recode(climat$discipline,
 
 
 
-
+climat$opinionecolo.effondrement2 <- climat$opinionecolo.effondrement
+climat$opinionecolo.effondrement2[climat$opinionecolo.cata %in%
+                                    c("Plutôt pas d'accord",
+                                      "Pas du tout d'accord")] <- "Pas du tout d'accord"
+climat$opinionecolo.effondrement2[climat$opinionecolo.cata == "Sans opinion"] <- "Sans opinion"
 
 
 
