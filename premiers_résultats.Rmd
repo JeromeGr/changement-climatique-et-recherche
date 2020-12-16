@@ -2,11 +2,14 @@
 title: Premiers résultats de l’enquête « Les personnels de la recherche face au changement
   climatique »
 output:
-  word_document: default
-  html_notebook: default
+  html_document:
+    fig_width: 7.5
+    fig_height: 4.5
+    toc: yes
+    number_sections: yes
 ---
 
-```{r preparation}
+```{r preparation, echo=FALSE}
 library(tidyverse)
 library(ggplot2)
 load("climat.RData")
@@ -17,7 +20,8 @@ source("recodages.R")
 
 # Votre position vis-à-vis de l’environnement et de la recherche
 
-```{r}
+## Activités humaines et changement climatique
+```{r echo=FALSE}
 climat$acthum3 <- fct_collapse(climat$acthum2,
                                "Oui, elles jouent un grand rôle\nou en sont l'unique cause"=c("Oui, elles en sont l'unique cause", 
                                  "Oui, elles jouent un grand rôle"))
@@ -37,7 +41,9 @@ ggplot(drop_na(climat, acthum3),
        caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS (n=6339)")
 
 ```
-```{r}
+
+## Préoccupation par rapport au changement climatique
+```{r echo=FALSE}
 pal <- RColorBrewer::brewer.pal(9, "RdYlBu")
 ggplot(drop_na(climat, preoccupe),
        aes(y=fct_relevel(preoccupe, "Sans opinion"), x=..prop.., group=1)) +
@@ -59,7 +65,10 @@ ggplot(drop_na(climat, preoccupe),
 
 # Vos transports à des fins professionnelles
 
+## Heures de vol en avion
+
 Pour l'année 2019 (du 1er janvier au 31 décembre), nombre d'heures de vol en avion
+
 ```{r echo=FALSE}
 climat$volsh2<-climat$volsh
 levels(climat$volsh2)<-c("0h", levels(climat$volsh2))
@@ -69,8 +78,14 @@ ggplot(drop_na(climat, volsh2),
        aes(y=fct_rev(volsh2), x=..prop.., group=1)) +
   geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  coord_cartesian(xlim=c(0, 0.78)) +
+  geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
+            stat="count", position=position_dodge(.9),
+            hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="Nombre d'heures de vol en 2019")
 ```
+
+## Nombre de jours travaillés sur place
 
 Nombre de jours travaillés sur place lors d'un déplacement professionnel en avion
 
@@ -112,6 +127,8 @@ ggplot(DFNbJourTravailles,  aes(x=prop, y=volsjours )) + geom_col() +
 
 ```
 
+## Motif des vols
+
 Motif principal des déplacements professionnels en avion
 
 ```{r echo=FALSE}
@@ -147,6 +164,8 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volsmotif, prop) )) + geom_col() 
 
 ```
 
+# Distance des vols par motif
+
 Distance moyenne parcourue en avion par motif principal du déplacement en avion
 
 ```{r echo=FALSE}
@@ -163,6 +182,7 @@ ggplot(DFDistMoyAvion,  aes(x=DistMoy, y=fct_reorder(volsmotif, DistMoy) )) + ge
        title="Distance moyenne parcourue en avion par motif principal\n du déplacement") 
 
 ```
+
 
 Proportion de la distance totale parcourue en avion par les répondants avec des trajets en train de moins de 3H (estimation)
 
@@ -187,8 +207,6 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(VolInf3h, prop) )) + geom_col() +
 
 ```
 
-
-
 Pour ceux qui ont pris l'avion en 2019 : En 2019, avez-vous pris l’avion pour un trajet professionnel qui prend moins de 6 heures en train (hors déplacements domicile-travail) ?
 
 ```{r echo=FALSE}
@@ -205,7 +223,8 @@ ggplot(drop_na(climat, aviontrain),
 # Votre avis personnel par rapport à l’écologie en général
 
 ## Opinions sur l'écologie
-```{r}
+
+```{r echo=FALSE}
 dat <- rbind(data.frame(variable="La plupart des problèmes environnementaux peuvent être résolus\npar le développement de technologies plus performantes",
                         valeur=climat$opinionecolo.techno),
              data.frame(variable="La décroissance est nécessaire\npour faire face aux enjeux environnementaux", valeur=climat$opinionecolo.decroissance),
@@ -238,7 +257,7 @@ La France s’est engagée à réduire d’un tiers ses émissions de gaz à eff
 - La recherche publique doit réduire ses émissions de gaz à effet de serre d’un tiers environ
 - En raison de son rôle, la recherche publique peut bénéficier d’un statut dérogatoire, c’est-à-dire fournir des efforts moindres en termes de réduction des émissions de gaz à effet de serre
 
-```{r}
+```{r echo=FALSE}
 climat$solreducrech2 <- fct_recode(climat$solreducrech,
   "De plus d'un tiers" = "La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui",
   "D'un tiers environ" = "La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ",
@@ -248,6 +267,10 @@ ggplot(drop_na(climat, solreducrech2),
        aes(y=fct_rev(solreducrech2), x=..prop.., group=1)) +
     geom_bar() +
     scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+    coord_cartesian(xlim=c(0, 0.5)) +
+    geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
+            stat="count", position=position_dodge(.9),
+            hjust=-0.2, size=3) +
     labs(x="Proportion des répondant·es", y="",
          title="D'ici 2030, la recherche publique doit réduire ses émissions...")
 ```
@@ -256,7 +279,7 @@ ggplot(drop_na(climat, solreducrech2),
 
 Quelles actions les institutions et laboratoires de recherche devraient-ils mettre en œuvre pour réduire leurs émissions de gaz à effet de serre ?
 
-```{r}
+```{r echo=FALSE}
 dat <- rbind(data.frame(variable="Ajouter les émissions carbone parmi les principaux\ncritères de sélection des projets à financer", valeur=climat$solinstit.selection),
              data.frame(variable="Imposer une limite au nombre de vols\nen avion par personne", valeur=climat$solinstit.limitevols),
              data.frame(variable="Proscrire les vols en avion lorsque\nle trajet en train prend moins de 6 heures", valeur=climat$solinstit.vols6h),
