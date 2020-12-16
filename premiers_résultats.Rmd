@@ -2,6 +2,8 @@
 title: Premiers résultats de l’enquête « Les personnels de la recherche face au changement
   climatique »
 output:
+  word_document:
+    toc: yes
   html_document:
     fig_width: 7.5
     fig_height: 4.5
@@ -164,7 +166,7 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volsmotif, prop) )) + geom_col() 
 
 ```
 
-# Distance des vols par motif
+## Distance parcourue en avion, par motif
 
 Distance moyenne parcourue en avion par motif principal du déplacement en avion
 
@@ -184,6 +186,7 @@ ggplot(DFDistMoyAvion,  aes(x=DistMoy, y=fct_reorder(volsmotif, DistMoy) )) + ge
 ```
 
 
+## Part de la distrance totale parcourue en avion correspondant à des trajets en train de moins de 3h
 Proportion de la distance totale parcourue en avion par les répondants avec des trajets en train de moins de 3H (estimation)
 
 ```{r echo=FALSE}
@@ -192,7 +195,7 @@ DFDistAvion<- climat %>%
   pivot_longer(everything(),
                names_to = c(".value", "set"),
                names_sep = -1) 
-#On regarde Volh<2 car c'est le temps pour l'aller retour. On maximise en disant que jusqu'à une heure, on a un train de moins de 3h
+#On regarde Volh<2 car c'est le temps pour l'aller retour. On maximise en disant que jusqu'à une heure d'avion, on a un train de moins de 3h
 DFDistAvion$VolInf3h[DFDistAvion$volsh<2]<-"Trajet effectuable en moins de 3h en train"
 DFDistAvion$VolInf3h[DFDistAvion$volsh>=2]<-"Trajet effectuable en plus de 3h en train"
 
@@ -207,6 +210,7 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(VolInf3h, prop) )) + geom_col() +
 
 ```
 
+## Prendre l'avion alors que le trajet en train fait moins de 6H
 Pour ceux qui ont pris l'avion en 2019 : En 2019, avez-vous pris l’avion pour un trajet professionnel qui prend moins de 6 heures en train (hors déplacements domicile-travail) ?
 
 ```{r echo=FALSE}
@@ -217,6 +221,22 @@ ggplot(drop_na(climat, aviontrain),
   labs(x="Proportion des répondant·es ayant pris l'avion en 2019", y="", 
        title ="En 2019, avez-vous pris l’avion pour un trajet professionnel qui prend moins\n de 6 heures en train (hors déplacements domicile-travail) ?")
 ```
+
+## Raisons de prendre l'avion alors que le trajet en train fait moins de 6H
+
+## Prendre le train plutot que l'avion alors que le trajet est plus long
+Au cours des 5 dernières années, avez-vous, pour des raisons environnementales, pris le train plutôt que l’avion dans le cadre professionnel alors que le trajet était plus long ?
+
+```{r echo=FALSE}
+ggplot(drop_na(climat, trainavion),
+       aes(y=fct_rev(trainavion), x=..prop.., group=1)) +
+  geom_bar() +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  labs(x="", y="", 
+       title ="Au cours des 5 dernières années, avez-vous, pour des raisons\n environnementales, pris le train plutôt que l’avion\n dans le cadre professionnel alors que le trajet était plus long ?")
+```
+
+
 
 # La visioconférence
 
