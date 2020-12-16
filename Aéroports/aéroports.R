@@ -69,15 +69,15 @@ for(i in 1:5) {
     # Les quantités sont calculées pour l'aller-retour par cohérence avec volsnb
     # Distance orthodromique selon la méthode haversine
     dist <- with(tmp, geosphere::distHaversine(cbind(lon1, lat1), cbind(lon2, lat2))/1000)
-    climat[[paste0("vols", i, "dist")]] <- round(2 * dist)
-    climat[[paste0("vols", i, "h")]] <- round(2 * (dist/850 + 0.5)*10)/10
+    climat[[paste0("volsdist", i)]] <- round(2 * dist)
+    climat[[paste0("volsh", i)]] <- round(2 * (dist/850 + 0.5)*10)/10
     # Émissions de CO2e selon la méthode GES1.5,
     # avec les mêmes facteurs d'émission tirés de la Base Carbone (version juillet 2020)
     # sans les traînées (comprend combustion et amont, mais considère que
     # la fabrication est négligeable)
     # Distingue courts, moyens et longs courriers
     # 95 km + distance orthodromique correspond à la réglementation
-    climat[[paste0("vols", i, "ges")]] <-
+    climat[[paste0("volsges", i)]] <-
         round(2 * ((dist + 95) * case_when(dist < 1000 ~ 0.1412,
                                            dist < 3500 ~ 0.10240,
                                            TRUE ~ 0.0829)))
