@@ -265,6 +265,69 @@ ggplot(drop_na(climat, trainavion),
        title ="Au cours des 5 dernières années, avez-vous, pour des raisons\n environnementales, pris le train plutôt que l’avion\n dans le cadre professionnel alors que le trajet était plus long ?")
 ```
 
+## Renoncé à un déplacement à l'étranger pour des raisons environnementales
+En 2019, avez-vous renoncé à un ou plusieurs déplacements professionnels à l’étranger (y compris décidé de ne pas candidater à une conférence) pour des considérations environnementales ?
+
+```{r echo=FALSE}
+ggplot(drop_na(climat, renoncedep.env),
+       aes(y=fct_rev(renoncedep.env), x=..prop.., group=1)) +
+  geom_bar(fill="white", color="chartreuse3") +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  coord_cartesian(xlim=c(0, 0.78)) +
+  geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
+            stat="count", position=position_dodge(.9),
+            hjust=-0.2, size=3) +
+  labs(x="", y="")
+```
+
+## Travail à domicile
+En temps normal (avant le confinement), combien de jours en moyenne travaillez-vous uniquement de chez vous ? Ne tenez pas compte des éventuels jours travaillés le week-end.
+
+
+```{r echo=FALSE}
+ggplot(drop_na(climat, joursdomicile),
+       aes(y=fct_rev(joursdomicile), x=..prop.., group=1)) +
+  geom_bar(fill="white", color="chartreuse3") +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  coord_cartesian(xlim=c(0, 0.78)) +
+  geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
+            stat="count", position=position_dodge(.9),
+            hjust=-0.2, size=3) +
+  labs(x="", y="")
+```
+
+## Déplacements domicile travail
+Avant le confinement, combien de temps passiez-vous en moyenne par semaine dans les  transports suivants pour vos déplacements domicile-travail ? Indiquez la somme de tous les trajets pour aller et revenir du travail, y compris les trajets longue distance. Laissez vides les cases qui ne vous concernent pas ou qui seraient à 0.
+
+
+```{r echo=FALSE}
+#Attention, il faudra nettoyer les temps (Il y a des couillons qui ont converti leurs heures de transport en minutes. Ex : 6h, 360 minutes..)
+climat$tpsdomtrav.urbain_h<- as.numeric(climat$tpsdomtrav.urbain_h)
+climat$tpsdomtrav.urbainMin<-climat$tpsdomtrav.urbain_h*60+climat$tpsdomtrav.urbain_m
+climat$tpsdomtrav.tgvMin<-climat$tpsdomtrav.tgv_h*60+climat$tpsdomtrav.tgv_m
+climat$tpsdomtrav.trainMin<-climat$tpsdomtrav.train_h*60+climat$tpsdomtrav.train_m
+#un gars qui a réussi à rentrer "5 h" dans son temps de voiture (et ça fait tout bugger puisque c'est plus numérique)
+climat$tpsdomtrav.voit_h[climat$tpsdomtrav.voit_h=="5 h"]<-5
+climat$tpsdomtrav.voit_h<-as.numeric(climat$tpsdomtrav.voit_h)
+climat$tpsdomtrav.voitMin<-climat$tpsdomtrav.voit_h*60+climat$tpsdomtrav.voit_m
+climat$tpsdomtrav.covoitMin<-climat$tpsdomtrav.covoit_h*60+climat$tpsdomtrav.covoit_m
+climat$tpsdomtrav.motoMin<-climat$tpsdomtrav.moto_h*60+climat$tpsdomtrav.moto_m
+climat$tpsdomtrav.veloMin<-climat$tpsdomtrav.velo_h*60+climat$tpsdomtrav.velo_m
+climat$tpsdomtrav.marcheMin<-climat$tpsdomtrav.marche_h*60+climat$tpsdomtrav.marche_m
+
+TpsTransportDomT<- climat %>% 
+  select(tpsdomtrav.urbainMin, tpsdomtrav.tgvMin, tpsdomtrav.trainMin, tpsdomtrav.voitMin, tpsdomtrav.covoitMin, tpsdomtrav.motoMin, tpsdomtrav.veloMin, tpsdomtrav.marcheMin ) %>%
+  pivot_longer(everything(),
+               names_to = c(".value", "TypeTransport"),
+               names_sep = 11) %>% group_by(TypeTransport) %>%
+  summarize(Tpstotal=sum(tpsdomtrav., na.rm=T)) %>%
+   mutate(prop=Tpstotal/sum(Tpstotal))
+
+
+ggplot(TpsTransportDomT,  aes(x=prop, y=fct_reorder(TypeTransport, prop) )) + geom_col() +
+  labs(y="", x="",
+       title="Part du temps total passé dans les déplacements domicile travail,\n par mode de transport") 
+```
 
 
 # La visioconférence
