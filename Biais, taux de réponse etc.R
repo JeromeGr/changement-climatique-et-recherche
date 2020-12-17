@@ -29,23 +29,6 @@ climat$NumVague["2020-09-07"<=climat$dateDebut & climat$dateDebut<"2020-10-12"]<
 climat$NumVague["2020-10-12"<=climat$dateDebut & climat$dateDebut<"2020-11-16"]<-"Après troisième relance"
 climat$NumVague["2020-11-16"<=climat$dateDebut]<-"Après quatrième relance"
 
-#Construction d'un "score écolo"
-climat$ScoreEcolo<-0
-climat$ScoreEcolo[climat$dixannees.bilan=="Oui" & !is.na(climat$dixannees.bilan)]<-climat$ScoreEcolo[climat$dixannees.bilan=="Oui" & !is.na(climat$dixannees.bilan)]+1
-climat$ScoreEcolo[climat$dixannees.giec=="Oui" & !is.na(climat$dixannees.giec)]<-climat$ScoreEcolo[climat$dixannees.giec=="Oui" & !is.na(climat$dixannees.giec)]+1
-climat$ScoreEcolo[climat$dixannees.asso=="Oui"& !is.na(climat$dixannees.asso)]<-climat$ScoreEcolo[climat$dixannees.asso=="Oui" & !is.na(climat$dixannees.asso)]+1
-climat$ScoreEcolo[climat$dixannees.marche=="Oui" & !is.na(climat$dixannees.marche)]<-climat$ScoreEcolo[climat$dixannees.marche=="Oui" & !is.na(climat$dixannees.marche)]+1
-climat$ScoreEcolo[climat$dixannees.vote=="Oui" & !is.na(climat$dixannees.vote)]<-climat$ScoreEcolo[climat$dixannees.vote=="Oui" & !is.na(climat$dixannees.vote)]+1
-climat$ScoreEcolo[is.na(climat$dixannees.bilan) & is.na(climat$dixannees.giec) &is.na(climat$dixannees.asso) & is.na(climat$dixannees.marche) & is.na(climat$dixannees.vote)]<-NA
-
-#Autre façon de calculer un score écolo
-climat$ScoreEcoloPond<-0
-climat$ScoreEcoloPond[climat$dixannees.bilan=="Oui" & !is.na(climat$dixannees.bilan)]<-climat$ScoreEcoloPond[climat$dixannees.bilan=="Oui" & !is.na(climat$dixannees.bilan)]+2
-climat$ScoreEcoloPond[climat$dixannees.giec=="Oui" & !is.na(climat$dixannees.giec)]<-climat$ScoreEcoloPond[climat$dixannees.giec=="Oui" & !is.na(climat$dixannees.giec)]+1
-climat$ScoreEcoloPond[climat$dixannees.asso=="Oui"& !is.na(climat$dixannees.asso)]<-climat$ScoreEcoloPond[climat$dixannees.asso=="Oui" & !is.na(climat$dixannees.asso)]+2
-climat$ScoreEcoloPond[climat$dixannees.marche=="Oui" & !is.na(climat$dixannees.marche)]<-climat$ScoreEcoloPond[climat$dixannees.marche=="Oui" & !is.na(climat$dixannees.marche)]+2
-climat$ScoreEcoloPond[climat$dixannees.vote=="Oui" & !is.na(climat$dixannees.vote)]<-climat$ScoreEcoloPond[climat$dixannees.vote=="Oui" & !is.na(climat$dixannees.vote)]+1
-climat$ScoreEcoloPond[is.na(climat$dixannees.bilan) & is.na(climat$dixannees.giec) &is.na(climat$dixannees.asso) & is.na(climat$dixannees.marche) & is.na(climat$dixannees.vote)]<-NA
 
 #Passage en numérique de la variable "inquiétude"
 climat$preoccupeNum[climat$preoccupe=="Pas du tout préoccupé·e"]<-0

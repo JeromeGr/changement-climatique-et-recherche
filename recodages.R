@@ -34,8 +34,10 @@ climat <- filter(climat,
 # À ce stade on ne doit avoir que des personnes qui ont répondu au moins à quelques questions
 stopifnot(all(climat$interviewtime > 0))
 
-# Et on vire le troll (il faut rajouter de garder les NAs sinon on les perd)
+# Et on vire les trolls (il faut rajouter de garder les NAs sinon on les perd)
 climat<-climat %>% filter((nbpublisang!=666 | is.na(nbpublisang)))
+
+climat<-climat %>% filter((tpsdomtrav.tgv_h!=85 | is.na(tpsdomtrav.tgv_h)))
 
 # La modalité Moins de 18 ans est vide : la retirer
 climat$age <- droplevels(climat$age)
@@ -334,6 +336,41 @@ climat$discipline_agr3 <- fct_recode(climat$discipline,
 "Santé"="91 : Sciences de la rééducation et de la réadaptation",
 "Santé"="92 : Sciences infirmières"
 )
+
+#Recodage temps de transport domicile travail
+#Attention, il faudra nettoyer les temps (Il y a des couillons qui ont converti leurs heures de transport en minutes. Ex : 6h, 360 minutes..)
+climat$tpsdomtrav.urbain_h<- as.numeric(climat$tpsdomtrav.urbain_h)
+climat$tpsdomtrav.urbainMin<-climat$tpsdomtrav.urbain_h*60+climat$tpsdomtrav.urbain_m
+climat$tpsdomtrav.tgvMin<-climat$tpsdomtrav.tgv_h*60+climat$tpsdomtrav.tgv_m
+climat$tpsdomtrav.trainMin<-climat$tpsdomtrav.train_h*60+climat$tpsdomtrav.train_m
+#un gars qui a réussi à rentrer "5 h" dans son temps de voiture (et ça fait tout bugger puisque c'est plus numérique)
+climat$tpsdomtrav.voit_h[climat$tpsdomtrav.voit_h=="5 h"]<-5
+climat$tpsdomtrav.voit_h<-as.numeric(climat$tpsdomtrav.voit_h)
+climat$tpsdomtrav.voitMin<-climat$tpsdomtrav.voit_h*60+climat$tpsdomtrav.voit_m
+climat$tpsdomtrav.covoitMin<-climat$tpsdomtrav.covoit_h*60+climat$tpsdomtrav.covoit_m
+climat$tpsdomtrav.motoMin<-climat$tpsdomtrav.moto_h*60+climat$tpsdomtrav.moto_m
+climat$tpsdomtrav.veloMin<-climat$tpsdomtrav.velo_h*60+climat$tpsdomtrav.velo_m
+climat$tpsdomtrav.marcheMin<-climat$tpsdomtrav.marche_h*60+climat$tpsdomtrav.marche_m
+
+
+#Construction d'un "score écolo"
+climat$ScoreEcolo<-0
+climat$ScoreEcolo[climat$dixannees.bilan=="Oui" & !is.na(climat$dixannees.bilan)]<-climat$ScoreEcolo[climat$dixannees.bilan=="Oui" & !is.na(climat$dixannees.bilan)]+1
+climat$ScoreEcolo[climat$dixannees.giec=="Oui" & !is.na(climat$dixannees.giec)]<-climat$ScoreEcolo[climat$dixannees.giec=="Oui" & !is.na(climat$dixannees.giec)]+1
+climat$ScoreEcolo[climat$dixannees.asso=="Oui"& !is.na(climat$dixannees.asso)]<-climat$ScoreEcolo[climat$dixannees.asso=="Oui" & !is.na(climat$dixannees.asso)]+1
+climat$ScoreEcolo[climat$dixannees.marche=="Oui" & !is.na(climat$dixannees.marche)]<-climat$ScoreEcolo[climat$dixannees.marche=="Oui" & !is.na(climat$dixannees.marche)]+1
+climat$ScoreEcolo[climat$dixannees.vote=="Oui" & !is.na(climat$dixannees.vote)]<-climat$ScoreEcolo[climat$dixannees.vote=="Oui" & !is.na(climat$dixannees.vote)]+1
+climat$ScoreEcolo[is.na(climat$dixannees.bilan) & is.na(climat$dixannees.giec) &is.na(climat$dixannees.asso) & is.na(climat$dixannees.marche) & is.na(climat$dixannees.vote)]<-NA
+
+#Autre façon de calculer un score écolo
+climat$ScoreEcoloPond<-0
+climat$ScoreEcoloPond[climat$dixannees.bilan=="Oui" & !is.na(climat$dixannees.bilan)]<-climat$ScoreEcoloPond[climat$dixannees.bilan=="Oui" & !is.na(climat$dixannees.bilan)]+2
+climat$ScoreEcoloPond[climat$dixannees.giec=="Oui" & !is.na(climat$dixannees.giec)]<-climat$ScoreEcoloPond[climat$dixannees.giec=="Oui" & !is.na(climat$dixannees.giec)]+1
+climat$ScoreEcoloPond[climat$dixannees.asso=="Oui"& !is.na(climat$dixannees.asso)]<-climat$ScoreEcoloPond[climat$dixannees.asso=="Oui" & !is.na(climat$dixannees.asso)]+2
+climat$ScoreEcoloPond[climat$dixannees.marche=="Oui" & !is.na(climat$dixannees.marche)]<-climat$ScoreEcoloPond[climat$dixannees.marche=="Oui" & !is.na(climat$dixannees.marche)]+2
+climat$ScoreEcoloPond[climat$dixannees.vote=="Oui" & !is.na(climat$dixannees.vote)]<-climat$ScoreEcoloPond[climat$dixannees.vote=="Oui" & !is.na(climat$dixannees.vote)]+1
+climat$ScoreEcoloPond[is.na(climat$dixannees.bilan) & is.na(climat$dixannees.giec) &is.na(climat$dixannees.asso) & is.na(climat$dixannees.marche) & is.na(climat$dixannees.vote)]<-NA
+
 
 
 
