@@ -337,6 +337,13 @@ climat$discipline_agr3 <- fct_recode(climat$discipline,
 "Santé"="92 : Sciences infirmières"
 )
 
+## création d'une variable binaire sur le thème de recherche écolo (pour l'instant oui, non, oui dans le passé)
+climat$rechecoB<-0
+climat$rechecoB[climat$recheco %in% c("Oui", "Non, mais je l'ai fait par le passé")]<-"Oui"
+climat$rechecoB[climat$recheco=="Non" & !is.na(climat$recheco)]<-"Non"
+climat$rechecoB[is.na(climat$recheco)]<-NA
+
+
 #Recodage temps de transport domicile travail
 #Attention, il faudra nettoyer les temps (Il y a des couillons qui ont converti leurs heures de transport en minutes. Ex : 6h, 360 minutes..)
 climat$tpsdomtrav.urbain_h<- as.numeric(climat$tpsdomtrav.urbain_h)
