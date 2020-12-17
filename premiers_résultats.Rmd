@@ -14,9 +14,40 @@ library(tidyverse)
 library(ggplot2)
 load("climat.RData")
 source("recodages.R", encoding = "UTF-8")
+theme_set(theme_minimal())
 ```
 
 # Informations générales
+
+## statut académique
+
+```{r}
+ggplot(drop_na(climat, statut),
+       aes(y=fct_rev(statut), x=..prop.., group=1)) +
+  geom_bar(fill="white", color="black") +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  coord_cartesian(xlim=c(0, 0.78)) +
+  geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
+            stat="count", position=position_dodge(.9),
+            hjust=-0.2, size=3) +
+  labs(x="Proportion des répondant·es", y="")+ theme_minimal()
+```
+
+## situation professionnelle
+
+```{r}
+ggplot(drop_na(climat, sitpro),
+       aes(y=fct_rev(sitpro), x=..prop.., group=1)) +
+  geom_bar(fill="white", color="black") +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  coord_cartesian(xlim=c(0, 0.78)) +
+  geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
+            stat="count", position=position_dodge(.9),
+            hjust=-0.2, size=3) +
+  labs(x="Proportion des répondant·es", y="")+ theme_minimal()
+```
+
+
 
 # Votre position vis-à-vis de l’environnement et de la recherche
 
@@ -67,7 +98,7 @@ ggplot(drop_na(climat, preoccupe),
 
 ## Heures de vol en avion
 
-Pour l'année 2019 (du 1er janvier au 31 décembre), nombre d'heures de vol en avion
+Pour l'année 2019 (du 1er janvier au 31 décembre), nombre d'heures de vol en avion
 
 ```{r echo=FALSE}
 climat$volshTot<-climat$volsh
