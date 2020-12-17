@@ -352,15 +352,15 @@ Si seul·e dans une voiture à un des trajets :
 Pour les trajets que vous réalisez seul·e dans votre voiture, pourquoi ne faites-vous pas du covoiturage ? (Plusieurs réponses possibles.)
 
 ```{r echo=FALSE}
-#aumoinsunecochee <- rowSums(!is.na(select(climat, starts_with("covoitpqpas"))))
-#Pour avoir le nombre de gens ayant coché au moins une case : aumoinsunecochee <- colSums(!is.na(select(climat, starts_with("covoitpqpas"))))
+#aumoinsunecochee <- rowSums(!is.na(select(climat, starts_with("covoitpqpas")))) > 0
+#1216 personnes
+
 Covoit<- climat %>% 
   select(covoitpqpas.flex,  covoitpqpas.atypique,  covoitpqpas.orga,  covoitpqpas.ecole,  covoitpqpas.personne,  covoitpqpas.fiabilite,  covoitpqpas.entente,  covoitpqpas.court, covoitpqpas.trouver) %>%
   pivot_longer(everything(),
                names_to = c(".value", "RaisonsPasCovoit"),
                names_sep = 12) %>% group_by(RaisonsPasCovoit) %>%
   count(covoitpqpas.) %>% filter(covoitpqpas.=="Oui") %>%
-#A vérifier : 1216 personnes ont au moins coché une case à cette question
    mutate(prop=n/1216)
 
 Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="flex"]<-"Je tiens à la flexibilité de mes horaires"
