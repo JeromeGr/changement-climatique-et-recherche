@@ -14,7 +14,7 @@ library(tidyverse)
 library(ggplot2)
 load("climat.RData")
 source("recodages.R", encoding = "UTF-8")
-theme_set(theme_minimal())
+theme_set(theme_minimal() + theme(plot.title=element_text(size=11)))
 update_geom_defaults("bar", list(fill="#045a8d"))
 update_geom_defaults("col", list(fill="#045a8d"))
 ```
@@ -98,7 +98,6 @@ ggplot(drop_na(climat, acthum3),
   geom_text(aes(label=scales::percent(..prop.., accuracy=0.1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  theme(plot.title=element_text(size=11), plot.subtitle=element_text(size=8)) +
   labs(x="Proportion des répondant·es", y="",
        title="Les activités humaines sont-elles la cause du changement climatique\n(hausse des températures depuis une centaine d'années) ?",
        # subtitle="Pensez-vous que le climat de la planète est en train de changer\n(hausse des températures depuis une centaine d’années) ?\nSi oui : D’après vous, les activités humaines sont-elles la cause de ce changement climatique ?",
@@ -117,7 +116,6 @@ ggplot(drop_na(climat, preoccupe),
   geom_text(aes(label=scales::percent(..prop.., accuracy=0.1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  theme(plot.title=element_text(size=11), plot.subtitle=element_text(size=8)) +
   labs(x="Proportion des répondant·es", y="",
        title="Dans quelle mesure êtes-vous préoccupé·e par le changement climatique ?",
        # subtitle="Pensez-vous que le climat de la planète est en train de changer\n(hausse des températures depuis une centaine d’années) ?\nSi oui : D’après vous, les activités humaines sont-elles la cause de ce changement climatique ?",
@@ -305,7 +303,7 @@ En 2019, avez-vous renoncé à un ou plusieurs déplacements professionnels à l
 ```{r echo=FALSE}
 ggplot(drop_na(climat, renoncedep.env),
        aes(y=fct_rev(renoncedep.env), x=..prop.., group=1)) +
-  geom_bar(fill="white", color="chartreuse3") +
+  geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
   coord_cartesian(xlim=c(0, 0.78)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
@@ -321,7 +319,7 @@ En temps normal (avant le confinement), combien de jours en moyenne travaillez-v
 ```{r echo=FALSE}
 ggplot(drop_na(climat, joursdomicile),
        aes(y=fct_rev(joursdomicile), x=..prop.., group=1)) +
-  geom_bar(fill="white", color="chartreuse3") +
+  geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
   coord_cartesian(xlim=c(0, 0.78)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
@@ -373,7 +371,7 @@ drop_na(dat) %>%
     scale_y_continuous(labels=scales::percent_format(),
                        sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
     coord_flip() + labs(fill="") +
-    theme(legend.position="bottom", plot.title=element_text(size=11)) +
+    theme(legend.position="bottom") +
     guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
     labs(y="Proportion des répondant·es", x="",
          caption="* Les personnes ayant répondu négativement à la question précédente sont classés en « Pas du tout d'accord ».")
@@ -382,17 +380,12 @@ drop_na(dat) %>%
 # Les solutions concrètes dans la recherche
 
 ## Réduction des émissions de la recherche d'ici à 2030
-La France s’est engagée à réduire d’un tiers ses émissions de gaz à effet de serre d’ici à 2030. Dans ce cadre, pensez-vous que :
-
-- La recherche publique doit montrer l’exemple en matière de diminution des émissions de gaz à effet de serre en les réduisant de plus d’un tiers
-- La recherche publique doit réduire ses émissions de gaz à effet de serre d’un tiers environ
-- En raison de son rôle, la recherche publique peut bénéficier d’un statut dérogatoire, c’est-à-dire fournir des efforts moindres en termes de réduction des émissions de gaz à effet de serre
 
 ```{r echo=FALSE}
 climat$solreducrech2 <- fct_recode(climat$solreducrech,
-  "De plus d'un tiers" = "La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui",
-  "D'un tiers environ" = "La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ",
-  "De moins d'un tiers" = "En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"
+  "Montrer l'exemple\n(réduire de plus d'un tiers)" = "La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui",
+  "Réduire d'un tiers environ" = "La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ",
+  "Bénéficier d'un statut dérogatoire\n(réduire de moins d'un tiers)" = "En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"
 )
 ggplot(drop_na(climat, solreducrech2),
        aes(y=fct_rev(solreducrech2), x=..prop.., group=1)) +
@@ -403,18 +396,77 @@ ggplot(drop_na(climat, solreducrech2),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
     labs(x="Proportion des répondant·es", y="",
-         title="D'ici 2030, la recherche publique doit réduire ses émissions...")
+         title="La France s’est engagée à réduire d’un tiers ses émissions\nde gaz à effet de serre d'ici à 2030.\nDans ce cadre, pensez-vous que la recherche publique doit :")
 ```
 
-# Solutions institutionnelles
+## Réductions individuelles
 
-Quelles actions les institutions et laboratoires de recherche devraient-ils mettre en œuvre pour réduire leurs émissions de gaz à effet de serre ?
+```{r echo=FALSE, fig.height=6, fig.width=7.5}
+dat <- rbind(data.frame(variable="Les expériences et observations\nscientifiques", valeur=climat$solreducperso.exp),
+             data.frame(variable="Les déplacements pour missions de terrain,\nd'observation ou de collecte de données", valeur=climat$solreducperso.donnees),
+             data.frame(variable="Les déplacements domicile-travail\nen voiture, moto, scooter ou avion", valeur=climat$solreducperso.domicile),
+             data.frame(variable="L'équipement en postes informatiques\net sa fréquence de renouvellement", valeur=climat$solreducperso.info),
+             data.frame(variable="Les vols en avion\npour les conférences, réunions, congrès", valeur=climat$solreducperso.conf)) %>%
+    mutate(variable=factor(variable, levels=unique(variable)),
+           valeur=fct_relevel(valeur, c("Non, car elles sont déjà très basses", "Oui, d'au moins un tiers", "Oui, mais de moins d'un tiers", "Sans opinion", "Non")))
 
-```{r echo=FALSE}
+drop_na(dat) %>%
+    filter(valeur != "Non concerné·e") %>%
+    ggplot(aes(x=variable)) +
+    geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
+    scale_fill_manual(values=c("#d7191c", "light grey", "#a6d96a", "#66bd63", "#1a9641")) +
+    scale_y_continuous(labels=scales::percent_format(),
+                       sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
+    coord_flip() + labs(fill="") +
+    theme(legend.position="bottom") +
+    guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
+    labs(y="Proportion des répondant·es", x="",
+         title="Êtes-vous prêt·e à réduire vos émissions de gaz à effet de serre\nd’ici à 2030 dans les domaines suivants ?",
+         caption="Note : la proportion de personnes concernées varie selon la question")
+```
+
+## Risques liés à la réduction des vols
+
+```{r echo=FALSE, fig.height=6, fig.width=7.5}
+dat <- rbind(data.frame(variable="Réduire certains avantages\nque vous apporte votre métier", valeur=climat$solrisqreducavion.avantages),
+             data.frame(variable="Réduire votre accès aux financements", valeur=climat$solrisqreducavion.fin),
+             data.frame(variable="Diminuer la qualité de vos travaux", valeur=climat$solrisqreducavion.qual),
+             data.frame(variable="Diminuer la diffusion de vos travaux", valeur=climat$solrisqreducavion.diffusion),
+             data.frame(variable="Isoler la recherche française\ndu reste du monde", valeur=climat$solrisqreducavion.isoler),
+             data.frame(variable="Accroître la bureaucratie", valeur=climat$solrisqreducavion.bureaucratie),
+             data.frame(variable="Vous gêner pour l’accès à certains terrains\nou la collecte/production de certaines données", valeur=climat$solrisqreducavion.donnees),
+             data.frame(variable="Gêner l’insertion des jeunes chercheurs", valeur=climat$solrisqreducavion.insertion)) %>%
+    mutate(variable=factor(variable, levels=unique(variable)),
+           valeur=fct_relevel(valeur, c("C'est probable et c'est un problème", "Sans opinion", "C'est probable mais ce n'est pas un problème", "C'est peu probable")))
+
+drop_na(dat) %>%
+    filter(valeur != "Non concerné·e") %>%
+    ggplot(aes(x=variable)) +
+    geom_bar(aes(fill=valeur), position="fill") +
+    scale_fill_manual(values=c("#d7191c", "light grey", "#a6d96a", "#1a9641")) +
+    scale_y_continuous(labels=scales::percent_format(),
+                       sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
+    coord_flip() + labs(fill="") +
+    theme(legend.position="bottom") +
+    guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
+    labs(y="Proportion des répondant·es", x="",
+         title="Quels seraient les risques liés à la mise en place d'une politique\nde réduction des vols professionnels en avion dans la recherche ?",
+         caption="Note : la proportion de personnes concernées varie selon la question")
+```
+
+## Solutions institutionnelles
+
+```{r echo=FALSE, fig.height=6, fig.width=7.5}
 dat <- rbind(data.frame(variable="Ajouter les émissions carbone parmi les principaux\ncritères de sélection des projets à financer", valeur=climat$solinstit.selection),
              data.frame(variable="Imposer une limite au nombre de vols\nen avion par personne", valeur=climat$solinstit.limitevols),
+             data.frame(variable="Financer des initiatives de compensation carbone", valeur=climat$solinstit.compensation),
+             data.frame(variable="Diminuer le poids des conférences et présentations\nà l’étranger dans les évaluations de carrière", valeur=climat$solinstit.conf),
+             data.frame(variable="Dresser et diffuser régulièrement\ndes bilans carbone détaillés", valeur=climat$solinstit.bilanges),
              data.frame(variable="Proscrire les vols en avion lorsque\nle trajet en train prend moins de 6 heures", valeur=climat$solinstit.vols6h),
-             data.frame(variable="Dresser et diffuser régulièrement\ndes bilans carbone détaillés", valeur=climat$solinstit.bilanges)) %>%
+             data.frame(variable="Ne pas renouveler le matériel informatique qui fonctionne\navant un minimum de 5 ans d’ancienneté", valeur=climat$solinstit.info),
+             data.frame(variable="Financer le train même lorsque c'est plus cher\nou allonge la durée de la mission", valeur=climat$solinstit.train),
+             data.frame(variable="Lors de l'organisation d’événements, favoriser les prestataires\nproposant des menus locaux ou végétariens", valeur=climat$solinstit.vege),
+             data.frame(variable="Lors du renouvellement des équipements, privilégier ceux\nqui consomment moins d'énergie même s'ils sont plus coûteux", valeur=climat$solinstit.equip)) %>%
     mutate(variable=factor(variable, levels=unique(variable)),
            valeur=fct_relevel(valeur, c("C'est prioritaire", "C'est secondaire", "Sans opinion", "Il ne faut pas le mettre en œuvre")))
 
@@ -425,12 +477,28 @@ drop_na(dat) %>%
     scale_y_continuous(labels=scales::percent_format(),
                        sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
     coord_flip() + labs(fill="") +
-    theme(legend.position="bottom", plot.title=element_text(size=11)) +
+    theme(legend.position="bottom") +
     guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
     labs(y="Proportion des répondant·es", x="",
-         title="Actions à mettre en œuvre\npour réduire les émissions carbone :")
+         title="Quelles actions les institutions et laboratoires\nde recherche devraient-ils mettre en œuvre\npour réduire leurs émissions de gaz à effet de serre ?")
 ```
 
+## Covoiturage
+
+Question posée uniquement aux répondant·es qui utilisent la voiture (seul·es ou à plusieurs) pour leurs trajets domicile-travail.
+
+```{r echo=FALSE}
+ggplot(drop_na(climat, solcovoit),
+       aes(y=fct_rev(solcovoit), x=..prop.., group=1)) +
+    geom_bar() +
+    scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+    coord_cartesian(xlim=c(0, 0.5)) +
+    geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
+            stat="count", position=position_dodge(.9),
+            hjust=-0.2, size=3) +
+    labs(x="Proportion des répondant·es", y="",
+         title="Si le covoiturage était organisé à l'échelle de votre laboratoire ou de votre site,\nseriez-vous prêt·e à y recourir pour vos trajets domicile-travail ?")
+```
 
 # Informations concernant votre activité et votre situation personnelle
 
