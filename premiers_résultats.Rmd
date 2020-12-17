@@ -349,6 +349,38 @@ ggplot(TpsTransportDomT,  aes(x=prop, y=fct_reorder(TypeTransport, prop) )) + ge
        title="Part du temps total passé dans les déplacements domicile travail,\n par mode de transport") 
 ```
 
+## Freins au covoiturage
+Si seul·e dans une voiture à un des trajets :
+Pour les trajets que vous réalisez seul·e dans votre voiture, pourquoi ne faites-vous pas du covoiturage ? (Plusieurs réponses possibles.)
+
+```{r echo=FALSE}
+#aumoinsunecochee <- rowSums(!is.na(select(climat, starts_with("covoitpqpas"))))
+#Pour avoir le nombre de gens ayant coché au moins une case : aumoinsunecochee <- colSums(!is.na(select(climat, starts_with("covoitpqpas"))))
+Covoit<- climat %>% 
+  select(covoitpqpas.flex,  covoitpqpas.atypique,  covoitpqpas.orga,  covoitpqpas.ecole,  covoitpqpas.personne,  covoitpqpas.fiabilite,  covoitpqpas.entente,  covoitpqpas.court, covoitpqpas.trouver) %>%
+  pivot_longer(everything(),
+               names_to = c(".value", "RaisonsPasCovoit"),
+               names_sep = 12) %>% group_by(RaisonsPasCovoit) %>%
+  count(covoitpqpas.) %>% filter(covoitpqpas.=="Oui") %>%
+#A vérifier : 1216 personnes ont au moins coché une case à cette question
+   mutate(prop=n/1216)
+
+Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="flex"]<-"Je tiens à la flexibilité de mes horaires"
+Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="atypique"]<-"J’ai des horaires trop atypiques ou trop irréguliers"
+Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="personne"]<-"Je n’ai trouvé personne avec un trajet et des horaires proches"
+Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="ecole"]<-"Je dois déposer les enfants à l’école"
+Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="court"]<-"Le trajet est trop court"
+Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="orga"]<-"Cela demande trop d’organisation"
+Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="fiabilite"]<-"J’ai peur du manque de fiabilité des autres"
+Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="trouver"]<-"Je ne sais pas comment trouver un·e covoitureur·se"
+Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="entente"]<-"Je crains de covoiturer avec quelqu’un avec qui je ne m’entends pas"
+
+
+ggplot(Covoit,  aes(x=prop, y=fct_reorder(RaisonsPasCovoit, prop) )) + geom_col() +
+  labs(y="", x="% des répondants",
+       title="Raisons pour lesquelles ceux qui \n prennent leur voiture ne covoiturent pas") 
+
+````
 
 # La visioconférence
 
