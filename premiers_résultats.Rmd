@@ -9,44 +9,77 @@ output:
     number_sections: yes
 ---
 
-```{r preparation, echo=FALSE}
+```{r preparation, echo=FALSE, message=FALSE}
 library(tidyverse)
 library(ggplot2)
 load("climat.RData")
 source("recodages.R", encoding = "UTF-8")
 theme_set(theme_minimal())
+update_geom_defaults("bar", list(fill="#045a8d"))
+update_geom_defaults("col", list(fill="#045a8d"))
 ```
 
 # Informations générales
 
-## statut académique
+## Statut académique
 
-```{r}
+```{r echo=FALSE}
 ggplot(drop_na(climat, statut),
        aes(y=fct_rev(statut), x=..prop.., group=1)) +
-  geom_bar(fill="white", color="black") +
+  geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
   coord_cartesian(xlim=c(0, 0.78)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="Proportion des répondant·es", y="")+ theme_minimal()
+  labs(x="Proportion des répondant·es", y="")
 ```
 
-## situation professionnelle
+## Situation professionnelle
 
-```{r}
+```{r echo=FALSE}
 ggplot(drop_na(climat, sitpro),
        aes(y=fct_rev(sitpro), x=..prop.., group=1)) +
-  geom_bar(fill="white", color="black") +
+  geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
   coord_cartesian(xlim=c(0, 0.78)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="Proportion des répondant·es", y="")+ theme_minimal()
+  labs(x="Proportion des répondant·es", y="")
 ```
 
+
+## Doctorants
+
+Il y a 18% de doctorant.es dans l'échantillon.
+
+## Disciplines et BAP
+
+
+```{r echo=FALSE}
+ggplot(drop_na(climat, discipline_agr),
+       aes(y=fct_rev(discipline_agr), x=..prop.., group=1)) +
+  geom_bar() +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  coord_cartesian(xlim=c(0, 0.78)) +
+  geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
+            stat="count", position=position_dodge(.9),
+            hjust=-0.2, size=3) +
+  labs(x="Proportion des répondant·es", y="")
+```
+```{r echo=FALSE}
+ggplot(drop_na(climat, bap),
+       aes(y=fct_rev(bap), x=..prop.., group=1)) +
+  geom_bar() +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  coord_cartesian(xlim=c(0, 0.78)) +
+  geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
+            stat="count", position=position_dodge(.9),
+            hjust=-0.2, size=3) +
+  labs(x="Proportion des répondant·es", y="")
+
+```
 
 
 # Votre position vis-à-vis de l’environnement et de la recherche
@@ -107,20 +140,20 @@ climat$volshTot[climat$volsnb==0]<-"0h"
 
 ggplot(drop_na(climat, volshTot),
        aes(y=fct_rev(volshTot), x=..prop.., group=1)) +
-  geom_bar(fill="white", color="chartreuse3") +
+  geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
   coord_cartesian(xlim=c(0, 0.78)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="Proportion des répondant·es", y="Nombre d'heures de vol en 2019")+ theme_minimal()
+  labs(x="Proportion des répondant·es", y="Nombre d'heures de vol en 2019")
 ```
 
 ## Nombre de jours travaillés sur place
 
 Nombre de jours travaillés sur place lors d'un déplacement professionnel en avion
 
-```{r echo=FALSE}
+```{r echo=FALSE, message=FALSE}
 #En fonction du nombre de déplacements pro
 #On tient compte du nombre d'aller retour pour avoir le nombre de séjours réels (volsnb)
 #Pour tout demi aller-retour, il faut aussi compter un séjour entier (ceiling)
@@ -162,7 +195,7 @@ ggplot(DFNbJourTravailles,  aes(x=prop, y=volsjours )) + geom_col() +
 
 Motif principal des déplacements professionnels en avion
 
-```{r echo=FALSE}
+```{r echo=FALSE, message=FALSE}
 #En fonction du nombre de déplacements pro
 #On tient compte du nombre d'aller retour pour avoir le nombre de séjours réels (volsnb)
 #Pour tout demi aller-retour, il faut aussi compter un séjour entier (ceiling)
@@ -199,7 +232,7 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volsmotif, prop) )) + geom_col() 
 
 Distance moyenne parcourue en avion par motif principal du déplacement en avion
 
-```{r echo=FALSE}
+```{r echo=FALSE, message=FALSE}
 DFDistMoyAvion<- climat %>% 
   select(paste0("volsnb", 1:5), paste0("volsmotif", 1:5), paste0("volsdist", 1:5)) %>%
   pivot_longer(everything(),
@@ -218,13 +251,14 @@ ggplot(DFDistMoyAvion,  aes(x=DistMoy, y=fct_reorder(volsmotif, DistMoy) )) + ge
 ## Part de la distrance totale parcourue en avion correspondant à des trajets en train de moins de 3h
 Proportion de la distance totale parcourue en avion par les répondants avec des trajets en train de moins de 3H (estimation)
 
-```{r echo=FALSE}
+```{r echo=FALSE, message=FALSE}
 DFDistAvion<- climat %>% 
   select(paste0("volsnb", 1:5), paste0("volsdist", 1:5), paste0("volsh", 1:5)) %>%
   pivot_longer(everything(),
                names_to = c(".value", "set"),
                names_sep = -1) 
 #On regarde Volh<2 car c'est le temps pour l'aller retour. On maximise en disant que jusqu'à une heure d'avion, on a un train de moins de 3h
+DFDistAvion$VolInf3h <- NA
 DFDistAvion$VolInf3h[DFDistAvion$volsh<2]<-"Trajet effectuable en moins de 3h en train"
 DFDistAvion$VolInf3h[DFDistAvion$volsh>=2]<-"Trajet effectuable en plus de 3h en train"
 
@@ -353,7 +387,6 @@ drop_na(dat) %>%
     scale_y_continuous(labels=scales::percent_format(),
                        sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
     coord_flip() + labs(fill="") +
-    theme_minimal() +
     theme(legend.position="bottom", plot.title=element_text(size=11)) +
     guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
     labs(y="Proportion des répondant·es", x="",
@@ -406,7 +439,6 @@ drop_na(dat) %>%
     scale_y_continuous(labels=scales::percent_format(),
                        sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
     coord_flip() + labs(fill="") +
-    theme_minimal() +
     theme(legend.position="bottom", plot.title=element_text(size=11)) +
     guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
     labs(y="Proportion des répondant·es", x="",
