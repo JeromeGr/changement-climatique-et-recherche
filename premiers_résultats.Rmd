@@ -2,8 +2,6 @@
 title: Premiers résultats de l’enquête « Les personnels de la recherche face au changement
   climatique »
 output:
-  word_document:
-    toc: yes
   html_document:
     fig_width: 7.5
     fig_height: 4.5
