@@ -354,11 +354,13 @@ ggplot(TpsTransportDomT,  aes(x=prop, y=fct_reorder(TypeTransport, prop) )) + ge
 
 ## Opinions sur l'écologie
 
-```{r echo=FALSE}
-dat <- rbind(data.frame(variable="La plupart des problèmes environnementaux peuvent être résolus\npar le développement de technologies plus performantes",
+```{r echo=FALSE, fig.height=5}
+dat <- rbind(data.frame(variable="Il ne sert à rien que je fasse des efforts pour l'environnement\nsi les autres ne font pas de même", valeur=climat$opinionecolo.efforts),
+data.frame(variable="La plupart des problèmes environnementaux peuvent être résolus\npar le développement de technologies plus performantes",
                         valeur=climat$opinionecolo.techno),
              data.frame(variable="La décroissance est nécessaire\npour faire face aux enjeux environnementaux", valeur=climat$opinionecolo.decroissance),
-             data.frame(variable="Protéger l’environnement est plus important\nque protéger la croissance économique", valeur=climat$opinionecolo.proteger),
+             data.frame(variable="Je suis d’accord pour que des contraintes réglementaires\nsoient mises en place pour protéger l'environnement,\nmême si cela limite mon confort", valeur=climat$opinionecolo.contraintes),
+             data.frame(variable="Protéger l'environnement est plus important\nque protéger la croissance économique", valeur=climat$opinionecolo.proteger),
              data.frame(variable="Ce type de catastrophe pourrait provoquer\nun effondrement de nos sociétés*", valeur=climat$opinionecolo.effondrement2),
              data.frame(variable="Si les choses continuent au rythme actuel,\nnous allons bientôt vivre une catastrophe écologique majeure", valeur=climat$opinionecolo.cata)) %>%
     mutate(variable=factor(variable, levels=unique(variable)),
@@ -372,9 +374,9 @@ drop_na(dat) %>%
                        sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
     coord_flip() + labs(fill="") +
     theme(legend.position="bottom") +
-    guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
+    guides(fill=guide_legend(reverse = TRUE, nrow=3, byrow=TRUE)) +
     labs(y="Proportion des répondant·es", x="",
-         caption="* Les personnes ayant répondu négativement à la question précédente sont classés en « Pas du tout d'accord ».")
+         caption="* Les personnes ayant répondu négativement à la question précédente sont classées en « Pas du tout d'accord ».")
 ```
 
 # Les solutions concrètes dans la recherche
@@ -399,9 +401,9 @@ ggplot(drop_na(climat, solreducrech2),
          title="La France s’est engagée à réduire d’un tiers ses émissions\nde gaz à effet de serre d'ici à 2030.\nDans ce cadre, pensez-vous que la recherche publique doit :")
 ```
 
-## Réductions individuelles
+## Réductions individuelles des émissions d'ici à 2030
 
-```{r echo=FALSE, fig.height=6, fig.width=7.5}
+```{r echo=FALSE, fig.height=6}
 dat <- rbind(data.frame(variable="Les expériences et observations\nscientifiques", valeur=climat$solreducperso.exp),
              data.frame(variable="Les déplacements pour missions de terrain,\nd'observation ou de collecte de données", valeur=climat$solreducperso.donnees),
              data.frame(variable="Les déplacements domicile-travail\nen voiture, moto, scooter ou avion", valeur=climat$solreducperso.domicile),
@@ -419,7 +421,7 @@ drop_na(dat) %>%
                        sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
     coord_flip() + labs(fill="") +
     theme(legend.position="bottom") +
-    guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
+    guides(fill=guide_legend(reverse = TRUE, nrow=3, byrow=TRUE)) +
     labs(y="Proportion des répondant·es", x="",
          title="Êtes-vous prêt·e à réduire vos émissions de gaz à effet de serre\nd’ici à 2030 dans les domaines suivants ?",
          caption="Note : la proportion de personnes concernées varie selon la question")
