@@ -15,7 +15,7 @@ output:
 library(tidyverse)
 library(ggplot2)
 load("climat.RData")
-source("recodages.R")
+source("recodages.R", encoding = "UTF-8")
 ```
 
 # Informations générales
