@@ -659,6 +659,8 @@ ggplot(drop_na(climat, solcovoit),
 
 # Quiz sur les émissions de gaz à effet de serre
 
+Une réponse est considérée comme correcte si elle est à une modalité d'écart maximum de la vraie réponse.
+
 ```{r echo=FALSE}
 dat <- rbind(data.frame(variable="Parcourir 50 km en voiture pour aller et revenir du travail\npendant un an (soit environ 12 000 km)", valeur=climat$quizfacteurs.voiture2),
              data.frame(variable="Fabriquer un ordinateur portable neuf", valeur=climat$quizfacteurs.ordi2),
