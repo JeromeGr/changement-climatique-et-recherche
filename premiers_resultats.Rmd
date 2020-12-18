@@ -177,7 +177,7 @@ dat <- rbind(data.frame(variable="Vous pouvez trier vos déchets", valeur=climat
 drop_na(dat) %>%
      ggplot(aes(x=variable)) +
     geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
-    scale_fill_manual(values=c("#d7191c", "light grey", "#a6d96a", "#1a9641", "light grey")) +
+    scale_fill_manual(values=c("light grey", "#d7191c", "grey", "#a6d96a", "#1a9641")) +
      scale_y_continuous(labels=scales::percent_format(),
                         sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
      coord_flip() + labs(fill="") +
