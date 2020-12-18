@@ -688,24 +688,29 @@ ggplot(drop_na(climat, solcovoit),
 Une réponse est considérée comme correcte si elle est à une modalité d'écart maximum de la vraie réponse.
 
 ```{r echo=FALSE}
-dat <- rbind(data.frame(variable="Parcourir 50 km en voiture pour aller et revenir du travail\npendant un an (soit environ 12 000 km)", valeur=climat$quizfacteurs.voiture2),
-             data.frame(variable="Fabriquer un ordinateur portable neuf", valeur=climat$quizfacteurs.ordi2),
-             data.frame(variable="Imprimer une thèse de 200 pages en 10 exemplaires,\nrecto-verso", valeur=climat$quizfacteurs.these2),
-             data.frame(variable="Faire un aller-retour Paris – New York en avion\n(soit environ 12 000 km)", valeur=climat$quizfacteurs.avion2),
-             data.frame(variable="Produire un steak de bœuf de 150 g", valeur=climat$quizfacteurs.steak2),
-             data.frame(variable="Faire un aller-retour Paris-Marseille en TGV\n(soit 1600 km)", valeur=climat$quizfacteurs.TGV2),
-             data.frame(variable="Faire 3 heures de visioconférence avec votre ordinateur\n(pour une personne)", valeur=climat$quizfacteurs.visio2)) %>%
+dat <- rbind(data.frame(variable="Parcourir 50 km en voiture pour aller et revenir\ndu travail pendant un an (soit environ 12 000 km)", valeur=climat$quizfacteurs.voiture2, reponse="3 000 kg"),
+             data.frame(variable="Fabriquer un ordinateur portable neuf", valeur=climat$quizfacteurs.ordi2, reponse="250 kg"),
+             data.frame(variable="Imprimer une thèse de 200 pages\nen 10 exemplaires, recto-verso", valeur=climat$quizfacteurs.these2, reponse="5 kg"),
+             data.frame(variable="Faire un aller-retour Paris – New York en avion\n(soit environ 12 000 km)", valeur=climat$quizfacteurs.avion2, reponse="1 000 kg"),
+             data.frame(variable="Produire un steak de bœuf de 150 g", valeur=climat$quizfacteurs.steak2, reponse="5 kg"),
+             data.frame(variable="Faire un aller-retour Paris-Marseille en TGV\n(soit 1600 km)", valeur=climat$quizfacteurs.TGV2, reponse="5 kg"),
+             data.frame(variable="Faire 3 heures de visioconférence\navec votre ordinateur (pour une personne)", valeur=climat$quizfacteurs.visio2, reponse="100 g")) %>%
     mutate(variable=factor(variable, levels=unique(variable)))
 
 drop_na(dat) %>%
-    ggplot(aes(x=variable)) +
-    geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
+    count(variable, valeur) %>%
+    mutate(reponse=ifelse(valeur == "Correct",
+                          dat$reponse[match(variable, dat$variable)],
+                          "")) %>%
+    ggplot(aes(x=variable, y=n)) +
+    geom_col(aes(fill=fct_rev(valeur)), position="fill") +
     scale_fill_manual(values=c("#e41a1c", "#4daf4a", "#377eb8")) +
     scale_y_continuous(labels=scales::percent_format(),
                        sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
     coord_flip() + labs(fill="") +
     theme(legend.position="bottom") +
-    guides(fill=guide_legend(reverse = TRUE)) +
+    guides(fill=guide_legend(reverse=TRUE)) +
+    geom_text(aes(label=reponse), position=position_fill(vjust=0.5), size=3) +
     labs(y="Proportion des répondant·es", x="",
          title="Estimations des émissions carbone")
 ```
@@ -713,24 +718,29 @@ drop_na(dat) %>%
 Dans cette variante, une réponse n'est correcte que si la bonne modalité a été exactement choisie. Elle est considérée comme une légère sous- ou surestimation en cas d'écart d'une catégorie.
 
 ```{r echo=FALSE}
-dat <- rbind(data.frame(variable="Parcourir 50 km en voiture pour aller et revenir du travail\npendant un an (soit environ 12 000 km)", valeur=climat$quizfacteurs.voiture3),
-             data.frame(variable="Fabriquer un ordinateur portable neuf", valeur=climat$quizfacteurs.ordi3),
-             data.frame(variable="Imprimer une thèse de 200 pages en 10 exemplaires,\nrecto-verso", valeur=climat$quizfacteurs.these3),
-             data.frame(variable="Faire un aller-retour Paris – New York en avion\n(soit environ 12 000 km)", valeur=climat$quizfacteurs.avion3),
-             data.frame(variable="Produire un steak de bœuf de 150 g", valeur=climat$quizfacteurs.steak3),
-             data.frame(variable="Faire un aller-retour Paris-Marseille en TGV\n(soit 1600 km)", valeur=climat$quizfacteurs.TGV3),
-             data.frame(variable="Faire 3 heures de visioconférence avec votre ordinateur\n(pour une personne)", valeur=climat$quizfacteurs.visio3)) %>%
+dat <- rbind(data.frame(variable="Parcourir 50 km en voiture pour aller et revenir\ndu travail pendant un an (soit environ 12 000 km)", valeur=climat$quizfacteurs.voiture3, reponse="3 000 kg"),
+             data.frame(variable="Fabriquer un ordinateur portable neuf", valeur=climat$quizfacteurs.ordi3, reponse="250 kg"),
+             data.frame(variable="Imprimer une thèse de 200 pages\nen 10 exemplaires, recto-verso", valeur=climat$quizfacteurs.these3, reponse="5 kg"),
+             data.frame(variable="Faire un aller-retour Paris – New York en avion\n(soit environ 12 000 km)", valeur=climat$quizfacteurs.avion3, reponse="1 000 kg"),
+             data.frame(variable="Produire un steak de bœuf de 150 g", valeur=climat$quizfacteurs.steak3, reponse="5 kg"),
+             data.frame(variable="Faire un aller-retour Paris-Marseille en TGV\n(soit 1600 km)", valeur=climat$quizfacteurs.TGV3, reponse="5 kg"),
+             data.frame(variable="Faire 3 heures de visioconférence\navec votre ordinateur (pour une personne)", valeur=climat$quizfacteurs.visio3, reponse="100 g")) %>%
     mutate(variable=factor(variable, levels=unique(variable)))
 
 drop_na(dat) %>%
-    ggplot(aes(x=variable)) +
-    geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
+    count(variable, valeur) %>%
+    mutate(reponse=ifelse(valeur == "Correct",
+                          dat$reponse[match(variable, dat$variable)],
+                          "")) %>%
+    ggplot(aes(x=variable, y=n)) +
+    geom_col(aes(fill=fct_rev(valeur)), position="fill") +
     scale_fill_manual(values=c("#ca0020", "#f4a582", "#4daf4a", "#92c5de", "#0571b0")) +
     scale_y_continuous(labels=scales::percent_format(),
                        sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
     coord_flip() + labs(fill="") +
     theme(legend.position="bottom") +
     guides(fill=guide_legend(reverse=TRUE, nrow=3, byrow=TRUE)) +
+    geom_text(aes(label=reponse), position=position_fill(vjust=0.5), size=3) +
     labs(y="Proportion des répondant·es", x="",
          title="Estimations des émissions carbone")
 ```
