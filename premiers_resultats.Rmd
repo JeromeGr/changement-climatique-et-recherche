@@ -181,12 +181,12 @@ drop_na(dat) %>%
      scale_y_continuous(labels=scales::percent_format(),
                         sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
      coord_flip() + labs(fill="") +
-     theme(legend.position="bottom", plot.title=element_text(size=11)) +
+     theme(legend.position="bottom") +
      guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
      labs(y="Proportion des répondant·es", x="",
           title="Actions mises en œuvre 
           dans les laboratoires/unités de recherche :",
-         caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS ")
+         caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS")
 ```
 
 ## Reliquat de budget
@@ -205,8 +205,7 @@ ggplot(drop_na(climat, reliquat.ordi),
        title="Au cours des 5 dernières années vous est-il arrivé pour terminer
  un reliquat de budget d'acheter un ordinateur/écran/tablette 
  alors que ce n'était pas vraiment indispensable  ?",
- 
- caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS")
+       caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS")
 ```
  
 ## Diminution des vols pour les conférences
@@ -268,9 +267,11 @@ DFNbJourTravailles<- climat %>%
   drop_na(volsjours) %>%
   mutate(prop=n/sum(n))
 
-ggplot(DFNbJourTravailles,  aes(x=prop, y=volsjours )) + geom_col() +
+ggplot(DFNbJourTravailles,  aes(x=prop, y=volsjours )) +
+  geom_col() +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
   labs(y="", x="",
-       title="Part des déplacements professionnels en avion effectués \n par l'ensemble des répondants,\n selon le temps travaillé sur place") 
+       title="Part des déplacements professionnels en avion effectués \n par l'ensemble des répondant·es,\n selon le temps travaillé sur place") 
 
 #En fonction de la distance totale parcourue
 DFNbJourTravailles<- climat %>% 
@@ -282,9 +283,11 @@ DFNbJourTravailles<- climat %>%
   drop_na(volsjours) %>%
   mutate(prop=DistTotale/sum(DistTotale))
 
-ggplot(DFNbJourTravailles,  aes(x=prop, y=volsjours )) + geom_col() +
+ggplot(DFNbJourTravailles,  aes(x=prop, y=volsjours )) +
+  geom_col() +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
   labs(y="", x="",
-       title="Part de la distance totale parcourue en avion par l'ensemble\n des répondants, selon le temps travaillé sur place") 
+       title="Part de la distance totale parcourue en avion par l'ensemble\n des répondant·es, selon le temps travaillé sur place") 
 
 
 
@@ -310,8 +313,11 @@ DFDistAvion<- climat %>%
   drop_na(volsmotif) %>%
   mutate(prop=n/sum(n))
 
-ggplot(DFDistAvion,  aes(x=prop, y=volsmotif )) + geom_col() +
-  labs(y="Motif principal du déplacement en avion", x="% des déplacements effectués en avion par les répondants",
+ggplot(DFDistAvion,  aes(x=prop, y=volsmotif )) +
+  geom_col() +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  labs(y="",
+       x="Proportion des déplacements effectués en avion par les répondant·es",
        title="Motif principal pour les déplacements professionnels\n effectués en avion") 
 
 #En fonction de la distance totale parcourue
@@ -324,9 +330,11 @@ DFDistAvion<- climat %>%
   drop_na(volsmotif) %>%
   mutate(prop=DistTotale/sum(DistTotale))
 
-ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volsmotif, prop) )) + geom_col() +
-  labs(y="", x="% des kms parcourus en avion par les répondants",
-       title="Part de la distance totale parcourue en avion\n par l'ensemble des répondants, selon le motif principal\n du déplacement professionnel") 
+ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volsmotif, prop) )) +
+  geom_col() +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  labs(y="", x="Part de la distance parcourue en avion par les répondant·es",
+       title="Part de la distance totale parcourue en avion\n par l'ensemble des répondant·es, selon le motif principal\n du déplacement professionnel") 
 
 ```
 
@@ -343,15 +351,17 @@ DFDistMoyAvion<- climat %>%
   summarize(DistMoy=mean(volsdist, na.rm=T)) %>%
   drop_na(volsmotif)
 
-ggplot(DFDistMoyAvion,  aes(x=DistMoy, y=fct_reorder(volsmotif, DistMoy) )) + geom_col() +
-  labs(y="Motif principal du déplacement en avion", x="Distance moyenne parcourue en avion",
+ggplot(DFDistMoyAvion,  aes(x=DistMoy, y=fct_reorder(volsmotif, DistMoy) )) +
+  geom_col() +
+  labs(y="",
+       x="Distance moyenne parcourue en avion (en km)",
        title="Distance moyenne parcourue en avion par motif principal\n du déplacement") 
 
 ```
 
 
 ## Part de la distrance totale parcourue en avion correspondant à des trajets en train de moins de 3h
-Proportion de la distance totale parcourue en avion par les répondants avec des trajets en train de moins de 3H (estimation)
+Proportion de la distance totale parcourue en avion par les répondant·es avec des trajets en train de moins de 3h (estimation)
 
 ```{r echo=FALSE, message=FALSE}
 DFDistAvion<- climat %>% 
@@ -369,13 +379,15 @@ DFDistAvion<-DFDistAvion%>% group_by(VolInf3h) %>%
   drop_na(VolInf3h) %>%
   mutate(prop=DistTotale/sum(DistTotale))
 
-ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(VolInf3h, prop) )) + geom_col() +
+ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(VolInf3h, prop) )) +
+  geom_col() +
+  scale_x_continuous(labels=scales::percent_format()) +
   labs(y="", x="",
-       title="Part estimée de la distance totale parcourue en avion\n par l'ensemble des répondants, selon la durée du trajet\n en train correspondant") 
+       title="Part estimée de la distance totale parcourue en avion\n par l'ensemble des répondant·es, selon la durée du trajet\n en train correspondant") 
 
 ```
 
-## Prendre l'avion alors que le trajet en train fait moins de 6H
+## Prendre l'avion alors que le trajet en train fait moins de 6h
 Pour ceux qui ont pris l'avion en 2019 : En 2019, avez-vous pris l’avion pour un trajet professionnel qui prend moins de 6 heures en train (hors déplacements domicile-travail) ?
 
 ```{r echo=FALSE}
@@ -387,7 +399,7 @@ ggplot(drop_na(climat, aviontrain),
        title ="En 2019, avez-vous pris l’avion pour un trajet professionnel qui prend moins\n de 6 heures en train (hors déplacements domicile-travail) ?")
 ```
 
-## Raisons de prendre l'avion alors que le trajet en train fait moins de 6H
+## Raisons de prendre l'avion alors que le trajet en train fait moins de 6h
 
 ## Prendre le train plutot que l'avion alors que le trajet est plus long
 Au cours des 5 dernières années, avez-vous, pour des raisons environnementales, pris le train plutôt que l’avion dans le cadre professionnel alors que le trajet était plus long ?
@@ -397,7 +409,7 @@ ggplot(drop_na(climat, trainavion),
        aes(y=fct_rev(trainavion), x=..prop.., group=1)) +
   geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  labs(x="", y="", 
+  labs(x="Proportion des répondant·es", y="", 
        title ="Au cours des 5 dernières années, avez-vous, pour des raisons\n environnementales, pris le train plutôt que l’avion\n dans le cadre professionnel alors que le trajet était plus long ?")
 ```
 
@@ -413,7 +425,7 @@ ggplot(drop_na(climat, renoncedep.env),
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="", y="")
+  labs(x="Proportion des répondant·es", y="")
 ```
 
 ## Travail à domicile
@@ -429,25 +441,28 @@ ggplot(drop_na(climat, joursdomicile),
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="", y="")
+  labs(x="Proportion des répondant·es", y="")
 ```
 
 ## Déplacements domicile travail
 Avant le confinement, combien de temps passiez-vous en moyenne par semaine dans les  transports suivants pour vos déplacements domicile-travail ? Indiquez la somme de tous les trajets pour aller et revenir du travail, y compris les trajets longue distance. Laissez vides les cases qui ne vous concernent pas ou qui seraient à 0.
 
 
-```{r echo=FALSE}
+```{r echo=FALSE, message=FALSE}
 TpsTransportDomT<- climat %>% 
   select(tpsdomtrav.urbainMin, tpsdomtrav.tgvMin, tpsdomtrav.trainMin, tpsdomtrav.voitMin, tpsdomtrav.covoitMin, tpsdomtrav.motoMin, tpsdomtrav.veloMin, tpsdomtrav.marcheMin ) %>%
   pivot_longer(everything(),
                names_to = c(".value", "TypeTransport"),
                names_sep = 11) %>% group_by(TypeTransport) %>%
   summarize(Tpstotal=sum(tpsdomtrav., na.rm=T)) %>%
-   mutate(prop=Tpstotal/sum(Tpstotal))
+  mutate(prop=Tpstotal/sum(Tpstotal))
 
 
-ggplot(TpsTransportDomT,  aes(x=prop, y=fct_reorder(TypeTransport, prop) )) + geom_col() +
-  labs(y="", x="",
+ggplot(TpsTransportDomT,  aes(x=prop, y=fct_reorder(TypeTransport, prop) )) +
+  geom_col() +
+  scale_x_continuous(labels=scales::percent_format()) +
+  labs(y="",
+       x="Proportion des répondant·es ayant pris l'avion en 2019",
        title="Part du temps total passé dans les déplacements domicile travail,\n par mode de transport") 
 ```
 
@@ -478,8 +493,10 @@ Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="trouver"]<-"Je ne sais pas com
 Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="entente"]<-"Je crains de covoiturer avec quelqu’un avec qui je ne m’entends pas"
 
 
-ggplot(Covoit,  aes(x=prop, y=fct_reorder(RaisonsPasCovoit, prop) )) + geom_col() +
-  labs(y="", x="% des répondants",
+ggplot(Covoit,  aes(x=prop, y=fct_reorder(RaisonsPasCovoit, prop) )) +
+  geom_col() +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  labs(y="", x="Proportion des répondant·es",
        title="Raisons pour lesquelles ceux qui \n prennent leur voiture ne covoiturent pas") 
 
 ```
