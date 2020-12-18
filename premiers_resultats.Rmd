@@ -118,7 +118,6 @@ ggplot(drop_na(climat, preoccupe),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="",
        title="Dans quelle mesure êtes-vous préoccupé·e par le changement climatique ?",
-       # subtitle="Pensez-vous que le climat de la planète est en train de changer\n(hausse des températures depuis une centaine d’années) ?\nSi oui : D’après vous, les activités humaines sont-elles la cause de ce changement climatique ?",
        caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS (n=6344)")
 
 ```
@@ -136,8 +135,7 @@ ggplot(drop_na(climat, pluspreoccupe),
             hjust=-0.2, size=3) +
   theme(plot.title=element_text(size=10), plot.subtitle=element_text(size=8)) +
   labs(x="Proportion des répondant·es", y="",
-       title="Dans quelle mesure êtes-vous plus préoccupé·e par le changement climatique qu'il y a 5 ans?",
-      
+       title="Êtes-vous plus ou moins préoccupé·e par le changement climatique qu'il y a 5 ans?",
        caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS ")
 ```
 
@@ -154,7 +152,7 @@ ggplot(drop_na(climat, chgtpratique),
             hjust=-0.2, size=3) +
   theme(plot.title=element_text(size=10), plot.subtitle=element_text(size=8)) +
   labs(x="Proportion des répondant·es", y="",
-       title="Pensez−vous que l'urgence climatique exige des changements profonds dans la pratique de nos métiers ?",
+       title="Pensez−vous que l'urgence climatique exige des changements profonds\ndans la pratique de nos métiers ?",
       
        caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS ")
 ```
