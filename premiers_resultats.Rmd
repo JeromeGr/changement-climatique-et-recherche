@@ -503,6 +503,145 @@ ggplot(Covoit,  aes(x=prop, y=fct_reorder(RaisonsPasCovoit, prop) )) +
 
 # La visioconférence
 
+## Usages auxquels la visio est adaptée
+
+```{r}
+
+# Réordonnancement de dat$variable
+dat$variable <- factor(dat$variable,
+  levels = c(
+    "Un oral de jury", "Une conférence ou un congrès à plusieurs présentations",
+    "Une réunion de travail à 15 personnes", "Une présentation en séminaire",
+    "Une réunion de travail de 3 à 5 personnes"
+  )
+)
+
+dat <- rbind(data.frame(variable="Une réunion de travail de 3 à 5 personnes",
+                        valeur=climat$visiousages.reunion5),
+             data.frame(variable="Une réunion de travail à 15 personnes", 
+                        valeur=climat$visiousages.reunion15),
+             data.frame(variable="Un oral de jury", 
+                        valeur=climat$visiousages.jury),
+             data.frame(variable="Une présentation en séminaire", 
+                        valeur=climat$visiousages.seminaire),
+             data.frame(variable="Une conférence ou un congrès à plusieurs présentations", 
+                        valeur=climat$visiousages.conf))%>%
+  mutate(variable=factor(variable, levels=unique(variable)),
+         valeur=fct_relevel(valeur, c(
+           "Très adaptée", 
+           "Plutôt adaptée", 
+           "Sans opinion", 
+           "Plutôt pas adaptée", 
+           "Pas adaptée du tout",
+           "Je n'ai jamais testé")))
+
+ggplot(drop_na(dat[dat$valeur=="Je n'ai jamais testé",]),
+       aes(y=variable, x=100*..prop.., group=1)) +
+  geom_bar() +  labs(fill="") +
+  theme(legend.position="bottom") +
+  guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
+  labs(y="", x="",
+       title="Actuellement, pour quels usages la visioconférence ou l'audioconférence 
+vous semblent-elles adaptées ? 
+       Part de personnes ayant répondu n'avoir jamais testé",
+       caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS")
+
+
+drop_na(dat[dat$valeur!="Je n'ai jamais testé",]) %>%
+  ggplot(aes(x=variable)) +
+  geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
+  scale_fill_manual(values=c("#d7191c","#fdae61", "light grey", "#a6d96a", "#1a9641"))+
+  scale_y_continuous(labels=scales::percent_format(),
+                     sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
+  coord_flip() + labs(fill="") +
+  theme(legend.position="bottom") +
+  guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
+  labs(y="Proportion des répondant·es", x="",
+       title="Actuellement, pour quels usages la visioconférence ou l'audioconférence 
+       vous semblent-elles adaptées ? (parmi qui a déjà testé) :",
+       caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS")
+
+```
+
+
+## Raisons de privilégier la visio 
+
+```{r}
+
+dat <- rbind(data.frame(variable="Gagner du temps",
+                        valeur=climat$visioprivilegiee.temps),
+             data.frame(variable="Limiter la fatigue due au déplacement", 
+                        valeur=climat$visioprivilegiee.fatigue),
+             data.frame(variable="Limiter les frais de mission", 
+                        valeur=climat$visioprivilegiee.frais),
+             data.frame(variable="Mieux concilier vos contraintes familiales et votre activité professionnelle", 
+                        valeur=climat$visioprivilegiee.famille),
+             data.frame(variable="Limiter vos émissions de gaz à effet de serre", 
+                        valeur=climat$visioprivilegiee.emissions),
+             data.frame(variable="Pouvoir faire autre chose en même temps que la réunion", 
+                        valeur=climat$visioprivilegiee.autrechose),
+             data.frame(variable="Réunir facilement de nombreuses personnes très éloignées géographiquement", 
+                        valeur=climat$visioprivilegiee.reunir))%>%
+  mutate(variable=factor(variable, levels=unique(variable)),
+         valeur=fct_relevel(valeur, c(
+           "Oui, beaucoup", 
+           "Oui, un peu", 
+           "Sans opinion", 
+           "Non, pas vraiment", 
+           "Non, pas du tout")))
+
+drop_na(dat) %>%
+  ggplot(aes(x=variable)) +
+  geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
+  scale_fill_manual(values=c("#d7191c","#fdae61", "light grey", "#a6d96a", "#1a9641"))+
+  scale_y_continuous(labels=scales::percent_format(),
+                     sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
+  coord_flip() + labs(fill="") +
+  theme(legend.position="bottom") +
+  guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
+  labs(y="Proportion des répondant·es", x="",
+       title="Imaginons une réunion d’une journée, située à 2h de votre domicile en voiture. 
+Les raisons suivantes pourraient-elles vous pousser à privilégier 
+       la visioconférence ou l’audioconférence à un déplacement ?",
+       caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS")
+
+```
+
+
+## Visio avant le confinement ----
+
+```{r}
+
+ggplot(drop_na(climat, visioavtconf),
+       aes(y=fct_rev(visioavtconf), x=..prop.., group=1)) +
+  geom_bar() +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  coord_cartesian(xlim=c(0, 0.78)) +
+  geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
+            stat="count", position=position_dodge(.9),
+            hjust=-0.2, size=3) +
+  labs(x="Proportion des répondant·es", y="")
+```
+
+## Evolution de l'opinion sur la visio 
+
+```{r}
+ggplot(drop_na(climat, visioapresconf),
+       aes(y=fct_rev(visioapresconf), x=..prop.., group=1)) +
+  geom_bar()+
+  geom_bar(fill=rev(c("#d73027", "#f46d43","#dfc27d", "#e5f5f9", "#74add1","light grey")))+
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  coord_cartesian(xlim=c(0, 0.78)) +
+  geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
+            stat="count", position=position_dodge(.9),
+            hjust=-0.2, size=3) +
+  labs(x="Proportion des répondant·es", y="")
+
+```
+
+
+
+
 # Votre avis personnel par rapport à l’écologie en général
 
 ## Opinions sur l'écologie
