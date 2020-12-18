@@ -46,7 +46,7 @@ ggplot(drop_na(climat, sitpro),
        aes(y=fct_rev(sitpro), x=..prop.., group=1)) +
   geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.78)) +
+  coord_cartesian(xlim=c(0, 0.20)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
