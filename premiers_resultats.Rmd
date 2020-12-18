@@ -666,9 +666,9 @@ dat <- rbind(data.frame(variable="Parcourir 50 km en voiture pour aller et reven
              data.frame(variable="Fabriquer un ordinateur portable neuf", valeur=climat$quizfacteurs.ordi2),
              data.frame(variable="Imprimer une thèse de 200 pages en 10 exemplaires,\nrecto-verso", valeur=climat$quizfacteurs.these2),
              data.frame(variable="Faire un aller-retour Paris – New York en avion\n(soit environ 12 000 km)", valeur=climat$quizfacteurs.avion2),
-             data.frame(variable="Faire 3 heures de visioconférence avec votre ordinateur\n(pour une personne)", valeur=climat$quizfacteurs.visio2),
              data.frame(variable="Produire un steak de bœuf de 150 g", valeur=climat$quizfacteurs.steak2),
-             data.frame(variable="Faire un aller-retour Paris-Marseille en TGV\n(soit 1600 km)", valeur=climat$quizfacteurs.TGV2)) %>%
+             data.frame(variable="Faire un aller-retour Paris-Marseille en TGV\n(soit 1600 km)", valeur=climat$quizfacteurs.TGV2),
+             data.frame(variable="Faire 3 heures de visioconférence avec votre ordinateur\n(pour une personne)", valeur=climat$quizfacteurs.visio2)) %>%
     mutate(variable=factor(variable, levels=unique(variable)))
 
 drop_na(dat) %>%
