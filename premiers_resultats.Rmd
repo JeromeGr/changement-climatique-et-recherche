@@ -708,7 +708,11 @@ drop_na(dat) %>%
     guides(fill=guide_legend(reverse = TRUE)) +
     labs(y="Proportion des répondant·es", x="",
          title="Estimations des émissions carbone")
+```
 
+Dans cette variante, une réponse n'est correcte que si la bonne modalité a été exactement choisie. Elle est considérée comme une légère sous- ou surestimation en cas d'écart d'une catégorie.
+
+```{r echo=FALSE}
 dat <- rbind(data.frame(variable="Parcourir 50 km en voiture pour aller et revenir du travail\npendant un an (soit environ 12 000 km)", valeur=climat$quizfacteurs.voiture3),
              data.frame(variable="Fabriquer un ordinateur portable neuf", valeur=climat$quizfacteurs.ordi3),
              data.frame(variable="Imprimer une thèse de 200 pages en 10 exemplaires,\nrecto-verso", valeur=climat$quizfacteurs.these3),
