@@ -514,15 +514,35 @@ recode_quiz <- function(x, rep) {
                "Surestimé"=reponses[1:length(reponses) > i+1])
 }
 
+recode_quiz2 <- function(x, rep) {
+  reponses <- c("10 g", "100 g", "1 kg", "5 kg", "25 kg", "50 kg", "100 kg", 
+                "250 kg", "500 kg", "1 000 kg", "2 000 kg", "3 000 kg", "5 000 kg")
+  i <- which(reponses == rep)
+  fct_collapse(x,
+               "Très sous-estimé"=reponses[1:length(reponses) < i-1],
+               "Un peu sous-estimé"=reponses[1:length(reponses) == i-1],
+               "Correct"=reponses[i],
+               "Un peu surestimé"=reponses[1:length(reponses) == i+1],
+               "Très surestimé"=reponses[1:length(reponses) > i+1])
+}
+
 climat$quizfacteurs.voiture2 <- recode_quiz(climat$quizfacteurs.voiture, "3 000 kg")
 climat$quizfacteurs.avion2 <- recode_quiz(climat$quizfacteurs.avion, "1 000 kg")
 climat$quizfacteurs.TGV2 <- recode_quiz(climat$quizfacteurs.TGV, "5 kg")
 climat$quizfacteurs.ordi2 <- recode_quiz(climat$quizfacteurs.ordi, "250 kg")
-climat$quizfacteurs.visio2 <- recode_quiz(climat$quizfacteurs.visio, "1 kg")
+climat$quizfacteurs.visio2 <- recode_quiz(climat$quizfacteurs.visio, "100 g")
 climat$quizfacteurs.these2 <- recode_quiz(climat$quizfacteurs.these, "5 kg")
 climat$quizfacteurs.steak2 <- recode_quiz(climat$quizfacteurs.steak, "5 kg")
 
-rm(recode_quiz)
+climat$quizfacteurs.voiture3 <- recode_quiz2(climat$quizfacteurs.voiture, "3 000 kg")
+climat$quizfacteurs.avion3 <- recode_quiz2(climat$quizfacteurs.avion, "1 000 kg")
+climat$quizfacteurs.TGV3 <- recode_quiz2(climat$quizfacteurs.TGV, "5 kg")
+climat$quizfacteurs.ordi3 <- recode_quiz2(climat$quizfacteurs.ordi, "250 kg")
+climat$quizfacteurs.visio3 <- recode_quiz2(climat$quizfacteurs.visio, "100 g")
+climat$quizfacteurs.these3 <- recode_quiz2(climat$quizfacteurs.these, "5 kg")
+climat$quizfacteurs.steak3 <- recode_quiz2(climat$quizfacteurs.steak, "5 kg")
+
+rm(recode_quiz, recode_quiz2)
                                            
 
 #######################

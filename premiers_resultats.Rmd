@@ -681,5 +681,26 @@ drop_na(dat) %>%
     theme(legend.position="bottom") +
     guides(fill=guide_legend(reverse = TRUE)) +
     labs(y="Proportion des répondant·es", x="",
-         title="Estimations des émissions carbones")
+         title="Estimations des émissions carbone")
+
+dat <- rbind(data.frame(variable="Parcourir 50 km en voiture pour aller et revenir du travail\npendant un an (soit environ 12 000 km)", valeur=climat$quizfacteurs.voiture3),
+             data.frame(variable="Fabriquer un ordinateur portable neuf", valeur=climat$quizfacteurs.ordi3),
+             data.frame(variable="Imprimer une thèse de 200 pages en 10 exemplaires,\nrecto-verso", valeur=climat$quizfacteurs.these3),
+             data.frame(variable="Faire un aller-retour Paris – New York en avion\n(soit environ 12 000 km)", valeur=climat$quizfacteurs.avion3),
+             data.frame(variable="Produire un steak de bœuf de 150 g", valeur=climat$quizfacteurs.steak3),
+             data.frame(variable="Faire un aller-retour Paris-Marseille en TGV\n(soit 1600 km)", valeur=climat$quizfacteurs.TGV3),
+             data.frame(variable="Faire 3 heures de visioconférence avec votre ordinateur\n(pour une personne)", valeur=climat$quizfacteurs.visio3)) %>%
+    mutate(variable=factor(variable, levels=unique(variable)))
+
+drop_na(dat) %>%
+    ggplot(aes(x=variable)) +
+    geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
+    scale_fill_manual(values=c("#ca0020", "#f4a582", "#4daf4a", "#92c5de", "#0571b0")) +
+    scale_y_continuous(labels=scales::percent_format(),
+                       sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
+    coord_flip() + labs(fill="") +
+    theme(legend.position="bottom") +
+    guides(fill=guide_legend(reverse=TRUE, nrow=3, byrow=TRUE)) +
+    labs(y="Proportion des répondant·es", x="",
+         title="Estimations des émissions carbone")
 ```
