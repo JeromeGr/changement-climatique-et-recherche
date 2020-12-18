@@ -184,7 +184,8 @@ drop_na(dat) %>%
      theme(legend.position="bottom", plot.title=element_text(size=11)) +
      guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
      labs(y="Proportion des répondant·es", x="",
-          title="Actions mises en œuvre dans les laboratoires/unités de recherche :",
+          title="Actions mises en œuvre 
+          dans les laboratoires/unités de recherche :",
          caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS ")
 ```
 
@@ -215,7 +216,7 @@ ggplot(drop_na(climat, reliquat.ordi),
 pal <- RColorBrewer::brewer.pal(9, "RdYlBu")
 ggplot(drop_na(climat, solevolges.conf),
        aes(y=fct_rev(solevolges.conf), x=..prop.., group=1)) +
-  geom_bar(fill=c("#d7191c","#fdae61",  "#ffffbf", "#a6d96a","#1a9641","light grey", "black"  )) +
+  geom_bar(fill=c("black", "light grey", "#1a9641","#a6d96a","#ffffbf" ,"#fdae61","#d7191c"  )) +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
   coord_cartesian(xlim=c(0, 0.60)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=0.1, decimal.mark=",")),
