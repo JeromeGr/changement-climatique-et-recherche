@@ -504,6 +504,27 @@ climat$revenuTete[climat$revenu=="De 8 000 à 9 999 euros par mois" & !is.na(cli
 climat$revenuTete[climat$revenu=="De 10 000 à 15 000 euros par mois" & !is.na(climat$revenu)]<-12500/climat$tailleFiscFoyer[climat$revenu=="De 10 000 à 15 000 euros par mois" & !is.na(climat$revenu)]
 climat$revenuTete[climat$revenu=="Plus de 15 000 par mois" & !is.na(climat$revenu)]<-20000/climat$tailleFiscFoyer[climat$revenu=="Plus de 15 000 par mois" & !is.na(climat$revenu)]
 
+recode_quiz <- function(x, rep) {
+  reponses <- c("10 g", "100 g", "1 kg", "5 kg", "25 kg", "50 kg", "100 kg", 
+                "250 kg", "500 kg", "1 000 kg", "2 000 kg", "3 000 kg", "5 000 kg")
+  i <- which(reponses == rep)
+  fct_collapse(x,
+               "Sous-estimé"=reponses[1:length(reponses) < i-1],
+               "Correct"=reponses[(i-1):(i+1)],
+               "Surestimé"=reponses[1:length(reponses) > i+1])
+}
+
+climat$quizfacteurs.voiture2 <- recode_quiz(climat$quizfacteurs.voiture, "3 000 kg")
+climat$quizfacteurs.avion2 <- recode_quiz(climat$quizfacteurs.avion, "1 000 kg")
+climat$quizfacteurs.TGV2 <- recode_quiz(climat$quizfacteurs.TGV, "5 kg")
+climat$quizfacteurs.ordi2 <- recode_quiz(climat$quizfacteurs.ordi, "250 kg")
+climat$quizfacteurs.visio2 <- recode_quiz(climat$quizfacteurs.visio, "1 kg")
+climat$quizfacteurs.these2 <- recode_quiz(climat$quizfacteurs.these, "5 kg")
+climat$quizfacteurs.steak2 <- recode_quiz(climat$quizfacteurs.steak, "5 kg")
+
+rm(recode_quiz)
+                                           
+
 #######################
 #Modalités de référence dans les régressions
 climat$sexe <- as.factor(climat$sexe)
