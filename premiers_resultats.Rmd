@@ -226,7 +226,7 @@ ggplot(drop_na(climat, solevolges.conf),
   labs(x="Proportion des répondant·es", y="",
        title="Au cours des 5 dernières années (hors confinement)
  diriez vous que vos émissions de gaz à effet de serre liées à vos vols en avion
- pour les conférences, réunions ont diminué ?",
+ pour les conférences, réunions ont ...",
  
  caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS ")
 ```
