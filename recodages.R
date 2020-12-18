@@ -344,6 +344,47 @@ climat$rechecoB[climat$recheco=="Non" & !is.na(climat$recheco)]<-"Non"
 climat$rechecoB[is.na(climat$recheco)]<-NA
 
 
+# Repérer les personnes qui ont rempli le tableau sur les vols,
+# soit parce qu'ils ont déclaré au moins un vol, soit parce qu'ils n'ont pas volé
+climat$volsremplis <- with(climat,
+                           if_else(tiragemodule == "1",
+                                   (!is.na(volsnb) & volsnb == 0) | !is.na(volsdist1),
+                                   NA))
+
+for(i in 1:5) {
+  volsnbi <- paste0("volsnb", i)
+  volsdisti <- paste0("volsdist", i)
+  volshi <- paste0("volsh", i)
+  volsgesi <- paste0("volsges", i)
+
+  # Si le trajet a été renseigné mais pas son nombre, on suppose un aller-retour unique
+  climat[is.na(climat[[volsnbi]]) & !is.na(climat[[volsdisti]]), volsnbi] <- 1
+
+  # Si le tableau sur les vols a été rempli, mettre les NA sur les autres vols à 0
+  climat[is.na(climat[[volsnbi]]) &
+           !is.na(climat$volsremplis) & climat$volsremplis, volsnbi] <- 0
+  climat[is.na(climat[[volsdisti]]) &
+           !is.na(climat$volsremplis) & climat$volsremplis, volsdisti] <- 0
+  climat[is.na(climat[[volshi]]) &
+           !is.na(climat$volsremplis) & climat$volsremplis, volshi] <- 0
+  climat[is.na(climat[[volsgesi]]) &
+           !is.na(climat$volsremplis) & climat$volsremplis, volsgesi] <- 0
+}
+
+# Somme des vols déclarés dans le tableau
+climat$volsnb_tot <- rowSums(select(climat, paste0("volsnb", 1:5)))
+climat$volsdist_tot <- rowSums(select(climat, paste0("volsdist", 1:5)))
+climat$volsh_tot <- rowSums(select(climat, paste0("volsh", 1:5)))
+climat$volsges_tot <- rowSums(select(climat, paste0("volsges", 1:5)))
+
+# Pour ceux qui ont atteint le nombre maximum de lignes,
+# prendre le nombre d'heures estimé à partir de la tranche déclarée initialement
+# s'il est supérieur à la somme des durées des vols renseignés dans le tableau
+climat$volsh_tot2 <- if_else(is.na(climat$volsdist5) | climat$volsdist5 == 0 |
+                               climat$volsh_tot > climat$volshnum,
+                             climat$volsh_tot,
+                             climat$volshnum)
+
 #Recodage temps de transport domicile travail
 #Attention, il faudra nettoyer les temps (Il y a des couillons qui ont converti leurs heures de transport en minutes. Ex : 6h, 360 minutes..)
 climat$tpsdomtrav.urbain_h<- as.numeric(climat$tpsdomtrav.urbain_h)
