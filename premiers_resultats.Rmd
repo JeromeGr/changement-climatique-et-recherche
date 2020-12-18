@@ -160,27 +160,29 @@ ggplot(drop_na(climat, chgtpratique),
 # Vos pratiques et celles de votre laboratoire
 
 
-##ce qui n'a jamais marché
-dat <- rbind(data.frame(variable="vous pouvez trier vos déchets", valeur=climat$labopratiques.tri),
-+             data.frame(variable="vous êtes encouragé·e à prendre le train plutôt que l'avion", valeur=climat$labopratiques.train),
-+              data.frame(variable="il existe une charte/un groupe de travail/un·e responsable pour réduire l'empreinte écologique des activités de recherche", valeur=climat$labopratiques.charte),
-+              data.frame(variable="des mesures ont été mises en oeuvre pour limiter l'impact environnemental des pots/buffets", valeur=climat$labomesures.pots)) %>%
-+     mutate(variable=factor(variable, levels=unique(variable)),
-+           valeur=fct_relevel(valeur, c("oui", "non, mais la question a été abordée", "non concerné·e", "non", "je ne sais pas")))
-Problem with `mutate()` input `valeur`.
-ℹ Unknown levels in `f`: oui, non, mais la question a été abordée, non concerné·e, non, je ne sais pas
-ℹ Input `valeur` is `fct_relevel(...)`.Unknown levels in `f`: oui, non, mais la question a été abordée, non concerné·e, non, je ne sais pas> drop_na(dat) %>%
-+     ggplot(aes(x=variable)) +
-+    geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
-+    scale_fill_manual(values=c("#d7191c", "light grey", "#a6d96a", "#1a9641", "light grey")) +
-+     scale_y_continuous(labels=scales::percent_format(),
-+                        sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
-+     coord_flip() + labs(fill="") +
-+     theme(legend.position="bottom", plot.title=element_text(size=11)) +
-+     guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
-+     labs(y="Proportion des répondant·es", x="",
-+          title="Actions mises en oeuvre dans les laboratoires/unités de recherche :",
-+         caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS "
+## Actions mises en œuvre dans les laboratoires/unités
+
+```{r echo=FALSE}
+dat <- rbind(data.frame(variable="Vous pouvez trier vos déchets", valeur=climat$labopratiques.tri),
+             data.frame(variable="Vous êtes encouragé·e à prendre le train\nplutôt que l'avion", valeur=climat$labopratiques.train),
+              data.frame(variable="Il existe une charte/un groupe de travail/un·e responsable\npour réduire l'empreinte écologique des activités de recherche", valeur=climat$labopratiques.charte),
+              data.frame(variable="Des mesures ont été mises en œuvre pour limiter\n l'impact environnemental des pots/buffets", valeur=climat$labomesures.pots)) %>%
+     mutate(variable=factor(variable, levels=unique(variable)),
+           valeur=fct_relevel(valeur, c("Oui", "Non, mais la question a été abordée", "Non concerné·e", "Non", "Je ne sais pas")))
+
+drop_na(dat) %>%
+     ggplot(aes(x=variable)) +
+    geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
+    scale_fill_manual(values=c("#d7191c", "light grey", "#a6d96a", "#1a9641", "light grey")) +
+     scale_y_continuous(labels=scales::percent_format(),
+                        sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
+     coord_flip() + labs(fill="") +
+     theme(legend.position="bottom", plot.title=element_text(size=11)) +
+     guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
+     labs(y="Proportion des répondant·es", x="",
+          title="Actions mises en œuvre dans les laboratoires/unités de recherche :",
+         caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS ")
+```
 
 ## Reliquat de budget
 
@@ -477,7 +479,7 @@ ggplot(Covoit,  aes(x=prop, y=fct_reorder(RaisonsPasCovoit, prop) )) + geom_col(
   labs(y="", x="% des répondants",
        title="Raisons pour lesquelles ceux qui \n prennent leur voiture ne covoiturent pas") 
 
-````
+```
 
 # La visioconférence
 
