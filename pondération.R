@@ -31,7 +31,6 @@ fiches <- arrange(fiches, recode(type, "Autre personnel"="Z"), institut2, delega
 fiches <- subset(fiches, !duplicated(courriel) | courriel == "")
 
 names(fiches) <- paste0(names(fiches), ".labintel")
-climat <- read.csv("~/Private/results-survey113464_021220.csv", fileEncoding ="UTF-8", na.strings="")
 stopifnot(all(climat$email %in% fiches$courriel.labintel))
 climat <- left_join(climat, fiches, by=c("email"="courriel.labintel"))
 
@@ -74,11 +73,14 @@ group_by(x, delegation.labintel) %>% summarize(mean(w))
 
 # Pour limiter les poids extrêmes
 # (ne fonctionne pas pour svyclimat.ps, sans doute à cause de la présence de combinaisons vides)
-svyclimat <- trimWeights(svyclimat.r,
-                         lower=quantile(weights(svyclimat.r), 0.05),
-                         upper=quantile(weights(svyclimat.r), 0.95))
+# svyclimat <- trimWeights(svyclimat.r,
+#                          lower=quantile(weights(svyclimat.r), 0.05),
+#                          upper=quantile(weights(svyclimat.r), 0.95))
+# 
+# summary(weights(svyclimat))
 
-summary(weights(svyclimat))
+svyclimat <- svyclimat.r
+climat$poids <- weights(svyclimat.r)
 
 round(cbind(prop.table(svytable(~ sitpro, svyclimat.unweighted)),
             prop.table(svytable(~ sitpro, svyclimat))) * 100, 1)
@@ -107,27 +109,27 @@ svymean(~ volsnb, na.rm=TRUE,
 
 
 # Autre approche avec le paquet icarus de l'Insee
-library(icarus)
-
-tabs <- with(fiches, list(table(sexe.labintel), table(type.labintel), table(institut2.labintel), table(delegation.labintel)))
-nms <- sapply(tabs, function(x) names(dimnames(x))[[1]])
-len <- sapply(tabs, length)
-mat <- matrix(0, length(tabs), max(len)+2)
-for(i in 1:nrow(mat)) {
-    mat[i, 1] <- nms[i]
-    mat[i, 2] <- len[i]
-    mat[i, 3:(2+len[i])] <- tabs[[i]]
-}
-
-dat <- climat[nms]
-dat$w <- 1
-
-# Même chose qu'avec survey
-calr <- calibration(dat, mat, colWeights="w", method="raking", calibTolerance=1e-3)
-stopifnot(cor(calr, weights(svyclimat.r)) > 0.99)
-
-# Avec pénalisation des poids extrêmes
-# Ne converge jamais avec method="raking"
-calp <- calibration(dat, mat, colWeights="w", method="linear", calibTolerance=1e-3,
-                    gap=1.3, costs=rep(1, nrow(mat)), popTotal=nrow(fiches))
-stopifnot(cor(calp, weights(svyclimat.r)) > 0.9)
+# library(icarus)
+# 
+# tabs <- with(fiches, list(table(sexe.labintel), table(type.labintel), table(institut2.labintel), table(delegation.labintel)))
+# nms <- sapply(tabs, function(x) names(dimnames(x))[[1]])
+# len <- sapply(tabs, length)
+# mat <- matrix(0, length(tabs), max(len)+2)
+# for(i in 1:nrow(mat)) {
+#     mat[i, 1] <- nms[i]
+#     mat[i, 2] <- len[i]
+#     mat[i, 3:(2+len[i])] <- tabs[[i]]
+# }
+# 
+# dat <- climat[nms]
+# dat$w <- 1
+# 
+# # Même chose qu'avec survey
+# calr <- calibration(dat, mat, colWeights="w", method="raking", calibTolerance=1e-3)
+# stopifnot(cor(calr, weights(svyclimat.r)) > 0.99)
+# 
+# # Avec pénalisation des poids extrêmes
+# # Ne converge jamais avec method="raking"
+# calp <- calibration(dat, mat, colWeights="w", method="linear", calibTolerance=1e-3,
+#                     gap=1.3, costs=rep(1, nrow(mat)), popTotal=nrow(fiches))
+# stopifnot(cor(calp, weights(svyclimat.r)) > 0.9)
