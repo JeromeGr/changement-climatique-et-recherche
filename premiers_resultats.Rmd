@@ -33,7 +33,7 @@ ggplot(drop_na(climat, statut),
   geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
   coord_cartesian(xlim=c(0, 0.78)) +
-  geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
+  geom_text(aes(label=scales::percent(..prop.., accuracy=0.1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="")
@@ -634,7 +634,7 @@ Les raisons suivantes pourraient-elles vous pousser à privilégier
 ```
 
 
-## Visio avant le confinement ----
+## Visio avant le confinement
 
 ```{r}
 
