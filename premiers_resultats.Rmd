@@ -66,7 +66,7 @@ ggplot(drop_na(climat, discipline_agr),
        aes(y=fct_rev(discipline_agr), x=..prop.., group=1)) +
   geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.78)) +
+  coord_cartesian(xlim=c(0, 0.20)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
@@ -77,7 +77,7 @@ ggplot(drop_na(climat, bap),
        aes(y=fct_rev(bap), x=..prop.., group=1)) +
   geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.78)) +
+  coord_cartesian(xlim=c(0, 0.25)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
@@ -197,8 +197,8 @@ ggplot(drop_na(climat, reliquat.ordi),
        aes(y=fct_relevel(reliquat.ordi), x=..prop.., group=1)) +
   geom_bar(fill=c("#1a9641", "#d7191c", "light grey"  )) +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.60)) +
-  geom_text(aes(label=scales::percent(..prop.., accuracy=0.1, decimal.mark=",")),
+  coord_cartesian(xlim=c(0, 0.45)) +
+  geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="",
@@ -216,8 +216,8 @@ ggplot(drop_na(climat, solevolges.conf),
        aes(y=fct_rev(solevolges.conf), x=..prop.., group=1)) +
   geom_bar(fill=c("black", "light grey", "#1a9641","#a6d96a","#ffffbf" ,"#fdae61","#d7191c"  )) +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.60)) +
-  geom_text(aes(label=scales::percent(..prop.., accuracy=0.1, decimal.mark=",")),
+  coord_cartesian(xlim=c(0, 0.3)) +
+  geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="",
