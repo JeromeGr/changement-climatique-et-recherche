@@ -5,8 +5,12 @@ output:
   html_document:
     fig_width: 7.5
     fig_height: 4.5
-    toc: yes
+    fontsize: 12pt
+    highlight: haddock
     number_sections: yes
+    theme: united
+    toc: yes
+    toc_float: yes
 ---
 
 ```{r preparation, echo=FALSE, message=FALSE}
