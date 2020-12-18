@@ -365,7 +365,7 @@ ggplot(DFDistMoyAvion,  aes(x=DistMoy, y=fct_reorder(volsmotif, DistMoy) )) +
 ```
 
 
-## Part de la distrance totale parcourue en avion par les répondant·es correspondant selon la durée du trajet en train correspondant (estimation)
+## Part de la distrance totale parcourue en avion par les répondant·es selon la durée du trajet en train correspondant (estimation)
 
 ```{r echo=FALSE, message=FALSE}
 DFDistAvion<- climat %>% 
@@ -437,7 +437,7 @@ ggplot(drop_na(climat, renoncedep.env),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="", 
-       Title = "En 2019, avez-vous renoncé à un ou plusieurs déplacements professionnels 
+       title = "En 2019, avez-vous renoncé à un ou plusieurs déplacements professionnels 
        à l’étranger (y compris décidé de ne pas candidater à une conférence) pour des 
        considérations environnementales ?")
 ```
@@ -454,7 +454,7 @@ ggplot(drop_na(climat, joursdomicile),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="", 
-       Title = "En temps normal (avant le confinement), combien de jours en moyenne 
+       title = "En temps normal (avant le confinement), combien de jours en moyenne 
        travaillez-vous uniquement de chez vous ? Ne tenez pas compte des éventuels 
        jours travaillés le week-end.")
 ```
@@ -486,9 +486,9 @@ ggplot(TpsTransportDomT,  aes(x=prop, y=fct_reorder(TypeTransport, prop) )) +
             position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(y="",
-       x="Proportion des répondant·es ayant pris l'avion en 2019",
+       x="",
        title="Part du temps total passé dans les déplacements domicile-travail,
-       par tous les répondant·es, par mode de transport") 
+       par l'ensemble des répondant·es, par mode de transport") 
 ```
 
 ## Raisons pour lesquelles celles et ceux qui prennent leur voiture seul·e ne covoiturent pas
