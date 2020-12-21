@@ -189,6 +189,77 @@ drop_na(dat) %>%
          caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS")
 ```
 
+## Informatique
+
+```{r echo=FALSE, message=FALSE}
+informatique<- climat %>% 
+  select(starts_with("ordis.")) %>%
+  pivot_longer(everything(),
+               names_to = c(".value", "set"),
+               names_sep = "_") 
+
+informatique<-aggregate( informatique[,2:8], informatique[,1], FUN = sum, na.rm=T)
+
+infoTot<-data.frame(cbind(informatique[, 1], rowSums(informatique[, 2:8])))
+
+infoTot$NbOrdi<-as.numeric(infoTot$X2)
+
+infoTot<- infoTot %>% mutate(prop=NbOrdi/NbOrdi[which(X1=="nb")])
+
+infoTot<-infoTot[1:2,]
+
+infoTot$X1[infoTot$X1=="5ans"]<-"Ordinateur/tablette de moins de 5 ans"
+infoTot$X1[infoTot$X1=="indisp"]<-"Ordinateur/tablette jugé(e) indispensable"
+
+
+ggplot(infoTot,  aes(x=prop, y=X1 )) +
+  geom_col() +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  geom_text(aes(label=scales::percent(prop, accuracy=1, decimal.mark=",")),
+            position=position_dodge(.9),
+            hjust=-0.2, size=3)+
+  labs(y="", x="Part de l'ensemble des ordinateurs et tablettes",
+       title="Part des ordinateurs et tablettes ayant moins de 5 ans ou 
+       jugés indispensables") 
+
+```
+
+
+
+```{r echo=FALSE, message=FALSE}
+
+informatique<- informatique %>% 
+  pivot_longer(ordis.partage:ordis.tabletteperso,
+               names_to = "TypeOrdi",
+               values_to= "NombreOrdi") %>%
+  mutate(prop=NombreOrdi/sum(NombreOrdi))
+
+informatique$TypeOrdi[informatique$TypeOrdi=="ordis.partage"]<-"Ordis partagés au laboratoire"
+informatique$TypeOrdi[informatique$TypeOrdi=="ordis.fixepro"]<-"Ordis fixes individuels achetés avec des financements pros"
+informatique$TypeOrdi[informatique$TypeOrdi=="ordis.fixeperso"]<-"Ordis fixes individuels achetés achetés par vous"
+informatique$TypeOrdi[informatique$TypeOrdi=="ordis.portablepro"]<-"Ordis portables individuels achetés avec des financements pros"
+informatique$TypeOrdi[informatique$TypeOrdi=="ordis.portableperso"]<-"Ordis portables individuels achetés par vous"
+informatique$TypeOrdi[informatique$TypeOrdi=="ordis.tablettepro"]<-"Tablettes achetées avec des financements pros"
+informatique$TypeOrdi[informatique$TypeOrdi=="ordis.tabletteperso"]<-"Tablettes achetées par vous"
+
+
+informatique$set[informatique$set=="nb"]<-"Tous ordis/tablettes"
+informatique$set[informatique$set=="5ans"]<-"De moins de 5 ans"
+informatique$set[informatique$set=="indisp"]<-"Jugé(e)s indispensables"
+
+ggplot(informatique,  aes(x=prop, y=fct_reorder(TypeOrdi, prop), fill= set )) +
+  geom_col(position = "dodge") +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  geom_text(aes(label=scales::percent(prop, accuracy=0.1, decimal.mark=",")),
+            position=position_dodge(.9),
+            hjust=-0.2, size=3)+
+  labs(y="", x="Part de l'ensemble des ordinateurs et tablettes",
+       title="Ordinateurs utilisés, selon leur type 
+       (fixe, portable, tablette) et leur qualité 
+       (moins de 5 ans ou indispensable)" 
+
+```
+
 ## Reliquat de budget
 
 ```{r echo=FALSE}
@@ -230,7 +301,7 @@ ggplot(drop_na(climat, solevolges.conf),
 
 # Vos transports à des fins professionnelles
 
-## Heures de vol en avion en 2019
+## Heures de vol en avion en 2019 (hors trajets domicile-travail)
 
 ```{r echo=FALSE}
 climat$volshTot<-climat$volsh
@@ -246,6 +317,20 @@ ggplot(drop_na(climat, volshTot),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="Nombre d'heures de vol en 2019")
+```
+
+## Heures de vol en avion en 2017 et 2018 pour celles et ceux n'ayant pas pris l'avion en 2019
+
+```{r echo=FALSE}
+ggplot(drop_na(climat, vols2ans),
+       aes(y=fct_rev(vols2ans), x=..prop.., group=1)) +
+  geom_bar() +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  coord_cartesian(xlim=c(0, 0.78)) +
+  geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
+            stat="count", position=position_dodge(.9),
+            hjust=-0.2, size=3) +
+  labs(x="Proportion des répondant·es n'ayant pas pris l'avion en 2019", y="Nombre d'heures de vol 2017 et 2018")
 ```
 
 ## Temps travaillé sur place lors d'un déplacement professionnel en avion
