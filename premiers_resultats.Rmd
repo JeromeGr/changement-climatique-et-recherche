@@ -256,10 +256,47 @@ ggplot(informatique,  aes(x=prop, y=fct_reorder(TypeOrdi, prop), fill= set )) +
   labs(y="", x="Part de l'ensemble des ordinateurs et tablettes",
        title="Ordinateurs utilisés, selon leur type 
        (fixe, portable, tablette) et leur qualité 
-       (moins de 5 ans ou indispensable)" 
+       (moins de 5 ans ou indispensable)")
 
 ```
 
+## Raisons du dernier changement d'ordinateur
+
+```{r echo=FALSE}
+#aumoinsunecochee <- rowSums(!is.na(select(climat, starts_with("chgtordi.")))) > 0
+#3140 personnes
+chgtOrdi<- climat %>% 
+  select(starts_with("chgtordi.")) %>%
+  pivot_longer(everything(),
+               names_to = c(".value", "TypeRaisonChgtOrdi"),
+               names_sep = "(\\.)") %>% group_by(TypeRaisonChgtOrdi) %>%
+  count(chgtordi) %>% filter(chgtordi=="Oui") %>%
+   mutate(prop=n/3140)
+
+chgtOrdi$TypeRaisonChgtOrdi[chgtOrdi$TypeRaisonChgtOrdi=="fctplusbien"]<-"Il ne fonctionnait plus très bien"
+chgtOrdi$TypeRaisonChgtOrdi[chgtOrdi$TypeRaisonChgtOrdi=="puissant"]<-"Il n’était pas assez puissant"
+chgtOrdi$TypeRaisonChgtOrdi[chgtOrdi$TypeRaisonChgtOrdi=="jamais"]<-"Je n’ai jamais changé mon ordinateur à usage professionnel"
+chgtOrdi$TypeRaisonChgtOrdi[chgtOrdi$TypeRaisonChgtOrdi=="misajour"]<-"Il ne pouvait plus être mis à jour"
+chgtOrdi$TypeRaisonChgtOrdi[chgtOrdi$TypeRaisonChgtOrdi=="propose"]<-"On me l’a proposé/j’en avais l’opportunité"
+chgtOrdi$TypeRaisonChgtOrdi[chgtOrdi$TypeRaisonChgtOrdi=="contrat"]<-"J’ai eu un nouveau contrat de travail"
+chgtOrdi$TypeRaisonChgtOrdi[chgtOrdi$TypeRaisonChgtOrdi=="fctplus"]<-"Il ne fonctionnait plus du tout"
+chgtOrdi$TypeRaisonChgtOrdi[chgtOrdi$TypeRaisonChgtOrdi=="mieux"]<-"J’en voulais un mieux (meilleure autonomie, écran, etc.)"
+chgtOrdi$TypeRaisonChgtOrdi[chgtOrdi$TypeRaisonChgtOrdi=="autre"]<-"Autre"
+chgtOrdi$TypeRaisonChgtOrdi[chgtOrdi$TypeRaisonChgtOrdi=="oblige"]<-"On m’y a obligé"
+chgtOrdi$TypeRaisonChgtOrdi[chgtOrdi$TypeRaisonChgtOrdi=="vole"]<-"On me l’a volé, je l’ai perdu"
+chgtOrdi$TypeRaisonChgtOrdi[chgtOrdi$TypeRaisonChgtOrdi=="neuf"]<-"J’en voulais un neuf"
+
+ggplot(chgtOrdi,  aes(x=prop, y=fct_reorder(TypeRaisonChgtOrdi, prop) )) +
+  geom_col() +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+    geom_text(aes(label=scales::percent(prop, accuracy=1, decimal.mark=",")),
+            position=position_dodge(.9),
+            hjust=-0.2, size=3) +
+  labs(y="", x="Proportion des répondant·es",
+       title="Raison(s) pour lesquelles les répondant·es ont changé 
+       leur ordinateur") 
+
+```
 ## Reliquat de budget
 
 ```{r echo=FALSE}
