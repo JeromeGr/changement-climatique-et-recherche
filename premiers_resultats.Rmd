@@ -40,7 +40,7 @@ ggplot(drop_na(climat, statut),
        aes(y=fct_rev(statut), x=..prop.., group=1)) +
   geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.78)) +
+  coord_cartesian(xlim=c(0, 0.69)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=0.1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
@@ -56,7 +56,7 @@ ggplot(drop_na(climat, sitpro),
        aes(y=fct_rev(sitpro), x=..prop.., group=1)) +
   geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.20)) +
+  coord_cartesian(xlim=c(0, 0.17)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
@@ -78,7 +78,7 @@ ggplot(drop_na(climat, discipline_agr),
        aes(y=fct_rev(discipline_agr), x=..prop.., group=1)) +
   geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.17)) +
+  coord_cartesian(xlim=c(0, 0.15)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
@@ -87,16 +87,17 @@ ggplot(drop_na(climat, discipline_agr),
   source_champ(nrow(drop_na(climat, discipline_agr)))
 ```
 ```{r echo=FALSE}
-ggplot(drop_na(climat, bap),
-       aes(y=fct_rev(bap), x=..prop.., group=1)) +
+drop_na(climat, bap) %>%
+  filter(bap != "Je ne sais pas") %>%
+  ggplot(aes(y=fct_rev(bap), x=..prop.., group=1)) +
   geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.23)) +
+  coord_cartesian(xlim=c(0, 0.21)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es ITA", y="",
-       y="Branche d'activité professionnelle (BAP) pour les ITA") +
+       title="Branche d'activité professionnelle (BAP) des ITA") +
   source_champ(nrow(drop_na(climat, bap)))
 
 ```
