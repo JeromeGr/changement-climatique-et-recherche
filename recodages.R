@@ -85,6 +85,9 @@ climat$sitpro <- factor(climat$sitpro,
                           "Chargé·e d'études/de mission", "Adjoint·e technique", "Autre"
                         ))
 
+# Fusionner les deux variables de discipline (chercheurs vs. ITA)
+climat$discipline <- coalesce(climat$discipline, climat$disciplineita)
+
 # Discipline agrégée
 # Noms inspirés de https://data.esr.gouv.fr/FR/T895/P311/tableau_des_enseignants_de_l_enseignement_superieur_public_niveau_etablissement_-_ressources_humaines#TDB
 

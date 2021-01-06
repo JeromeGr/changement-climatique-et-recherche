@@ -21,11 +21,19 @@ source("recodages.R", encoding = "UTF-8")
 theme_set(theme_minimal() + theme(plot.title=element_text(size=11)))
 update_geom_defaults("bar", list(fill="#045a8d"))
 update_geom_defaults("col", list(fill="#045a8d"))
+
+texte_legende <- sprintf("Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS")
+source_champ <- function(n=NA) {
+  if(is.na(n))
+    labs(caption=texte_legende)
+  else
+    labs(caption=paste0(texte_legende, " (n=", n, ")"))
+}
 ```
 
 # Informations générales
 
-## Statut académique
+## Statut d'emploi
 
 ```{r echo=FALSE}
 ggplot(drop_na(climat, statut),
@@ -36,7 +44,9 @@ ggplot(drop_na(climat, statut),
   geom_text(aes(label=scales::percent(..prop.., accuracy=0.1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="Proportion des répondant·es", y="")
+  labs(x="Proportion des répondant·es", y="",
+       title="Statut d'emploi principal") +
+  source_champ(nrow(drop_na(climat, statut)))
 ```
 
 ## Situation professionnelle
@@ -50,13 +60,15 @@ ggplot(drop_na(climat, sitpro),
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="Proportion des répondant·es", y="")
+  labs(x="Proportion des répondant·es", y="",
+       title="Situation professionnelle principale") +
+  source_champ(nrow(drop_na(climat, sitpro)))
 ```
 
 
-## Doctorants
+## Doctorant·es
 
-Il y a 18% de doctorant.es dans l'échantillon.
+Il y a 18% de doctorant·es dans l'échantillon.
 
 ## Disciplines et BAP
 
@@ -66,22 +78,26 @@ ggplot(drop_na(climat, discipline_agr),
        aes(y=fct_rev(discipline_agr), x=..prop.., group=1)) +
   geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.20)) +
+  coord_cartesian(xlim=c(0, 0.17)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="Proportion des répondant·es", y="")
+  labs(x="Proportion des répondant·es", y="",
+       title="Discipline principale") +
+  source_champ(nrow(drop_na(climat, discipline_agr)))
 ```
 ```{r echo=FALSE}
 ggplot(drop_na(climat, bap),
        aes(y=fct_rev(bap), x=..prop.., group=1)) +
   geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.25)) +
+  coord_cartesian(xlim=c(0, 0.23)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="Proportion des répondant·es", y="")
+  labs(x="Proportion des répondant·es ITA", y="",
+       y="Branche d'activité professionnelle (BAP) pour les ITA") +
+  source_champ(nrow(drop_na(climat, bap)))
 
 ```
 
@@ -103,10 +119,8 @@ ggplot(drop_na(climat, acthum3),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="",
-       title="Les activités humaines sont-elles la cause du changement climatique\n(hausse des températures depuis une centaine d'années) ?",
-       # subtitle="Pensez-vous que le climat de la planète est en train de changer\n(hausse des températures depuis une centaine d’années) ?\nSi oui : D’après vous, les activités humaines sont-elles la cause de ce changement climatique ?",
-       caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS (n=6339)")
-
+       title="Les activités humaines sont-elles la cause du changement climatique\n(hausse des températures depuis une centaine d'années) ?") +
+  source_champ(nrow(drop_na(climat, acthum3)))
 ```
 
 ## Préoccupation par rapport au changement climatique
@@ -121,8 +135,8 @@ ggplot(drop_na(climat, preoccupe),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="",
-       title="Dans quelle mesure êtes-vous préoccupé·e par le changement climatique ?",
-       caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS (n=6344)")
+       title="Dans quelle mesure êtes-vous préoccupé·e par le changement climatique ?") +
+  source_champ(nrow(drop_na(climat, preoccupe)))
 
 ```
 
@@ -139,8 +153,8 @@ ggplot(drop_na(climat, pluspreoccupe),
             hjust=-0.2, size=3) +
   theme(plot.title=element_text(size=10), plot.subtitle=element_text(size=8)) +
   labs(x="Proportion des répondant·es", y="",
-       title="Êtes-vous plus ou moins préoccupé·e par le changement climatique qu'il y a 5 ans?",
-       caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS (n=6287)")
+       title="Êtes-vous plus ou moins préoccupé·e par le changement climatique qu'il y a 5 ans?") +
+  source_champ(nrow(drop_na(climat, pluspreoccupe)))
 ```
 
 ## Changement des pratiques
@@ -175,21 +189,21 @@ dat <- rbind(data.frame(variable="Vous pouvez trier vos déchets", valeur=climat
            valeur=fct_relevel(valeur, c("Oui", "Non, mais la question a été abordée", "Non concerné·e", "Non", "Je ne sais pas")))
 
 drop_na(dat) %>%
-     ggplot(aes(x=variable)) +
+    ggplot(aes(x=variable)) +
     geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
     scale_fill_manual(values=c("light grey", "#d7191c", "grey", "#a6d96a", "#1a9641")) +
      scale_y_continuous(labels=scales::percent_format(),
                         sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
      coord_flip() + labs(fill="") +
      theme(legend.position="bottom") +
-     guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
+     guides(fill=guide_legend(reverse = TRUE, nrow=3, byrow=TRUE)) +
      labs(y="Proportion des répondant·es", x="",
           title="Actions mises en œuvre 
-          dans les laboratoires/unités de recherche :",
-         caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS")
+          dans les laboratoires/unités de recherche :") +
+     source_champ()
 ```
 
-## Informatique
+## Matériel informatique utilisé
 
 ```{r echo=FALSE, message=FALSE}
 informatique<- climat %>% 
@@ -209,7 +223,7 @@ infoTot<- infoTot %>% mutate(prop=NbOrdi/NbOrdi[which(X1=="nb")])
 infoTot<-infoTot[1:2,]
 
 infoTot$X1[infoTot$X1=="5ans"]<-"Ordinateur/tablette de moins de 5 ans"
-infoTot$X1[infoTot$X1=="indisp"]<-"Ordinateur/tablette jugé(e) indispensable"
+infoTot$X1[infoTot$X1=="indisp"]<-"Ordinateur/tablette jugé·e indispensable"
 
 
 ggplot(infoTot,  aes(x=prop, y=X1 )) +
@@ -220,7 +234,8 @@ ggplot(infoTot,  aes(x=prop, y=X1 )) +
             hjust=-0.2, size=3)+
   labs(y="", x="Part de l'ensemble des ordinateurs et tablettes",
        title="Part des ordinateurs et tablettes ayant moins de 5 ans ou 
-       jugés indispensables") 
+       jugé·es indispensables") +
+  source_champ()
 
 ```
 
@@ -234,44 +249,45 @@ informatique<- informatique %>%
                values_to= "NombreOrdi") %>%
   mutate(prop=NombreOrdi/sum(NombreOrdi))
 
-informatique$TypeOrdi[informatique$TypeOrdi=="ordis.partage"]<-"Ordis partagés au laboratoire"
-informatique$TypeOrdi[informatique$TypeOrdi=="ordis.fixepro"]<-"Ordis fixes individuels achetés avec des financements pros"
-informatique$TypeOrdi[informatique$TypeOrdi=="ordis.fixeperso"]<-"Ordis fixes individuels achetés achetés par vous"
-informatique$TypeOrdi[informatique$TypeOrdi=="ordis.portablepro"]<-"Ordis portables individuels achetés avec des financements pros"
-informatique$TypeOrdi[informatique$TypeOrdi=="ordis.portableperso"]<-"Ordis portables individuels achetés par vous"
-informatique$TypeOrdi[informatique$TypeOrdi=="ordis.tablettepro"]<-"Tablettes achetées avec des financements pros"
-informatique$TypeOrdi[informatique$TypeOrdi=="ordis.tabletteperso"]<-"Tablettes achetées par vous"
+informatique$TypeOrdi[informatique$TypeOrdi=="ordis.partage"]<-"Ordinateurs partagés au laboratoire"
+informatique$TypeOrdi[informatique$TypeOrdi=="ordis.fixepro"]<-"Ordinateurs fixes individuels achetés\navec des financements pros"
+informatique$TypeOrdi[informatique$TypeOrdi=="ordis.fixeperso"]<-"Ordinateurs fixes individuels achetés\npar vous"
+informatique$TypeOrdi[informatique$TypeOrdi=="ordis.portablepro"]<-"Ordinateurs portables individuels achetés\navec des financements pros"
+informatique$TypeOrdi[informatique$TypeOrdi=="ordis.portableperso"]<-"Ordinateurs portables individuels achetés\npar vous"
+informatique$TypeOrdi[informatique$TypeOrdi=="ordis.tablettepro"]<-"Tablettes achetées\navec des financements pros"
+informatique$TypeOrdi[informatique$TypeOrdi=="ordis.tabletteperso"]<-"Tablettes achetées\npar vous"
 
 
-informatique$set[informatique$set=="nb"]<-"Tous ordis/tablettes"
+informatique$set[informatique$set=="nb"]<-"Tous ordinateurs/tablettes"
 informatique$set[informatique$set=="5ans"]<-"De moins de 5 ans"
-informatique$set[informatique$set=="indisp"]<-"Jugé(e)s indispensables"
+informatique$set[informatique$set=="indisp"]<-"Jugé·es indispensables"
 
 ggplot(informatique,  aes(x=prop, y=fct_reorder(TypeOrdi, prop), fill= set )) +
   geom_col(position = "dodge") +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
   geom_text(aes(label=scales::percent(prop, accuracy=0.1, decimal.mark=",")),
             position=position_dodge(.9),
-            hjust=-0.2, size=3)+
-  labs(y="", x="Part de l'ensemble des ordinateurs et tablettes",
+            hjust=-0.2, size=3) +
+  coord_cartesian(xlim=c(0, 0.16)) +
+  labs(y="", x="Part de l'ensemble des ordinateurs et tablettes", fill="",
        title="Ordinateurs utilisés, selon leur type 
        (fixe, portable, tablette) et leur qualité 
-       (moins de 5 ans ou indispensable)")
+       (moins de 5 ans ou indispensable)",
+       caption="Source : Enquête « Les personnels de la recherche face au changement climatique »,\nLabos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS")
 
 ```
 
 ## Raisons du dernier changement d'ordinateur
 
 ```{r echo=FALSE}
-#aumoinsunecochee <- rowSums(!is.na(select(climat, starts_with("chgtordi.")))) > 0
-#3140 personnes
+aumoinsunecochee <- rowSums(!is.na(select(climat, starts_with("chgtordi.")))) > 0
 chgtOrdi<- climat %>% 
   select(starts_with("chgtordi.")) %>%
   pivot_longer(everything(),
                names_to = c(".value", "TypeRaisonChgtOrdi"),
                names_sep = "(\\.)") %>% group_by(TypeRaisonChgtOrdi) %>%
   count(chgtordi) %>% filter(chgtordi=="Oui") %>%
-   mutate(prop=n/3140)
+  mutate(prop=n/sum(aumoinsunecochee))
 
 chgtOrdi$TypeRaisonChgtOrdi[chgtOrdi$TypeRaisonChgtOrdi=="fctplusbien"]<-"Il ne fonctionnait plus très bien"
 chgtOrdi$TypeRaisonChgtOrdi[chgtOrdi$TypeRaisonChgtOrdi=="puissant"]<-"Il n’était pas assez puissant"
@@ -289,21 +305,24 @@ chgtOrdi$TypeRaisonChgtOrdi[chgtOrdi$TypeRaisonChgtOrdi=="neuf"]<-"J’en voulai
 ggplot(chgtOrdi,  aes(x=prop, y=fct_reorder(TypeRaisonChgtOrdi, prop) )) +
   geom_col() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-    geom_text(aes(label=scales::percent(prop, accuracy=1, decimal.mark=",")),
+  geom_text(aes(label=scales::percent(prop, accuracy=1, decimal.mark=",")),
             position=position_dodge(.9),
             hjust=-0.2, size=3) +
+  coord_cartesian(xlim=c(0, 0.32)) +
   labs(y="", x="Proportion des répondant·es",
        title="Raison(s) pour lesquelles les répondant·es ont changé 
-       leur ordinateur") 
+       leur ordinateur") +
+  source_champ(sum(aumoinsunecochee))
 
 ```
+
 ## Reliquat de budget
 
 ```{r echo=FALSE}
 pal <- RColorBrewer::brewer.pal(9, "RdYlBu")
 ggplot(drop_na(climat, reliquat.ordi),
        aes(y=fct_relevel(reliquat.ordi), x=..prop.., group=1)) +
-  geom_bar(fill=c("#1a9641", "#d7191c", "light grey"  )) +
+  geom_bar(fill=c("#74add1", "#d7191c", "light grey"  )) +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
   coord_cartesian(xlim=c(0, 0.45)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
@@ -312,8 +331,8 @@ ggplot(drop_na(climat, reliquat.ordi),
   labs(x="Proportion des répondant·es", y="",
        title="Au cours des 5 dernières années vous est-il arrivé pour terminer
  un reliquat de budget d'acheter un ordinateur/écran/tablette 
- alors que ce n'était pas vraiment indispensable  ?",
-       caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS")
+ alors que ce n'était pas vraiment indispensable  ?") +
+  source_champ(nrow(drop_na(climat, reliquat.ordi)))
 ```
  
 ## Diminution des vols pour les conférences
@@ -329,11 +348,8 @@ ggplot(drop_na(climat, solevolges.conf),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="",
-       title="Au cours des 5 dernières années (hors confinement)
- diriez vous que vos émissions de gaz à effet de serre liées à vos vols en avion
- pour les conférences, réunions ont ...",
- 
- caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS")
+       title="Au cours des 5 dernières années (hors confinement), diriez vous que vos émissions\nde gaz à effet de serre liées à vos vols en avion pour les conférences, réunions ont...") +
+  source_champ(nrow(drop_na(climat, solevolges.conf)))
 ```
 
 # Vos transports à des fins professionnelles
@@ -353,7 +369,9 @@ ggplot(drop_na(climat, volshTot),
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="Proportion des répondant·es", y="Nombre d'heures de vol en 2019")
+  labs(x="Proportion des répondant·es", y="",
+       title="Heures de vol en avion dans le cadre professionnel en 2019 (hors trajets domicile-travail)") +
+  source_champ(nrow(drop_na(climat, volshTot)))
 ```
 
 ## Heures de vol en avion en 2017 et 2018 pour celles et ceux n'ayant pas pris l'avion en 2019
@@ -363,11 +381,14 @@ ggplot(drop_na(climat, vols2ans),
        aes(y=fct_rev(vols2ans), x=..prop.., group=1)) +
   geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.78)) +
+  coord_cartesian(xlim=c(0, 0.7)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="Proportion des répondant·es n'ayant pas pris l'avion en 2019", y="Nombre d'heures de vol 2017 et 2018")
+  labs(x="Proportion des répondant·es n'ayant pas pris l'avion en 2019",
+       y="",
+       title="Avez-vous pris l'avion dans le cadre professionnel en 2017 et 2018\n(hors trajets domicile-travail) ?") +
+  source_champ(nrow(drop_na(climat, vols2ans)))
 ```
 
 ## Temps travaillé sur place lors d'un déplacement professionnel en avion
@@ -391,9 +412,11 @@ ggplot(DFNbJourTravailles,  aes(x=prop, y=volsjours )) +
   geom_text(aes(label=scales::percent(prop, accuracy=1, decimal.mark=",")),
             position=position_dodge(.9),
             hjust=-0.2, size=3)+
+  coord_cartesian(xlim=c(0, 0.62)) +
   labs(y="", x="Part des déplacements en avion",
        title="Part des déplacements professionnels en avion effectués par 
-       l'ensemble des répondant·es, selon le temps travaillé sur place") 
+       l'ensemble des répondant·es, selon le temps travaillé sur place") +
+  source_champ()
 
 #En fonction de la distance totale parcourue
 DFNbJourTravailles<- climat %>% 
@@ -411,9 +434,11 @@ ggplot(DFNbJourTravailles,  aes(x=prop, y=volsjours )) +
   geom_text(aes(label=scales::percent(prop, accuracy=1, decimal.mark=",")),
             position=position_dodge(.9),
             hjust=-0.2, size=3)+
+  coord_cartesian(xlim=c(0, 0.53)) +
   labs(y="", x="Part de la distance parcourue en avion",
        title="Part de la distance totale parcourue en avion par l'ensemble
-       des répondant·es, selon le temps travaillé sur place") 
+       des répondant·es, selon le temps travaillé sur place") +
+  source_champ()
 
 
 
@@ -443,9 +468,11 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volsmotif, prop) )) +
   geom_text(aes(label=scales::percent(prop, accuracy=1, decimal.mark=",")),
             position=position_dodge(.9),
             hjust=-0.2, size=3)+
+  coord_cartesian(xlim=c(0, 0.42)) +
   labs(y="",
        x="Part des déplacements en avion",
-       title="Motif principal pour les déplacements professionnels\n effectués en avion") 
+       title="Motif principal pour les déplacements professionnels\n effectués en avion") +
+  source_champ()
 
 #En fonction de la distance totale parcourue
 DFDistAvion<- climat %>% 
@@ -463,8 +490,10 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volsmotif, prop) )) +
   geom_text(aes(label=scales::percent(prop, accuracy=1, decimal.mark=",")),
             position=position_dodge(.9),
             hjust=-0.2, size=3)+
-  labs(y="", x="Part de la distance parcourue en avion",
-       title="Part de la distance totale parcourue en avion\n par l'ensemble des répondant·es, selon le motif principal\n du déplacement professionnel") 
+  coord_cartesian(xlim=c(0, 0.45)) +
+  labs(y="", x="Part de la distance totale parcourue en avion",
+       title="Part de la distance totale parcourue en avion\nselon le motif principal du déplacement professionnel") +
+  source_champ()
 
 ```
 
@@ -482,7 +511,9 @@ DFDistMoyAvion<- climat %>%
 ggplot(DFDistMoyAvion,  aes(x=DistMoy, y=fct_reorder(volsmotif, DistMoy) )) +
   geom_col() +
     labs(y="",
-       x="Distance moyenne parcourue en avion (en km)") 
+         title="Distance parcourue en avion selon le motif principal\ndu déplacement professionnel",
+       x="Distance moyenne parcourue en avion (en km)") +
+  source_champ()
 
 ```
 
@@ -511,8 +542,10 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(VolInf3h, prop) )) +
     geom_text(aes(label=scales::percent(prop, accuracy=0.1, decimal.mark=",")),
             position=position_dodge(.9),
             hjust=-0.2, size=3)+
+  coord_cartesian(xlim=c(0, 1.04)) +
   labs(y="", x="",
-       title="") 
+       title="Proportion des déplacement professionnels en avion\nqui auraient pu être effectués en moins de 3h de train") +
+  source_champ()
 
 ```
 
@@ -527,7 +560,8 @@ ggplot(drop_na(climat, aviontrain),
             stat="count",position=position_dodge(.9),
             hjust=-0.2, size=3)+
   labs(x="Proportion des répondant·es ayant pris l'avion en 2019", y="", 
-       title ="En 2019, avez-vous pris l’avion pour un trajet professionnel qui prend moins\n de 6 heures en train (hors déplacements domicile-travail) ?")
+       title ="En 2019, avez-vous pris l’avion pour un trajet professionnel qui prend moins\n de 6 heures en train (hors déplacements domicile-travail) ?") +
+  source_champ(nrow(drop_na(climat, aviontrain)))
 ```
 
 ## Raisons de prendre l'avion alors que le trajet en train fait moins de 6h
@@ -543,7 +577,8 @@ geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count",position=position_dodge(.9),
             hjust=-0.2, size=3)+
   labs(x="Proportion des répondant·es", y="", 
-       title ="Au cours des 5 dernières années, avez-vous, pour des raisons\n environnementales, pris le train plutôt que l’avion\n dans le cadre professionnel alors que le trajet était plus long ?")
+       title ="Au cours des 5 dernières années, avez-vous, pour des raisons environnementales,\npris le train plutôt que l’avion dans le cadre professionnel\nalors que le trajet était plus long ?") +
+  source_champ(nrow(drop_na(climat, trainavion)))
 ```
 
 ## Renoncer à un déplacement à l'étranger pour des raisons environnementales
@@ -559,9 +594,10 @@ ggplot(drop_na(climat, renoncedep.env),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="", 
-       title = "En 2019, avez-vous renoncé à un ou plusieurs déplacements professionnels 
-       à l’étranger (y compris décidé de ne pas candidater à une conférence) pour des 
-       considérations environnementales ?")
+       title = "En 2019, avez-vous renoncé à un ou plusieurs déplacements
+       professionnels à l’étranger pour des considérations
+       environnementales ?" )+
+  source_champ(nrow(drop_na(climat, renoncedep.env)))
 ```
 
 ## Travail à domicile
@@ -571,14 +607,15 @@ ggplot(drop_na(climat, joursdomicile),
        aes(y=fct_rev(joursdomicile), x=..prop.., group=1)) +
   geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.78)) +
+  coord_cartesian(xlim=c(0, 0.5)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="", 
        title = "En temps normal (avant le confinement), combien de jours en moyenne 
        travaillez-vous uniquement de chez vous ? Ne tenez pas compte des éventuels 
-       jours travaillés le week-end.")
+       jours travaillés le week-end.") +
+  source_champ(nrow(drop_na(climat, joursdomicile)))
 ```
 
 ## Déplacements domicile-travail
@@ -599,18 +636,20 @@ TpsTransportDomT$TypeTransport[TpsTransportDomT$TypeTransport=="veloMin"]<-"Vél
 TpsTransportDomT$TypeTransport[TpsTransportDomT$TypeTransport=="covoitMin"]<-"À plusieurs dans une voiture"
 TpsTransportDomT$TypeTransport[TpsTransportDomT$TypeTransport=="trainMin"]<-"Autres trains"
 TpsTransportDomT$TypeTransport[TpsTransportDomT$TypeTransport=="tgvMin"]<-"TGV"
-TpsTransportDomT$TypeTransport[TpsTransportDomT$TypeTransport=="moto"]<-"Moto, scooter"
+TpsTransportDomT$TypeTransport[TpsTransportDomT$TypeTransport=="motoMin"]<-"Moto, scooter"
 
 ggplot(TpsTransportDomT,  aes(x=prop, y=fct_reorder(TypeTransport, prop) )) +
   geom_col() +
   scale_x_continuous(labels=scales::percent_format()) +
-    geom_text(aes(label=scales::percent(prop, accuracy=1, decimal.mark=",")),
+  geom_text(aes(label=scales::percent(prop, accuracy=1, decimal.mark=",")),
             position=position_dodge(.9),
             hjust=-0.2, size=3) +
+  coord_cartesian(xlim=c(0, 0.32)) +
   labs(y="",
        x="",
        title="Part du temps total passé dans les déplacements domicile-travail,
-       par l'ensemble des répondant·es, par mode de transport") 
+       par l'ensemble des répondant·es, par mode de transport") +
+  source_champ()
 ```
 
 ## Raisons pour lesquelles celles et ceux qui prennent leur voiture seul·e ne covoiturent pas
@@ -644,8 +683,10 @@ ggplot(Covoit,  aes(x=prop, y=fct_reorder(RaisonsPasCovoit, prop) )) +
   geom_text(aes(label=scales::percent(prop, accuracy=1, decimal.mark=",")),
             position=position_dodge(.9),
             hjust=-0.2, size=3) +
+  coord_cartesian(xlim=c(0, 0.47)) +
   labs(y="", x="Proportion des répondant·es",
-       title="Raisons pour lesquelles ceux qui \n prennent leur voiture ne covoiturent pas") 
+       title="Raisons pour lesquelles ceux qui \n prennent leur voiture ne covoiturent pas") +
+  source_champ()
 
 ```
 
@@ -692,7 +733,7 @@ drop_na(dat) %>%
   ggplot(aes(y=variable, x=valeur)) +
   geom_col() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.3)) +
+  coord_cartesian(xlim=c(0, 0.29)) +
   theme(legend.position="bottom") +
   guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
   geom_text(aes(label=scales::percent(valeur, accuracy=1, decimal.mark=",")),
@@ -700,8 +741,8 @@ drop_na(dat) %>%
             hjust=-0.2, size=3) +
   labs(y="", x="Proportion des répondant·es",
        title="Personnes n'ayant jamais testé la visioconférence ou l'audioconférence
-selon les usages",
-       caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS")
+selon les usages") +
+  source_champ()
 
 drop_na(dat[dat$valeur != "Je n'ai jamais testé",]) %>%
   ggplot(aes(x=variable)) +
@@ -714,8 +755,8 @@ drop_na(dat[dat$valeur != "Je n'ai jamais testé",]) %>%
   guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
   labs(y="Proportion des répondant·es", x="", fill="",
        title="Actuellement, pour quels usages la visioconférence ou l'audioconférence 
-       vous semblent-elles adaptées ? (parmi qui a déjà testé) :",
-       caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS")
+       vous semblent-elles adaptées ? (parmi qui a déjà testé) :") +
+  source_champ()
 
 ```
 
@@ -758,8 +799,8 @@ drop_na(dat) %>%
   labs(y="Proportion des répondant·es", x="", fill="",
        title="Imaginons une réunion d’une journée, située à 2h de votre domicile
 en voiture. Les raisons suivantes pourraient-elles vous pousser à
-privilégier la visioconférence ou l’audioconférence à un déplacement ?",
-       caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS")
+privilégier la visioconférence ou l’audioconférence à un déplacement ?") +
+  source_champ()
 
 ```
 
@@ -772,11 +813,12 @@ ggplot(drop_na(climat, visioavtconf),
        aes(y=fct_rev(visioavtconf), x=..prop.., group=1)) +
   geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.47)) +
+  coord_cartesian(xlim=c(0, 0.44)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=0.1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="Proportion des répondant·es", y="")
+  labs(x="Proportion des répondant·es", y="") +
+  source_champ(nrow(drop_na(climat, visioavtconf)))
 ```
 
 ## Evolution de l'opinion sur la visioconférence
@@ -787,11 +829,12 @@ ggplot(drop_na(climat, visioapresconf),
   geom_bar()+
   geom_bar(fill=rev(c("#d73027", "#f46d43","#dfc27d", "#e5f5f9", "#74add1","light grey")))+
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.45)) +
+  coord_cartesian(xlim=c(0, 0.39)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="Proportion des répondant·es", y="")
+  labs(x="Proportion des répondant·es", y="") +
+  source_champ(nrow(drop_na(climat, visioapresconf)))
 
 ```
 
@@ -823,7 +866,7 @@ drop_na(dat) %>%
     theme(legend.position="bottom") +
     guides(fill=guide_legend(reverse = TRUE, nrow=3, byrow=TRUE)) +
     labs(y="Proportion des répondant·es", x="",
-         caption="* Les personnes ayant répondu négativement à la question précédente sont classées en « Pas du tout d'accord ».")
+         caption=paste0("* Les personnes ayant répondu négativement à la question précédente sont classées en « Pas du tout d'accord ».\n", texte_legende))
 ```
 
 # Les solutions concrètes dans la recherche
@@ -845,8 +888,8 @@ ggplot(drop_na(climat, solreducrech2),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
     labs(x="Proportion des répondant·es", y="",
-         title="La France s’est engagée à réduire d’un tiers ses émissions\nde gaz à effet de serre d'ici à 2030.\nDans ce cadre, pensez-vous que la recherche publique doit :",
-         caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS (n=5635)")
+         title="La France s’est engagée à réduire d’un tiers ses émissions\nde gaz à effet de serre d'ici à 2030.\nDans ce cadre, pensez-vous que la recherche publique doit :") +
+  source_champ(nrow(drop_na(climat, solreducrech2)))
 ```
 
 ## Réductions individuelles des émissions d'ici à 2030
@@ -872,7 +915,7 @@ drop_na(dat) %>%
     guides(fill=guide_legend(reverse = TRUE, nrow=3, byrow=TRUE)) +
     labs(y="Proportion des répondant·es", x="",
          title="Êtes-vous prêt·e à réduire vos émissions de gaz à effet de serre\nd’ici à 2030 dans les domaines suivants ?",
-         caption="Note : la proportion de personnes concernées varie selon la question")
+         caption=paste0("Note : la proportion de personnes concernées varie selon la question\n", texte_legende))
 ```
 
 ## Risques liés à la réduction des vols
@@ -901,12 +944,12 @@ drop_na(dat) %>%
     guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
     labs(y="Proportion des répondant·es", x="",
          title="Quels seraient les risques liés à la mise en place d'une politique\nde réduction des vols professionnels en avion dans la recherche ?",
-         caption="Note : la proportion de personnes concernées varie selon la question")
+         caption=paste0("Note : la proportion de personnes concernées varie selon la question\n", texte_legende))
 ```
 
 ## Solutions institutionnelles
 
-```{r echo=FALSE, fig.height=6, fig.width=7.5}
+```{r echo=FALSE, fig.height=7, fig.width=7.5}
 dat <- rbind(data.frame(variable="Ajouter les émissions carbone parmi les principaux\ncritères de sélection des projets à financer", valeur=climat$solinstit.selection),
              data.frame(variable="Imposer une limite au nombre de vols\nen avion par personne", valeur=climat$solinstit.limitevols),
              data.frame(variable="Financer des initiatives de compensation carbone", valeur=climat$solinstit.compensation),
@@ -930,7 +973,8 @@ drop_na(dat) %>%
     theme(legend.position="bottom") +
     guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
     labs(y="Proportion des répondant·es", x="",
-         title="Quelles actions les institutions et laboratoires\nde recherche devraient-ils mettre en œuvre\npour réduire leurs émissions de gaz à effet de serre ?")
+         title="Quelles actions les institutions et laboratoires\nde recherche devraient-ils mettre en œuvre\npour réduire leurs émissions de gaz à effet de serre ?") +
+  source_champ()
 ```
 
 ## Covoiturage
@@ -942,12 +986,13 @@ ggplot(drop_na(climat, solcovoit),
        aes(y=fct_rev(solcovoit), x=..prop.., group=1)) +
     geom_bar() +
     scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-    coord_cartesian(xlim=c(0, 0.5)) +
+    coord_cartesian(xlim=c(0, 0.35)) +
     geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-    labs(x="Proportion des répondant·es", y="",
-         title="Si le covoiturage était organisé à l'échelle de votre laboratoire ou de votre site,\nseriez-vous prêt·e à y recourir pour vos trajets domicile-travail ?")
+    labs(x="Proportion des répondant·es prenant la voiture", y="",
+         title="Si le covoiturage était organisé à l'échelle de votre laboratoire ou de votre site,\nseriez-vous prêt·e à y recourir pour vos trajets domicile-travail ?") +
+  source_champ(nrow(drop_na(climat, solcovoit)))
 ```
 
 # Informations concernant votre activité et votre situation personnelle
@@ -981,7 +1026,8 @@ drop_na(dat) %>%
     guides(fill=guide_legend(reverse=TRUE)) +
     geom_text(aes(label=reponse), position=position_fill(vjust=0.5), size=3) +
     labs(y="Proportion des répondant·es", x="",
-         title="Estimations des émissions carbone")
+         title="Estimations des émissions carbone") +
+    source_champ()
 ```
 
 Dans cette variante, une réponse n'est correcte que si la bonne modalité a été exactement choisie. Elle est considérée comme une légère sous- ou surestimation en cas d'écart d'une catégorie.
@@ -1011,5 +1057,6 @@ drop_na(dat) %>%
     guides(fill=guide_legend(reverse=TRUE, nrow=3, byrow=TRUE)) +
     geom_text(aes(label=reponse), position=position_fill(vjust=0.5), size=3) +
     labs(y="Proportion des répondant·es", x="",
-         title="Estimations des émissions carbone")
+         title="Estimations des émissions carbone") +
+    source_champ()
 ```
