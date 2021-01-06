@@ -570,13 +570,15 @@ ggplot(drop_na(climat, aviontrain),
 ## Prendre le train plutot que l'avion alors que le trajet est plus long
 
 ```{r echo=FALSE}
+pal <- RColorBrewer::brewer.pal(6, "RdYlGn")
 ggplot(drop_na(climat, trainavion),
        aes(y=fct_rev(trainavion), x=..prop.., group=1)) +
-  geom_bar() +
+  geom_bar(fill=pal[c(1, 3, 4, 6)]) +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
+  geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count",position=position_dodge(.9),
             hjust=-0.2, size=3)+
+  coord_cartesian(xlim=c(0, 0.42)) +
   labs(x="Proportion des répondant·es", y="", 
        title ="Au cours des 5 dernières années, avez-vous, pour des raisons environnementales,\npris le train plutôt que l’avion dans le cadre professionnel\nalors que le trajet était plus long ?") +
   source_champ(nrow(drop_na(climat, trainavion)))
@@ -586,9 +588,10 @@ geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
 
 
 ```{r echo=FALSE}
+pal <- RColorBrewer::brewer.pal(6, "RdYlGn")
 ggplot(drop_na(climat, renoncedep.env),
        aes(y=fct_rev(renoncedep.env), x=..prop.., group=1)) +
-  geom_bar() +
+  geom_bar(fill=pal[c(1, 4, 6)]) +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
   coord_cartesian(xlim=c(0, 0.78)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
