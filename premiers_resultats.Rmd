@@ -140,25 +140,25 @@ ggplot(drop_na(climat, pluspreoccupe),
   theme(plot.title=element_text(size=10), plot.subtitle=element_text(size=8)) +
   labs(x="Proportion des répondant·es", y="",
        title="Êtes-vous plus ou moins préoccupé·e par le changement climatique qu'il y a 5 ans?",
-       caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS ")
+       caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS (n=6287)")
 ```
 
 ## Changement des pratiques
 ```{r echo=FALSE}
 pal <- RColorBrewer::brewer.pal(9, "RdYlBu")
 ggplot(drop_na(climat, chgtpratique),
-       aes(y=fct_relevel(chgtpratique, "Sans opinion"), x=..prop.., group=1)) +
-  geom_bar(fill=c("light grey","#1a9641", "#a6d96a","#fdae61", "#d7191c" )) +
+       aes(y=fct_relevel(fct_rev(chgtpratique), "Sans opinion"), x=..prop.., group=1)) +
+  geom_bar(fill=c("light grey", "#d7191c", "#fdae61", "#a6d96a", "#1a9641")) +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
   coord_cartesian(xlim=c(0, 0.60)) +
-  geom_text(aes(label=scales::percent(..prop.., accuracy=0.1, decimal.mark=",")),
+  geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   theme(plot.title=element_text(size=10), plot.subtitle=element_text(size=8)) +
   labs(x="Proportion des répondant·es", y="",
        title="Pensez−vous que l'urgence climatique exige des changements profonds\ndans la pratique de nos métiers ?",
       
-       caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS ")
+       caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS (n=6342)")
 ```
 
 # Vos pratiques et celles de votre laboratoire
@@ -832,20 +832,21 @@ drop_na(dat) %>%
 
 ```{r echo=FALSE}
 climat$solreducrech2 <- fct_recode(climat$solreducrech,
-  "Montrer l'exemple\n(réduire de plus d'un tiers)" = "La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui",
-  "Réduire d'un tiers environ" = "La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ",
-  "Bénéficier d'un statut dérogatoire\n(réduire de moins d'un tiers)" = "En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"
+  "Montrer l'exemple\n(réduire ses émissions de plus d'un tiers)" = "La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui",
+  "Réduire ses émissions d'un tiers environ" = "La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ",
+  "Bénéficier d'un statut dérogatoire\n(réduire ses émissions de moins d'un tiers)" = "En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"
 )
 ggplot(drop_na(climat, solreducrech2),
        aes(y=fct_rev(solreducrech2), x=..prop.., group=1)) +
-    geom_bar() +
+    geom_bar(fill=c("#d7191c", "#a6d96a", "#1a9641")) +
     scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
     coord_cartesian(xlim=c(0, 0.5)) +
     geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
     labs(x="Proportion des répondant·es", y="",
-         title="La France s’est engagée à réduire d’un tiers ses émissions\nde gaz à effet de serre d'ici à 2030.\nDans ce cadre, pensez-vous que la recherche publique doit :")
+         title="La France s’est engagée à réduire d’un tiers ses émissions\nde gaz à effet de serre d'ici à 2030.\nDans ce cadre, pensez-vous que la recherche publique doit :",
+         caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS (n=5635)")
 ```
 
 ## Réductions individuelles des émissions d'ici à 2030
