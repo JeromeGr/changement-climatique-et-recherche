@@ -145,10 +145,10 @@ ggplot(drop_na(climat, preoccupe),
 ```{r echo=FALSE}
 pal <- RColorBrewer::brewer.pal(9, "RdYlBu")
 ggplot(drop_na(climat, pluspreoccupe),
-       aes(y=fct_relevel(pluspreoccupe, "Sans opinion"), x=..prop.., group=1)) +
-  geom_bar(fill=c("light grey","#d73027", "#f46d43","#dfc27d", "#e5f5f9", "#74add1" )) +
+       aes(y=fct_relevel(fct_rev(pluspreoccupe), "Sans opinion"), x=..prop.., group=1)) +
+  geom_bar(fill=c("light grey", "#74add1", "#e5f5f9", "#dfc27d", "#f46d43", "#d73027")) +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.60)) +
+  coord_cartesian(xlim=c(0, 0.46)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=0.1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
