@@ -111,4 +111,26 @@ ambig_airports <- airports %>%
 sort(unique(tolower(utilise$texte[utilise$code %in% ambig_airports$iata_code])))
 
 # Récupérer la liste des trajets
-# arrange(drop_na(select(climat, volsdepart1, volsdepart1code, volsarrivee1, volsarrivee1code, starts_with("vols1"))), volsdepart1, volsarrivee1)
+# nms <- c("volsdepart", "volsdepartcode", "volsarrivee", "volsarriveecode", "volsdist")
+# rename2 <- function(df, nms) { names(df) <- nms; df }
+# dat <- arrange(rbind(rename2(select(climat, volsdepart1, volsdepart1code, volsarrivee1, volsarrivee1code, volsdist1), nms),
+#                      rename2(select(climat, volsdepart2, volsdepart2code, volsarrivee2, volsarrivee2code, volsdist2), nms),
+#                      rename2(select(climat, volsdepart3, volsdepart3code, volsarrivee3, volsarrivee3code, volsdist3), nms),
+#                      rename2(select(climat, volsdepart4, volsdepart4code, volsarrivee4, volsarrivee4code, volsdist4), nms),
+#                      rename2(select(climat, volsdepart5, volsdepart5code, volsarrivee5, volsarrivee5code, volsdist5), nms)),
+#                volsdist)
+# write.csv(dat[!duplicated(dat[c("volsdepartcode", "volsarriveecode")]),], file="trajets.csv")
+tpstrains <- read.csv("Aéroports/temps train.csv", na.strings="")
+tpstrains$volstrain3h[is.na(tpstrains$volstrain3h)] <- "Non"
+tpstrains$volstrain6h[is.na(tpstrains$volstrain6h)] <- "Non"
+
+for(i in 1:5) {
+    vardepart <- paste0("volsdepart", i, "code")
+    vararrivee <- paste0("volsarrivee", i, "code")
+    tmp <- left_join(rename(select(climat, vardepart, vararrivee),
+                            volsdepartcode=vardepart, volsarriveecode=vararrivee),
+                     tpstrains,
+                     by=c("volsdepartcode", "volsarriveecode"))
+    climat[paste0("volstrain3h", i)] <- tmp$volstrain3h
+    climat[paste0("volstrain6h", i)] <- tmp$volstrain6h
+}

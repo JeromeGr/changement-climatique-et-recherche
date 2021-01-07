@@ -436,8 +436,8 @@ ggplot(DFNbJourTravailles,  aes(x=prop, y=volsjours )) +
             position=position_dodge(.9),
             hjust=-0.2, size=3)+
   coord_cartesian(xlim=c(0, 0.53)) +
-  labs(y="", x="Part de la distance parcourue en avion",
-       title="Part de la distance totale parcourue en avion par l'ensemble
+  labs(y="", x="Part du total des distances parcourues en avion",
+       title="Distribution des distances parcourues en avion par l'ensemble
        des répondant·es, selon le temps travaillé sur place") +
   source_champ()
 
@@ -472,7 +472,7 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volsmotif, prop) )) +
   coord_cartesian(xlim=c(0, 0.42)) +
   labs(y="",
        x="Part des déplacements en avion",
-       title="Motif principal pour les déplacements professionnels\n effectués en avion") +
+       title="Motif principal pour les déplacements professionnels\neffectués en avion") +
   source_champ()
 
 #En fonction de la distance totale parcourue
@@ -492,8 +492,8 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volsmotif, prop) )) +
             position=position_dodge(.9),
             hjust=-0.2, size=3)+
   coord_cartesian(xlim=c(0, 0.45)) +
-  labs(y="", x="Part de la distance totale parcourue en avion",
-       title="Part de la distance totale parcourue en avion\nselon le motif principal du déplacement professionnel") +
+  labs(y="", x="Part du total des distances parcourues en avion",
+       title="Part du total des distances parcourues en avion\nselon le motif principal du déplacement professionnel") +
   source_champ()
 
 ```
@@ -519,33 +519,35 @@ ggplot(DFDistMoyAvion,  aes(x=DistMoy, y=fct_reorder(volsmotif, DistMoy) )) +
 ```
 
 
-## Part de la distrance totale parcourue en avion par les répondant·es selon la durée du trajet en train correspondant (estimation)
+## Part du total des distances parcourues en avion par les répondant·es selon la durée du trajet en train correspondant
+
+Les temps de trajet en train sont obtenus à partir des horaires de la SNCF (ou des entreprises équivalentes pour l'étranger). Les émissions de gaz à effet de serre sont calculées à partir de la distance orthodromique + 95 km, selon la méthode [GES 1point5](https://labos1point5.org/ges-1point5).
 
 ```{r echo=FALSE, message=FALSE}
-DFDistAvion<- climat %>% 
-  select(paste0("volsnb", 1:5), paste0("volsdist", 1:5), paste0("volsh", 1:5)) %>%
+DFDistAvion <- climat %>% 
+  select(paste0("volsnb", 1:5), paste0("volsges", 1:5), paste0("volstrain3h", 1:5), paste0("volstrain6h", 1:5)) %>%
   pivot_longer(everything(),
                names_to = c(".value", "set"),
-               names_sep = -1) 
-#On regarde Volh<2 car c'est le temps pour l'aller retour. On maximise en disant que jusqu'à une heure d'avion, on a un train de moins de 3h
-DFDistAvion$VolInf3h <- NA
-DFDistAvion$VolInf3h[DFDistAvion$volsh<2]<-"Trajet effectuable en moins de 3h en train"
-DFDistAvion$VolInf3h[DFDistAvion$volsh>=2]<-"Trajet effectuable en plus de 3h en train"
-
-DFDistAvion<-DFDistAvion%>% group_by(VolInf3h) %>%
-  summarize(DistTotale=sum(volsdist*volsnb, na.rm=T)) %>%
-  drop_na(VolInf3h) %>%
+               names_sep = -1) %>%
+  mutate(volstrain=if_else(volstrain3h == "Oui" | volstrain3h == "Parfois",
+                           "Moins de 3h de train",
+                           if_else(volstrain6h == "Oui" | volstrain6h == "Parfois",
+                                   "Entre 3h et 6h de train",
+                                   "Plus de 6h de train"))) %>%
+  group_by(volstrain) %>%
+  summarize(DistTotale=sum(volsges*volsnb, na.rm=T)) %>%
+  drop_na(volstrain) %>%
   mutate(prop=DistTotale/sum(DistTotale))
 
-ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(VolInf3h, prop) )) +
-  geom_col() +
+ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volstrain, prop) )) +
+  geom_col(fill=c("#fc8d59", "#e34a33", "#b30000")) +
   scale_x_continuous(labels=scales::percent_format()) +
-    geom_text(aes(label=scales::percent(prop, accuracy=0.1, decimal.mark=",")),
+  geom_text(aes(label=scales::percent(prop, accuracy=0.1, decimal.mark=",")),
             position=position_dodge(.9),
             hjust=-0.2, size=3)+
-  coord_cartesian(xlim=c(0, 1.04)) +
-  labs(y="", x="",
-       title="Proportion des déplacement professionnels en avion\nqui auraient pu être effectués en moins de 3h de train") +
+  coord_cartesian(xlim=c(0, 1)) +
+  labs(y="", x="Part du total des émissions en CO₂e",
+       title="Répartition des émissions de gaz à effet de serre des déplacements professionnels\nen avion selon le temps nécessaire pour voyager en train") +
   source_champ()
 
 ```

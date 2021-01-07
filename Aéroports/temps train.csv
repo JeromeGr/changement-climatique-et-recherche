@@ -1,0 +1,1302 @@
+"volsdepart","volsdepartcode","volsarrivee","volsarriveecode","volsdist","volstrain3h","volstrain6h"
+"Bordeaux/Mérignac","BOD","Bordeaux/Mérignac","BOD",0,,
+"Brazzaville","BZV","Ouesso","BZV",0,,
+"New Delhi ","DEL","Dehradun","DED",417,"Non","Oui"
+"Montpellier/Méditerranée","MPL","Toulouse","TLS",419,"Oui","Oui"
+"Vientiane","VTE","Luang Prabang","LPQ",433,"Non","Non"
+"Kathmandu","KTM","Biratnagar","BIR",464,"Non","Non"
+"Beyrouth, Liban","BEY","Amman, Jordanie","AMM",477,"Non","Non"
+"Montpellier/Méditerranée","MPL","Nice","NCE",525,"Non","Parfois"
+"Lyon","LYS","Sesto","MXP",568,"Non","Oui"
+"Lyon","LYS","Nice","NCE",571,"Non","Oui"
+"Limoges","LIG","Lyon","LYS",606,"Non","Parfois"
+"Lyon","LYS","Limoges/Bellegarde","LIG",606,"Non","Parfois"
+"Toulouse/Blagnac","TLS","Marseille","MRS",624,"Non","Oui"
+"Marseille","MRS","Toulouse/Blagnac","TLS",624,"Non","Oui"
+"São Paulo","GRU","Rio De Janeiro","GIG",674,"Non","Non"
+"Marseille","MRS","Ajaccio","AJA",676,"Non","Non"
+"Brest/Guipavas","BES","Bath","BRS",697,"Non","Non"
+"Kathmandu","KTM","Jumla","JUM",712,"Non","Non"
+"Marseille","MRS","BASTIA","BIA",721,"Non","Non"
+"Clermont-Ferrand/Auvergne","CFE","Paris","CDG",724,"Non","Oui"
+"Paris","CDG","Clermont-Ferrand/Auvergne","CFE",724,"Non","Oui"
+"Strasbourg","SXB","Lyon","LYS",735,"Non","Oui"
+"toulouse","TLS","grenoble","GNB",739,"Non","Oui"
+"Marseille","MRS","Milan","MXP",740,"Non","Non"
+"Paris","CDG","Nantes","NTE",744,"Oui","Oui"
+"Metz / Nancy","ETZ","Lyon","LYS",746,"Non","Oui"
+"Lyon","LYS","NANCY","ETZ",746,"Non","Oui"
+"Lyon","LYS","Toulouse/Blagnac","TLS",751,"Non","Parfois"
+"Toulouse/Blagnac","TLS","Lyon","LYS",751,"Non","Parfois"
+"Paris","CDG","Strasbourg","SXB",752,"Oui","Oui"
+"Paris","CDG","London","LTN",760,"Oui","Oui"
+"London","LTN","Paris","CDG",760,"Oui","Oui"
+"Lyon ","LYS","Poitiers/Biard","PIS",761,"Non","Oui"
+"Poitiers/Biard","PIS","Lyon","LYS",761,"Non","Oui"
+"Toulouse/Blagnac","TLS","Toulon/Hyères/Le Palyvestre","TLN",783,"Non","Oui"
+"Paris","CDG","Düsseldorf","DUS",786,"Non","Oui"
+"Nantes","NTE","Clermont-Ferrand/Auvergne","CFE",793,"Non","Parfois"
+"Lille/Lesquin","LIL","Strasbourg","SXB",796,"Non","Oui"
+"Montpellier/Méditerranée","MPL","Bordeaux/Mérignac","BOD",797,"Non","Oui"
+"Paris","CDG","Amsterdam","AMS",797,"Non","Oui"
+"Stockholm","ARN","Helsinki","HEL",798,"Non","Non"
+"Paris","CDG","geneve","GVA",816,"Non","Oui"
+"Boston","BOS","Montréal","YUL",819,"Non","Non"
+"Poitiers/Biard","PIS","Brest/Guipavas","BES",822,"Non","Parfois"
+"Cagliari","CAG","Rome","CIA",825,"Non","Non"
+"Abidjan","ABJ","Accra","ACC",837,"Non","Non"
+"Niamey","NIM","Ouaga","OUA",840,"Non","Non"
+"Pau/Pyrénées (Uzein)","PUF","Nantes","NTE",861,"Non","Non"
+"Luxembourg","LUX","Munich","MUC",863,"Non","Non"
+"Ho-Chi-Minh-Ville/Saïgon","SGN","Quy nhon","UIH",870,"Non","Non"
+"Paris","CDG","Bern","BRN",873,"Non","Oui"
+"Bale","BSL","Nice","NCE",877,"Non","Non"
+"Nice","NCE","Bâle/Mulhouse","BSL",877,"Non","Non"
+"Geneva","GVA","Pisa","PSA",882,"Non","Non"
+"Montpellier","MPL","Milan","MXP",883,"Non","Non"
+"Paris","CDG","Frankfurt am Main","FRA",899,"Non","Oui"
+"Boston","BOS","Philadelphia","PHL",901,"Non","Oui"
+"Toulouse","TLS","Cannes","CEQ",901,"Non","Non"
+"Bordeaux/Mérignac","BOD","Barcelona","BCN",908,"Non","Non"
+"Toulouse","TLS","Nantes","NTE",912,"Non","Non"
+"Nantes","NTE","Toulouse","TLS",912,"Non","Non"
+"Paris","CDG","Bristol","BRS",917,"Non","Oui"
+"Bordeaux/Mérignac","BOD","Lyon","LYS",930,"Non","Oui"
+"Lyon","LYS","Bordeaux","BOD",930,"Non","Oui"
+"Nice","NCE","Toulouse/Blagnac","TLS",943,"Non","Non"
+"Toulouse","TLS","Nice","NCE",943,"Non","Non"
+"Geneva","GVA","Toulouse/Blagnac","TLS",947,"Non","Non"
+"Toulouse","TLS","Geneva","GVA",947,"Non","Non"
+"Brest","BES","Cork","ORK",953,"Non","Non"
+"Paris","CDG","Zurich","ZRH",954,"Non","Oui"
+"Bordeaux","BOD","grenoble","GNB",957,"Non","Non"
+"Auckland","AKL","Wellington","WLG",962,"Non","Non"
+"Kathmandu","KTM","Dhanghadi ","DHI",966,"Non","Non"
+"Toulouse/Blagnac","TLS","valence (espagne)","VLC",972,"Non","Non"
+"Nice","NCE","Rome","CIA",972,"Non","Non"
+"Paris","CDG","Birmingham","BHX",976,"Non","Oui"
+"Lyon","LYS","la Rochelle","LRH",977,"Non","Parfois"
+"Bastia/Poretta","BIA","Geneva","GVA",980,"Non","Non"
+"Geneva","GVA","Venice","VCE",981,"Non","Non"
+"Bordeaux/Mérignac","BOD","Brest/Guipavas","BES",985,"Non","Non"
+"Hanoi ","HAN","Vientiane","VTE",990,"Non","Non"
+"Marseille","MRS","Fribourg","BSL",992,"Non","Oui"
+"Nice","NCE","Barcelona","BCN",994,"Non","Non"
+"Lyon","LYS","Bastia/Poretta","BIA",997,"Non","Non"
+"Bordeaux","BOD","Marseilles","MRS",998,"Non","Oui"
+"Marseille","MRS","Bordeaux","BOD",998,"Non","Oui"
+"Limoges/Bellegarde","LIG","Toulon/Hyères/Le Palyvestre","TLN",1000,"Non","Non"
+"Lyon","LYS","Bologna","BLQ",1010,"Non","Non"
+"Libreville","LBV","Franceville","MVB",1012,"Non","Non"
+"Lyon","LYS","Pau/Pyrénées (Uzein)","PUF",1017,"Non","Non"
+"Lyon","LYS","Innsbruck, Autriche","INN",1019,"Non","Non"
+"Limoges","LIG","Brest","BES",1024,"Non","Non"
+"Paris","CDG","Brest/Guipavas","BES",1031,"Non","Oui"
+"Brest/Guipavas","BES","Paris","CDG",1031,"Non","Oui"
+"Lyon","LYS","Ajaccio/Napoléon Bonaparte","AJA",1036,"Non","Non"
+"Poitiers/Biard","PIS","Marseille","MRS",1044,"Non","Oui"
+"Paris","CDG","bordeaux","BOD",1055,"Oui","Oui"
+"Athens","ATH","Tirana","TIA",1060,"Non","Non"
+"Rennes/Saint-Jacques","RNS","Pau/Pyrénées (Uzein)","PUF",1064,"Non","Non"
+"Geneva","GVA","Brussels","BRU",1065,"Non","Oui"
+"Nantes","NTE","Londres","LTN",1066,"Non","Oui"
+"Paris","CDG","lindau","FDH",1072,"Non","Non"
+"Nantes","NTE","Lyon","LYS",1074,"Non","Oui"
+"Lyon","LYS","Nantes","NTE",1074,"Non","Oui"
+"Toulouse","TLS","Madrid","MAD",1075,"Non","Non"
+"Bordeaux/Mérignac","BOD","Madrid","MAD",1076,"Non","Non"
+"Strasbourg","SXB","Nice","NCE",1088,"Non","Non"
+"Nice","NCE","Strasbourg","SXB",1088,"Non","Non"
+"Lyon","LYS","Frankfurt am Main","FRA",1091,"Non","Non"
+"Francfort","FRA","Lyon","LYS",1091,"Non","Non"
+"Marseille","MRS","Biarritz","BIQ",1091,"Non","Non"
+"Lyon","LYS","Barcelone","BCN",1098,"Non","Oui"
+"Rennes/Saint-Jacques","RNS","Toulouse/Blagnac","TLS",1099,"Non","Non"
+"Toulouse/Blagnac","TLS","Rennes/Saint-Jacques","RNS",1099,"Non","Non"
+"Belém (Brésil)","BEL","Parauapebas (Brésil)","CKS",1107,"Non","Non"
+"bordeaux","BOD","Geneva","GVA",1109,"Non","Non"
+"Bâle/Mulhouse","BSL","Amsterdam","AMS",1123,"Non","Non"
+"Caen/Carpiquet","CFR","Lyon","LYS",1132,"Non","Oui"
+"Lyon","LYS","Padoue","VCE",1133,"Non","Non"
+"Bâle/Mulhouse","BSL","Prague","PRG",1133,"Non","Non"
+"Brest","BES","Dublin","DUB",1137,"Non","Non"
+"Kuwait City","KWI","Doha","DOH",1137,"Non","Non"
+"Geneva","GVA","Trieste","TRS",1141,"Non","Non"
+"Paris","CDG","Turin","TRN",1147,"Non","Oui"
+"Lyon","LYS","Brussels","BRU",1156,"Non","Oui"
+"Lyon","LYS","Rennes","RNS",1160,"Non","Oui"
+"rennes","RNS","Lyon","LYS",1160,"Non","Oui"
+"Lyon","LYS","Munich","MUC",1173,"Non","Non"
+"limoges","LIG","Milan","MXP",1173,"Non","Non"
+"Lima","LIM","Cusco","CUZ",1173,"Non","Non"
+"Paris","CDG","Manchester","MAN",1177,"Non","Oui"
+"Nantes","NTE","Montpelliers","MPL",1180,"Non","Non"
+"Montpellier","MPL","Nantes","NTE",1180,"Non","Non"
+"Brest/Guipavas","BES","Lille/Lesquin","LIL",1182,"Non","Parfois"
+"Frankfurt","FRA","Brno","BRQ",1188,"Non","Non"
+"Bordeaux","BOD","Valence (Espagne)","VLC",1189,"Non","Non"
+"Montpellier/Méditerranée","MPL","Bologna","BLQ",1191,"Non","Non"
+"Metz / Nancy","ETZ","Nice","NCE",1194,"Non","Non"
+"Strasbourg","SXB","Marseille","MRS",1195,"Non","Oui"
+"Marseille","MRS","Strasbourg","SXB",1195,"Non","Oui"
+"Paris","CDG","Milan","MXP",1198,"Non","Non"
+"Bâle/Mulhouse","BSL","Dresden","DRS",1199,"Non","Non"
+"toulouse","TLS","Berne","BRN",1207,"Non","Non"
+"Toulouse","TLS","Genova","GOA",1209,"Non","Non"
+"Ho Chi Minh City","SGN","danang","DAD",1211,"Non","Non"
+"Paris","CDG","Toulouse/Blagnac","TLS",1212,"Non","Oui"
+"Toulouse/Blagnac","TLS","Paris","CDG",1212,"Non","Oui"
+"Annecy","NCY","Nantes","NTE",1212,"Non","Non"
+"Paris","CDG","Castres/Mazamet","DCM",1215,"Non","Parfois"
+"Nantes","NTE","Bruxelles","BRU",1219,"Non","Oui"
+"Marseille","MRS","Venice","VCE",1222,"Non","Non"
+"Paris","CDG","Leeds","LBA",1228,"Non","Oui"
+"Montpellier/Méditerranée","MPL","Paris","CDG",1230,"Non","Oui"
+"Lyon","LYS","Nuremberg","NUE",1230,"Non","Non"
+"orly","CDG","montpellier","MPL",1230,"Non","Oui"
+"Nice","NCE","Pau","PUF",1234,"Non","Non"
+"MONTPELLIER","MPL","Strasbourg","SXB",1241,"Non","Non"
+"Paris","CDG","Nuremberg","NUE",1243,"Non","Non"
+"Toulouse/Blagnac","TLS","Milan","MXP",1248,"Non","Non"
+"Marseille","MRS","Rome","CIA",1261,"Non","Non"
+"Nice","NCE","Munich","MUC",1261,"Non","Non"
+"Rome","CIA","Marignane","MRS",1261,"Non","Non"
+"Lyon","LYS","Düsseldorf","DUS",1263,"Non","Non"
+"Paris","CDG","Hannovre","HAJ",1264,"Non","Non"
+"Amsterdam","AMS","Berne","BRN",1264,"Non","Non"
+"Caen/Carpiquet","CFR","Toulouse/Blagnac","TLS",1265,"Non","Non"
+"Toulouse/Blagnac","TLS","Caen/Carpiquet","CFR",1265,"Non","Non"
+"Copenhagen","CPH","Amsterdam","AMS",1268,"Non","Non"
+"Toulouse","TLS","Ajaccio/Napoléon Bonaparte","AJA",1273,"Non","Non"
+"Nice","NCE","salzburg","SZG",1286,"Non","Non"
+"Bordeaux","BOD","Nice","NCE",1291,"Non","Non"
+"Nice","NCE","Bordeaux/Mérignac","BOD",1291,"Non","Non"
+"Lyon ","LYS"," Salzbourg","SZG",1292,"Non","Non"
+"Marseille","MRS","Valence (Esp)","VLC",1295,"Non","Non"
+"Lyon","LYS","Trieste","TRS",1303,"Non","Non"
+"Toulouse","TLS","Belfort","BSL",1303,"Non","Non"
+"Marseille","MRS","Paris","CDG",1307,"Parfois","Oui"
+"Paris","CDG","Marseille","MRS",1307,"Parfois","Oui"
+"Amsterdam","AMS","Rennes/Saint-Jacques","RNS",1321,"Non","Non"
+"Pau/Pyrénées (Uzein)","PUF","Paris","CDG",1335,"Non","Oui"
+"Paris","CDG","Pau/Pyrénées (Uzein)","PUF",1335,"Non","Oui"
+"Luxembourg","LUX","Nice","NCE",1337,"Non","Non"
+"Bastia/Poretta","BIA","Toulouse/Blagnac","TLS",1341,"Non","Non"
+"Nantes","NTE","Marseille","MRS",1351,"Non","Non"
+"Marseille","MRS","Nantes","NTE",1351,"Non","Non"
+"Paris","CDG","Inssbruck","INN",1363,"Non","Non"
+"Paris","CDG","Munichi ","MUC",1365,"Non","Parfois"
+"Lyon","LYS","Lorient","LRT",1376,"Non","Parfois"
+"Lille","LIL","Milan","MXP",1381,"Non","Non"
+"Strasbourg","SXB","Castres/Mazamet","DCM",1382,"Non","Non"
+"Nantes","NTE","Manchester","MAN",1384,"Non","Non"
+"Paris","CDG","Biarritz","BIQ",1385,"Non","Oui"
+"Paris","CDG","Nice","NCE",1391,"Non","Parfois"
+"Nice","NCE","Paris","CDG",1391,"Non","Parfois"
+"Brest/Guipavas","BES","Toulouse/Blagnac","TLS",1395,"Non","Non"
+"toulouse","TLS","brest","BES",1395,"Non","Non"
+"Paris","CDG","Perpignan/Rivesaltes","PGF",1397,"Non","Oui"
+"Perpignan/Rivesaltes","PGF","Paris","CDG",1397,"Non","Oui"
+"Montpellier/Méditerranée","MPL","Stuttgart","STR",1397,"Non","Non"
+"Bordeaux/Mérignac","BOD","Lille/Lesquin","LIL",1398,"Non","Oui"
+"Paris","CDG","Gênes","GOA",1403,"Non","Non"
+"Metz / Nancy","ETZ","Bordeaux/Mérignac","BOD",1405,"Non","Oui"
+"Toulouse/Blagnac","TLS","Metz / Nancy","ETZ",1408,"Non","Non"
+"Metz / Nancy","ETZ","Toulouse/Blagnac","TLS",1408,"Non","Non"
+"Toulouse/Blagnac","TLS","zuri","ZRH",1408,"Non","Non"
+"Marseille","MRS","Trieste","TRS",1410,"Non","Non"
+"dijon","DIJ","barcelonne","BCN",1413,"Non","Non"
+"Nantes","NTE","Strasbourg","SXB",1414,"Non","Parfois"
+"Beauvais/Tillé","BVA","Bergamo","BGY",1416,"Non","Non"
+"Belém (Brésil)","BEL","Santarém (Brésil)","STM",1423,"Non","Non"
+"Limoges","LIG","Madrid","MAD",1425,"Non","Non"
+"Marse","MRS","Pula (Croatie)","PUY",1426,"Non","Non"
+"Paris","CDG","Toulon/Hyères/Le Palyvestre","TLN",1429,"Non","Oui"
+"Toulon/Hyères/Le Palyvestre","TLN","Paris","CDG",1429,"Non","Oui"
+"Barcelona","BCN","Nantes","NTE",1430,"Non","Non"
+"Nantes","NTE","Barcelone","BCN",1430,"Non","Non"
+"Nice","NCE","Frankfurt am Main","FRA",1434,"Non","Non"
+"graz","GRZ","geneve","GVA",1436,"Non","Non"
+"Toulouse/Blagnac","TLS","Pisa","PSA",1454,"Non","Non"
+"Paris","CDG","Hamburg","HAM",1457,"Non","Non"
+"Hamburg","HAM","Paris","CDG",1457,"Non","Non"
+"Strasbourg","SXB","Toulouse/Blagnac","TLS",1459,"Non","Non"
+"toulouse","TLS","Strasbourg","SXB",1459,"Non","Non"
+"Lyon","LYS","Amsterdam","AMS",1466,"Non","Non"
+"Amsterdam","AMS","Lyon","LYS",1466,"Non","Non"
+"Montpellier/Méditerranée","MPL","Rome","CIA",1466,"Non","Non"
+"Clermont-Ferrand/Auvergne","CFE","Amsterdam","AMS",1470,"Non","Non"
+"bucharest","OTP","Kiev","KBP",1475,"Non","Non"
+"Paris","CDG","Leipzig","LEJ",1479,"Non","Non"
+"Bâle/Mulhouse","BSL","London","LTN",1482,"Non","Non"
+"Strasbourg","SXB","Ajaccio/Napoléon Bonaparte","AJA",1484,"Non","Non"
+"Lyon","LYS","Rome","CIA",1490,"Non","Non"
+"Bordeaux/Mérignac","BOD","Milan","MXP",1491,"Non","Non"
+"Nantes","NTE","Torino","TRN",1491,"Non","Non"
+"Rennes/Saint-Jacques","RNS","Marseille","MRS",1492,"Non","Non"
+"Marseille","MRS","Munich","MUC",1493,"Non","Non"
+"Bordeaux/Mérignac","BOD","Luxembourg","LUX",1494,"Non","Parfois"
+"Paris","CDG","Verona","VRN",1495,"Non","Oui"
+"Lyon","LYS","Southampton","SOU",1502,"Non","Non"
+"Marseille","MRS","Alicante","ALC",1504,"Non","Non"
+"Nantes","NTE","toulon","TLN",1515,"Non","Non"
+"Strasbourg","SXB","Bordeaux/Mérignac","BOD",1517,"Non","Oui"
+"Bale","BSL","Rome","CIA",1517,"Non","Non"
+"Paris","CDG","Bilbao","BIO",1524,"Non","Non"
+"Toulouse/Blagnac","TLS","Valenciennes","XVS",1524,"Non","Non"
+"PANAMA","BLB","Bogota","BOG",1527,"Non","Non"
+"Alger ","ALG","Montpellier","MPL",1538,"Non","Non"
+"Marseille","MRS","Algiers","ALG",1541,"Non","Non"
+"Pau/Pyrénées (Uzein)","PUF","Ajaccio/Napoléon Bonaparte","AJA",1544,"Non","Non"
+"Bordeaux/Mérignac","BOD","Zurich","ZRH",1544,"Non","Non"
+"Caen/Carpiquet","CFR","Marseille","MRS",1545,"Non","Non"
+"Marseille","MRS","caen","CFR",1545,"Non","Non"
+"Rennes/Saint-Jacques","RNS","Newcastle","NCL",1551,"Non","Non"
+"Marseille","MRS","Frankfurt am Main","FRA",1554,"Non","Non"
+"Luxembourg","LUX","Vienne (Autriche)","VIE",1554,"Non","Non"
+"bordeaux","BOD","Bruxelles","BRU",1558,"Non","Oui"
+"Brest/Guipavas","BES","Amsterdam","AMS",1560,"Non","Non"
+"Brest/Guipavas","BES","Lyon/Saint Exupery","LYS",1561,"Non","Non"
+"Lyon","LYS","Brest/Guipavas","BES",1561,"Non","Non"
+"Lille/Lesquin","LIL","Montpellier/Méditerranée","MPL",1561,"Non","Oui"
+"Lille","LIL","Toulouse","TLS",1566,"Non","Non"
+"Toulouse","TLS","Lille","LIL",1566,"Non","Non"
+"Gdansk","GDN","Oslo","OSL",1567,"Non","Non"
+"Paris","CDG","Salzburg","SZG",1568,"Non","Non"
+"Londres","LTN","Bordeaux/Mérignac","BOD",1570,"Non","Non"
+"Bordeaux/Mérignac","BOD","London","LTN",1570,"Non","Non"
+"Brussels","BRU","Dublin","DUB",1570,"Non","Non"
+"Washington","DCA","Montréal","YUL",1570,"Non","Non"
+"Paris","CDG","Dublin","DUB",1572,"Non","Non"
+"Nantes","NTE","Nice","NCE",1583,"Non","Non"
+"Nice","NCE","Nantes","NTE",1583,"Non","Non"
+"Lyon","LYS","London","LTN",1584,"Non","Non"
+"Marseille","MRS","Madrid","MAD",1596,"Non","Non"
+"Montpellier/Méditerranée","MPL","Frankfurt am Main","FRA",1599,"Non","Non"
+"Toulouse","TLS","Bologna","BLQ",1599,"Non","Non"
+"Frankfurt am Main","FRA","Kraków","KRK",1602,"Non","Non"
+"Montpellier/Méditerranée","MPL","Munich","MUC",1610,"Non","Non"
+"Toulouse/Blagnac","TLS","Cagliari","CAG",1610,"Non","Non"
+"Metz / Nancy","ETZ","Pau/Pyrénées (Uzein)","PUF",1615,"Non","Non"
+"graz","GRZ","Lyon","LYS",1615,"Non","Non"
+"Marseille","MRS","Lille","LIL",1619,"Non","Oui"
+"Lill","LIL","Marseille","MRS",1619,"Non","Oui"
+"cayenne","CAY","belem","BEL",1628,"Non","Non"
+"Geneve","GVA","Cagliari","CAG",1628,"Non","Non"
+"Berlin","SXF","Vilnius","VNO",1634,"Non","Non"
+"Lyon","LYS","Hannover","HAJ",1642,"Non","Non"
+"Lyon","LYS","Leipzig","LEJ",1648,"Non","Non"
+"toulon","TLN","rennes","RNS",1652,"Non","Non"
+"Frankfurt am Main","FRA","gdansk","GDN",1658,"Non","Non"
+"Lille","LIL","Nice","NCE",1659,"Non","Non"
+"Nice","NCE","Lille/Lesquin","LIL",1659,"Non","Non"
+"Paris","CDG","Bologna","BLQ",1662,"Non","Non"
+"Nice","NCE","Brussels","BRU",1664,"Non","Non"
+"Marseille","MRS","Brussels","BRU",1665,"Non","Oui"
+"Bordeaux/Mérignac","BOD","Ajaccio/Napoléon Bonaparte","AJA",1669,"Non","Non"
+"Paris","CDG","Dresden","DRS",1669,"Non","Non"
+"Paris","CDG","Venice","VCE",1673,"Non","Non"
+"Venice","VCE","Paris","CDG",1673,"Non","Non"
+"Lyon","LYS","Pragues","PRG",1679,"Non","Non"
+"Prague","PRG","Lyon","LYS",1679,"Non","Non"
+"Rennes","RNS","Milan","MXP",1682,"Non","Non"
+"Toulouse/Blagnac","TLS","Bruxelles","BRU",1686,"Non","Non"
+"Paris","CDG","Cork","ORK",1686,"Non","Non"
+"Montpellier/Méditerranée","MPL","Brest/Guipavas","BES",1688,"Non","Non"
+"Paris","CDG","Pisa","PSA",1690,"Non","Non"
+"Pisa","PSA","Paris","CDG",1690,"Non","Non"
+"Marseille","MRS","Tunis","TUN",1695,"Non","Non"
+"Nice","NCE","Rennes","RNS",1698,"Non","Non"
+"rennes","RNS","Nice","NCE",1698,"Non","Non"
+"Caen/Carpiquet","CFR","Nice","NCE",1699,"Non","Non"
+"Kuwait City","KWI","Abou Dhabi","AUH",1703,"Non","Non"
+"Lyon","LYS","Zagreb","ZAG",1706,"Non","Non"
+"Paris","CDG","Prague","PRG",1707,"Non","Non"
+"Prague","PRG","Paris","CDG",1707,"Non","Non"
+"Montpellier","MPL","Nuremberg","NUE",1709,"Non","Non"
+"Luxe","LUX","Zagreb","ZAG",1710,"Non","Non"
+"Lyon","LYS","Bremen","BRE",1716,"Non","Non"
+"Paris","CDG","Berlin","SXF",1717,"Non","Non"
+"Berlin","SXF","Paris","CDG",1717,"Non","Non"
+"Paris","CDG","Barcelona","BCN",1719,"Non","Non"
+"Barcelona","BCN","Paris","CDG",1719,"Non","Non"
+"Nantes","NTE","Porto","OPO",1731,"Non","Non"
+"Luxembourg","LUX","Aalborg","AAL",1731,"Non","Non"
+"São Paulo","GRU","Porto Alegre","POA",1733,"Non","Non"
+"Toulouse","TLS","Exeter","EXT",1738,"Non","Non"
+"Brest/Guipavas","BES","Porto","OPO",1738,"Non","Non"
+"Changchun","CGQ","Pékin","PEK",1738,"Non","Oui"
+"Paris","CDG","Edimbourg","EDI",1739,"Non","Non"
+"Paris","CDG","Belfast","BFS",1739,"Non","Non"
+"Belfast","BFS","Paris","CDG",1739,"Non","Non"
+"Gerone","GRO","Baden-Baden","FKB",1742,"Non","Non"
+"Nice","NCE","Vienna","VIE",1754,"Non","Non"
+"Lyon","LYS","Dresde","DRS",1757,"Non","Non"
+"Bâle/Mulhouse","BSL","Budapest","BUD",1763,"Non","Non"
+"Montpellier","MPL","Eindhoven","EIN",1766,"Non","Non"
+"Barcelone (Espagne)","BCN","Saint-Jacques de Compostelle","SCQ",1768,"Non","Non"
+"Marseille","MRS","Palermo","PMO",1768,"Non","Non"
+"Lyon","LYS","Cardiff","CWL",1768,"Non","Non"
+"Marseille","MRS","Lannion","LAI",1787,"Non","Non"
+"Pisa","PSA","Bordeaux/Mérignac","BOD",1788,"Non","Non"
+"Nice","NCE","Prague","PRG",1789,"Non","Non"
+"Paris","CDG","Trieste","TRS",1790,"Non","Non"
+"Paris","CDG","Gijon","OVD",1791,"Non","Non"
+"Marseille","MRS","croatie","ZAG",1793,"Non","Non"
+"Paris","CDG","Glasgow","GLA",1795,"Non","Non"
+"Paris Orly","CDG","Bastia/Poretta","BIA",1795,"Non","Non"
+"bastia","BIA","Paris","CDG",1795,"Non","Non"
+"Lyon","LYS","Birmingham","BHX",1797,"Non","Non"
+"Toulouse","TLS","Francfort","FRA",1798,"Non","Non"
+"gothenbourg","GOT","liege","LGG",1798,"Non","Non"
+"Clermont-Ferrand/Auvergne","CFE","Bremen","BRE",1808,"Non","Non"
+"Strasbourg","SXB","Biarritz/Anglet/Bayonne","BIQ",1809,"Non","Non"
+"Brussels","BRU","Gothenburg","GOT",1812,"Non","Non"
+"Brussels","BRU","Graz","GRZ",1821,"Non","Non"
+"Lyon","LYS","Vienna","VIE",1824,"Non","Non"
+"Lyon","LYS","Madrid","MAD",1826,"Non","Non"
+"Madrid","MAD","Lyon","LYS",1826,"Non","Non"
+"Toulouse","TLS","Cologne","CGN",1831,"Non","Non"
+"Strasbourg","SXB","Barcelona","BCN",1833,"Non","Non"
+"Montpellier","MPL","Tunis","TUN",1836,"Non","Non"
+"Lyon","LYS","Nápoli","NAP",1839,"Non","Non"
+"Mulhouse (avant train)","BSL","Tarente (train de Naples)","NAP",1840,"Non","Non"
+"Lyon","LYS","split","SPU",1841,"Non","Non"
+"Marseille","MRS","Brighton","ESH",1845,"Non","Non"
+"Geneva","GVA","valence","VLC",1846,"Non","Oui"
+"Bordeaux/Mérignac","BOD","Amsterdam","AMS",1849,"Non","Non"
+"ajaccio","AJA","Paris","CDG",1854,"Non","Non"
+"Paris","CDG","ajaccio","AJA",1854,"Non","Non"
+"Toulouse/Blagnac","TLS","London","LTN",1854,"Non","Non"
+"Split","SPU","Leipzig","LEJ",1858,"Non","Non"
+"Brest/Guipavas","BES","Marseille","MRS",1861,"Non","Non"
+"Marseille","MRS","Brest/Guipavas","BES",1861,"Non","Non"
+"Bâle/Mulhouse","BSL","Kraków","KRK",1877,"Non","Non"
+"Toulouse/Blagnac","TLS","Rome","CIA",1880,"Non","Non"
+"Paris","CDG","Ljubljana","LJU",1889,"Non","Non"
+"Marseille","MRS","Padderborn","PAD",1890,"Non","Non"
+"Lyon","LYS","Hamburg","HAM",1895,"Non","Non"
+"Bordeaux/Mérignac","BOD","Bologna","BLQ",1900,"Non","Non"
+"Lyon","LYS","Alicante","ALC",1901,"Non","Non"
+"Clermont-Ferrand/Auvergne","CFE","Graz","GRZ",1901,"Non","Non"
+"Bordeaux/Mérignac","BOD","Manchester","MAN",1912,"Non","Non"
+"Johannesbourg","JNB","Harare","HRE",1919,"Non","Non"
+"Toulouse/Blagnac","TLS","Munich","MUC",1922,"Non","Non"
+"Lyon","LYS","Berlin","SXF",1924,"Non","Non"
+"Bordeaux/Mérignac","BOD","Málaga","AGP",1924,"Non","Non"
+"Washington","DCA","Chicago","MDW",1931,"Non","Non"
+"Brussels","BRU","Bratislava","BTS",1934,"Non","Non"
+"Bordeaux/Mérignac","BOD","Lisbon","LIS",1938,"Non","Non"
+"Buenos Aires","EZE","Neuquén","NQN",1942,"Non","Non"
+"Montpellier/Méditerranée","MPL","Amsterdam","AMS",1948,"Non","Non"
+"Aarhus","AAR","Paris","CDG",1952,"Non","Non"
+"Paris","CDG","Aarhus","AAR",1952,"Non","Non"
+"Montpellier/Méditerranée","MPL","London","LTN",1957,"Non","Non"
+"Luxembourg","LUX","Barcelona","BCN",1962,"Non","Non"
+"Rennes","RNS","Innsbruck","INN",1967,"Non","Non"
+"Paris","CDG","Graz","GRZ",1970,"Non","Non"
+"graz","GRZ","Paris","CDG",1970,"Non","Non"
+"Nantes","NTE","Edimbourg","EDI",1973,"Non","Non"
+"Marseille","MRS","Amsterdam","AMS",1976,"Non","Non"
+"Toulouse/Blagnac","TLS","Nuremberg","NUE",1977,"Non","Non"
+"Nantes","NTE","Breme","BRE",1978,"Non","Non"
+"Nantes","NTE","Glasgow","GLA",1980,"Non","Non"
+"Lima","LIM","Tacna","TCQ",1991,"Non","Non"
+"Toulouse/Blagnac","TLS","Amsterdam","AMS",1997,"Non","Non"
+"Lyon","LYS","Manchester","MAN",2001,,
+"Rennes/Saint-Jacques","RNS","Munich","MUC",2004,,
+"Marseille","MRS","Oran","ORN",2007,,
+"Paris","CDG","Copenhagen","CPH",2010,,
+"Nantes","NTE","Munich","MUC",2020,,
+"Marseille","MRS","Pragues","PRG",2022,,
+"Geneva","GVA","Madrid","MAD",2022,,
+"Brest/Guipavas","BES","Toulon/Hyères/Le Palyvestre","TLN",2024,,
+"Pisa","PSA","Valence","VLC",2035,,
+"Lyon","LYS","Algiers","ALG",2035,,
+"Lyon","LYS","Liverpool","LPL",2042,,
+"Marseille","MRS","Vienna","VIE",2043,,
+"Marseille","MRS","London","LTN",2055,,
+"Brussels","BRU","Zagreb","ZAG",2060,,
+"Paris","CDG","brno","BRQ",2060,,
+"Toulouse/Blagnac","TLS","Lisbon","LIS",2061,,
+"Paris","CDG","Vienna","VIE",2073,,
+"Vienna","VIE","Paris","CDG",2073,,
+"gothenbourg","GOT","Munich","MUC",2074,,
+"Bordeaux/Mérignac","BOD","Dublin","DUB",2076,,
+"Brest/Guipavas","BES","Nice","NCE",2087,,
+"brest","BES","Milan","MXP",2088,,
+"Caen/Carpiquet","CFR","Venice","VCE",2094,,
+"Nice","NCE","Bremerhaven","BRE",2103,,
+"Montpellier","MPL","malaga","AGP",2104,,
+"Paris","CDG","Palma De Mallorca","PMI",2107,,
+"Lyxem","LUX","Varsovie","WMI",2114,,
+"Rennes/Saint-Jacques","RNS","Pisa","PSA",2115,,
+"Marseille","MRS","Goslar","HAJ",2115,,
+"Paris","CDG","madrif","MAD",2131,,
+"Marseille","MRS","Siracuse","CTA",2131,,
+"Montpellier/Méditerranée","MPL","Prague","PRG",2134,,
+"Beauvais/Tillé","BVA","Vienna","VIE",2138,,
+"Lyon","LYS","Palermo","PMO",2139,,
+"Montpellier/Méditerranée","MPL","Porto","OPO",2140,,
+"Toulouse/Blagnac","TLS","Ljubljana","LJU",2140,,
+"Lyon","LYS","bari","BRI",2144,,
+"Paris","CDG","Poznań","POZ",2146,,
+"rennes","RNS","ajaccio","AJA",2147,,
+"Nice","NCE","Londre","LTN",2150,,
+"Montpellier","MPL","Seville","SVQ",2157,,
+"Pau/Pyrénées (Uzein)","PUF","Rome","CIA",2160,,
+"Phnom Penh","PNH","Hanoi","HAN",2164,,
+"nancy","ETZ","Warsaw","WMI",2167,,
+"Barcelona","BCN","Brussels","BRU",2170,,
+"Bruxelles","BRU","Krakov","KRK",2171,,
+"Paris","CDG","Saint-Jacques de Compostelle (Espagne)","SCQ",2172,,
+"Paris","CDG","VALENCIA","VLC",2174,,
+"Nantes","NTE","Hamburg","HAM",2184,,
+"Strasbourg","SXB","Bari","BRI",2186,,
+"Frankfurt am Main","FRA","Barcelona","BCN",2190,,
+"Marseille","MRS","Lecce","BDS",2191,,
+"Montpellier/Méditerranée","MPL","Vienna","VIE",2197,,
+"geneve","GVA","Tunis","TUN",2199,,
+"Lyon","LYS","La Corogne","LCG",2201,,
+"Nápoli","NAP","Toulouse/Blagnac","TLS",2213,,
+"Santiago","SCL","Antofagasta (Chili)","ANF",2216,,
+"Lyon","LYS"," Dubrovnik","DBV",2218,,
+"Frankfurt am Main","FRA","Naples","NAP",2222,,
+"Ho-Chi-Minh-Ville/Saïgon","SGN","Haiphong","HPH",2227,,
+"Nantes","NTE","Lisbon","LIS",2229,,
+"Toulouse/Blagnac","TLS","Manchester","MAN",2230,,
+"Marseille","MRS","Málaga","AGP",2236,,
+"Paris","CDG","Rome","CIA",2242,,
+"Charleroi","BRU","Warsaw","WMI",2254,,
+"Bordeaux/Mérignac","BOD","Rome","CIA",2256,,
+"Lyon","LYS","Poznań","POZ",2266,,
+"Bâle","BSL","Lecce","BDS",2267,,
+"Fortaleza","FOR","Belém","BEL",2275,,
+"Santiago","SCL","Buenos Aires","EZE",2279,,
+"Brest/Guipavas","BES","Lisbon","LIS",2281,,
+"Bordeaux/Mérignac","BOD","Bremen","BRE",2294,,
+"avignon","AVN","porto","OPO",2301,,
+"Hangzhou","HGH","Beijing","PEK",2302,"Non","Oui"
+"Milan","MXP","Madrid","MAD",2302,,
+"Marseille","MRS","Séville","SVQ",2309,,
+"Paris","CDG","goteborg","GOT",2315,,
+"toulouse","TLS","gottingen","HAJ",2321,,
+"Poitiers","PIS","Lisbon","LIS",2322,,
+"Ho Chi Minh City","SGN","Hanoi","HAN",2323,,
+"Marseille","MRS","Porto","OPO",2336,,
+"Paris","CDG","Torun","BZG",2337,,
+"Marseille","MRS","Potsdam","SXF",2341,,
+"Lyon","LYS","Dublin, Irelande","DUB",2365,,
+"rennes","RNS","Berlin","SXF",2370,,
+"Brussels","BRU","Rome","CIA",2376,,
+"Bâle/Mulhouse","BSL","Madrid","MAD",2376,,
+"Lyon","LYS","Kraków","KRK",2394,,
+"Montreal","YUL","chicago","MDW",2399,,
+"Toulouse","TLS","Split","SPU",2405,,
+"Paris","CDG","Sardeigne","CAG",2407,,
+"Mascate","MCT","Koweit","KWI",2407,,
+"Lyon","LYS","Monastir","MIR",2415,,
+"Montpellier/Méditerranée","MPL","Berlin","SXF",2419,,
+"Nantes","NTE","Prague","PRG",2421,,
+"Marseille","MRS","Belgrade","BEG",2427,,
+"Toulouse","TLS","Prague","PRG",2430,,
+"geneve","GVA","Tirana","TIA",2431,,
+"Lyon","LYS","Porto","OPO",2432,,
+"Montpellier/Méditerranée","MPL","Lisbon","LIS",2437,,
+"Paris","CDG","Alicante","ALC",2440,,
+"Brest/Guipavas","BES","Calvi/Sainte-Catherine","CLY",2443,,
+"Lyon","LYS","Copenhagen","CPH",2445,,
+"Bâle/Mulhouse","BSL","Alicante","ALC",2453,,
+"Nantes","NTE","Berlin","SXF",2461,,
+"Paris","CDG","Porto","OPO",2465,,
+"Pise","PSA","Warsaw","WMI",2473,,
+"Nantes","NTE","Faro","FAO",2487,,
+"Paris","CDG","Kraków","KRK",2495,,
+"Paris","CDG","Budapest","BUD",2499,,
+"Bordeaux/Mérignac","BOD","Edinburgh","EDI",2504,,
+"Bordeaux/Mérignac","BOD","Glasgow","GLA",2514,,
+"Geneve","GVA","Varsovie","WMI",2515,,
+"Seoul","ICN","Tokyo ","NRT",2517,,
+"Tokyo","NRT","Seoul","ICN",2517,,
+"Strasbourg","SXB","Madrid","MAD",2521,,
+"Brest/Guipavas","BES","Bastia/Poretta","BIA",2530,,
+"Chengdu","CTU","LHASA","LXA",2530,,
+"Marseille","MRS","Leeds","LBA",2530,,
+"Montpellier/Méditerranée","MPL","Budapest","BUD",2531,,
+"Paris","CDG","Bergen","BGO",2534,,
+"Prague","PRG","Bordeaux","BOD",2535,,
+"bordeaux","BOD","prague","PRG",2535,,
+"toulouse","TLS","rabat","RBA",2552,,
+"rabat","RBA","toulouse","TLS",2552,,
+"Toulouse/Blagnac","TLS","Vienna","VIE",2554,,
+"Lyon","LYS","Shannon","SNN",2554,,
+"Bordeaux","BOD","Tunis","TUN",2555,,
+"Toulouse/Blagnac","TLS","Hamburg","HAM",2559,,
+"Edinburgh","EDI","Lyon","LYS",2564,,
+"Lyon","LYS","Edimbourg","EDI",2564,,
+"Marseille","MRS","Ouargla (ALG)","OGX",2565,,
+"fort-de-france","FDF","port-au-prince","PAP",2566,,
+"Lyon","LYS","Malaga","AGP",2572,,
+"Vienna","VIE","Stockholm","ARN",2576,,
+"Rennes/Saint-Jacques","RNS","Malagua","AGP",2577,,
+"Toulouse/Blagnac","TLS","Newcastle","NCL",2578,,
+"Stockholm","ARN","Brussels","BRU",2578,,
+"roissy","CDG","Nápoli","NAP",2582,,
+"Lyon","LYS","Séville","SVQ",2596,,
+"Geneva","GVA","Glasgow","GLA",2597,,
+"Nice","NCE","Liverpool","LPL",2611,,
+"Marseille","MRS","Lisbonne","LIS",2618,,
+"Lyon","LYS","Galway","GWY",2629,,
+"Tours","TUF","Oran","ORN",2638,,
+"Montpellier/Méditerranée","MPL","Fes (Maroc)","FEZ",2647,,
+"Rennes/Saint-Jacques","RNS","Rome","CIA",2649,,
+"Toulouse","TLS","Berlin","SXF",2653,,
+"Marseille","MRS","Faro","FAO",2654,,
+"Paris","CDG","Varsovie","WMI",2655,,
+"Marseille","MRS","Cracovie","KRK",2661,,
+"Lima","LIM","Quito","UIO",2662,,
+"Paris","CDG","Sarajevo","SJJ",2677,,
+"Bordeaux/Mérignac","BOD","Berlin","SXF",2679,,
+"Brussels","BRU","Nápoli","NAP",2693,,
+"Paris","CDG","Salerno","QSR",2696,,
+"Clermont-Ferrand/Auvergne","CFE","Catane","CTA",2706,,
+"Lyon","LYS","Warsaw","WMI",2711,,
+"Paris","CDG","Oslo","OSL",2717,,
+"Nantes","NTE","Copenhagen","CPH",2725,,
+"Nantes","NTE","Viennes","VIE",2730,,
+"Brest/Guipavas","BES","Prague","PRG",2731,,
+"Bordeaux/Mérignac","BOD","Palermo","PMO",2732,,
+"Paris","CDG","Algiers","ALG",2745,,
+"Zurich","ZRH","Bucharest","OTP",2780,,
+"Marseille","MRS","Dublin","DUB",2789,,
+"Nice","NCE","Warsaw","WMI",2790,,
+"Geneva","GVA","Séville","SVQ",2791,,
+"Lyon","LYS","Lisbon","LIS",2801,,
+"Barcelona","BCN","Bremen","BRE",2803,,
+"Bordeaux/Mérignac","BOD","Casablanca ","CMN",2812,,
+"Montpellier","MPL","Rabat","RBA",2815,,
+"Venice","VCE","Madrid","MAD",2817,,
+"Mexico City","MEX","Obregon","CEN",2821,,
+"Paris","CDG","grenade","GRX",2824,,
+"Paris","CDG","Dubrovnik","DBV",2824,,
+"Paris","CDG","Bari","BRI",2832,,
+"Rennes/Saint-Jacques","RNS","Gothenburg","GOT",2837,,
+"Paris","CDG","Annaba","AAE",2845,,
+"Toulouse/Blagnac","TLS","Glasgow","GLA",2848,,
+"Paris","CDG","Belgrade","BEG",2850,,
+"Stockholm","ARN","Londres","LTN",2856,,
+"Lyon","LYS","Tanger","TNG",2892,,
+"Lyon","LYS","Faro","FAO",2911,,
+"Copenhagen","CPH","Marseille","MRS",2913,,
+"Marseille","MRS","Copenhagen","CPH",2913,,
+"Seville","SVQ","Paris","CDG",2918,,
+"Paris","CDG","Séville","SVQ",2918,,
+"Beauvais/Tillé","BVA","Belgrade","BEG",2934,,
+"Paris","CDG","Lisbon","LIS",2943,,
+"Lisbon","LIS","Paris","CDG",2943,,
+"Paris","CDG","Palermo","PMO",2945,,
+"Montpellier/Méditerranée","MPL","Copenhagen","CPH",2955,,
+"Bordeaux/Mérignac","BOD","Bari","BRI",2956,,
+"Marseille","MRS","Sofia","SOF",2957,,
+"Paris","CDG","Malaga","AGP",2975,,
+"Paris","CDG","Tunis","TUN",2979,,
+"Geneva","GVA","Lisbon","LIS",2995,,
+"Marseille","MRS","Belfast","BFS",2996,,
+"Montpellier ","MPL","Casablanca","CMN",3031,,
+"Brest","BES","Rome","CIA",3046,,
+"Paris","CDG","Brindisi","BDS",3051,,
+"Paris","CDG","Stockholm","ARN",3082,,
+"Stockholm","ARN","Paris","CDG",3082,,
+"Nice ","NCE","Athenes","ATH",3087,,
+"Marseille","MRS","Glasgow","GLA",3091,,
+"Brest/Guipavas","BES","Vienne (Autriche)","VIE",3101,,
+"Algiers","ALG","Tamanrasset","TMR",3120,,
+"Bordeaux/Mérignac","BOD","Budapest","BUD",3127,,
+"Paris","CDG","Lamezia","SUF",3134,,
+"TOULOUSE","TLS","MARRAKECH","RAK",3144,,
+"Montpellier/Méditerranée","MPL","Aberdeen","ABZ",3154,,
+"Marseille","MRS","Casablanca","CMN",3159,,
+"Montpellier/Méditerranée","MPL","Sofia (Bulgarie)","SOF",3159,,
+"Montpellier","MPL","Varsovie","WMI",3162,,
+"Rennes/Saint-Jacques","RNS","Oslo","OSL",3164,,
+"Lyon","LYS","Linköping","LPI",3165,,
+"Paris","CDG","Faro","FAO",3166,,
+"Orly","CDG","Tirana","TIA",3169,,
+"Rennes/Saint-Jacques","RNS","Tunis","TUN",3170,,
+"Paris","CDG","cluj-Napoca","CLJ",3183,,
+"Paris","CDG","tlemcen","TLM",3184,,
+"Brussels","BRU","Tallinn","TLL",3187,,
+"Tallinn","TLL","Brussels","BRU",3187,,
+"bordeaux","BOD","marrakech","RAK",3207,,
+"London","LTN","Lisbon","LIS",3216,,
+"Brest/Guipavas","BES","Rabat","RBA",3228,,
+"Paris","CDG","Monastir","MIR",3240,,
+"cayenne","CAY","Pointe à pitre","PTP",3242,,
+"Paris","CDG","Tanger","TNG",3265,,
+"Paris","CDG","Catania","CTA",3267,,
+"Lyon","LYS","rabat","RBA",3285,,
+"Rabat","RBA","Lyon","LYS",3285,,
+"Bordeaux/Mérignac","BOD","Kraków","KRK",3287,,
+"Lyon","LYS","Bucharest","OTP",3299,,
+"Bordeaux/Mérignac","BOD","Belgrade","BEG",3311,,
+"Marseille","MRS","goteborg","GOT",3316,,
+"Lyon","LYS","Oslo","OSL",3317,,
+"Nantes","NTE","Oslo","OSL",3340,,
+"Marseille","MRS","roumanie","OTP",3341,,
+"Paris","CDG","Riga","RIX",3348,,
+"Paris","CDG","Vilnius","VNO",3351,,
+"Luxem","LUX","Helsinki","HEL",3356,,
+"Geneva","GVA","Stockholm","ARN",3369,,
+"Bordeaux/Mérignac","BOD","Gothenburg","GOT",3370,,
+"Paris","CDG","Trondheim","TRD",3372,,
+"Montpellier/Méditerranée","MPL","Marrakech (MAR)","RAK",3396,,
+"Strasbourg","SXB","Helsinki","HEL",3431,,
+"São Paulo","GRU","Buenos Aires","EZE",3448,,
+"Strasbourg","SXB","lisbone","LIS",3452,,
+"Bordeaux/Mérignac","BOD","Gdansk","GDN",3471,,
+"Toulouse","TLS","Göteborg","GOT",3474,,
+"geneve","GVA","rabat","RBA",3477,,
+"Bastia/Poretta","BIA","Edimbourg","EDI",3507,,
+"Paris","CDG","Sofia","SOF",3512,,
+"Marseille","MRS","marrakech","RAK",3515,,
+"Paris","CDG","Malte","MLA",3515,,
+"Paris","CDG","Suceava","SCV",3520,,
+"Brest/Guipavas","BES","Budapest","BUD",3525,,
+"New Delhi","DEL","Chennai","MAA",3526,,
+"Montpellier/Méditerranée","MPL","Bucharest","OTP",3535,,
+"Lyon","LYS","Stockholm","ARN",3538,,
+"Amsterdam","AMS","St. Petersburg","LED",3551,,
+"Bordeaux/Mérignac","BOD","Warsaw","WMI",3553,,
+"Athens","ATH","Lyon","LYS",3565,,
+"Paris","CDG","Turku","TKU",3574,,
+"Francfort (avant bus)","FRA","Athènes","ATH",3635,,
+"Marseille","MRS","Mykonos","JMK",3652,,
+"Paris","CDG","Rabat","RBA",3667,,
+"Paris","CDG","Tallinn","TLL",3681,,
+"paris CDG","CDG","Bucharest","OTP",3704,,
+"Nice","NCE","Oslo","OSL",3718,,
+"Paris","CDG","Thessaloniki","SKG",3724,,
+"London","LTN","Reykjavík","KEF",3728,,
+"Marseille","MRS","Bergen","BGO",3752,,
+"Nantes","NTE","Stockholm","ARN",3775,,
+"Nice","NCE","Marrakech","RAK",3787,,
+"Paris","CDG","Helsinki","HEL",3795,,
+"Albuquerque","ABQ","Seatle","BFI",3810,,
+"barcelone","BCN","athène","ATH",3813,,
+"Venice","VCE","Lisbon","LIS",3835,,
+"Marseille","MRS","Heraklion","HER",3865,,
+"Paris","CDG","Casablanca","CMN",3867,,
+"Brasília","BSB","Manaus","MAO",3902,,
+"Rio De Janeiro","GIG","Joao Pessoa","JPA",3915,,
+"Marseille","MRS","Istanbul","ISL",3916,,
+"Grenoble","GNB","Istanbul","ISL",3921,,
+"Nantes","NTE","Trondheim ","TRD",3946,,
+"Cairns","CNS","Sydney","SYD",3950,,
+"Nouméa","GEA","Sydney","SYD",3965,,
+"Clermont-Ferrand/Auvergne","CFE","Minsk","MSQ",3971,,
+"Genève","GVA","Helsinki","HEL",3986,,
+"Lyon","LYS","Turku","TKU",3987,,
+"Toulouse/Blagnac","TLS","Athens","ATH",3997,,
+"Lyon","LYS","Trondheim","TRD",4015,,
+"Montpellier/Méditerranée","MPL","Stockholm","ARN",4047,,
+"Hobart","HBA","Christchurch","CHC",4051,,
+"Marseille","MRS","Minsk","MSQ",4052,,
+"Geneva","GVA","Marrakech","RAK",4063,,
+"Montpellier/Méditerranée","MPL","Heraklion","HER",4066,,
+"Paris","CDG","Varna (Bulgarie)","VAR",4085,,
+"Brest/Guipavas","BES","Reykjavík","KEF",4095,,
+"Paris","CDG","Jyvaskyla","JYV",4115,,
+"Calgary","YYC","San Diego","SAN",4125,,
+"Copenhagen","CPH","Madrid","MAD",4125,,
+"Bordeaux/Mérignac","BOD","Stockholm","ARN",4134,,
+"Lyon","LYS","Helsinki","HEL",4166,,
+"Niamey","NIM","Dakar","DSS",4166,,
+"Mascate","MCT","Djibouti","JIB",4177,,
+"Brussels","BRU","Athens","ATH",4208,,
+"Toulouse/Blagnac","TLS","Stockholm","ARN",4212,,
+"Paris","CDG","Athens","ATH",4222,,
+"Athens","ATH","Paris","CDG",4222,,
+"Bordeaux","BOD","Bucharest","OTP",4222,,
+"Nice","NCE","Tallin","TLL",4244,,
+"Paris","CDG","Marrakech","RAK",4262,,
+"Paris","CDG","St Petersbourg-Moscou","LED",4271,,
+"Lyon","LYS","Rhodes","RHO",4362,,
+"Luxembourg","LUX","Rovaniemi","RVN",4380,,
+"Rennes/Saint-Jacques","RNS","Iasi","IAS",4383,,
+"Montpellier/Méditerranée","MPL","Rhodes","RHO",4394,,
+"Toronto","YYZ","Saskatoon","YXE",4425,,
+"Paris","CDG","Istanbul","ISL",4476,,
+"Paris","CDG","Mykonos","JMK",4480,,
+"Montpellier/Méditerranée","MPL","Trondheim","TRD",4515,,
+"Lyon","LYS","St. Petersburg","LED",4566,,
+"Bordeaux/Mérignac","BOD","Gran Canaria Island","LPA",4574,,
+"Marseille","MRS","Helsinki","HEL",4596,,
+"Lisbon","LIS","Vienna","VIE",4615,,
+"bordeaux","BOD","turku","TKU",4622,,
+"Paris","CDG","Chania","CHQ",4626,,
+"Melbourne","MEL","Cairns (Australie)","CNS",4632,,
+"Barcelona","BCN","Uppsala","ARN",4635,,
+"Nantes","NTE","Athens","ATH",4638,,
+"Lyon","LYS","Ankara","ESB",4691,,
+"Toulouse/Blagnac","TLS","Ponta Delgada","PDL",4729,,
+"Athens","ATH","Madrid","MAD",4760,,
+"Paris","CDG","héraklion","HER",4785,,
+"Bordeaux/Mérignac","BOD","Helsinki","HEL",4836,,
+"Paris","CDG","Kittala","KTT",4847,,
+"Toulouse/Blagnac","TLS","Helsinki","HEL",4873,,
+"Metz / Nancy","ETZ","Agadir","AGA",4924,,
+"Paris","CDG","Tromsø","TOS",4925,,
+"Lima","LIM","Santiago","SCL",4929,,
+"belem","BEL","sao paulo","GRU",4930,,
+"Montpellier/Méditerranée","MPL","Umea","UME",4955,,
+"Paris","CDG","rhodes","RHO",4995,,
+"Paris","CDG","Moscow","ZIA",5000,,
+"Beijing","PEK","Sanya","SYX",5040,,
+"Marseille","MRS","Las Palmas","LPA",5054,,
+"Montpellier","MPL","St. Petersbourg","LED",5057,,
+"Lyon","LYS","Moscow","ZIA",5093,,
+"Marseille","MRS","Anapa (Russie)","AAQ",5104,,
+"Toulouse/Blagnac","TLS","La Horta ","HOR",5145,,
+"Nantes","NTE","Heraklion","HER",5161,,
+"Paris","CDG","Ankara","ESB",5174,,
+"Stockholm","ARN","Madrid","MAD",5209,,
+"São Paulo","GRU","Santiago","SCL",5234,,
+"Geneva","GVA","Reykjavík","KEF",5294,,
+"Clermont-Ferrand/Auvergne","CFE","Moscow","ZIA",5321,,
+"Lyon","LYS","Chypre","ECN",5321,,
+"Lyon","LYS","Larnarca","LCA",5376,,
+"Calgary","YYC","Toronto","YYZ",5384,,
+"Lyon ","LYS","Tenerife","TFS",5475,,
+"Paris","CDG","Horta","HOR",5492,,
+"Montpellier/Méditerranée","MPL","Moscow","ZIA",5532,,
+"Seattle","BFI","Chicago","MDW",5570,,
+"Geneva","GVA","Beirut","BEY",5674,,
+"Paris","CDG","Tenerife Island","TFS",5699,,
+"Paris","CDG","Kayseri","ASR",5700,,
+"Marseille","MRS","Tel Aviv","TLV",5769,,
+"Bâle/Mulhouse","BSL","Tel Aviv","TLV",5774,,
+"Lyon","LYS","Beirut","BEY",5791,,
+"Paris","CDG","Paphos","PFO",5837,,
+"Toulouse","TLS","Moscow","ZIA",5844,,
+"Toulouse","TLS","Larnaka (Chypre)","LCA",5850,,
+"Franckfort","FRA","Le Caire","CAI",5850,,
+"Strasbourg","SXB","Telaviv","TLV",5860,,
+"Nice","NCE","Reykjavík","KEF",5878,,
+"Francfort","FRA","Tel Aviv","TLV",5913,,
+"graz","GRZ","Reykjavik","RKV",5913,,
+"Tokyo","NRT","Hong Kong","HKG",5931,,
+"Paris ","CDG","Larnaca (chypre)","LCA",5969,,
+"Stockholm","ARN","Larnaca","LCA",5970,,
+"Montpellier/Méditerranée","MPL","Tel Aviv","TLV",5973,,
+"Marseille","MRS","Diyarbekir","DIY",5989,,
+"Stockholm","ARN","Lisbon","LIS",6003,,
+"Montreal","YUL","Calgary","YYC",6018,,
+"Boston","BOS","Aspen","ASE",6040,,
+"Washington","DCA","Mexico City","MEX",6054,,
+"Tokyo","NRT","Manila","MNL",6108,,
+"Johannesburg","JNB","Maurice","MRU",6139,,
+"Lyon","LYS","Ahman (Jordanie)","AMM",6152,,
+"Barcelona","BCN","Tel Aviv","TLV",6170,,
+"Toulouse/Blagnac","TLS","Beirut","BEY",6264,,
+"Montpellier","MPL","Sohag (Égypte)","HMB",6306,,
+"Beirut","BEY","Paris","CDG",6381,,
+"Paris","CDG","Beirut","BEY",6381,,
+"Paris","CDG","le caire","CAI",6428,,
+"Calgary","YYC","Philadelphia","PHL",6457,,
+"Marseille","MRS","Tbilisi","TBS",6466,,
+"Nice","NCE","Kazan","KZN",6497,,
+"Paris","CDG","Narsarsuaq","UAK",6498,,
+"Paris","CDG","Tel aviv","TLV",6576,,
+"Niamey","NIM","Marseille","MRS",6695,,
+"Frankfurt am Main","FRA","Baku","GYD",6742,,
+"Paris","CDG","Amman","AMM",6770,,
+"Brest","BES","Ilulissat","JAV",6802,,
+"Franckfort","FRA","Luxor","LXR",6823,,
+"Paris","CDG","Yerevan","EVN",6827,,
+"Strasbourg","SXB","Baku","GYD",6875,,
+"montpellier","MPL","Ouagadougou","OUA",7031,,
+"Lyon","LYS","Souleymaniyeh","ISU",7079,,
+"geneve","GVA","baku","GYD",7134,,
+"Paris","CDG","Ufa","UFA",7265,,
+"Lyon","LYS","longyearbyen","LYR",7295,,
+"Washington","DCA","Los Angeles","LAX",7430,,
+"Santiago","SCL","Ile de paques","IPC",7513,,
+"Paris","CDG","Suleymaniyeh","ISU",7532,,
+"Montpellier/Méditerranée","MPL","Baku","GYD",7556,,
+"Montpellier","MPL","Dakar","DSS",7577,,
+"Marseille","MRS","Dakar","DSS",7683,,
+"Kazan","KZN","Jeddah","JED",7738,,
+"Brest","BES","Cap vert","SID",7822,,
+"Brest/Guipavas","BES","Dakar","DSS",7871,,
+"Marseille","MRS","Teheran","IKA",7993,,
+"Lyon","LYS","Téhéran","IKA",8002,,
+"Lyon","LYS","Dakar","DSS",8063,,
+"Paris","CDG","saint louis","XLS",8109,,
+"Montréal","YUL","San Franscisco","SFO",8161,,
+"San Francisco","SFO","Montreal (Canada)","YUL",8161,,
+"Paris","CDG","Ouagadougou","OUA",8196,,
+"Rennes/Saint-Jacques","RNS","Baku","GYD",8265,,
+"Mars","MRS","Cotonou","COO",8275,,
+"Montpellier/Méditerranée","MPL","Cotonou ","COO",8292,,
+"Kuwait City","KWI","Lyon","LYS",8294,,
+"Montpellier/Méditerranée","MPL","Conakry","CKY",8300,,
+"Montpellier/Méditerranée","MPL","Lomé","LFW",8346,,
+"Paris","CDG","Bamako","BKO",8349,,
+"Boston","BOS","Los Angeles","LAX",8395,,
+"Paris","CDG","Teheran","IKA",8400,,
+"Lyon","LYS","Karthoum","KRT",8440,,
+"Paris","CDG","Dakar","DSS",8443,,
+"Dakar","DSS","Paris","CDG",8443,,
+"Accra","ACC","Montpellier","MPL",8493,,
+"Lima","LIM","Mexico","MEX",8499,,
+"Berlin","SXF","Tashkent","TAS",8614,,
+"Montpellier/Méditerranée","MPL","Abidjan","ABJ",8670,,
+"Bordeaux/Mérignac","BOD","Yekaterinburg","SVX",8726,,
+"Lyon","LYS","cotonou","COO",8780,,
+"Kuwait City","KWI","Paris","CDG",8820,,
+"Niamey","NIM","Djibouti","JIB",8907,,
+"Berlin","SXF","Dushanbe","DYU",8920,,
+"Lyon","LYS","Shiraz, Iran","SYZ",8961,,
+"Paris","CDG","Khartoum","KRT",9220,,
+"Paris","CDG","Conakry","CKY",9281,,
+"Paris","CDG","Riyad","RUH",9312,,
+"Nantes","NTE","abidjan","ABJ",9337,,
+"Kuwait City","KWI","London","LTN",9368,,
+"Paris","CDG","Lagos","LOS",9449,,
+"Paris","CDG","Cotonou","COO",9497,,
+"rennes","RNS","abidjan","ABJ",9540,,
+"Paris","CDG","Lomé","LFW",9543,,
+"Paris","CDG","Abidjan","ABJ",9817,,
+"Paris","CDG","Douala","DLA",10112,,
+"Lyon","LYS","Libreville","LBV",10114,,
+"Paris","CDG","Farasan","GIZ",10147,,
+"Mascate","MCT","Stockholm","ARN",10179,,
+"Paris","CDG","Yaounde","YAO",10201,,
+"Montpellier/Méditerranée","MPL","Franceville","MVB",10247,,
+"Londre","LTN","Boston","BOS",10476,,
+"Paris","CDG","Dubai","DXB",10489,,
+"Paris","CDG","abu d'abi","AUH",10515,,
+"Roissy","CDG","Dushanbé","DYU",10555,,
+"Rennes/Saint-Jacques","RNS","Montréal","YUL",10583,,
+"Marseille","MRS","Mascate (Oman)","MCT",10584,,
+"Bordeaux/Mérignac","BOD","Quebec (Canada)","YQB",10594,,
+"Dakar","DSS","Sao Vicente","GRU",10628,,
+"Nantes","NTE","Boston","BOS",10657,,
+"Nantes","NTE","Montréal","YUL",10689,,
+"Montpellier/Méditerranée","MPL","mascate (Oman)","MCT",10790,,
+"Paris","CDG","Libreville","LBV",10890,,
+"Mascate ","MCT","Brussels","BRU",10979,,
+"Bordeaux/Mérignac","BOD","Boston","BOS",10981,,
+"Bordeaux/Mérignac","BOD","addis abeba ","ADD",11004,,
+"Bordeaux","BOD","Montréal","YUL",11049,,
+"Paris","CDG","Montréal","YUL",11059,,
+"Montréal","YUL","Paris","CDG",11059,,
+"Paris","CDG","Boston","BOS",11081,,
+"Boston","BOS","Paris","CDG",11081,,
+"Montréal","YUL","Aalborg","AAL",11161,,
+"Mascate","MCT","Paris","CDG",11169,,
+"Paris","CDG","Mascate","MCT",11169,,
+"Paris","CDG","Addis Ababa","ADD",11174,,
+"Brussels","BRU","Boston","BOS",11183,,
+"Boston","BOS","Bruxelles","BRU",11183,,
+"Lyon","LYS","QUEBEC","YQB",11283,,
+"Strasbourg","SXB","Qébec","YQB",11302,,
+"Lyon","LYS","brazzaville","BZV",11308,,
+"toulouse","TLS","Boston","BOS",11394,,
+"Brest/Guipavas","BES","Washington","DCA",11446,,
+"Toulouse/Blagnac","TLS","Montréal","YUL",11468,,
+"Paris","CDG","Yale","HVN",11477,,
+"Marseille","MRS","Québec","YQB",11568,,
+"Paris","CDG","New York","JFK",11680,,
+"New York","JFK","Paris","CDG",11680,,
+"Lyon","LYS","Boston","BOS",11725,,
+"Paris","CDG","Newark","EWR",11726,,
+"Lyon","LYS","Montréal","YUL",11744,,
+"Montréal ","YUL","Lyon","LYS",11744,,
+"Montpellier","MPL","Montreal","YUL",11835,,
+"Barcelona","BCN","Montréal","YUL",11836,,
+"Bâle/Mulhouse","BSL","Boston","BOS",11883,,
+"Marseille","MRS","Boston","BOS",11971,,
+"Philadelphia","PHL","Paris","CDG",11982,,
+"Boston","BOS","Stockholm","ARN",12011,,
+"Marseille","MRS","Montréal","YUL",12024,,
+"Paris","CDG","Toronto","YYZ",12053,,
+"Paris ","CDG","Brazzaville","BZV",12112,,
+"Brest","BES","Mascate","MCT",12172,,
+"Paris","CDG","Baltimore","BWI",12270,,
+"Nice","NCE","Montréal","YUL",12271,,
+"Lyon","LYS","New York","JFK",12321,,
+"Paris","CDG","Washington","DCA",12365,,
+"Washington","DCA","Paris","CDG",12365,,
+"Montpellier/Méditerranée","MPL","New York","JFK",12368,,
+"Geneva","GVA","New York","JFK",12416,,
+"Luxembourg","LUX","Philadelphie","PHL",12420,,
+"brest","BES","chicago","MDW",12516,,
+"Paris","CDG","Norfolk","ORF",12525,,
+"Cayenne","CAY","Madrid","MAD",12550,,
+"New York","JFK","Marseille","MRS",12564,,
+"Paris","CDG","Pittsburgh","PIT",12566,,
+"lyon ","LYS","Philadelphie","PHL",12623,,
+"Toulouse","TLS","Washington D.C.","DCA",12667,,
+"Lyon","LYS","Toronto","YYZ",12746,,
+"Strasbourg","SXB","Toronto","YYZ",12754,,
+"Nice","NCE","New York","JFK",12828,,
+"Rennes/Saint-Jacques","RNS","Florence","FLO",12866,,
+"Lyon","LYS","Baltimore, USA","BWI",12912,,
+"Paris","CDG","Columbus","CMH",12985,,
+"Paris","CDG","Nairobi","NBO",13005,,
+"Lyon","LYS","Washington","DCA",13006,,
+"Marseille","MRS","Toronto","YYZ",13032,,
+"Montpellier/Méditerranée","MPL","Washington","DCA",13052,,
+"Paris","CDG","New Delhi","DEL",13145,,
+"Rennes/Saint-Jacques","RNS","Minneapolis","MSP",13171,,
+"Paris","CDG","South Bend","SBN",13182,,
+"Bordeaux/Mérignac","BOD","Florence","FLO",13241,,
+"Marseille","MRS","Washington","DCA",13248,,
+"Paris","CDG","Chicago","MDW",13352,,
+"Toulouse","TLS","Blacksburg (USA)","BCB",13362,,
+"frankfort","FRA","Detroit","DTW",13374,,
+"toulouse","TLS","fort-de-france","FDF",13377,,
+"Bordeaux/Mérignac","BOD","Cayenne ","CAY",13391,,
+"Cayenne","CAY","Bordeaux","BOD",13391,,
+"Paris","CDG","florence","FLO",13401,,
+"Paris","CDG","Indianapolis","IND",13468,,
+"Paris","CDG","point a pitre","PTP",13554,,
+"Paris","CDG","Minneapolis","MSP",13565,,
+"Lyon","LYS","toledo","TOL",13573,,
+"Amsterdam","AMS","Louisville","SDF",13580,,
+"Toulouse ","TLS","Cayenne","CAY",13582,,
+"Rennes/Saint-Jacques","RNS","Atlanta","ATL",13610,,
+"Paris","CDG","Louisville","SDF",13622,,
+"Toulouse/Blagnac","TLS","Florence","FLO",13645,,
+"Marseille","MRS","Fortaleza","FOR",13679,,
+"Lyon","LYS","lucknow","LKO",13721,,
+"Brussels","BRU","Columbia US","CAE",13747,,
+"Fort-de-France","FDF","Paris","CDG",13755,,
+"Paris","CDG","Fort De France","FDF",13755,,
+"Nice","NCE","Pittsburgh","PIT",13756,,
+"Toulouse","TLS","chicago","MDW",13823,,
+"Paris","CDG","Burlington","BRL",13922,,
+"Brest/Guipavas","BES","Recife","REC",13941,,
+"Montpellier/Méditerranée","MPL","Cayenne","CAY",13966,,
+"Cayenne","CAY","Montpellier","MPL",13966,,
+"Lyon","LYS","Fortaleza (Brésil)","FOR",13981,,
+"Paris","CDG","bombay","BOM",14003,,
+"Lyon","LYS","Fort de France","FDF",14023,,
+"Cuba","HAV","Montevideo","MVD",14029,,
+"Montpellier/Méditerranée","MPL","San Juan","SJU",14033,,
+"Clermont-ferrand","CFE","cayenne","CAY",14033,,
+"toulouse","TLS","port-of-spain","POS",14038,,
+"Lyon","LYS","Chicago","MDW",14064,,
+"Clermont-Ferrand/Auvergne","CFE","Minneapolis","MSP",14072,,
+"Bordeaux/Mérignac","BOD","Daytona Beach","DAB",14118,,
+"Geneve","GVA","Florence","FLO",14121,,
+"Paris","CDG","Atlanta","ATL",14127,,
+"Strasbourg","SXB","Florence","FLO",14135,,
+"Cayenne","CAY","Marseille","MRS",14145,,
+"Paris","CDG","pokhara","PKR",14185,,
+"Bale/Mulhouse","BSL","Florence","FLO",14203,,
+"Lyon","LYS","San Juan","SJU",14209,,
+"cayenne","CAY","Paris","CDG",14238,,
+"Paris","CDG","pune,inde","PNQ",14238,,
+"Paris","CDG","Cayenne","CAY",14238,,
+"Paris","CDG","Natal","NAT",14242,,
+"Bordeaux/Mérignac","BOD","Orlando","MCO",14260,,
+"Tokyo","NRT","Brisbane","BNE",14311,,
+"Paris","CDG","Dar es Salaam","DAR",14339,,
+"Paris","CDG","Kathmandu","KTM",14459,,
+"Paris","CDG","Orlando","MCO",14493,,
+"Bâle/Mulhouse","BSL","Natal","NAT",14546,,
+"Nice","NCE","San Juan, PR","SJU",14557,,
+"Nice","NCE","Chicago","MDW",14602,,
+"Bordeaux","BOD","Oxford","UOX",14646,,
+"Toulouse","TLS","Orlando","MCO",14653,,
+"Paris","CDG","recife","REC",14668,,
+"Paris","CDG","Fort Lauderdale","FLL",14696,,
+"Calgary","YYC","Paris","CDG",14741,,
+"Paris","CDG","Port-au-Prince","PAP",14745,,
+"Paris","CDG","Belém (Brésil)","BEL",14868,,
+"Bâle/Mulhouse","BSL","Bengalore","BLR",14910,,
+"Montpellier","MPL","Windoehk","WDH",14964,,
+"Paris","CDG","lhassa","LXA",14986,,
+"Toulouse/Blagnac","TLS","Harare","HRE",14988,,
+"Montpellier/Méditerranée","MPL","Port au Prince","PAP",15027,,
+"Paris","CDG","Wichita","ICT",15188,,
+"Strasbourg","SXB","Orlando","MCO",15236,,
+"Strasbourg","SXB","Oxford","UOX",15407,,
+"Christchurch","CHC","Antarctique","PUQ",15421,,
+"Montpellier/Méditerranée","MPL","Edmonton (Canada)","YEG",15441,,
+"Paris","CDG","New Orleans","MSY",15483,,
+"Paris","CDG","Cuba","HAV",15505,,
+"Nice","NCE","Port-au-Prince","PAP",15546,,
+"Cayenne","CAY","Hamburg","HAM",15587,,
+"Paris","CDG","Spokane","GEG",15666,,
+"Paris","CDG","Bangalore","BLR",15667,,
+"Brussels","BRU","Vancouver","YVR",15672,,
+"Amsterdam","AMS","Beijing","PEK",15672,,
+"Sydney","SYD","Tokyo","NRT",15682,,
+"Paris","CDG","denver USA","DEN",15683,,
+"Paris","CDG","calcutta","CCU",15693,,
+"Paris","CDG","Mahe Island","SEZ",15718,,
+"Paris","CDG","vancouvert","YVR",15868,,
+"graz","GRZ","cayenne","CAY",15906,,
+"Paris","CDG","Madras","MAA",16061,,
+"Seattle","BFI","Paris","CDG",16101,,
+"Paris","CDG","Seattle","BFI",16101,,
+"Paris","CDG","Pamandzi","DZA",16117,,
+"Paris","CDG","Houston","HOU",16208,,
+"Geneve","GVA","New Orleans","MSY",16223,,
+"Rennes/Saint-Jacques","RNS","Portland","PDX",16264,,
+"Bordeaux/Mérignac","BOD","Vancouver","YVR",16353,,
+"Paris","CDG","Beijing","PEK",16396,,
+"Toulouse","TLS","Thiruvananthapuram","TRV",16413,,
+"Paris","CDG","Austin","AUS",16430,,
+"Lyon","LYS","Denvers","DEN",16447,,
+"Paris","CDG","Cancún","CUN",16456,,
+"Paris","CDG","Xi'an","XIY",16470,,
+"Toulouse/Blagnac","TLS","Johannesbourg","JNB",16476,,
+"Paris","CDG","Portland","PDX",16484,,
+"Paris","CDG","Chengdu","CTU",16518,,
+"Clermont-Ferrand/Auvergne","CFE","Vancouver","YVR",16518,,
+"Lyon","LYS","XIAN","XIY",16564,,
+"Lyon","LYS","Beijing","PEK",16613,,
+"Paris","CDG","San Antonio","SAT",16643,,
+"BOGOTA ","BOG","RENNES","RNS",16653,,
+"Lyon","LYS","Vancouver","YVR",16690,,
+"RENNES","RNS","PANAMA","BLB",16761,,
+"Marseille","MRS","Denver","DEN",16801,,
+"Lyon","LYS","Houston","HOU",16879,,
+"Toulouse","TLS","Victoria","YYJ",16879,,
+"Lyon","LYS","Seattle","BFI",16920,,
+"Seatle","BFI","Lyon","LYS",16920,,
+"Montpellier/Méditerranée","MPL","Brasília","BSB",16924,,
+"Rennes","RNS","Brasilia","BSB",16925,,
+"Toulouse/Blagnac","TLS","Bogota","BOG",16985,,
+"Rennes/Saint-Jacques","RNS","Beijing","PEK",16992,,
+"Toulouse","TLS","Mérida (Mexique","MID",17018,,
+"TOULOUSE","TLS","Salt Lake City","SLC",17030,,
+"Marseille","MRS","Brasília","BSB",17065,,
+"Montpellier","MPL","Beijing","PEK",17069,,
+"Lyon","LYS","Salt Lake City","SLC",17112,,
+"Nantes","NTE","Beijing","PEK",17127,,
+"Marseille","MRS","Houston","HOU",17141,,
+"San frncico","SFO","Londres","LTN",17195,,
+"bordeaux","BOD","Antananarivo","TNR",17203,,
+"Montpellier","MPL","Seattle","BFI",17220,,
+"Toulouse/Blagnac","TLS","Chengdu","CTU",17270,,
+"Lyon","LYS","Portland","PDX",17301,,
+"Paris","CDG","Bogotá","BOG",17309,,
+"Marseille","MRS","Seattle","BFI",17357,,
+"Toulouse/Blagnac","TLS","Beijing","PEK",17361,,
+"Toulouse/Blagnac","TLS","Rio De Janeiro","GIG",17372,,
+"Marseille","MRS","Austin","AUS",17393,,
+"Paris","CDG","Panama","BLB",17398,,
+"Montpellier","MPL","Bogota","BOG",17400,,
+"Marseille","MRS","Cape Town ","CPT",17446,,
+"Lyon","LYS","Albuquerque","ABQ",17471,,
+"Paris","CDG","Las Vegas","LAS",17493,,
+"Paris","CDG","Johanesbourg","JNB",17495,,
+"Johannesburg","JNB","Paris","CDG",17495,,
+"Paris","CDG","Antananarivo","TNR",17516,,
+"Paris","CDG","Brasilia","BSB",17532,,
+"Amsterdam","AMS","San Francisco","SFO",17591,,
+"Paris","CDG","Phoenix","PHX",17620,,
+"Montpellier/Méditerranée","MPL","Rio De Janeiro","GIG",17646,,
+"Paris","CDG","Tucson, Etats-Unis","TUS",17730,,
+"Paris","CDG","Wuhan","WUH",17750,,
+"MONTPELLIER","MPL","SAINT DENIS","RUN",17792,,
+"RUN","RUN","MPL","MPL",17792,,
+"Bordeaux","BOD","Sao Paulo","GRU",17811,,
+"Strasbourg","SXB","la Laguna","GJA",17819,,
+"Rennes","RNS","Rio De Janeiro","GIG",17822,,
+"Nantes","NTE","San Francisco","SFO",17832,,
+"Toulouse/Blagnac","TLS","Sao paolo","GRU",17841,,
+"Paris ","CDG","Seoul","ICN",17873,,
+"Seoul","ICN","Paris","CDG",17873,,
+"Paris","CDG","San Francisco","SFO",17945,,
+"San Francisco","SFO","Paris","CDG",17945,,
+"Seville","SVQ","Mexico City","MEX",17979,,
+"Paris","CDG","Sapporo","OKD",18045,,
+"Luxembourg","LUX","Hangzhou","HGH",18067,,
+"Clermont-Ferrand/Auvergne","CFE","Saint-Denis / la Réunion","RUN",18213,,
+"Paris","CDG","Los Angeles","LAX",18225,,
+"Los Angeles","LAX","Paris","CDG",18225,,
+"Lyon","LYS","Las Vegas","LAS",18277,,
+"Bordeaux/Mérignac","BOD","Mexico City","MEX",18279,,
+"Paris","CDG","Santa Barbara (USA, Californie)","SBA",18285,,
+"San Francisco","SFO","Berlin","SXF",18294,,
+"Bordeaux/Mérignac","BOD","Yantai","YNT",18302,,
+"Bordeaux/Mérignac","BOD","San Francisco","SFO",18304,,
+"Paris","CDG","San Diego","SAN",18317,,
+"Toulouse","TLS","Tucson","TUS",18321,,
+"Paris","CDG","Hanoi","HAN",18336,,
+"Paris","CDG","Rio De Janeiro","GIG",18389,,
+"Rio De Janeiro","GIG","Paris","CDG",18389,,
+"Rennes/Saint-Jacques","RNS","Yangon (Myanmar)","RGN",18389,,
+"Paris","CDG","Nanning","NNG",18411,,
+"Paris","CDG","Mexico","MEX",18418,,
+"Mexico City","MEX","Paris","CDG",18418,,
+"Paris","CDG","Vientiane","VTE",18443,,
+"Nice","NCE","Thailande","DMK",18446,,
+"Lyon","LYS","Tucson","TUS",18487,,
+"Lyon","LYS","Sapporo","OKD",18491,,
+"Strasbourg","SXB","San Francisco","SFO",18499,,
+"Paris","CDG","Busan","PUS",18543,,
+"Paris","CDG","Shanghai","PVG",18554,,
+"Lyon","LYS","Campinas","VCP",18582,,
+"Montpellier/Méditerranée","MPL","Hanoi","HAN",18620,,
+"Toulouse","TLS","Mexico","MEX",18683,,
+"Toulouse/Blagnac","TLS","San Francisco","SFO",18725,,
+"Paris","CDG","Le Cap","CPT",18746,,
+"Lyon","LYS","San Francisco","SFO",18750,,
+"Paris","CDG","saint denis de la réunion","RUN",18760,,
+"Geneva","GVA","San José, Costa Rica","SJC",18766,,
+"Geneva","GVA","São Paulo","GRU",18781,,
+"Geneva","GVA","Pasto, Colombie","PSO",18797,,
+"Paris","CDG","Campinas (Brésil)","VCP",18817,,
+"Lyon","LYS","Palm springs, Ca, USA","PSP",18826,,
+"Paris","CDG","São Paulo","GRU",18831,,
+"São Paulo","GRU","Paris","CDG",18831,,
+"Paris","CDG","Bangkok","DMK",18859,,
+"Poitiers","PIS","Hanoi, vietnam","HAN",18866,,
+"Montpellier","MPL","Bangkok","DMK",18960,,
+"Montpellier","MPL","San Francisco","SFO",19006,,
+"Lyon","LYS","Los Angeles","LAX",19013,,
+"London","LTN","São Paulo","GRU",19017,,
+"Marseille","MRS","Shanghai","PVG",19048,,
+"Clermont-Ferrand/Auvergne","CFE","Jeju City","CJU",19063,,
+"MONTPELLIER","MPL","MEXICO","MEX",19076,,
+"Paris","CDG","Shenzhen","SZX",19130,,
+"MRS","MRS","San Francisco","SFO",19159,,
+"Paris","CDG","Kumamoto","KMJ",19173,,
+"Barcelona","BCN","San Francisco (USA)","SFO",19193,,
+"Paris","CDG","Hong Kong","HKG",19202,,
+"Barcelona","BCN","Seoul","ICN",19210,,
+"Lyon","LYS","Hong Kong, Chine","HKG",19229,,
+"Montpellier","MPL","Los Angeles","LAX",19232,,
+"Paris","CDG","Nagoya","NKM",19257,,
+"Paris","CDG","Osaka","KIX",19273,,
+"Osaka","KIX","Paris","CDG",19273,,
+"Marseille","MRS","Mexico","MEX",19275,,
+"Montpellier","MPL","San Diego","SAN",19304,,
+"Paris","CDG","Sanya","SYX",19317,,
+"Sanya ","SYX","Paris","CDG",19317,,
+"Nice","NCE","San Francisco","SFO",19320,,
+"Paris ","CDG","Xiamen","XMN",19323,,
+"Lyon","LYS","Kanazawa","KMQ",19351,,
+"Lyon","LYS","Hiroshima","HIJ",19378,,
+"Nouméa ","GEA","Dhaka","DAC",19392,,
+"Paris","CDG","Tokyo","NRT",19442,,
+"Tokyo","NRT","Paris","CDG",19442,,
+"BREST","BES","LA REUNION","RUN",19480,,
+"Toulouse/Blagnac","TLS","Hangzhou","HGH",19482,,
+"Nice","NCE","Mexico City","MEX",19548,,
+"Nice","NCE","Los Angeles","LAX",19580,,
+"Paris","CDG","Taipei","TPE",19593,,
+"Lyon","LYS","Osaka","KIX",19611,,
+"Montpellier/Méditerranée","MPL","Hong Kono","HKG",19617,,
+"Geneva","GVA","Tokyo","NRT",19651,,
+"Nice","NCE","Taipeh","TPE",19707,,
+"Lyon","LYS","Taiwan","TPE",19721,,
+"San Francisco","SFO","shangai","PVG",19777,,
+"Lyon","LYS","Tokyo","NRT",19836,,
+"Roissy","CDG","Phnom Penh","PNH",19856,,
+"Rennes/Saint-Jacques","RNS","Tokyo","NRT",19950,,
+"Toulouse/Blagnac","TLS","Macau","MFM",19954,,
+"Toulon/Hyères/Le Palyvestre","TLN","Osaka","KIX",19955,,
+"Toulouse/Blagnac","TLS","Hong Kong","HKG",19972,,
+"Clermont-Ferrand/Auvergne","CFE","Tokyo","NRT",19991,,
+"Marseille","MRS","Osaka","KIX",19992,,
+"Lyon","LYS","SGN","SGN",20078,,
+"Montpellier/Méditerranée","MPL","Osaka","KIX",20095,,
+"Paris","CDG","Naha (Okinawa), Japon","OKA",20103,,
+"bordeaux","BOD","Hong Kong","HKG",20112,,
+"Buenos Aires","EZE","Madrid","MAD",20193,,
+"Lyon","LYS","Cuzco","CUZ",20231,,
+"Paris","CDG","Hochiminhcity","SGN",20232,,
+"Marseille","MRS","Tokyo","NRT",20241,,
+"Lyon","LYS","okinawa","OKA",20307,,
+"Lyon","LYS","Porto Alegre","POA",20319,,
+"Montpellier/Méditerranée","MPL","Tokyo","NRT",20331,,
+"toulouse","TLS","Osaka","KIX",20340,,
+"Paris","CDG","Asuncion","ASU",20368,,
+"Montpellier","MPL","Lima","LIM",20467,,
+"Tokyo","NRT","toulouse","TLS",20550,,
+"Paris","CDG","Arequipa, Pérou","AQP",20552,,
+"Paris","CDG","porto alegre","POA",20564,,
+"Paris","CDG","Lima","LIM",20575,,
+"Lima","LIM","Paris","CDG",20575,,
+"Marseille","MRS","Kuala Lumpur","KUL",20663,,
+"Santiago","SCL","Seattle","BFI",20742,,
+"Lima","LIM","Lyon","LYS",20758,,
+"Montpellier/Méditerranée","MPL","Kuala Lumpur","KUL",20861,,
+"Singapore","SIN","Lyon","LYS",21203,,
+"Lyon","LYS","Singapore","SIN",21203,,
+"Bordeaux/Mérignac","BOD","Buenos Aires","EZE",21219,,
+"Marseille","MRS","Singapore","SIN",21245,,
+"Lyon","LYS","Calama","CJC",21265,,
+"Madrid","MAD","Santiago","SCL",21461,,
+"Paris","CDG","Singapore","SIN",21473,,
+"Lyon","LYS","Antofagasta","ANF",21634,,
+"Paris","CDG","Montevideo","MVD",21966,,
+"Lyon","LYS","Buenos Aires","EZE",22012,,
+"Paris","CDG","El Salvador","ESR",22035,,
+"Seattle","BFI","Rio De Janeiro","GIG",22188,,
+"Paris","CDG","Buenos Aires","EZE",22226,,
+"Bâle/Mulhouse","BSL","Santa Fe","SFN",22299,,
+"London","LTN","Buenos Aires","EZE",22371,,
+"Nice","NCE","Jakarta","CGK",22497,,
+"Toulouse/Blagnac","TLS","Santiago","SCL",22535,,
+"Nantes","NTE","Santiago (Chili)","SCL",22628,,
+"Rennes/Saint-Jacques","RNS","Santiago","SCL",22736,,
+"Nice","NCE","La Serena (chili)","LSC",22846,,
+"Paris","CDG","Jakarta","CGK",23122,,
+"Lyon","LYS","Santiago","SCL",23284,,
+"Paris CDG","CDG","Santiago","SCL",23372,,
+"Santiago","SCL","Paris","CDG",23372,,
+"Brest","BES","Honolulu","HNL",23670,,
+"Paris","CDG","Honolulu","HNL",23943,,
+"Barcelone","BCN","Punta Arenas","PUQ",25209,,
+"Montpellier/Méditerranée","MPL","Perth/Australie","PER",28167,,
+"Saint-Pierre","FSP","Kuala Lumpur","KUL",28230,,
+"Toulouse/Blagnac","TLS","Perth","PER",28580,,
+"Fort de France","FDF","Nouméa","GEA",29943,,
+"Paris","CDG","Cairns","CNS",30325,,
+"Marseille","MRS","Cairns (Aus)","CNS",30591,,
+"Papeete","PPT","Paris","CDG",31463,,
+"Paris","CDG","Papeete","PPT",31463,,
+"Montpellier/Méditerranée","MPL","Papeete","PPT",32446,,
+"Lyon","LYS","Melbourne","MEL",33228,,
+"Paris","CDG","Nouméa","GEA",33477,,
+"Paris","CDG","Melbourne","MEL",33551,,
+"melbourne","MEL","toulouse","TLS",33818,,
+"Toulouse","TLS","Melbourne","MEL",33818,,
+"Marseille","MRS","Sydney","SYD",33844,,
+"Paris","CDG","Sydney","SYD",33927,,
+"Brest/Guipavas","BES","noumea","GEA",34024,,
+"Nantes","NTE","Melbourne","MEL",34226,,
+"Nouméa","GEA","Marseille","MRS",34228,,
+"Montpellier/Méditerranée","MPL","Nouméa","GEA",34339,,
+"Santiago","SCL","Tokyo","NRT",34361,,
+"Paris, France","CDG","Hobart, Australie","HBA",34531,,
+"Bordeaux/Mérignac","BOD","Canberra","CBR",34567,,
+"Toulouse","TLS","Noumea","GEA",34583,,
+"Bordeaux/Mérignac","BOD","Sydney","SYD",34703,,
+"Brest/Guipavas","BES","Hobart (Tasmanie)","HBA",35559,,
+"Paris","CDG","Auckland","AKL",37123,,
+"Lyon","LYS","Auckland","AKL",37487,,
+"Paris","CDG","Wellington","WLG",37978,,
+"Toulouse/Blagnac","TLS","Auckland (New zealand)","AKL",38228,,
+"Rennes/Saint-Jacques","RNS","Christchurch","CHC",38722,,
+"brest","BES","Christchurch NZ","CHC",38875,,
+"NA","NA","NA","NA","NA",,
+"NA","NA","Aires","EZE","NA",,
+"NA","NA","Chennai","MAA","NA",,
+"Montpellier/Méditerranée","MPL","NA","NA","NA",,
+"Paris","CDG","NA","NA","NA",,
+"Madrid","MAD","NA","NA","NA",,
+"NA","NA","Bochum","DTM","NA",,
+"NA","NA","Budapest","BUD","NA",,
+"NA","NA","Toulouse/Blagnac","TLS","NA",,
+"NA","NA","Istanbul","ISL","NA",,
+"NA","NA","Durban","DUR","NA",,
