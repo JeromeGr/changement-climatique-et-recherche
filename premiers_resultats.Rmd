@@ -342,7 +342,7 @@ ggplot(drop_na(climat, reliquat.ordi),
 pal <- RColorBrewer::brewer.pal(9, "RdYlBu")
 ggplot(drop_na(climat, solevolges.conf),
        aes(y=fct_rev(solevolges.conf), x=..prop.., group=1)) +
-  geom_bar(fill=c("black", "light grey", "#1a9641","#a6d96a","#ffffbf" ,"#fdae61","#d7191c"  )) +
+  geom_bar(fill=c("black", "light grey", "#1a9641","#a6d96a","#f8f375" ,"#fdae61","#d7191c")) +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
   coord_cartesian(xlim=c(0, 0.3)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
