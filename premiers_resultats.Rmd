@@ -371,7 +371,7 @@ ggplot(drop_na(climat, volshTot),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="",
-       title="Heures de vol en avion dans le cadre professionnel en 2019 (hors trajets domicile-travail)") +
+       title="Heures de vol en avion dans le cadre professionnel en 2019") +
   source_champ(nrow(drop_na(climat, volshTot)))
 ```
 
@@ -388,7 +388,7 @@ ggplot(drop_na(climat, vols2ans),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es n'ayant pas pris l'avion en 2019",
        y="",
-       title="Avez-vous pris l'avion dans le cadre professionnel en 2017 et 2018\n(hors trajets domicile-travail) ?") +
+       title="Avez-vous pris l'avion dans le cadre professionnel en 2017 et 2018 ?") +
   source_champ(nrow(drop_na(climat, vols2ans)))
 ```
 
@@ -563,7 +563,7 @@ ggplot(drop_na(climat, aviontrain),
             stat="count",position=position_dodge(.9),
             hjust=-0.2, size=3)+
   labs(x="Proportion des répondant·es ayant pris l'avion en 2019", y="", 
-       title ="En 2019, avez-vous pris l’avion pour un trajet professionnel qui prend moins\n de 6 heures en train (hors déplacements domicile-travail) ?") +
+       title ="En 2019, avez-vous pris l’avion pour un trajet professionnel qui prend moins\n de 6 heures en train ?") +
   source_champ(nrow(drop_na(climat, aviontrain)))
 ```
 
