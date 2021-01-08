@@ -519,7 +519,7 @@ ggplot(DFDistMoyAvion,  aes(x=DistMoy, y=fct_reorder(volsmotif, DistMoy) )) +
 ```
 
 
-## Part du total des distances parcourues en avion par les répondant·es selon la durée du trajet en train correspondant
+## Répartition des émissions en avion selon le temps nécessaire pour faire le même déplacement en train
 
 Les temps de trajet en train sont obtenus à partir des horaires de la SNCF (ou des entreprises équivalentes pour l'étranger). Les émissions de gaz à effet de serre sont calculées à partir de la distance orthodromique + 95 km, selon la méthode [GES 1point5](https://labos1point5.org/ges-1point5).
 
@@ -547,7 +547,7 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volstrain, prop) )) +
             hjust=-0.2, size=3)+
   coord_cartesian(xlim=c(0, 1)) +
   labs(y="", x="Part du total des émissions en CO₂e",
-       title="Répartition des émissions de gaz à effet de serre des déplacements professionnels\nen avion selon le temps nécessaire pour voyager en train") +
+       title="Répartition des émissions de gaz à effet de serre des déplacements professionnels\nen avion selon le temps nécessaire pour faire ce même déplacement en train") +
   source_champ()
 
 ```
@@ -567,9 +567,7 @@ ggplot(drop_na(climat, aviontrain),
   source_champ(nrow(drop_na(climat, aviontrain)))
 ```
 
-## Raisons de prendre l'avion alors que le trajet en train fait moins de 6h
-
-## Prendre le train plutot que l'avion alors que le trajet est plus long
+## Prendre le train plutôt que l'avion alors que le trajet est plus long
 
 ```{r echo=FALSE}
 pal <- RColorBrewer::brewer.pal(6, "RdYlGn")
