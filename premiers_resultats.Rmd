@@ -233,6 +233,7 @@ ggplot(infoTot,  aes(x=prop, y=X1 )) +
   geom_text(aes(label=scales::percent(prop, accuracy=1, decimal.mark=",")),
             position=position_dodge(.9),
             hjust=-0.2, size=3)+
+  coord_cartesian(xlim=c(0, 0.78)) +
   labs(y="", x="Part de l'ensemble des ordinateurs et tablettes",
        title="Part des ordinateurs et tablettes ayant moins de 5 ans ou 
        jugé·es indispensables") +
