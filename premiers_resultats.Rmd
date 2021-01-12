@@ -967,7 +967,7 @@ drop_na(dat) %>%
     filter(valeur != "Non concerné·e") %>%
     ggplot(aes(x=variable)) +
     geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
-    scale_fill_manual(values=c("#d7191c", "light grey", "#a6d96a", "#66bd63", "#1a9641")) +
+    scale_fill_manual(values=c("#d7191c", "light grey", "#66bd63", "#1a9641", "#3690c0")) +
     scale_y_continuous(labels=scales::percent_format(),
                        sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
     coord_flip() + labs(fill="") +
@@ -978,7 +978,7 @@ drop_na(dat) %>%
          caption=paste0("Note : la proportion de personnes concernées varie selon la question\n", texte_legende))
 ```
 
-## Réductions individuelles des émissions des dispositifs expérimentaux d'ici à 2030
+## Réductions individuelles des émissions de GES des dispositifs expérimentaux d'ici à 2030
 
 ```{r echo=FALSE, fig.height=6}
 dat <- rbind(data.frame(variable="En utilisant moins d'équipements\ndans les dispositifs expérimentaux", valeur=climat$solreducmateriel.moins),
@@ -992,7 +992,7 @@ drop_na(dat) %>%
     filter(valeur != "Non concerné·e") %>%
     ggplot(aes(x=variable)) +
     geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
-    scale_fill_manual(values=c("#d7191c", "light grey", "#a6d96a", "#66bd63", "#1a9641")) +
+    scale_fill_manual(values=c("#d7191c", "light grey", "#66bd63", "#1a9641", "#3690c0")) +
     scale_y_continuous(labels=scales::percent_format(),
                        sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
     coord_flip() + labs(fill="") +
