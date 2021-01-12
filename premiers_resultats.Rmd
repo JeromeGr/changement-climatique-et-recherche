@@ -602,7 +602,7 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volstrain, prop) )) +
             position=position_dodge(.9),
             hjust=-0.2, size=3)+
   coord_cartesian(xlim=c(0, 1)) +
-  labs(y="", x="Part du total des émissions en CO₂e",
+  labs(y="", x=bquote("Part du total des émissions en" ~CO[2] *"e"),
        title="Répartition des émissions de gaz à effet de serre des déplacements professionnels\nen avion selon le temps nécessaire pour faire ce même déplacement en train") +
   source_champ()
 
