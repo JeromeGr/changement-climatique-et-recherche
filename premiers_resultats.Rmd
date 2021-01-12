@@ -232,7 +232,7 @@ ggplot(drop_na(climat, chgtpratique),
        caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS (n=6342)")
 ```
 
-# Pratiques personnes et celles des laboratoires
+# Pratiques des personnes et des laboratoires
 
 
 ## Actions mises en œuvre dans les laboratoires/unités
