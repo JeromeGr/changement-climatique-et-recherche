@@ -776,7 +776,7 @@ ggplot(Covoit,  aes(x=prop, y=fct_reorder(RaisonsPasCovoit, prop) )) +
 
 # La visioconférence
 
-Les répondant·es ont été interrogé·es sur la visioconférence et l'audioconférence. Par soucis de concision, le terme visioconférence regroupe ci-dessous la visioconférence et l'audioconférence.
+Les répondant·es ont été interrogé·es sur la visioconférence et l'audioconférence. Par souci de concision, le terme visioconférence regroupe ci-dessous la visioconférence et l'audioconférence.
 
 ## Usages auxquels la visioconférence est adaptée
 
