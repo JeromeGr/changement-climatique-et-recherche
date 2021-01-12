@@ -395,7 +395,7 @@ ggplot(drop_na(climat, reliquat.ordi),
   source_champ(nrow(drop_na(climat, reliquat.ordi)))
 ```
  
-## Vols pour les conférences : évolution des émissions de gaz à effet de serre 
+## Vols pour les conférences : évolution des émissions de GES 
 
 ```{r echo=FALSE}
 pal <- RColorBrewer::brewer.pal(9, "RdYlBu")
@@ -578,7 +578,7 @@ ggplot(DFDistMoyAvion,  aes(x=DistMoy, y=fct_reorder(volsmotif, DistMoy) )) +
 ```
 
 
-## Répartition des émissions en avion selon le temps nécessaire pour faire le même déplacement en train
+## Répartition des émissions de GES en avion selon le temps nécessaire pour faire le même déplacement en train
 
 Les temps de trajet en train sont obtenus à partir des horaires de la SNCF (ou des entreprises équivalentes pour l'étranger). Les émissions de gaz à effet de serre sont calculées à partir de la distance orthodromique + 95 km, selon la méthode [GES 1point5](https://labos1point5.org/ges-1point5).
 
@@ -929,7 +929,7 @@ ggplot(drop_na(climat, visioapresconf),
 ```
 
 
-# Réduction des émissions dans la recherche : les solutions concrètes
+# Réduction des émissions de GES dans la recherche : les solutions concrètes
 
 ## Objectifs nationaux d'ici à 2030 et place du secteur de la recherche 
 
@@ -952,7 +952,7 @@ ggplot(drop_na(climat, solreducrech2),
   source_champ(nrow(drop_na(climat, solreducrech2)))
 ```
 
-## Réductions individuelles des émissions dans le cadre professionnel d'ici à 2030
+## Réductions individuelles des émissions de GES dans le cadre professionnel d'ici à 2030
 
 ```{r echo=FALSE, fig.height=6}
 dat <- rbind(data.frame(variable="Les expériences et observations\nscientifiques", valeur=climat$solreducperso.exp),
@@ -1006,7 +1006,7 @@ Champ : personnels permanents affiliés à une unité du CNRS, utilisant un disp
 ```
 
 
-## Risques liés à la réduction des émissions carbone des dispositifs expérimentaux
+## Risques liés à la réduction des émissions de GES des dispositifs expérimentaux
 
 ```{r echo=FALSE, fig.height=6, fig.width=7.5}
 dat <- rbind(data.frame(variable="Vous faire prendre du retard\npar rapport aux équipes concurrentes", valeur=climat$solrisqreducmateriel.retard),
@@ -1141,7 +1141,7 @@ drop_na(dat) %>%
 ```
 
 
-# Quiz sur les émissions de gaz à effet de serre
+# Quiz sur les émissions de GES
 
 Une réponse est considérée comme correcte si elle est à une modalité d'écart maximum de la vraie réponse.
 
@@ -1170,7 +1170,7 @@ drop_na(dat) %>%
     guides(fill=guide_legend(reverse=TRUE)) +
     geom_text(aes(label=reponse), position=position_fill(vjust=0.5), size=3) +
     labs(y="Proportion des répondant·es", x="",
-         title="Estimations des émissions carbone") +
+         title="Estimations des émissions de gaz à effet de serre") +
     source_champ()
 ```
 
@@ -1201,6 +1201,6 @@ drop_na(dat) %>%
     guides(fill=guide_legend(reverse=TRUE, nrow=3, byrow=TRUE)) +
     geom_text(aes(label=reponse), position=position_fill(vjust=0.5), size=3) +
     labs(y="Proportion des répondant·es", x="",
-         title="Estimations des émissions carbone") +
+         title="Estimations des émissions de gaz à effet de serre") +
     source_champ()
 ```
