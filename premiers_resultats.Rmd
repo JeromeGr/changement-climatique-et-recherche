@@ -159,7 +159,7 @@ drop_na(climat, bap) %>%
 ```
 
 
-# Votre position vis-à-vis de l’environnement et de la recherche
+# Position vis-à-vis de l’environnement et de la recherche
 
 ## Activités humaines et changement climatique
 ```{r echo=FALSE}
@@ -232,7 +232,7 @@ ggplot(drop_na(climat, chgtpratique),
        caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS (n=6342)")
 ```
 
-# Vos pratiques et celles de votre laboratoire
+# Pratiques personnes et celles des laboratoires
 
 
 ## Actions mises en œuvre dans les laboratoires/unités
@@ -326,7 +326,6 @@ ggplot(informatique,  aes(x=prop, y=fct_reorder(TypeOrdi, prop), fill= set )) +
             position=position_dodge(.9),
             hjust=-0.2, size=3) +
   coord_cartesian(xlim=c(0, 0.16)) +
-  guides(fill=guide_legend(reverse=TRUE)) +
   labs(y="", x="Part de l'ensemble des ordinateurs et tablettes", fill="",
        title="Type de matériel utilisé, selon son âge et son caractère indispensable",
        caption="Source : Enquête « Les personnels de la recherche face au changement climatique »,\nLabos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS")
@@ -336,8 +335,7 @@ ggplot(informatique,  aes(x=prop, y=fct_reorder(TypeOrdi, prop), fill= set )) +
 ## Raisons du dernier changement d'ordinateur
 
 ```{r echo=FALSE}
-aumoinsunecochee <- rowSums(select(climat, starts_with("chgtordi.")) == "Oui", na.rm=TRUE) > 0
-
+aumoinsunecochee <- rowSums(!is.na(select(climat, starts_with("chgtordi.")))) > 0
 chgtOrdi<- climat %>% 
   select(starts_with("chgtordi.")) %>%
   pivot_longer(everything(),
@@ -409,7 +407,7 @@ ggplot(drop_na(climat, solevolges.conf),
   source_champ(nrow(drop_na(climat, solevolges.conf)))
 ```
 
-# Vos transports à des fins professionnelles
+# Transports à des fins professionnelles
 
 ## Heures de vol en avion en 2019 (hors trajets domicile-travail)
 
@@ -608,48 +606,22 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volstrain, prop) )) +
 
 ```
 
-## Raisons d'avoir pris l'avion alors que le trajet en train prend moins de 6h
+## Prendre l'avion alors que le trajet en train fait moins de 6h
 
 ```{r echo=FALSE}
-# != "Non" pour inclure les diverses réponses à Autre
-aumoinsunecochee <- rowSums(select(climat, starts_with("aviontrainraisons.")) != "Non", na.rm=TRUE) > 0
-
-raisons <- climat %>%
-  select(starts_with("aviontrainraisons.")) %>%
-  mutate(aviontrainraisons.other=if_else(is.na(aviontrainraisons.other),
-                                         NA_character_, "Oui")) %>%
-  pivot_longer(everything(),
-               names_to = c(".value", "TypeRaison"),
-               names_sep = "(\\.)") %>%
-  group_by(TypeRaison) %>%
-  count(aviontrainraisons) %>%
-  filter(aviontrainraisons == "Oui") %>%
-  mutate(prop=n/sum(aumoinsunecochee))
-
-raisons$TypeRaison <- fct_recode(raisons$TypeRaison,
-                                 "L'avion est plus rapide"="rapide",
-                                 "L'avion permet d'éviter une nuit sur place"="nuit",
-                                 "L'avion est moins cher"="cher",
-                                 "L'avion est plus pratique"="pratique",
-                                 "Des règles administratives m'incitent à prendre l’avion"="admin",
-                                 "J'aime prendre l'avion"="aime",
-                                 "Je ne me suis pas posé la question"="paspose",
-                                 "Cela me permet de cumuler des miles"="miles",
-                                 "Autre"="other")
-
-ggplot(raisons, aes(x=prop, y=fct_reorder(TypeRaison, prop))) +
-  geom_col() +
+ggplot(drop_na(climat, aviontrain),
+       aes(y=fct_rev(aviontrain), x=..prop.., group=1)) +
+  geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  geom_text(aes(label=scales::percent(prop, accuracy=1, decimal.mark=",")),
-            position=position_dodge(.9),
-            hjust=-0.2, size=3) +
-  coord_cartesian(xlim=c(0, 0.75)) +
-  labs(y="", x="Proportion des répondant·es concerné·es",
-       title="Raison(s) pour lesquelles les répondant·es ont pris l'avion\nalors que le même trajet en train prenait moins de 6h") +
-  source_champ(sum(aumoinsunecochee))
+  geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
+            stat="count",position=position_dodge(.9),
+            hjust=-0.2, size=3)+
+  labs(x="Proportion des répondant·es ayant pris l'avion en 2019", y="", 
+       title ="En 2019, avez-vous pris l’avion pour un trajet professionnel qui prend moins\n de 6 heures en train ?") +
+  source_champ(nrow(drop_na(climat, aviontrain)))
 ```
 
-## Avoir pris le train plutôt que l'avion alors que le trajet est plus long
+## Prendre le train plutôt que l'avion alors que le trajet est plus long
 
 ```{r echo=FALSE}
 pal <- RColorBrewer::brewer.pal(6, "RdYlGn")
@@ -778,6 +750,8 @@ ggplot(Covoit,  aes(x=prop, y=fct_reorder(RaisonsPasCovoit, prop) )) +
 
 # La visioconférence
 
+Les répondant·es ont été interrogé·es sur la visioconférence et l'audioconférence. Par soucis de concision, le terme visioconférence regroupe ci-dessous la visioconférence et l'audioconférence.
+
 ## Usages auxquels la visioconférence est adaptée
 
 ```{r echo=FALSE, message=FALSE}
@@ -825,8 +799,8 @@ drop_na(dat) %>%
   geom_text(aes(label=scales::percent(valeur, accuracy=1, decimal.mark=",")),
             position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(y="", x="Proportion des répondant·es n'ayant jamais testé la visio ou l'audioconférence",
-       title="Usages de la visioconférence ou de l'audioconférence jugés adaptés, du point de vue des personnes ne les ayant jamais testés") +
+  labs(y="", x="Proportion des répondant·es",
+       title="Part des répondants n'ayant jamais testé chaque usage de la visioconférence") +
   source_champ()
 
 drop_na(dat[dat$valeur != "Je n'ai jamais testé",]) %>%
@@ -890,7 +864,7 @@ privilégier la visioconférence ou l’audioconférence à un déplacement ?") 
 ```
 
 
-## Visioconférence avant le confinement
+## Usage pré-confinement de la visioconférence
 
 ```{r echo=FALSE}
 
@@ -902,11 +876,12 @@ ggplot(drop_na(climat, visioavtconf),
   geom_text(aes(label=scales::percent(..prop.., accuracy=0.1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="Proportion des répondant·es", y="") +
+  labs(x="Proportion des répondant·es", y="", title="Avant le confinement quel était votre usage habituel de la visioconférence ou de l’audioconférence 
+       dans le cadre professionnel ?") +
   source_champ(nrow(drop_na(climat, visioavtconf)))
 ```
 
-## Evolution de l'opinion sur la visioconférence
+## Evolution de l'opinion sur la visioconférence depuis le confinement
 
 ```{r echo=FALSE}
 ggplot(drop_na(climat, visioapresconf),
@@ -918,14 +893,15 @@ ggplot(drop_na(climat, visioapresconf),
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="Proportion des répondant·es", y="") +
+  labs(x="Proportion des répondant·es", y="", title="Depuis le confinement, votre expérience vous a-t-elle rendu·e plus favorable ou moins favorable 
+       à la visioconférence ou l’audioconférence ?") +
   source_champ(nrow(drop_na(climat, visioapresconf)))
 
 ```
 
 
 
-# Votre avis personnel par rapport à l’écologie en général
+# Avis par rapport à l’écologie en général
 
 ## Opinions sur l'écologie
 
@@ -954,9 +930,9 @@ drop_na(dat) %>%
          caption=paste0("* Les personnes ayant répondu négativement à la question précédente sont classées en « Pas du tout d'accord ».\n", texte_legende))
 ```
 
-# Les solutions concrètes dans la recherche
+# Réduction des émissions dans la recherche : les solutions concrètes
 
-## Réduction des émissions de la recherche d'ici à 2030
+## Objectifs nationaux d'ici à 2030 et place du secteur de la recherche 
 
 ```{r echo=FALSE}
 climat$solreducrech2 <- fct_recode(climat$solreducrech,
@@ -977,7 +953,7 @@ ggplot(drop_na(climat, solreducrech2),
   source_champ(nrow(drop_na(climat, solreducrech2)))
 ```
 
-## Réductions individuelles des émissions d'ici à 2030
+## Réductions individuelles des émissions dans le cadre professionnel d'ici à 2030
 
 ```{r echo=FALSE, fig.height=6}
 dat <- rbind(data.frame(variable="Les expériences et observations\nscientifiques", valeur=climat$solreducperso.exp),
@@ -1080,7 +1056,6 @@ ggplot(drop_na(climat, solcovoit),
   source_champ(nrow(drop_na(climat, solcovoit)))
 ```
 
-# Informations concernant votre activité et votre situation personnelle
 
 # Quiz sur les émissions de gaz à effet de serre
 
