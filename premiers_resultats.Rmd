@@ -336,7 +336,8 @@ ggplot(informatique,  aes(x=prop, y=fct_reorder(TypeOrdi, prop), fill= set )) +
 ## Raisons du dernier changement d'ordinateur
 
 ```{r echo=FALSE}
-aumoinsunecochee <- rowSums(!is.na(select(climat, starts_with("chgtordi.")))) > 0
+aumoinsunecochee <- rowSums(select(climat, starts_with("chgtordi.")) == "Oui", na.rm=TRUE) > 0
+
 chgtOrdi<- climat %>% 
   select(starts_with("chgtordi.")) %>%
   pivot_longer(everything(),
@@ -607,22 +608,46 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volstrain, prop) )) +
 
 ```
 
-## Prendre l'avion alors que le trajet en train fait moins de 6h
+
+## Raisons d'avoir pris l'avion alors que le trajet en train prend moins de 6h
 
 ```{r echo=FALSE}
-ggplot(drop_na(climat, aviontrain),
-       aes(y=fct_rev(aviontrain), x=..prop.., group=1)) +
-  geom_bar() +
+# != "Non" pour inclure les diverses réponses à Autre
+aumoinsunecochee <- rowSums(select(climat, starts_with("aviontrainraisons.")) != "Non", na.rm=TRUE) > 0
+raisons <- climat %>%
+  select(starts_with("aviontrainraisons.")) %>%
+  mutate(aviontrainraisons.other=if_else(is.na(aviontrainraisons.other),
+                                         NA_character_, "Oui")) %>%
+  pivot_longer(everything(),
+               names_to = c(".value", "TypeRaison"),
+               names_sep = "(\\.)") %>%
+  group_by(TypeRaison) %>%
+  count(aviontrainraisons) %>%
+  filter(aviontrainraisons == "Oui") %>%
+  mutate(prop=n/sum(aumoinsunecochee))
+raisons$TypeRaison <- fct_recode(raisons$TypeRaison,
+                                 "L'avion est plus rapide"="rapide",
+                                 "L'avion permet d'éviter une nuit sur place"="nuit",
+                                 "L'avion est moins cher"="cher",
+                                 "L'avion est plus pratique"="pratique",
+                                 "Des règles administratives m'incitent à prendre l’avion"="admin",
+                                 "J'aime prendre l'avion"="aime",
+                                 "Je ne me suis pas posé la question"="paspose",
+                                 "Cela me permet de cumuler des miles"="miles",
+                                 "Autre"="other")
+ggplot(raisons, aes(x=prop, y=fct_reorder(TypeRaison, prop))) +
+  geom_col() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
-            stat="count",position=position_dodge(.9),
-            hjust=-0.2, size=3)+
-  labs(x="Proportion des répondant·es ayant pris l'avion en 2019", y="", 
-       title ="En 2019, avez-vous pris l’avion pour un trajet professionnel qui prend moins\n de 6 heures en train ?") +
-  source_champ(nrow(drop_na(climat, aviontrain)))
+  geom_text(aes(label=scales::percent(prop, accuracy=1, decimal.mark=",")),
+            position=position_dodge(.9),
+            hjust=-0.2, size=3) +
+  coord_cartesian(xlim=c(0, 0.68)) +
+  labs(y="", x="Proportion des répondant·es concerné·es",
+       title="Raison(s) pour lesquelles les répondant·es ont pris l'avion\nalors que le même trajet en train prenait moins de 6h") +
+  source_champ(sum(aumoinsunecochee))
 ```
 
-## Prendre le train plutôt que l'avion alors que le trajet est plus long
+## Avoir pris le train plutôt que l'avion alors que le trajet est plus long
 
 ```{r echo=FALSE}
 pal <- RColorBrewer::brewer.pal(6, "RdYlGn")
