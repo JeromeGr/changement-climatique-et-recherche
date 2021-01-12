@@ -31,6 +31,62 @@ source_champ <- function(n=NA) {
 }
 ```
 
+# Taux de réponse
+
+## Taux de réponse global
+
+Sur les 30 000 adresses tirées au sort, 134 étaient en doublon, et 1373 (soit 4,6 %) ont généré une erreur lors de l'envoi du message d'invitation. Notons que les serveurs ne signalent pas systématiquement une erreur lorsque le message n'a pas pu être délivré, sans compter l'action des filtres anti-spam et les boîtes inutilisées : il est probable qu'une proportion bien plus élevée des invitations n'ont jamais été reçues.
+
+6723 personnes, correspondant à 23,6 % des invitations envoyées, ont dépassé la page d'accueil du questionnaire. 6469 personnes (soit 22,7 % des invitations) ont terminé la première page du questionnaire, et 5682 (19,9 % des invitations) ont répondu à l'ensemble du questionnaire. Seul·es 15% des répondant·es ont donc abandonné en cours de route.
+
+## Taux de réponse par statut
+
+```{r echo=FALSE}
+repstatut <- c(`Autre personnel` = 11.9106699751861, `Chercheur·e` = 33.0119375573921, 
+`Doctorant·e` = 17.0106132075472, `Enseignant·e-chercheur·e` = 21.9991862199919, 
+`Ingénieur·e` = 27.7703604806409, `Ingénieur·e de recherche` = 33.5389360061681, 
+`Post-doctorant·e` = 17.5438596491228, `Technicien·ne/administratif·ve` = 15.253386853989, 
+`Temporaire sur CDD` = 21.2341197822142)/100
+
+data.frame(statut=factor(names(repstatut)), taux=repstatut) %>%
+  mutate(statut=fct_reorder(statut, taux)) %>%
+  ggplot(aes(y=statut, x=taux)) +
+  geom_col() +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  coord_cartesian(xlim=c(0, 0.35)) +
+  geom_text(aes(label=scales::percent(repstatut, accuracy=1, decimal.mark=",")),
+            stat="identity", position=position_dodge(.9),
+            hjust=-0.2, size=3) +
+  labs(x="Proportion des invitations envoyées", y="",
+       title="Taux de réponse à la première page du questionnaire selon le statut")
+```
+
+## Taux de réponse par institut
+
+```{r echo=FALSE}
+repinstitut <- c(`IN2P3 (physique nucléaire et des particules)` = 25.8351893095768, 
+`INC (chimie)` = 20.4927884615385, `INEE (écologie et environnement)` = 27.920910724985, 
+`INP (physique)` = 26.5788028555739, `INS2I (sciences de l'information)` = 20.7792207792208, 
+`INSB (sciences biologiques)` = 20.6474983020149, 
+`INSHS (sciences humaines et sociales)` = 20.4694511563687, 
+`INSIS (sciences de l'ingénierie et des systèmes)` = 21.0496929089894, 
+`INSMI (sciences mathématiques)` = 22.4460431654676, 
+`INSU (sciences de l'univers)` = 31.2090790048014, 
+`Présidence et Direction générale` = 24.4859813084112)/100
+
+data.frame(statut=factor(names(repinstitut)), taux=repinstitut) %>%
+  mutate(statut=fct_reorder(statut, taux)) %>%
+  ggplot(aes(y=statut, x=taux)) +
+  geom_col() +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  coord_cartesian(xlim=c(0, 0.32)) +
+  geom_text(aes(label=scales::percent(repinstitut, accuracy=1, decimal.mark=",")),
+            stat="identity", position=position_dodge(.9),
+            hjust=-0.2, size=3) +
+  labs(x="Proportion des invitations envoyées", y="",
+       title="Taux de réponse à la première page\ndu questionnaire selon l'institut")
+```
+
 # Informations générales
 
 ## Statut d'emploi
@@ -233,6 +289,7 @@ ggplot(infoTot,  aes(x=prop, y=X1 )) +
   geom_text(aes(label=scales::percent(prop, accuracy=1, decimal.mark=",")),
             position=position_dodge(.9),
             hjust=-0.2, size=3)+
+  coord_cartesian(xlim=c(0, 0.78)) +
   labs(y="", x="Part de l'ensemble des ordinateurs et tablettes",
        title="") +
   source_champ()
