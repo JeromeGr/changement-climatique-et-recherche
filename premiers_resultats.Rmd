@@ -22,7 +22,7 @@ theme_set(theme_minimal() + theme(plot.title=element_text(size=11)))
 update_geom_defaults("bar", list(fill="#045a8d"))
 update_geom_defaults("col", list(fill="#045a8d"))
 
-texte_legende <- sprintf("Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS")
+texte_legende <- "Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS"
 source_champ <- function(n=NA) {
   if(is.na(n))
     labs(caption=texte_legende)
@@ -155,9 +155,9 @@ drop_na(climat, bap) %>%
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="Proportion des répondant·es ITA", y="",
-       title="Branche d'activité professionnelle (BAP) des ITA") +
-  source_champ(nrow(drop_na(climat, bap)))
+  labs(x="Proportion parmi les répondant·es ITA", y="",
+       title="Branche d'activité professionnelle (BAP) des ITA",
+       caption=sprintf("Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : ITA affilié·es à une unité du CNRS (n=%i)", nrow(drop_na(climat, bap))))
 
 ```
 
@@ -445,10 +445,10 @@ ggplot(drop_na(climat, vols2ans),
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="Proportion des répondant·es n'ayant pas pris l'avion en 2019",
+  labs(x="Proportion parmi les répondant·es n'ayant pas pris l'avion en 2019",
        y="",
-       title="Avez-vous pris l'avion dans le cadre professionnel en 2017 et 2018 ?") +
-  source_champ(nrow(drop_na(climat, vols2ans)))
+       title="Avez-vous pris l'avion dans le cadre professionnel en 2017 et 2018 ?",
+       caption=sprintf("Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS n'ayant pas pris l'avion en 2019 (n=%i)", nrow(drop_na(climat, vols2ans))))
 ```
 
 ## Temps travaillé sur place lors d'un déplacement professionnel en avion
@@ -645,7 +645,7 @@ ggplot(raisons, aes(x=prop, y=fct_reorder(TypeRaison, prop))) +
             position=position_dodge(.9),
             hjust=-0.2, size=3) +
   coord_cartesian(xlim=c(0, 0.68)) +
-  labs(y="", x="Proportion des répondant·es concerné·es",
+  labs(y="", x="Proportion parmi les répondant·es concerné·es",
        title="Raison(s) pour lesquelles les répondant·es ont pris l'avion\nalors que le même trajet en train prenait moins de 6h") +
   source_champ(sum(aumoinsunecochee))
 ```
@@ -733,17 +733,16 @@ ggplot(TpsTransportDomT,  aes(x=prop, y=fct_reorder(TypeTransport, prop) )) +
             hjust=-0.2, size=3) +
   coord_cartesian(xlim=c(0, 0.32)) +
   labs(y="",
-       x="",
+       x="Proportion du temps total passé dans les déplacements domicile-travail",
        title="Part du temps total passé dans les déplacements domicile-travail,
        par l'ensemble des répondant·es, par mode de transport") +
   source_champ()
 ```
 
-## Raisons pour lesquelles celles et ceux qui prennent leur voiture seul·e ne covoiturent pas
+## Raisons de ne pas covoiturer
 
 ```{r echo=FALSE}
-#aumoinsunecochee <- rowSums(!is.na(select(climat, starts_with("covoitpqpas")))) > 0
-#1216 personnes
+aumoinsunecochee <- rowSums(!is.na(select(climat, starts_with("covoitpqpas")))) > 0
 
 Covoit<- climat %>% 
   select(covoitpqpas.flex,  covoitpqpas.atypique,  covoitpqpas.orga,  covoitpqpas.ecole,  covoitpqpas.personne,  covoitpqpas.fiabilite,  covoitpqpas.entente,  covoitpqpas.court, covoitpqpas.trouver) %>%
@@ -755,13 +754,13 @@ Covoit<- climat %>%
 
 Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="flex"]<-"Je tiens à la flexibilité de mes horaires"
 Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="atypique"]<-"J’ai des horaires trop atypiques ou trop irréguliers"
-Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="personne"]<-"Je n’ai trouvé personne avec un trajet et des horaires proches"
+Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="personne"]<-"Je n’ai trouvé personne\navec un trajet et des horaires proches"
 Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="ecole"]<-"Je dois déposer les enfants à l’école"
 Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="court"]<-"Le trajet est trop court"
 Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="orga"]<-"Cela demande trop d’organisation"
 Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="fiabilite"]<-"J’ai peur du manque de fiabilité des autres"
-Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="trouver"]<-"Je ne sais pas comment trouver un·e covoitureur·se"
-Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="entente"]<-"Je crains de covoiturer avec quelqu’un avec qui je ne m’entends pas"
+Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="trouver"]<-"Je ne sais pas comment trouver\nun·e covoitureur·se"
+Covoit$RaisonsPasCovoit[Covoit$RaisonsPasCovoit=="entente"]<-"Je crains de covoiturer avec quelqu’un\navec qui je ne m’entends pas"
 
 
 ggplot(Covoit,  aes(x=prop, y=fct_reorder(RaisonsPasCovoit, prop) )) +
@@ -771,9 +770,9 @@ ggplot(Covoit,  aes(x=prop, y=fct_reorder(RaisonsPasCovoit, prop) )) +
             position=position_dodge(.9),
             hjust=-0.2, size=3) +
   coord_cartesian(xlim=c(0, 0.47)) +
-  labs(y="", x="Proportion des répondant·es",
-       title="Raisons pour lesquelles ceux qui \n prennent leur voiture ne covoiturent pas") +
-  source_champ()
+  labs(y="", x="Proportion parmi les répondant·es autosolistes",
+       title="Pour les trajets que vous réalisez seul·e dans votre voiture,\npourquoi ne faites-vous pas du covoiturage ?",
+       caption=sprintf("Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS prenant la voiture seul·es\npour leurs trajets domicile-travail (n=%i)", sum(aumoinsunecochee)))
 
 ```
 
@@ -841,10 +840,10 @@ drop_na(dat[dat$valeur != "Je n'ai jamais testé",]) %>%
   coord_flip() +
   theme(legend.position="bottom") +
   guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
-  labs(y="Proportion des répondant·es", x="", fill="",
+  labs(y="Proportion parmi les répondant·es ayant déjà testé", x="", fill="",
        title="Actuellement, pour quels usages la visioconférence ou l'audioconférence 
-       vous semblent-elles adaptées ? (parmi qui a déjà testé) :") +
-  source_champ()
+       vous semblent-elles adaptées ?",
+       caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS ayant déjà testé chaque usage de la visioconférence")
 
 ```
 
@@ -905,8 +904,8 @@ ggplot(drop_na(climat, visioavtconf),
   geom_text(aes(label=scales::percent(..prop.., accuracy=0.1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="Proportion des répondant·es", y="", title="Avant le confinement quel était votre usage habituel de la visioconférence ou de l’audioconférence 
-       dans le cadre professionnel ?") +
+  labs(x="Proportion des répondant·es", y="", title="Avant le confinement quel était votre usage habituel de la visioconférence
+ou de l’audioconférence dans le cadre professionnel ?") +
   source_champ(nrow(drop_na(climat, visioavtconf)))
 ```
 
@@ -922,8 +921,8 @@ ggplot(drop_na(climat, visioapresconf),
   geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="Proportion des répondant·es", y="", title="Depuis le confinement, votre expérience vous a-t-elle rendu·e plus favorable ou moins favorable 
-       à la visioconférence ou l’audioconférence ?") +
+  labs(x="Proportion des répondant·es", y="", title="Depuis le confinement, votre expérience vous a-t-elle rendu·e plus favorable
+ou moins favorable à la visioconférence ou l’audioconférence ?") +
   source_champ(nrow(drop_na(climat, visioapresconf)))
 
 ```
@@ -1027,7 +1026,7 @@ drop_na(dat) %>%
     coord_flip() + labs(fill="") +
     theme(legend.position="bottom") +
     guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
-    labs(y="Proportion des répondant·es utilisant un dispositif expérimental", x="",
+    labs(y="Proportion parmi les répondant·es utilisant un dispositif expérimental", x="",
          title="Quels seraient les risques liés à une politique de réduction des émissions\nde gaz à effet de serre liées à la fabrication et au fonctionnement\ndu matériel destiné aux expériences et aux observations scientifiques ?",
          caption="Note : la proportion de personnes concernées varie selon la question
 Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020
@@ -1095,20 +1094,19 @@ drop_na(dat) %>%
 
 ## Covoiturage
 
-Question posée uniquement aux répondant·es qui utilisent la voiture (seul·es ou à plusieurs) pour leurs trajets domicile-travail.
-
 ```{r echo=FALSE}
 ggplot(drop_na(climat, solcovoit),
        aes(y=fct_rev(solcovoit), x=..prop.., group=1)) +
-    geom_bar() +
+    geom_bar(fill=c("#d7191c", "#fdae61", "#a6d96a", "#1a9641")) +
     scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
     coord_cartesian(xlim=c(0, 0.35)) +
     geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-    labs(x="Proportion des répondant·es prenant la voiture", y="",
-         title="Si le covoiturage était organisé à l'échelle de votre laboratoire ou de votre site,\nseriez-vous prêt·e à y recourir pour vos trajets domicile-travail ?") +
-  source_champ(nrow(drop_na(climat, solcovoit)))
+    labs(x="Proportion parmi les répondant·es prenant la voiture", y="",
+         title="Si le covoiturage était organisé à l'échelle de votre laboratoire ou de votre site,\nseriez-vous prêt·e à y recourir pour vos trajets domicile-travail ?",
+         caption=sprintf("Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020
+Champ : personnels affiliés à une unité du CNRS prenant la voiture pour leurs déplacements domicile-travail (n=%i)",  nrow(drop_na(climat, solcovoit))))
 ```
 
 # Avis par rapport à l’écologie en général
