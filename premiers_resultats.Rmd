@@ -1174,7 +1174,7 @@ drop_na(dat) %>%
 
 Dans cette variante, une réponse n'est correcte que si la bonne modalité a été exactement choisie. Elle est considérée comme une légère sous- ou surestimation en cas d'écart d'une catégorie.
 
-```{r echo=FALSE}
+```{r echo=FALSE, fig.height=5}
 dat <- rbind(data.frame(variable="Parcourir 50 km en voiture pour aller et revenir\ndu travail pendant un an (soit environ 12 000 km)", valeur=climat$quizfacteurs.voiture3, reponse="3 000 kg"),
              data.frame(variable="Fabriquer un ordinateur portable neuf", valeur=climat$quizfacteurs.ordi3, reponse="250 kg"),
              data.frame(variable="Imprimer une thèse de 200 pages\nen 10 exemplaires, recto-verso", valeur=climat$quizfacteurs.these3, reponse="5 kg"),
@@ -1196,7 +1196,7 @@ drop_na(dat) %>%
                        sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
     coord_flip() + labs(fill="") +
     theme(legend.position="bottom") +
-    guides(fill=guide_legend(reverse=TRUE, nrow=3, byrow=TRUE)) +
+    guides(fill=guide_legend(reverse=TRUE, nrow=2, byrow=TRUE)) +
     geom_text(aes(label=reponse), position=position_fill(vjust=0.5), size=3) +
     labs(y="Proportion des répondant·es", x="",
          title="Estimations des émissions de gaz à effet de serre") +
