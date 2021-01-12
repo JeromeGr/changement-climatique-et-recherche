@@ -9,12 +9,12 @@ erreurs2 <- read.table("../Labintel/Erreurs questionnaire.labos1point5@services.
 climat <- read.csv("~/Private/results-survey113464_021220.csv", fileEncoding="UTF-8", na.strings="")
 
 
+# Quelques adresses en doublon (que Sympa ne garde qu'une fois)
+ech <- filter(ech, !duplicated(courriel))
+
 # Sympa met les adresses en minuscules
 stopifnot(all(c(erreurs1$V1, erreurs2$V1) %in% tolower(ech$courriel)))
 ech <- filter(ech, !tolower(courriel) %in% c(erreurs1$V1, erreurs2$V1))
-
-# Quelques adresses en doublon (que Sympa ne garde qu'une fois)
-ech <- filter(ech, !duplicated(courriel))
 
 ech <- left_join(ech, climat, by=c("courriel"="email"))
 stopifnot(all(climat$courriel %in% ech$email))
@@ -32,3 +32,15 @@ freq(!is.na(ech$lastpage) & ech$lastpage >= 1)
 # des personnes hors-champ qui ont commencé à répondre
 freq((!is.na(ech$lastpage) & ech$lastpage == 8) |
          (!is.na(ech$rechpub) & ech$rechpub == "Non"))
+
+# Taux de réponse à la première page par statut et institut
+lprop(table(ech$type,
+            !is.na(ech$lastpage) & ech$lastpage >= 1))
+
+ech$institut2 <- sapply(ech$institut,
+                        function(x) strsplit(x, ",", fixed=TRUE)[[1]][[1]])
+ech$institut2[substr(ech$institut2, 1, 3) == "DGD"] <- "Présidence et Direction générale"
+ech$institut2[substr(ech$institut2, 1, 3) == "PDT"] <- "Présidence et Direction générale"
+
+lprop(table(ech$institut2,
+            !is.na(ech$lastpage) & ech$lastpage >= 1))
