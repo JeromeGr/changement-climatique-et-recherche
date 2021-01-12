@@ -978,6 +978,62 @@ drop_na(dat) %>%
          caption=paste0("Note : la proportion de personnes concernées varie selon la question\n", texte_legende))
 ```
 
+## Réductions individuelles des émissions des dispositifs expérimentaux d'ici à 2030
+
+```{r echo=FALSE, fig.height=6}
+dat <- rbind(data.frame(variable="En utilisant moins d'équipements\ndans les dispositifs expérimentaux", valeur=climat$solreducmateriel.moins),
+             data.frame(variable="En l'utilisant moins fréquemment\nou moins intensivement", valeur=climat$solreducmateriel.util),
+             data.frame(variable="En utilisant ou en développant\ndes dispositifs plus simples (low tech)", valeur=climat$solreducmateriel.lowtech),
+             data.frame(variable="En renouvelant le matériel\nmoins fréquemment", valeur=climat$solreducmateriel.renouv)) %>%
+    mutate(variable=factor(variable, levels=unique(variable)),
+           valeur=fct_relevel(valeur, c("Non, car elles sont déjà très basses", "Oui, d'au moins un tiers", "Oui, mais de moins d'un tiers", "Sans opinion", "Non")))
+
+drop_na(dat) %>%
+    filter(valeur != "Non concerné·e") %>%
+    ggplot(aes(x=variable)) +
+    geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
+    scale_fill_manual(values=c("#d7191c", "light grey", "#a6d96a", "#66bd63", "#1a9641")) +
+    scale_y_continuous(labels=scales::percent_format(),
+                       sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
+    coord_flip() + labs(fill="") +
+    theme(legend.position="bottom") +
+    guides(fill=guide_legend(reverse = TRUE, nrow=3, byrow=TRUE)) +
+    labs(y="Proportion des répondant·es", x="",
+         title="Êtes-vous prêt·e à réduire d'ici à 2030 les émissions de gaz à effet de serre\nliées à la fabrication et au fonctionnement du matériel destiné\nà vos expériences et observations scientifiques, par les moyens suivants ?",
+         caption="Note : la proportion de personnes concernées varie selon la question
+Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020
+Champ : personnels permanents affiliés à une unité du CNRS, utilisant un dispositif expérimental")
+```
+
+
+## Risques liés à la réduction des émissions carbone des dispositifs expérimentaux
+
+```{r echo=FALSE, fig.height=6, fig.width=7.5}
+dat <- rbind(data.frame(variable="Vous faire prendre du retard\npar rapport aux équipes concurrentes", valeur=climat$solrisqreducmateriel.retard),
+             data.frame(variable="Diminuer la qualité de vos travaux", valeur=climat$solrisqreducmateriel.qual),
+             data.frame(variable="Réduire votre accès aux financements", valeur=climat$solrisqreducmateriel.fin),
+             data.frame(variable="Réduire votre nombre de publications", valeur=climat$solrisqreducmateriel.publi),
+             data.frame(variable="Vous imposer un changement\nde thèmes de recherche", valeur=climat$solrisqreducmateriel.themes)) %>%
+    mutate(variable=factor(variable, levels=unique(variable)),
+           valeur=fct_relevel(valeur, c("C'est probable et c'est un problème", "Sans opinion", "C'est probable mais ce n'est pas un problème", "C'est peu probable")))
+
+drop_na(dat) %>%
+    filter(valeur != "Non concerné·e") %>%
+    ggplot(aes(x=variable)) +
+    geom_bar(aes(fill=valeur), position="fill") +
+    scale_fill_manual(values=c("#d7191c", "light grey", "#a6d96a", "#1a9641")) +
+    scale_y_continuous(labels=scales::percent_format(),
+                       sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
+    coord_flip() + labs(fill="") +
+    theme(legend.position="bottom") +
+    guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
+    labs(y="Proportion des répondant·es utilisant un dispositif expérimental", x="",
+         title="Quels seraient les risques liés à une politique de réduction des émissions\nde gaz à effet de serre liées à la fabrication et au fonctionnement\ndu matériel destiné aux expériences et aux observations scientifiques ?",
+         caption="Note : la proportion de personnes concernées varie selon la question
+Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020
+Champ : personnels affiliés à une unité du CNRS, utilisant un dispositif expérimental")
+```
+
 ## Risques liés à la réduction des vols
 
 ```{r echo=FALSE, fig.height=6, fig.width=7.5}
