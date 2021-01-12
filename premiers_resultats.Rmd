@@ -31,6 +31,9 @@ source_champ <- function(n=NA) {
 }
 ```
 
+Ce document est complémentaire des documents contenant le questionnaire complet et une présentation générale de l'enquête (liens ?). Il vise à rendre rapidement public les réponses à une sélection de questions, sans avoir recours à des traitements statistiques avancés et sans fournir d'interprétation. Il prend la forme d'une série de graphiques permettant de visualiser facilement ce que les participant·es à l'enquête ont répondu.
+Il s'agit d'un document d'étape qui pourra être modifié et complété par la suite. 
+
 # Taux de réponse
 
 ## Taux de réponse global
@@ -553,7 +556,7 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volsmotif, prop) )) +
 
 ```
 
-## Distance moyenne parcourue en avion selon le motif principal du déplacement professionnel
+## Distance parcourue en avion selon le motif du déplacement professionnel
 
 ```{r echo=FALSE, message=FALSE}
 DFDistMoyAvion<- climat %>% 
@@ -901,36 +904,6 @@ ggplot(drop_na(climat, visioapresconf),
 ```
 
 
-
-# Avis par rapport à l’écologie en général
-
-## Opinions sur l'écologie
-
-```{r echo=FALSE, fig.height=5}
-dat <- rbind(data.frame(variable="Il ne sert à rien que je fasse des efforts pour l'environnement\nsi les autres ne font pas de même", valeur=climat$opinionecolo.efforts),
-data.frame(variable="La plupart des problèmes environnementaux peuvent être résolus\npar le développement de technologies plus performantes",
-                        valeur=climat$opinionecolo.techno),
-             data.frame(variable="La décroissance est nécessaire\npour faire face aux enjeux environnementaux", valeur=climat$opinionecolo.decroissance),
-             data.frame(variable="Je suis d’accord pour que des contraintes réglementaires\nsoient mises en place pour protéger l'environnement,\nmême si cela limite mon confort", valeur=climat$opinionecolo.contraintes),
-             data.frame(variable="Protéger l'environnement est plus important\nque protéger la croissance économique", valeur=climat$opinionecolo.proteger),
-             data.frame(variable="Ce type de catastrophe pourrait provoquer\nun effondrement de nos sociétés*", valeur=climat$opinionecolo.effondrement2),
-             data.frame(variable="Si les choses continuent au rythme actuel,\nnous allons bientôt vivre une catastrophe écologique majeure", valeur=climat$opinionecolo.cata)) %>%
-    mutate(variable=factor(variable, levels=unique(variable)),
-           valeur=fct_relevel(valeur, c("Tout à fait d'accord", "Plutôt d'accord", "Sans opinion", "Plutôt pas d'accord", "Pas du tout d'accord")))
-
-drop_na(dat) %>%
-    ggplot(aes(x=variable)) +
-    geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
-    scale_fill_manual(values=c("#d7191c", "#fdae61", "light grey", "#a6d96a", "#1a9641")) +
-    scale_y_continuous(labels=scales::percent_format(),
-                       sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
-    coord_flip() + labs(fill="") +
-    theme(legend.position="bottom") +
-    guides(fill=guide_legend(reverse = TRUE, nrow=3, byrow=TRUE)) +
-    labs(y="Proportion des répondant·es", x="",
-         caption=paste0("* Les personnes ayant répondu négativement à la question précédente sont classées en « Pas du tout d'accord ».\n", texte_legende))
-```
-
 # Réduction des émissions dans la recherche : les solutions concrètes
 
 ## Objectifs nationaux d'ici à 2030 et place du secteur de la recherche 
@@ -1055,6 +1028,35 @@ ggplot(drop_na(climat, solcovoit),
     labs(x="Proportion des répondant·es prenant la voiture", y="",
          title="Si le covoiturage était organisé à l'échelle de votre laboratoire ou de votre site,\nseriez-vous prêt·e à y recourir pour vos trajets domicile-travail ?") +
   source_champ(nrow(drop_na(climat, solcovoit)))
+```
+
+# Avis par rapport à l’écologie en général
+
+## Opinions sur l'écologie
+
+```{r echo=FALSE, fig.height=5}
+dat <- rbind(data.frame(variable="Il ne sert à rien que je fasse des efforts pour l'environnement\nsi les autres ne font pas de même", valeur=climat$opinionecolo.efforts),
+data.frame(variable="La plupart des problèmes environnementaux peuvent être résolus\npar le développement de technologies plus performantes",
+                        valeur=climat$opinionecolo.techno),
+             data.frame(variable="La décroissance est nécessaire\npour faire face aux enjeux environnementaux", valeur=climat$opinionecolo.decroissance),
+             data.frame(variable="Je suis d’accord pour que des contraintes réglementaires\nsoient mises en place pour protéger l'environnement,\nmême si cela limite mon confort", valeur=climat$opinionecolo.contraintes),
+             data.frame(variable="Protéger l'environnement est plus important\nque protéger la croissance économique", valeur=climat$opinionecolo.proteger),
+             data.frame(variable="Ce type de catastrophe pourrait provoquer\nun effondrement de nos sociétés*", valeur=climat$opinionecolo.effondrement2),
+             data.frame(variable="Si les choses continuent au rythme actuel,\nnous allons bientôt vivre une catastrophe écologique majeure", valeur=climat$opinionecolo.cata)) %>%
+    mutate(variable=factor(variable, levels=unique(variable)),
+           valeur=fct_relevel(valeur, c("Tout à fait d'accord", "Plutôt d'accord", "Sans opinion", "Plutôt pas d'accord", "Pas du tout d'accord")))
+
+drop_na(dat) %>%
+    ggplot(aes(x=variable)) +
+    geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
+    scale_fill_manual(values=c("#d7191c", "#fdae61", "light grey", "#a6d96a", "#1a9641")) +
+    scale_y_continuous(labels=scales::percent_format(),
+                       sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
+    coord_flip() + labs(fill="") +
+    theme(legend.position="bottom") +
+    guides(fill=guide_legend(reverse = TRUE, nrow=3, byrow=TRUE)) +
+    labs(y="Proportion des répondant·es", x="",
+         caption=paste0("* Les personnes ayant répondu négativement à la question précédente sont classées en « Pas du tout d'accord ».\n", texte_legende))
 ```
 
 
