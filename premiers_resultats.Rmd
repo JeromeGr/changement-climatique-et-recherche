@@ -327,7 +327,7 @@ ggplot(informatique,  aes(x=prop, y=fct_reorder(TypeOrdi, prop), fill= set )) +
             hjust=-0.2, size=3) +
   coord_cartesian(xlim=c(0, 0.16)) +
   labs(y="", x="Part de l'ensemble des ordinateurs et tablettes", fill="",
-       title="Type de matériel utilisé, selon son âge et son caractère indispensable)",
+       title="Type de matériel utilisé, selon son âge et son caractère indispensable",
        caption="Source : Enquête « Les personnels de la recherche face au changement climatique »,\nLabos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS")
 
 ```
@@ -797,9 +797,8 @@ drop_na(dat) %>%
   geom_text(aes(label=scales::percent(valeur, accuracy=1, decimal.mark=",")),
             position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(y="", x="Proportion des répondant·es",
-       title="Personnes n'ayant jamais testé la visioconférence ou l'audioconférence
-selon les usages") +
+  labs(y="", x="Proportion des répondant·es n'ayant jamais testé la visio ou l'audioconférence",
+       title="Usages de la visioconférence ou de l'audioconférence jugés adaptés, du point de vue des personnes ne les ayant jamais testés") +
   source_champ()
 
 drop_na(dat[dat$valeur != "Je n'ai jamais testé",]) %>%
