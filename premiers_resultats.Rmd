@@ -223,8 +223,8 @@ infoTot<- infoTot %>% mutate(prop=NbOrdi/NbOrdi[which(X1=="nb")])
 
 infoTot<-infoTot[1:2,]
 
-infoTot$X1[infoTot$X1=="5ans"]<-"Ordinateur/tablette de moins de 5 ans"
-infoTot$X1[infoTot$X1=="indisp"]<-"Ordinateur/tablette jugé·e indispensable"
+infoTot$X1[infoTot$X1=="5ans"]<-"Matériel de moins de 5 ans"
+infoTot$X1[infoTot$X1=="indisp"]<-"Matériel jugé indispensable"
 
 
 ggplot(infoTot,  aes(x=prop, y=X1 )) +
@@ -234,8 +234,7 @@ ggplot(infoTot,  aes(x=prop, y=X1 )) +
             position=position_dodge(.9),
             hjust=-0.2, size=3)+
   labs(y="", x="Part de l'ensemble des ordinateurs et tablettes",
-       title="Part des ordinateurs et tablettes ayant moins de 5 ans ou 
-       jugé·es indispensables") +
+       title="") +
   source_champ()
 
 ```
@@ -271,9 +270,7 @@ ggplot(informatique,  aes(x=prop, y=fct_reorder(TypeOrdi, prop), fill= set )) +
             hjust=-0.2, size=3) +
   coord_cartesian(xlim=c(0, 0.16)) +
   labs(y="", x="Part de l'ensemble des ordinateurs et tablettes", fill="",
-       title="Ordinateurs utilisés, selon leur type 
-       (fixe, portable, tablette) et leur qualité 
-       (moins de 5 ans ou indispensable)",
+       title="Type de matériel utilisé, selon son âge et son caractère indispensable)",
        caption="Source : Enquête « Les personnels de la recherche face au changement climatique »,\nLabos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS")
 
 ```
@@ -317,7 +314,7 @@ ggplot(chgtOrdi,  aes(x=prop, y=fct_reorder(TypeRaisonChgtOrdi, prop) )) +
 
 ```
 
-## Reliquat de budget
+## Achats superflus avec un reliquat de budget
 
 ```{r echo=FALSE}
 pal <- RColorBrewer::brewer.pal(9, "RdYlBu")
@@ -336,7 +333,7 @@ ggplot(drop_na(climat, reliquat.ordi),
   source_champ(nrow(drop_na(climat, reliquat.ordi)))
 ```
  
-## Diminution des vols pour les conférences
+## Vols pour les conférences : évolution des émissions de gaz à effet de serre 
 
 ```{r echo=FALSE}
 pal <- RColorBrewer::brewer.pal(9, "RdYlBu")
@@ -415,8 +412,8 @@ ggplot(DFNbJourTravailles,  aes(x=prop, y=volsjours )) +
             hjust=-0.2, size=3)+
   coord_cartesian(xlim=c(0, 0.62)) +
   labs(y="", x="Part des déplacements en avion",
-       title="Part des déplacements professionnels en avion effectués par 
-       l'ensemble des répondant·es, selon le temps travaillé sur place") +
+       title="Part des déplacements professionnels en avion,
+       selon le temps travaillé sur place") +
   source_champ()
 
 #En fonction de la distance totale parcourue
@@ -437,8 +434,8 @@ ggplot(DFNbJourTravailles,  aes(x=prop, y=volsjours )) +
             hjust=-0.2, size=3)+
   coord_cartesian(xlim=c(0, 0.53)) +
   labs(y="", x="Part du total des distances parcourues en avion",
-       title="Distribution des distances parcourues en avion par l'ensemble
-       des répondant·es, selon le temps travaillé sur place") +
+       title="Part du total des distances parcourues en avion,
+       selon le temps travaillé sur place") +
   source_champ()
 
 
