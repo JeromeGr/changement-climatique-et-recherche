@@ -242,7 +242,6 @@ ggplot(drop_na(climat, chgtpratique),
   theme(plot.title=element_text(size=10), plot.subtitle=element_text(size=8)) +
   labs(x="Proportion des répondant·es", y="",
        title="Pensez−vous que l'urgence climatique exige des changements profonds\ndans la pratique de nos métiers ?",
-      
        caption="Lecture: 47% des répondant·es se déclarent 
 tout à fait d'accord avec l'idée selon laquelle l'urgence climatique exige 
 des changements profonds dans la pratique de nos métiers.
@@ -275,7 +274,7 @@ drop_na(dat) %>%
      guides(fill=guide_legend(reverse = TRUE, nrow=3, byrow=TRUE)) +
      labs(y="Proportion des répondant·es", x="",
           title="Actions mises en œuvre 
-          dans les laboratoires/unités de recherche :") +
+          dans les laboratoires/unités de recherche :", caption="Environ 80% des répondant·es déclarent pouvoir trier leurs déchets dans leur laboratoire.") +
      source_champ()
 ```
 
@@ -310,7 +309,8 @@ ggplot(infoTot,  aes(x=prop, y=X1 )) +
             hjust=-0.2, size=3)+
   coord_cartesian(xlim=c(0, 0.78)) +
   labs(y="", x="Part de l'ensemble des ordinateurs et tablettes",
-       title="") +
+       title="", caption="75% des ordinateurs et des tablettes sont jugées 
+       indispensables par leur utilisateu·rice.") +
   source_champ()
 
 ```
@@ -387,12 +387,13 @@ ggplot(chgtOrdi,  aes(x=prop, y=fct_reorder(TypeRaisonChgtOrdi, prop) )) +
   coord_cartesian(xlim=c(0, 0.32)) +
   labs(y="", x="Proportion des répondant·es",
        title="Raison(s) pour lesquelles les répondant·es ont changé 
-       leur ordinateur") +
+       leur ordinateur",
+       caption="30% des répondant·es déclarent avoir changé leur dernier ordinateur car il ne fonctionnait plus très bien.") +
   source_champ(sum(aumoinsunecochee))
 
 ```
 
-## Achats superflus avec un reliquat de budget
+## Achats avec un reliquat de budget
 
 ```{r echo=FALSE}
 pal <- RColorBrewer::brewer.pal(9, "RdYlBu")
@@ -407,7 +408,7 @@ ggplot(drop_na(climat, reliquat.ordi),
   labs(x="Proportion des répondant·es", y="",
        title="Au cours des 5 dernières années vous est-il arrivé pour terminer
  un reliquat de budget d'acheter un ordinateur/écran/tablette 
- alors que ce n'était pas vraiment indispensable  ?") +
+ alors que ce n'était pas vraiment indispensable  ?", caption="20% des répondant·es déclarent avoir déjà utilisé, dans les cinq dernières années, un reliquat de budget pour acheter un ordinateur (ou une tablette) alors que cet achat ne leur paraissait pas vraiment indispensable.") + 
   source_champ(nrow(drop_na(climat, reliquat.ordi)))
 ```
  
