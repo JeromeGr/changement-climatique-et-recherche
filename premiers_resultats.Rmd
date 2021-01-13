@@ -1024,7 +1024,7 @@ drop_na(dat) %>%
     coord_flip() + labs(fill="") +
     theme(legend.position="bottom") +
     guides(fill=guide_legend(reverse = TRUE, nrow=3, byrow=TRUE)) +
-    labs(y="Proportion des répondant·es", x="",
+    labs(y="Proportion parmi les répondant·es utilisant un dispositif expérimental", x="",
          title="Êtes-vous prêt·e à réduire d'ici à 2030 les émissions de gaz à effet de serre\nliées à la fabrication et au fonctionnement du matériel destiné\nà vos expériences et observations scientifiques, par les moyens suivants ?",
          caption=sprintf("Note : la proportion de personnes concernées varie selon la question
 Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020
