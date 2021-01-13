@@ -349,7 +349,8 @@ ggplot(informatique,  aes(x=prop, y=fct_reorder(TypeOrdi, prop), fill= set )) +
   labs(y="", x="Part de l'ensemble des ordinateurs et tablettes", fill="",
        title="Type de matériel utilisé, selon son âge et son caractère indispensable",
        caption="Lecture: Sur 100 tablettes et ordinateurs (utilisés professionnellement par les répondant.es ?), 14,3 sont des ordinateurs partagés au laboratoire.
-Sur 100 ordinateurs partagés au laboratoire, 11,6 ont moins de 5 ans et 5,8 sont jugés indispensables.
+Sur 100 tablettes et ordinateurs, 
+11,6 sont des ordinateurs partagés au laboratoire qui ont moins de 5 ans. 5,8 sont des ordinateurs partagés au laboratoire jugés indispensables.
 Source : Enquête « Les personnels de la recherche face au changement climatique »,\nLabos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS")
 
 ```
