@@ -502,7 +502,8 @@ ggplot(DFNbJourTravailles,  aes(x=prop, y=volsjours )) +
   labs(y="", x="Part des déplacements en avion",
        title="Part des déplacements professionnels en avion,
 selon le temps travaillé sur place") +
-  source_champ(extra="Lecture : sur 100 vols professionnels, 5 correspondaient à un séjour de plus d'un mois.")
+  source_champ(sum(climat$volsremplis, na.rm=TRUE),
+               "Lecture : sur 100 vols professionnels, 5 correspondaient à un séjour de plus d'un mois.")
 
 #En fonction de la distance totale parcourue
 DFNbJourTravailles<- climat %>% 
@@ -524,7 +525,8 @@ ggplot(DFNbJourTravailles,  aes(x=prop, y=volsjours )) +
   labs(y="", x="Part du total des distances parcourues en avion",
        title="Part du total des distances parcourues en avion,
        selon le temps travaillé sur place") +
-  source_champ(extra="Lecture : sur 100 km parcourus en avion, 12 km l'ont été pour des séjours de plus d'un mois.")
+  source_champ(sum(climat$volsremplis, na.rm=TRUE),
+               "Lecture : sur 100 km parcourus en avion, 12 km l'ont été pour des séjours de plus d'un mois.")
 ```
 
 ## Motif principal des déplacements professionnels en avion
@@ -552,7 +554,8 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volsmotif, prop) )) +
   labs(y="",
        x="Part des déplacements en avion",
        title="Motif principal pour les déplacements professionnels\neffectués en avion") +
-  source_champ(extra="Lecture : sur 100 vols professionnels, 40 avaient pour motif une présentation dans une conférence.")
+  source_champ(sum(climat$volsremplis, na.rm=TRUE),
+               "Lecture : sur 100 vols professionnels, 40 avaient pour motif une présentation dans une conférence.")
 
 #En fonction de la distance totale parcourue
 DFDistAvion<- climat %>% 
@@ -573,7 +576,8 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volsmotif, prop) )) +
   coord_cartesian(xlim=c(0, 0.45)) +
   labs(y="", x="Part du total des distances parcourues en avion",
        title="Part du total des distances parcourues en avion\nselon le motif principal du déplacement professionnel") +
-  source_champ(extra="Lecture : sur 100 km parcourus en avion, 43 km l'ont été pour une présentation dans une conférence.")
+  source_champ(sum(climat$volsremplis, na.rm=TRUE),
+               "Lecture : sur 100 km parcourus en avion, 43 km l'ont été pour une présentation dans une conférence.")
 
 ```
 
@@ -593,7 +597,8 @@ ggplot(DFDistMoyAvion,  aes(x=DistMoy, y=fct_reorder(volsmotif, DistMoy) )) +
     labs(y="",
          title="Distance parcourue en avion selon le motif principal\ndu déplacement professionnel",
        x="Distance moyenne parcourue en avion (en km)") +
-  source_champ(extra="Lecture : en moyenne, les vols liés au terrain ou au recueil de données font 10 400 km (aller-retour).")
+  source_champ(sum(climat$volsremplis, na.rm=TRUE),
+               "Lecture : en moyenne, les vols liés au terrain ou au recueil de données font 10 400 km (aller-retour).")
 
 ```
 
@@ -627,7 +632,8 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volstrain, prop) )) +
   coord_cartesian(xlim=c(0, 1)) +
   labs(y="", x=bquote("Part du total des émissions en" ~CO[2] *"e"),
        title="Répartition des émissions de gaz à effet de serre des déplacements professionnels\nen avion selon le temps nécessaire pour faire ce même déplacement en train") +
-  source_champ(extra="0,2% des émissions de gaz à effet de serre des vols correspondent à des déplacements\nqui auraient pu être réalisés en moins de 3h de train.")
+  source_champ(sum(climat$volsremplis, na.rm=TRUE),
+               "0,2% des émissions de gaz à effet de serre des vols correspondent à des déplacements\nqui auraient pu être réalisés en moins de 3h de train.")
 
 ```
 
@@ -688,7 +694,7 @@ ggplot(drop_na(climat, trainavion),
   source_champ(nrow(drop_na(climat, trainavion)))
 ```
 
-## Renoncer à un déplacement à l'étranger pour des raisons environnementales
+## Avoir renoncé à un déplacement à l'étranger pour des raisons environnementales
 
 
 ```{r echo=FALSE}
@@ -720,8 +726,8 @@ ggplot(drop_na(climat, joursdomicile),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="", 
        title = "En temps normal (avant le confinement), combien de jours en moyenne 
-       travaillez-vous uniquement de chez vous ? Ne tenez pas compte des éventuels 
-       jours travaillés le week-end.") +
+travaillez-vous uniquement de chez vous ? Ne tenez pas compte des éventuels 
+jours travaillés le week-end.") +
   source_champ(nrow(drop_na(climat, joursdomicile)))
 ```
 
@@ -751,12 +757,12 @@ ggplot(TpsTransportDomT,  aes(x=prop, y=fct_reorder(TypeTransport, prop) )) +
   geom_text(aes(label=scales::percent(prop, accuracy=1, decimal.mark=",")),
             position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  coord_cartesian(xlim=c(0, 0.32)) +
+  coord_cartesian(xlim=c(0, 0.37)) +
   labs(y="",
        x="Proportion du temps total passé dans les déplacements domicile-travail",
        title="Part du temps total passé dans les déplacements domicile-travail,
-       par l'ensemble des répondant·es, par mode de transport") +
-  source_champ()
+par l'ensemble des répondant·es, par mode de transport") +
+  source_champ(sum(climat$tpsdomtravrempli))
 ```
 
 ## Raisons de ne pas covoiturer
@@ -849,7 +855,7 @@ drop_na(dat) %>%
             hjust=-0.2, size=3) +
   labs(y="", x="Proportion des répondant·es",
        title="Part des répondants n'ayant jamais testé chaque usage de la visioconférence") +
-  source_champ()
+  source_champ(max(table(drop_na(dat)$variable)))
 
 drop_na(dat[dat$valeur != "Je n'ai jamais testé",]) %>%
   ggplot(aes(x=variable)) +
@@ -863,7 +869,7 @@ drop_na(dat[dat$valeur != "Je n'ai jamais testé",]) %>%
   labs(y="Proportion parmi les répondant·es ayant déjà testé", x="", fill="",
        title="Actuellement, pour quels usages la visioconférence ou l'audioconférence 
        vous semblent-elles adaptées ?",
-       caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS ayant déjà testé chaque usage de la visioconférence")
+       caption=sprintf("Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS ayant déjà testé chaque usage de la visioconférence (n=%i)",  max(table(drop_na(dat[dat$valeur != "Je n'ai jamais testé",])$variable))))
 
 ```
 
@@ -907,7 +913,7 @@ drop_na(dat) %>%
        title="Imaginons une réunion d’une journée, située à 2h de votre domicile
 en voiture. Les raisons suivantes pourraient-elles vous pousser à
 privilégier la visioconférence ou l’audioconférence à un déplacement ?") +
-  source_champ()
+  source_champ(max(table(drop_na(dat)$variable)))
 
 ```
 
@@ -993,8 +999,9 @@ drop_na(dat) %>%
     theme(legend.position="bottom") +
     guides(fill=guide_legend(reverse = TRUE, nrow=3, byrow=TRUE)) +
     labs(y="Proportion des répondant·es", x="",
-         title="Êtes-vous prêt·e à réduire vos émissions de gaz à effet de serre\nd’ici à 2030 dans les domaines suivants ?",
-         caption=paste0("Note : la proportion de personnes concernées varie selon la question\n", texte_legende))
+         title="Êtes-vous prêt·e à réduire vos émissions de gaz à effet de serre\nd’ici à 2030 dans les domaines suivants ?") +
+  source_champ(max(table(filter(drop_na(dat), valeur != "Non concerné·e")$variable)),
+               "Note : la proportion de personnes concernées varie selon la question")
 ```
 
 ## Réductions individuelles des émissions de GES des dispositifs expérimentaux d'ici à 2030
@@ -1019,9 +1026,9 @@ drop_na(dat) %>%
     guides(fill=guide_legend(reverse = TRUE, nrow=3, byrow=TRUE)) +
     labs(y="Proportion des répondant·es", x="",
          title="Êtes-vous prêt·e à réduire d'ici à 2030 les émissions de gaz à effet de serre\nliées à la fabrication et au fonctionnement du matériel destiné\nà vos expériences et observations scientifiques, par les moyens suivants ?",
-         caption="Note : la proportion de personnes concernées varie selon la question
+         caption=sprintf("Note : la proportion de personnes concernées varie selon la question
 Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020
-Champ : personnels permanents affiliés à une unité du CNRS, utilisant un dispositif expérimental")
+Champ : personnels permanents affiliés à une unité du CNRS, utilisant un dispositif expérimental (n=%i)", max(table(filter(drop_na(dat), valeur != "Non concerné·e")$variable))))
 ```
 
 
@@ -1048,9 +1055,9 @@ drop_na(dat) %>%
     guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
     labs(y="Proportion parmi les répondant·es utilisant un dispositif expérimental", x="",
          title="Quels seraient les risques liés à une politique de réduction des émissions\nde gaz à effet de serre liées à la fabrication et au fonctionnement\ndu matériel destiné aux expériences et aux observations scientifiques ?",
-         caption="Note : la proportion de personnes concernées varie selon la question
+         caption=sprintf("Note : la proportion de personnes concernées varie selon la question
 Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020
-Champ : personnels affiliés à une unité du CNRS, utilisant un dispositif expérimental")
+Champ : personnels affiliés à une unité du CNRS, utilisant un dispositif expérimental (n=%i)", max(table(filter(drop_na(dat), valeur != "Non concerné·e")$variable))))
 ```
 
 ## Risques liés à la réduction des vols
@@ -1078,8 +1085,9 @@ drop_na(dat) %>%
     theme(legend.position="bottom") +
     guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
     labs(y="Proportion des répondant·es", x="",
-         title="Quels seraient les risques liés à la mise en place d'une politique\nde réduction des vols professionnels en avion dans la recherche ?",
-         caption=paste0("Note : la proportion de personnes concernées varie selon la question\n", texte_legende))
+         title="Quels seraient les risques liés à la mise en place d'une politique\nde réduction des vols professionnels en avion dans la recherche ?") +
+    source_champ(max(table(filter(drop_na(dat), valeur != "Non concerné·e")$variable)),
+                 "Note : la proportion de personnes concernées varie selon la question")
 ```
 
 ## Solutions institutionnelles
@@ -1109,7 +1117,7 @@ drop_na(dat) %>%
     guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
     labs(y="Proportion des répondant·es", x="",
          title="Quelles actions les institutions et laboratoires\nde recherche devraient-ils mettre en œuvre\npour réduire leurs émissions de gaz à effet de serre ?") +
-  source_champ()
+  source_champ(max(table(drop_na(dat)$variable)))
 ```
 
 ## Covoiturage
@@ -1154,8 +1162,9 @@ drop_na(dat) %>%
     coord_flip() + labs(fill="") +
     theme(legend.position="bottom") +
     guides(fill=guide_legend(reverse = TRUE, nrow=3, byrow=TRUE)) +
-    labs(y="Proportion des répondant·es", x="",
-         caption=paste0("* Les personnes ayant répondu négativement à la question précédente sont classées en « Pas du tout d'accord ».\n", texte_legende))
+    labs(y="Proportion des répondant·es", x="") +
+    source_champ(max(table(drop_na(dat)$variable)),
+                  "* Les personnes ayant répondu négativement à la question précédente sont classées en « Pas du tout d'accord ».")
 ```
 
 
@@ -1189,7 +1198,7 @@ drop_na(dat) %>%
     geom_text(aes(label=reponse), position=position_fill(vjust=0.5), size=3) +
     labs(y="Proportion des répondant·es", x="",
          title="Estimations des émissions de gaz à effet de serre") +
-    source_champ()
+    source_champ(max(table(drop_na(dat)$variable)))
 ```
 
 Dans cette variante, une réponse n'est correcte que si la bonne modalité a été exactement choisie. Elle est considérée comme une légère sous- ou surestimation en cas d'écart d'une catégorie.
@@ -1220,5 +1229,5 @@ drop_na(dat) %>%
     geom_text(aes(label=reponse), position=position_fill(vjust=0.5), size=3) +
     labs(y="Proportion des répondant·es", x="",
          title="Estimations des émissions de gaz à effet de serre") +
-    source_champ()
+    source_champ(max(table(drop_na(dat)$variable)))
 ```

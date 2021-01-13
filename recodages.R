@@ -389,6 +389,15 @@ climat$volsh_tot2 <- if_else(is.na(climat$volsdist5) | climat$volsdist5 == 0 |
                              climat$volshnum)
 
 #Recodage temps de transport domicile travail
+varstpsdomtrav <- paste0("tpsdomtrav.", c("urbain_h", "urbain_m", "tgv_h", "tgv_m", "train_h", "train_m",
+                                          "voit_h", "voit_m", "covoit_h", "covoit_m", "moto_h", "moto_m",
+                                          "velo_h", "velo_m", "marche_h", "marche_m"))
+climat$tpsdomtravrempli <- rowSums(!is.na(climat[varstpsdomtrav])) > 0
+
+# Mettre à 0 les cases non remplies si au moins une case l'a été dans le tableau
+for(var in varstpsdomtrav)
+  climat[climat$tpsdomtravrempli & is.na(climat[[var]]), var] <- 0
+
 #Attention, il faudra nettoyer les temps (Il y a des couillons qui ont converti leurs heures de transport en minutes. Ex : 6h, 360 minutes..)
 climat$tpsdomtrav.urbain_h<- as.numeric(climat$tpsdomtrav.urbain_h)
 climat$tpsdomtrav.urbainMin<-climat$tpsdomtrav.urbain_h*60+climat$tpsdomtrav.urbain_m
@@ -402,7 +411,6 @@ climat$tpsdomtrav.covoitMin<-climat$tpsdomtrav.covoit_h*60+climat$tpsdomtrav.cov
 climat$tpsdomtrav.motoMin<-climat$tpsdomtrav.moto_h*60+climat$tpsdomtrav.moto_m
 climat$tpsdomtrav.veloMin<-climat$tpsdomtrav.velo_h*60+climat$tpsdomtrav.velo_m
 climat$tpsdomtrav.marcheMin<-climat$tpsdomtrav.marche_h*60+climat$tpsdomtrav.marche_m
-
 
 #Construction d'un "score écolo"
 climat$ScoreEcolo<-0
