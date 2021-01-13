@@ -133,7 +133,7 @@ ggplot(drop_na(climat, sitpro),
 
 ## Doctorant·es
 
-Il y a 18% de doctorant·es dans l'échantillon.
+Il y a 18% de doctorant·es (toutes situations confondues) dans l'échantillon.
 
 ## Disciplines et BAP
 
@@ -148,7 +148,8 @@ ggplot(drop_na(climat, discipline_agr),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="",
-       title="Discipline principale") +
+       title="Discipline principale", 
+       caption="Lecture : 15% des répondant·es ont déclaré comme discipline principale une discipline relevant des sciences humaines.") +
   source_champ(nrow(drop_na(climat, discipline_agr)))
 ```
 ```{r echo=FALSE}
@@ -162,7 +163,7 @@ drop_na(climat, bap) %>%
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(x="Proportion parmi les répondant·es ITA", y="",
-       title="Branche d'activité professionnelle (BAP) des ITA",
+       title="Branche d'activité professionnelle (BAP) des ITA", 
        caption=sprintf("Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : ITA affilié·es à une unité du CNRS (n=%i)", nrow(drop_na(climat, bap))))
 
 ```
@@ -185,7 +186,9 @@ ggplot(drop_na(climat, acthum3),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="",
-       title="Les activités humaines sont-elles la cause du changement climatique\n(hausse des températures depuis une centaine d'années) ?") +
+       title="Les activités humaines sont-elles la cause du changement climatique\n(hausse des températures depuis une centaine d'années) ?", 
+       caption="Lecture : 95,1% des répondant·es ont déclaré que les activités humaines sont
+       l'unique cause ou, du moins, jouent un grand rôle dans le changement climatique.") +
   source_champ(nrow(drop_na(climat, acthum3)))
 ```
 
@@ -201,7 +204,8 @@ ggplot(drop_na(climat, preoccupe),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="",
-       title="Dans quelle mesure êtes-vous préoccupé·e par le changement climatique ?") +
+       title="Dans quelle mesure êtes-vous préoccupé·e par le changement climatique ?", 
+       caption="Lecture : 31,7% des répondant·es se déclarent extrêmement préocupé·es par le changement climatique.") +
   source_champ(nrow(drop_na(climat, preoccupe)))
 
 ```
@@ -219,7 +223,8 @@ ggplot(drop_na(climat, pluspreoccupe),
             hjust=-0.2, size=3) +
   theme(plot.title=element_text(size=10), plot.subtitle=element_text(size=8)) +
   labs(x="Proportion des répondant·es", y="",
-       title="Êtes-vous plus ou moins préoccupé·e par le changement climatique qu'il y a 5 ans?") +
+       title="Êtes-vous plus ou moins préoccupé·e par le changement climatique qu'il y a 5 ans?", 
+       caption="Lecture : 44,6% des répondant·es se déclarent beaucoup plus préocupé·es par le changement climatique qu'il y a cinq ans.") +
   source_champ(nrow(drop_na(climat, pluspreoccupe)))
 ```
 
@@ -238,7 +243,10 @@ ggplot(drop_na(climat, chgtpratique),
   labs(x="Proportion des répondant·es", y="",
        title="Pensez−vous que l'urgence climatique exige des changements profonds\ndans la pratique de nos métiers ?",
       
-       caption="Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS (n=6342)")
+       caption="Lecture: 47% des répondant·es se déclarent 
+tout à fait d'accord avec l'idée selon laquelle l'urgence climatique exige 
+des changements profonds dans la pratique de nos métiers.
+       Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS (n=6342)")
 ```
 
 # Pratiques des personnes et des laboratoires
@@ -252,12 +260,14 @@ dat <- rbind(data.frame(variable="Vous pouvez trier vos déchets", valeur=climat
               data.frame(variable="Il existe une charte/un groupe de travail/un·e responsable\npour réduire l'empreinte écologique des activités de recherche", valeur=climat$labopratiques.charte),
               data.frame(variable="Des mesures ont été mises en œuvre pour limiter\n l'impact environnemental des pots/buffets", valeur=climat$labomesures.pots)) %>%
      mutate(variable=factor(variable, levels=unique(variable)),
-           valeur=fct_relevel(valeur, c("Oui", "Non, mais la question a été abordée", "Non concerné·e", "Non", "Je ne sais pas")))
+           valeur=fct_relevel(valeur, c(
+            "Oui", "Non, mais la question a été abordée", 
+            "Non concerné·e", "Je ne sais pas", "Non")))
 
 drop_na(dat) %>%
     ggplot(aes(x=variable)) +
     geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
-    scale_fill_manual(values=c("light grey", "#d7191c", "grey", "#a6d96a", "#1a9641")) +
+    scale_fill_manual(values=c("#d7191c", "grey70", "grey40", "#a6d96a", "#1a9641")) +
      scale_y_continuous(labels=scales::percent_format(),
                         sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
      coord_flip() + labs(fill="") +
