@@ -619,7 +619,7 @@ DFDistAvion <- climat %>%
                            "Moins de 3h de train",
                            if_else(volstrain6h == "Oui" | volstrain6h == "Parfois",
                                    "Entre 3h et 6h de train",
-                                   "Plus de 6h de train"))) %>%
+                                   "Plus de 6h de train ou impossible"))) %>%
   group_by(volstrain) %>%
   summarize(DistTotale=sum(volsges*volsnb, na.rm=T)) %>%
   drop_na(volstrain) %>%
@@ -633,7 +633,8 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volstrain, prop) )) +
             hjust=-0.2, size=3)+
   coord_cartesian(xlim=c(0, 1)) +
   labs(y="", x=bquote("Part du total des émissions en" ~CO[2] *"e"),
-       title="Répartition des émissions de gaz à effet de serre des déplacements professionnels\nen avion selon le temps nécessaire pour faire ce même déplacement en train") +
+       title="Répartition des émissions de gaz à effet de serre des déplacements professionnels\nen avion selon le temps nécessaire pour faire ce même déplacement en train", 
+       caption="0,2% des émissions de gaz à effet de serre liées à des déplacements en avion correspondent à des déplacements qui auraient pu être réalisés en moins de 3h en train.") +
   source_champ()
 
 ```
@@ -673,7 +674,8 @@ ggplot(raisons, aes(x=prop, y=fct_reorder(TypeRaison, prop))) +
             hjust=-0.2, size=3) +
   coord_cartesian(xlim=c(0, 0.68)) +
   labs(y="", x="Proportion parmi les répondant·es concerné·es",
-       title="Raison(s) pour lesquelles les répondant·es ont pris l'avion\nalors que le même trajet en train prenait moins de 6h") +
+       title="Raison(s) pour lesquelles les répondant·es ont pris l'avion\nalors que le même trajet en train prenait moins de 6h", 
+       caption="Pour 66% des répondant·es, le fait que l'avion soit plus rapide fait partie des raisons pour lesquelles ils ou elles ont pris l'avion pour un trajet qui prend moins de 6h en train.") +
   source_champ(sum(aumoinsunecochee))
 ```
 
