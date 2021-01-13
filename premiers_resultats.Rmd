@@ -691,7 +691,8 @@ ggplot(drop_na(climat, trainavion),
   coord_cartesian(xlim=c(0, 0.42)) +
   labs(x="Proportion des répondant·es", y="", 
        title ="Au cours des 5 dernières années, avez-vous, pour des raisons environnementales,\npris le train plutôt que l’avion dans le cadre professionnel\nalors que le trajet était plus long ?") +
-  source_champ(nrow(drop_na(climat, trainavion)))
+  source_champ(nrow(drop_na(climat, trainavion)),
+               "Lecture : Dans les cinq dernières années, 36% des répondant·es ont pris le train plutôt que l'avion, \nalors que le trajet était plus long, pour des raisons environnementales.")
 ```
 
 ## Avoir renoncé à un déplacement à l'étranger pour des raisons environnementales
@@ -710,7 +711,8 @@ ggplot(drop_na(climat, renoncedep.env),
   labs(x="Proportion des répondant·es", y="", 
        title = "En 2019, avez-vous renoncé à un ou plusieurs déplacements
 professionnels à l’étranger pour des considérations environnementales ?") +
-  source_champ(nrow(drop_na(climat, renoncedep.env)))
+  source_champ(nrow(drop_na(climat, renoncedep.env)),
+               "Lecture : En 2019, 14% des répondant·es ont renoncé à un déplacement professionnel \npour des considérations environnementales et c'était une raison déterminante de ce choix.")
 ```
 
 ## Travail à domicile
@@ -728,7 +730,8 @@ ggplot(drop_na(climat, joursdomicile),
        title = "En temps normal (avant le confinement), combien de jours en moyenne 
 travaillez-vous uniquement de chez vous ? Ne tenez pas compte des éventuels 
 jours travaillés le week-end.") +
-  source_champ(nrow(drop_na(climat, joursdomicile)))
+  source_champ(nrow(drop_na(climat, joursdomicile)),
+               "Lecture : 48% des répondant·es ne travaillent jamais de chez eux.")
 ```
 
 ## Déplacements domicile-travail
@@ -762,7 +765,8 @@ ggplot(TpsTransportDomT,  aes(x=prop, y=fct_reorder(TypeTransport, prop) )) +
        x="Proportion du temps total passé dans les déplacements domicile-travail",
        title="Part du temps total passé dans les déplacements domicile-travail,
 par l'ensemble des répondant·es, par mode de transport") +
-  source_champ(sum(climat$tpsdomtravrempli))
+  source_champ(sum(climat$tpsdomtravrempli),
+               "Lecture : Sur 100 heures de trajet domicile-travail, les répondant·es en passent 24 seul·es dans leur voiture.")
 ```
 
 ## Raisons de ne pas covoiturer
@@ -798,7 +802,8 @@ ggplot(Covoit,  aes(x=prop, y=fct_reorder(RaisonsPasCovoit, prop) )) +
   coord_cartesian(xlim=c(0, 0.47)) +
   labs(y="", x="Proportion parmi les répondant·es autosolistes",
        title="Pour les trajets que vous réalisez seul·e dans votre voiture,\npourquoi ne faites-vous pas du covoiturage ?",
-       caption=sprintf("Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS prenant la voiture seul·es\npour leurs trajets domicile-travail (n=%i)", sum(aumoinsunecochee)))
+       caption=sprintf("Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS prenant la voiture seul·es\npour leurs trajets domicile-travail (n=%i)", sum(aumoinsunecochee)),
+               "Lecture : 44% des répondant·es qui ne covoiturent pas en passent 24 seul·es dans leur voiture.")
 
 ```
 
@@ -855,7 +860,8 @@ drop_na(dat) %>%
             hjust=-0.2, size=3) +
   labs(y="", x="Proportion des répondant·es",
        title="Part des répondants n'ayant jamais testé chaque usage de la visioconférence") +
-  source_champ(max(table(drop_na(dat)$variable)))
+  source_champ(max(table(drop_na(dat)$variable)),
+               "Lecture : 26% des répondant·es n'ont jamais testé la visioconférence pour un oral de jury.")
 
 drop_na(dat[dat$valeur != "Je n'ai jamais testé",]) %>%
   ggplot(aes(x=variable)) +
@@ -869,7 +875,8 @@ drop_na(dat[dat$valeur != "Je n'ai jamais testé",]) %>%
   labs(y="Proportion parmi les répondant·es ayant déjà testé", x="", fill="",
        title="Actuellement, pour quels usages la visioconférence ou l'audioconférence 
        vous semblent-elles adaptées ?",
-       caption=sprintf("Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS ayant déjà testé chaque usage de la visioconférence (n=%i)",  max(table(drop_na(dat[dat$valeur != "Je n'ai jamais testé",])$variable))))
+       caption=sprintf("Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS ayant déjà testé chaque usage de la visioconférence (n=%i)",  max(table(drop_na(dat[dat$valeur != "Je n'ai jamais testé",])$variable))),
+               "Lecture : Plus de la moitié des répondant·es l'ayant déjà testé trouvent que la visioconférence est très adaptée à une réunion de 3 à 5 personnes. Environ 20% trouvent qu'elle n'est pas du tout adaptée à un oral de jury.")
 
 ```
 
@@ -913,7 +920,8 @@ drop_na(dat) %>%
        title="Imaginons une réunion d’une journée, située à 2h de votre domicile
 en voiture. Les raisons suivantes pourraient-elles vous pousser à
 privilégier la visioconférence ou l’audioconférence à un déplacement ?") +
-  source_champ(max(table(drop_na(dat)$variable)))
+  source_champ(max(table(drop_na(dat)$variable)),
+               "Lecture : Un quart des répondant·es déclarent que pouvoir faire autre chose en même temps que la réunion n'est pas du tout une raison pouvant les pousser à privilégier la visioconférence à un déplacement dans cette situations.")
 
 ```
 
@@ -932,7 +940,8 @@ ggplot(drop_na(climat, visioavtconf),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="", title="Avant le confinement quel était votre usage habituel de la visioconférence
 ou de l’audioconférence dans le cadre professionnel ?") +
-  source_champ(nrow(drop_na(climat, visioavtconf)))
+  source_champ(nrow(drop_na(climat, visioavtconf)),
+               "Lecture : 30,4% des répondant·es n'avaient jamais usage de la visioconférence avant le confinement.")
 ```
 
 ## Evolution de l'opinion sur la visioconférence depuis le confinement
@@ -949,7 +958,8 @@ ggplot(drop_na(climat, visioapresconf),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="", title="Depuis le confinement, votre expérience vous a-t-elle rendu·e plus favorable
 ou moins favorable à la visioconférence ou l’audioconférence ?") +
-  source_champ(nrow(drop_na(climat, visioapresconf)))
+  source_champ(nrow(drop_na(climat, visioapresconf)),
+               "Lecture : 29% des répondant·es déclarent être beaucoup plus favorable à la visioconférence qu'avant le confinement.")
 
 ```
 
@@ -974,7 +984,8 @@ ggplot(drop_na(climat, solreducrech2),
             hjust=-0.2, size=3) +
     labs(x="Proportion des répondant·es", y="",
          title="La France s’est engagée à réduire d’un tiers ses émissions\nde gaz à effet de serre d'ici à 2030.\nDans ce cadre, pensez-vous que la recherche publique doit :") +
-  source_champ(nrow(drop_na(climat, solreducrech2)))
+  source_champ(nrow(drop_na(climat, solreducrech2)),
+               "Lecture : 48% des répondant·es pensent que la recherche publique doit montrer l'exemple.")
 ```
 
 ## Réductions individuelles des émissions de GES dans le cadre professionnel d'ici à 2030
