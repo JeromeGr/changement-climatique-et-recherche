@@ -425,7 +425,8 @@ ggplot(drop_na(climat, solevolges.conf),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="",
-       title="Au cours des 5 dernières années (hors confinement), diriez vous que vos émissions\nde gaz à effet de serre liées à vos vols en avion pour les conférences, réunions ont...") +
+       title="Au cours des 5 dernières années (hors confinement), diriez vous que vos émissions\nde gaz à effet de serre liées à vos vols en avion pour les conférences, réunions ont...", caption= "Lecture: 6% des répondant·es déclarent qu'au cours des cinq dernières années,
+       leurs émissions liées à des vols en avion ont fortement augmenté.") +
   source_champ(nrow(drop_na(climat, solevolges.conf)))
 ```
 
@@ -447,7 +448,7 @@ ggplot(drop_na(climat, volshTot),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="",
-       title="Heures de vol en avion dans le cadre professionnel en 2019") +
+       title="Heures de vol en avion dans le cadre professionnel en 2019", caption= "Lecture: 75% des répondant·es déclarent n'avoir pas volé au cours des cinq dernières années (0h de vol), 10% ont volé mais moins de 10h.") +
   source_champ(nrow(drop_na(climat, volshTot)))
 ```
 
@@ -464,7 +465,8 @@ ggplot(drop_na(climat, vols2ans),
             hjust=-0.2, size=3) +
   labs(x="Proportion parmi les répondant·es n'ayant pas pris l'avion en 2019",
        y="",
-       title="Avez-vous pris l'avion dans le cadre professionnel en 2017 et 2018 ?",
+       title="Avez-vous pris l'avion dans le cadre professionnel en 2017 et 2018 ?", 
+       caption= "Lecture: 66% des répondant·es n'ayant pas pris l'avion en 2019 ne l'ont pas non plus pris en 2017 et 2018, et 15% l'ont pris pour une durée total de moins de 10h sur ces deux années.",
        caption=sprintf("Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS n'ayant pas pris l'avion en 2019 (n=%i)", nrow(drop_na(climat, vols2ans))))
 ```
 
@@ -492,7 +494,7 @@ ggplot(DFNbJourTravailles,  aes(x=prop, y=volsjours )) +
   coord_cartesian(xlim=c(0, 0.62)) +
   labs(y="", x="Part des déplacements en avion",
        title="Part des déplacements professionnels en avion,
-       selon le temps travaillé sur place") +
+       selon le temps travaillé sur place", caption= "Lecture: Sur 100 déplacements professionnels en avion, 5 l'ont été pour faire un séjour de plus d'un mois, 59 pour un séjour de deux jours à une semaine.") +
   source_champ()
 
 #En fonction de la distance totale parcourue
@@ -514,7 +516,8 @@ ggplot(DFNbJourTravailles,  aes(x=prop, y=volsjours )) +
   coord_cartesian(xlim=c(0, 0.53)) +
   labs(y="", x="Part du total des distances parcourues en avion",
        title="Part du total des distances parcourues en avion,
-       selon le temps travaillé sur place") +
+       selon le temps travaillé sur place",
+       caption= "Lecture: 12% des distances parcourues en avion l'ont été pour faire un séjour de plus d'un mois. Autrement dit, sur 100 km parcourus en avion, 12 le sont pour faire des séjours de plus d'un mois.") +
   source_champ()
 
 
@@ -548,7 +551,7 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volsmotif, prop) )) +
   coord_cartesian(xlim=c(0, 0.42)) +
   labs(y="",
        x="Part des déplacements en avion",
-       title="Motif principal pour les déplacements professionnels\neffectués en avion") +
+       title="Motif principal pour les déplacements professionnels\neffectués en avion", caption= "Lecture: Sur 100 déplacements professionnels en avion, 40 l'ont été pour faire une présentation dans une conférence.") +
   source_champ()
 
 #En fonction de la distance totale parcourue
@@ -569,7 +572,8 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volsmotif, prop) )) +
             hjust=-0.2, size=3)+
   coord_cartesian(xlim=c(0, 0.45)) +
   labs(y="", x="Part du total des distances parcourues en avion",
-       title="Part du total des distances parcourues en avion\nselon le motif principal du déplacement professionnel") +
+       title="Part du total des distances parcourues en avion\nselon le motif principal du déplacement professionnel",
+       caption= "Lecture: 43% des distances parcourues en avion l'ont été pour faire des présentations dans des conférences. Autrement dit, sur 100 km parcourus en avion, 43 le sont pour ce motif.") +
   source_champ()
 
 ```
@@ -589,7 +593,10 @@ ggplot(DFDistMoyAvion,  aes(x=DistMoy, y=fct_reorder(volsmotif, DistMoy) )) +
   geom_col() +
     labs(y="",
          title="Distance parcourue en avion selon le motif principal\ndu déplacement professionnel",
-       x="Distance moyenne parcourue en avion (en km)") +
+       x="Distance moyenne parcourue en avion (en km)",
+        caption="En moyenne, les déplacements en avion liés au terrain ou au recueil 
+de données font un peu plus de 10000 km, 
+contre environ 7000 pour les déplacements liés aux conférences.") +
   source_champ()
 
 ```
