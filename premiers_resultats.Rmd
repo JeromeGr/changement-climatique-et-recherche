@@ -525,12 +525,6 @@ ggplot(DFNbJourTravailles,  aes(x=prop, y=volsjours )) +
        title="Part du total des distances parcourues en avion,
        selon le temps travaillé sur place") +
   source_champ(extra="Lecture : sur 100 km parcourus en avion, 12 km l'ont été pour des séjours de plus d'un mois.")
-
-
-
-###Attention : par défaut, il faudrait fixer les volnb indiqués NA à la valeur 1 (oubli des gens)
-
-
 ```
 
 ## Motif principal des déplacements professionnels en avion
