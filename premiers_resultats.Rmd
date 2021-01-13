@@ -878,18 +878,18 @@ drop_na(dat[dat$valeur != "Je n'ai jamais testé",]) %>%
 
 ```{r echo=FALSE, fig.height=5}
 
-dat <- rbind(data.frame(variable="Gagner du temps",
-                        valeur=climat$visioprivilegiee.temps),
-             data.frame(variable="Limiter la fatigue due au déplacement", 
-                        valeur=climat$visioprivilegiee.fatigue),
-             data.frame(variable="Limiter les frais de mission", 
-                        valeur=climat$visioprivilegiee.frais),
+dat <- rbind(data.frame(variable="Pouvoir faire autre chose\nen même temps que la réunion",
+                        valeur=climat$visioprivilegiee.autrechose),
              data.frame(variable="Mieux concilier vos contraintes familiales\net votre activité professionnelle", 
                         valeur=climat$visioprivilegiee.famille),
+             data.frame(variable="Limiter les frais de mission", 
+                        valeur=climat$visioprivilegiee.frais),
+             data.frame(variable="Limiter la fatigue due au déplacement", 
+                        valeur=climat$visioprivilegiee.fatigue),
              data.frame(variable="Limiter vos émissions\nde gaz à effet de serre", 
                         valeur=climat$visioprivilegiee.emissions),
-             data.frame(variable="Pouvoir faire autre chose\nen même temps que la réunion", 
-                        valeur=climat$visioprivilegiee.autrechose),
+             data.frame(variable="Gagner du temps",
+                        valeur=climat$visioprivilegiee.temps),
              data.frame(variable="Réunir facilement de nombreuses personnes\ntrès éloignées géographiquement", 
                         valeur=climat$visioprivilegiee.reunir))%>%
   mutate(variable=factor(variable, levels=unique(variable)),
