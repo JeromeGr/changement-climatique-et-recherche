@@ -60,8 +60,10 @@ data.frame(statut=factor(names(repstatut)), taux=repstatut) %>%
   geom_text(aes(label=scales::percent(repstatut, accuracy=1, decimal.mark=",")),
             stat="identity", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="Proportion des invitations envoyées", y="",
-       title="Taux de réponse à la première page du questionnaire selon le statut")
+  labs(x="Proportion", y="",
+       title="Taux de réponse à la première page du questionnaire selon le statut", 
+       caption="Lecture : 34% des ingénieur.es de recherche à qui une invication a été envoyée
+       ont répondu au moins à la première page du questionnaire.")
 ```
 
 ## Taux de réponse par institut
@@ -87,7 +89,9 @@ data.frame(statut=factor(names(repinstitut)), taux=repinstitut) %>%
             stat="identity", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(x="Proportion des invitations envoyées", y="",
-       title="Taux de réponse à la première page\ndu questionnaire selon l'institut")
+       title="Taux de réponse à la première page\ndu questionnaire selon l'institut", 
+       caption="Lecture : 31% des personnes affiliées à l'INSU à qui une invication a été envoyée
+       ont répondu au moins à la première page du questionnaire.")
 ```
 
 # Informations générales
@@ -104,7 +108,8 @@ ggplot(drop_na(climat, statut),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="",
-       title="Statut d'emploi principal") +
+       title="Statut d'emploi principal", 
+       caption="Lecture : 65,8% des répondant·es sont fonctionnaires.") +
   source_champ(nrow(drop_na(climat, statut)))
 ```
 
@@ -120,7 +125,8 @@ ggplot(drop_na(climat, sitpro),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="",
-       title="Situation professionnelle principale") +
+       title="Situation professionnelle principale", 
+       caption="Lecture : 13% des répondant·es sont doctorant·es contractuel·les.") +
   source_champ(nrow(drop_na(climat, sitpro)))
 ```
 
@@ -682,7 +688,7 @@ ggplot(drop_na(climat, renoncedep.env),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="", 
        title = "En 2019, avez-vous renoncé à un ou plusieurs déplacements
-       professionnels à l’étranger pour des considérations
+       professionnels à l’étranger pour des considérations
        environnementales ?" )+
   source_champ(nrow(drop_na(climat, renoncedep.env)))
 ```
