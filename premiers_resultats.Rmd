@@ -5,12 +5,21 @@ output:
   html_document:
     fig_width: 7.5
     fig_height: 4.5
+    dev: svg
     fontsize: 12pt
     highlight: haddock
     number_sections: yes
     theme: united
     toc: yes
     toc_float: yes
+
+author:
+- name: Équipe « Représentations et pratiques » de Labos 1point5
+- name: Marianne Blanchard (Université Toulouse Jean-Jaurès, CERTOP)
+- name: Milan Bouchet-Valat (Ined)
+- name: Damien Cartron (CNRS, CMH)
+- name: Jérôme Greffion (Université Paris Nanterre, IDHES)
+- name: Julien Gros (CNRS, LEST)
 ---
 
 ```{r preparation, echo=FALSE, message=FALSE}
@@ -36,8 +45,7 @@ source_champ <- function(n=NA, extra=NA) {
 }
 ```
 
-Ce document est complémentaire des documents contenant le questionnaire complet et une présentation générale de l'enquête (liens ?). Il vise à rendre rapidement public les réponses à une sélection de questions, sans avoir recours à des traitements statistiques avancés et sans fournir d'interprétation. Il prend la forme d'une série de graphiques permettant de visualiser facilement ce que les participant·es à l'enquête ont répondu.
-Il s'agit d'un document d'étape qui pourra être modifié et complété par la suite. 
+Ce document est complémentaire de la présentation générale de l'enquête disponible **ici (LIEN À INSÉRER)**. Il vise à rendre rapidement publiques les réponses à une sélection de questions, sans avoir recours à des traitements statistiques avancés et sans fournir d'interprétation. Il s'agit d'un document d'étape qui pourra être modifié et complété par la suite.
 
 # Taux de réponse
 
