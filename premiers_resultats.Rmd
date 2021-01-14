@@ -31,7 +31,7 @@ theme_set(theme_minimal() + theme(plot.title=element_text(size=11)))
 update_geom_defaults("bar", list(fill="#045a8d"))
 update_geom_defaults("col", list(fill="#045a8d"))
 
-texte_legende <- "Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS"
+texte_legende <- "Source : enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS"
 source_champ <- function(n=NA, extra=NA) {
   if(is.na(n))
     texte <- texte_legende
@@ -76,7 +76,7 @@ data.frame(statut=factor(names(repstatut)), taux=repstatut) %>%
   labs(x="Proportion", y="",
        title="Taux de réponse à la première page du questionnaire selon le statut", 
        caption="Lecture : 34% des ingénieur·es de recherche à qui une invitation a été envoyée
-       ont répondu au moins à la première page du questionnaire.")
+       ont répondu au moins à la première page du questionnaire")
 ```
 
 ## Taux de réponse par institut
@@ -104,7 +104,7 @@ data.frame(statut=factor(names(repinstitut)), taux=repinstitut) %>%
   labs(x="Proportion des invitations envoyées", y="",
        title="Taux de réponse à la première page\ndu questionnaire selon l'institut", 
        caption="Lecture : 31% des personnes affiliées à l'INSU à qui une invitation a été envoyée
-       ont répondu au moins à la première page du questionnaire.")
+       ont répondu au moins à la première page du questionnaire")
 ```
 
 # Informations générales
@@ -123,7 +123,7 @@ ggplot(drop_na(climat, statut),
   labs(x="Proportion des répondant·es", y="",
        title="Statut d'emploi principal") +
   source_champ(nrow(drop_na(climat, statut)),
-               "Lecture : 65,8% des répondant·es sont fonctionnaires.")
+               "Lecture : 65,8% des répondant·es sont fonctionnaires")
 ```
 
 ## Situation professionnelle
@@ -140,7 +140,7 @@ ggplot(drop_na(climat, sitpro),
   labs(x="Proportion des répondant·es", y="",
        title="Situation professionnelle principale") +
   source_champ(nrow(drop_na(climat, sitpro)),
-               "Lecture : 13% des répondant·es sont doctorant·es contractuel·les.")
+               "Lecture : 13% des répondant·es sont doctorant·es contractuel·les")
 ```
 
 
@@ -163,7 +163,7 @@ ggplot(drop_na(climat, discipline_agr),
   labs(x="Proportion des répondant·es", y="",
        title="Discipline principale") +
   source_champ(nrow(drop_na(climat, discipline_agr)),
-               "Lecture : 15% des répondant·es ont une discipline principale relevant des sciences humaines.")
+               "Lecture : 15% des répondant·es ont une discipline principale relevant des sciences humaines")
 ```
 ```{r echo=FALSE}
 drop_na(climat, bap) %>%
@@ -202,7 +202,7 @@ ggplot(drop_na(climat, acthum3),
   labs(x="Proportion des répondant·es", y="",
        title="Les activités humaines sont-elles la cause du changement climatique\n(hausse des températures depuis une centaine d'années) ?") +
   source_champ(nrow(drop_na(climat, acthum3)),
-               "Lecture : pour 95,1% des répondant·es, les activités humaines jouent un grand rôle ou sont l'unique cause du changement climatique.")
+               "Lecture : pour 95,1% des répondant·es, les activités humaines jouent un grand rôle ou sont l'unique cause du changement climatique")
 ```
 
 ## Préoccupation par rapport au changement climatique
@@ -219,7 +219,7 @@ ggplot(drop_na(climat, preoccupe),
   labs(x="Proportion des répondant·es", y="",
        title="Dans quelle mesure êtes-vous préoccupé·e par le changement climatique ?") +
   source_champ(nrow(drop_na(climat, preoccupe)),
-               "Lecture : 31,7% des répondant·es sont extrêmement préoccupé·es par le changement climatique.")
+               "Lecture : 31,7% des répondant·es sont extrêmement préoccupé·es par le changement climatique")
 
 ```
 
@@ -238,7 +238,7 @@ ggplot(drop_na(climat, pluspreoccupe),
   labs(x="Proportion des répondant·es", y="",
        title="Êtes-vous plus ou moins préoccupé·e par le changement climatique qu'il y a 5 ans ?") +
   source_champ(nrow(drop_na(climat, pluspreoccupe)),
-               "Lecture : 44,6% des répondant·es sont beaucoup plus préocupé·es par le changement climatique qu'il y a cinq ans.")
+               "Lecture : 44,6% des répondant·es sont beaucoup plus préocupé·es par le changement climatique qu'il y a cinq ans")
 ```
 
 ## Changement des pratiques
@@ -257,7 +257,7 @@ ggplot(drop_na(climat, chgtpratique),
   labs(x="Proportion des répondant·es", y="",
        title="Pensez−vous que l'urgence climatique exige des changements profonds\ndans la pratique de nos métiers ?") +
   source_champ(nrow(drop_na(climat, chgtpratique)),
-               "Lecture: 47% des répondant·es pensent que l'urgence climatique exige des changements profonds dans la pratique de nos métiers.")
+               "Lecture: 47% des répondant·es pensent que l'urgence climatique exige des changements profonds dans la pratique de nos métiers")
 ```
 
 # Pratiques des personnes et des laboratoires
@@ -287,7 +287,7 @@ drop_na(dat) %>%
      labs(y="Proportion des répondant·es", x="",
           title="Actions mises en œuvre 
 dans les laboratoires/unités de recherche :") +
-     source_champ(max(table(drop_na(dat)$variable)), "Lecture : 77% des répondant·es déclarent pouvoir trier leurs déchets dans leur laboratoire.")
+     source_champ(max(table(drop_na(dat)$variable)), "Lecture : 77% des répondant·es déclarent pouvoir trier leurs déchets dans leur laboratoire")
 ```
 
 ## Matériel informatique utilisé
@@ -322,7 +322,8 @@ ggplot(infoTot,  aes(x=prop, y=X1 )) +
   coord_cartesian(xlim=c(0, 0.78)) +
   labs(y="", x="Part de l'ensemble des ordinateurs et tablettes",
        title="") +
-  source_champ(sum(rowSums(!is.na(select(climat, starts_with("ordis.")))) > 0), "75% des ordinateurs et des tablettes sont jugé·es indispensables par leur utilisateur·ice.")
+  source_champ(sum(rowSums(!is.na(select(climat, starts_with("ordis.")))) > 0),
+               "75% des ordinateurs et des tablettes sont jugé·es indispensables par leur utilisateur·ice")
 
 ```
 
@@ -362,7 +363,7 @@ ggplot(informatique2,  aes(x=prop, y=fct_reorder(TypeOrdi, prop), fill= set )) +
        title="Type de matériel utilisé, selon son âge et son caractère indispensable") +
   source_champ(sum(rowSums(!is.na(select(climat, starts_with("ordis.")))) > 0),
   "Lecture : Sur 100 tablettes et ordinateurs utilisé·es professionnellement, 14,3 sont des ordinateurs partagés,
-11,6 sont des ordinateurs partagés qui ont moins de 5 ans, et 5,8 sont des ordinateurs partagés jugés indispensables.")
+11,6 sont des ordinateurs partagés qui ont moins de 5 ans, et 5,8 sont des ordinateurs partagés jugés indispensables")
 
 ```
 
@@ -402,7 +403,8 @@ ggplot(chgtOrdi,  aes(x=prop, y=fct_reorder(TypeRaisonChgtOrdi, prop) )) +
   labs(y="", x="Proportion des répondant·es",
        title="Raison(s) pour lesquelles les répondant·es ont changé 
 leur ordinateur") +
-  source_champ(sum(aumoinsunecochee), "30% des répondant·es ont changé leur dernier ordinateur car il ne fonctionnait plus très bien.")
+  source_champ(sum(aumoinsunecochee),
+               "30% des répondant·es ont changé leur dernier ordinateur car il ne fonctionnait plus très bien")
 
 ```
 
@@ -423,7 +425,7 @@ ggplot(drop_na(climat, reliquat.ordi),
  un reliquat de budget d'acheter un ordinateur/écran/tablette 
  alors que ce n'était pas vraiment indispensable ?") + 
   source_champ(nrow(drop_na(climat, reliquat.ordi)),
-               "Lecture : 20% des répondant·es ont utilisé un reliquat de budget pour acheter du matériel non indispensable.")
+               "Lecture : 20% des répondant·es ont utilisé un reliquat de budget pour acheter du matériel non indispensable")
 ```
  
 ## Vols pour les conférences : évolution des émissions de GES 
@@ -441,7 +443,7 @@ ggplot(drop_na(climat, solevolges.conf),
   labs(x="Proportion des répondant·es", y="",
        title="Au cours des 5 dernières années (hors confinement), diriez vous que vos émissions\nde gaz à effet de serre liées à vos vols en avion pour les conférences/réunions ont...") +
   source_champ(nrow(drop_na(climat, solevolges.conf)),
-               "Lecture : 6% des répondant·es ont fortement augmenté leurs émissions liées à des vols pour les conférences/réunions depuis 5 ans.")
+               "Lecture : 6% des répondant·es ont fortement augmenté leurs émissions liées à des vols pour les conférences/réunions depuis 5 ans")
 ```
 
 # Transports à des fins professionnelles
@@ -464,7 +466,7 @@ ggplot(drop_na(climat, volshTot),
   labs(x="Proportion des répondant·es", y="",
        title="Heures de vol en avion dans le cadre professionnel en 2019") +
   source_champ(nrow(drop_na(climat, volshTot)),
-               "Lecture : 75% des répondant·es n'ont pas volé au cours des cinq dernières années, et 10% ont volé mais moins de 10h.")
+               "Lecture : 75% des répondant·es n'ont pas volé au cours des cinq dernières années, et 10% ont volé mais moins de 10h")
 ```
 
 ## Heures de vol en avion en 2017 et 2018 pour celles et ceux n'ayant pas pris l'avion en 2019
@@ -511,7 +513,7 @@ ggplot(DFNbJourTravailles,  aes(x=prop, y=volsjours )) +
        title="Part des déplacements professionnels en avion,
 selon le temps travaillé sur place") +
   source_champ(sum(climat$volsremplis, na.rm=TRUE),
-               "Lecture : sur 100 vols professionnels, 5 correspondaient à un séjour de plus d'un mois.")
+               "Lecture : sur 100 vols professionnels, 5 correspondaient à un séjour de plus d'un mois")
 
 #En fonction de la distance totale parcourue
 DFNbJourTravailles<- climat %>% 
@@ -534,7 +536,7 @@ ggplot(DFNbJourTravailles,  aes(x=prop, y=volsjours )) +
        title="Part du total des distances parcourues en avion,
        selon le temps travaillé sur place") +
   source_champ(sum(climat$volsremplis, na.rm=TRUE),
-               "Lecture : sur 100 km parcourus en avion, 12 km l'ont été pour des séjours de plus d'un mois.")
+               "Lecture : sur 100 km parcourus en avion, 12 km l'ont été pour des séjours de plus d'un mois")
 ```
 
 ## Motif principal des déplacements professionnels en avion
@@ -563,7 +565,7 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volsmotif, prop) )) +
        x="Part des déplacements en avion",
        title="Motif principal pour les déplacements professionnels\neffectués en avion") +
   source_champ(sum(climat$volsremplis, na.rm=TRUE),
-               "Lecture : sur 100 vols professionnels, 40 avaient pour motif une présentation dans une conférence.")
+               "Lecture : sur 100 vols professionnels, 40 avaient pour motif une présentation dans une conférence")
 
 #En fonction de la distance totale parcourue
 DFDistAvion<- climat %>% 
@@ -585,7 +587,7 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volsmotif, prop) )) +
   labs(y="", x="Part du total des distances parcourues en avion",
        title="Part du total des distances parcourues en avion\nselon le motif principal du déplacement professionnel") +
   source_champ(sum(climat$volsremplis, na.rm=TRUE),
-               "Lecture : sur 100 km parcourus en avion, 43 km l'ont été pour une présentation dans une conférence.")
+               "Lecture : sur 100 km parcourus en avion, 43 km l'ont été pour une présentation dans une conférence")
 
 ```
 
@@ -606,7 +608,7 @@ ggplot(DFDistMoyAvion,  aes(x=DistMoy, y=fct_reorder(volsmotif, DistMoy) )) +
          title="Distance parcourue en avion selon le motif principal\ndu déplacement professionnel",
        x="Distance moyenne parcourue en avion (en km)") +
   source_champ(sum(climat$volsremplis, na.rm=TRUE),
-               "Lecture : en moyenne, les vols liés au terrain ou au recueil de données font 10 400 km (aller-retour).")
+               "Lecture : en moyenne, les vols liés au terrain ou au recueil de données font 10 400 km (aller-retour)")
 
 ```
 
@@ -641,7 +643,7 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volstrain, prop) )) +
   labs(y="", x=bquote("Part du total des émissions en" ~CO[2] *"e"),
        title="Répartition des émissions de gaz à effet de serre des déplacements professionnels\nen avion selon le temps nécessaire pour faire ce même déplacement en train") +
   source_champ(sum(climat$volsremplis, na.rm=TRUE),
-               "0,2% des émissions de gaz à effet de serre des vols correspondent à des déplacements\nqui auraient pu être réalisés en moins de 3h de train.")
+               "0,2% des émissions de gaz à effet de serre des vols correspondent à des déplacements\nqui auraient pu être réalisés en moins de 3h de train")
 
 ```
 
@@ -682,7 +684,7 @@ ggplot(raisons, aes(x=prop, y=fct_reorder(TypeRaison, prop))) +
   labs(y="", x="Proportion parmi les répondant·es concerné·es",
        title="Raison(s) pour lesquelles les répondant·es ont pris l'avion\nalors que le même trajet en train prenait moins de 6h") +
   source_champ(sum(aumoinsunecochee),
-               "Lecture : pour 66% des répondant·es ayant pris l'avion pour un trajet qui prend moins de 6h en train,\nle fait que l'avion soit plus rapide est une des raisons de l'avoir choisi.")
+               "Lecture : pour 66% des répondant·es ayant pris l'avion pour un trajet qui prend moins de 6h en train,\nle fait que l'avion soit plus rapide est une des raisons de l'avoir choisi")
 ```
 
 ## Avoir pris le train plutôt que l'avion alors que le trajet est plus long
@@ -700,7 +702,7 @@ ggplot(drop_na(climat, trainavion),
   labs(x="Proportion des répondant·es", y="", 
        title ="Au cours des 5 dernières années, avez-vous, pour des raisons environnementales,\npris le train plutôt que l’avion dans le cadre professionnel\nalors que le trajet était plus long ?") +
   source_champ(nrow(drop_na(climat, trainavion)),
-               "Lecture : Dans les cinq dernières années, 36% des répondant·es ont pris le train plutôt que l'avion, \nalors que le trajet était plus long, pour des raisons environnementales.")
+               "Lecture : Dans les cinq dernières années, 36% des répondant·es ont pris le train plutôt que l'avion,\nalors que le trajet était plus long, pour des raisons environnementales")
 ```
 
 ## Avoir renoncé à un déplacement à l'étranger pour des raisons environnementales
@@ -720,7 +722,7 @@ ggplot(drop_na(climat, renoncedep.env),
        title = "En 2019, avez-vous renoncé à un ou plusieurs déplacements
 professionnels à l’étranger pour des considérations environnementales ?") +
   source_champ(nrow(drop_na(climat, renoncedep.env)),
-               "Lecture : en 2019, 14% des répondant·es ont renoncé à un déplacement professionnel\nprincipalement pour des considérations environnementales.")
+               "Lecture : en 2019, 14% des répondant·es ont renoncé à un déplacement professionnel\nprincipalement pour des considérations environnementales")
 ```
 
 ## Travail à domicile
@@ -737,9 +739,9 @@ ggplot(drop_na(climat, joursdomicile),
   labs(x="Proportion des répondant·es", y="", 
        title = "En temps normal (avant le confinement), combien de jours en moyenne 
 travaillez-vous uniquement de chez vous ? Ne tenez pas compte des éventuels 
-jours travaillés le week-end.") +
+jours travaillés le week-end") +
   source_champ(nrow(drop_na(climat, joursdomicile)),
-               "Lecture : 48% des répondant·es ne travaillent jamais de leur domicile.")
+               "Lecture : 48% des répondant·es ne travaillent jamais de leur domicile")
 ```
 
 ## Déplacements domicile-travail
@@ -774,7 +776,7 @@ ggplot(TpsTransportDomT,  aes(x=prop, y=fct_reorder(TypeTransport, prop) )) +
        title="Part du temps total passé dans les déplacements domicile-travail,
 par l'ensemble des répondant·es, par mode de transport") +
   source_champ(sum(climat$tpsdomtravrempli),
-               "Lecture : sur 100 heures de trajet domicile-travail, les répondant·es en passent 24 seul·es dans leur voiture.")
+               "Lecture : sur 100 heures de trajet domicile-travail, les répondant·es en passent 24 seul·es dans leur voiture")
 ```
 
 ## Raisons de ne pas covoiturer
@@ -869,7 +871,7 @@ drop_na(dat) %>%
   labs(y="", x="Proportion des répondant·es",
        title="Part des répondant·es n'ayant jamais testé chaque usage de la visioconférence") +
   source_champ(max(table(drop_na(dat)$variable)),
-               "Lecture : 26% des répondant·es n'ont jamais testé la visioconférence pour un oral de jury.")
+               "Lecture : 26% des répondant·es n'ont jamais testé la visioconférence pour un oral de jury")
 
 drop_na(dat[dat$valeur != "Je n'ai jamais testé",]) %>%
   ggplot(aes(x=variable)) +
@@ -929,7 +931,7 @@ drop_na(dat) %>%
 en voiture. Les raisons suivantes pourraient-elles vous pousser à
 privilégier la visioconférence ou l’audioconférence à un déplacement ?") +
   source_champ(max(table(drop_na(dat)$variable)),
-               "Lecture : pour 62% des répondant·es, pouvoir réunir de nombreuses personnes éloignées\nest une raison pouvant beaucoup les pousser à privilégier la visioconférence.")
+               "Lecture : pour 62% des répondant·es, pouvoir réunir de nombreuses personnes éloignées\nest une raison pouvant beaucoup les pousser à privilégier la visioconférence")
 
 ```
 
@@ -949,7 +951,7 @@ ggplot(drop_na(climat, visioavtconf),
   labs(x="Proportion des répondant·es", y="", title="Avant le confinement quel était votre usage habituel de la visioconférence
 ou de l’audioconférence dans le cadre professionnel ?") +
   source_champ(nrow(drop_na(climat, visioavtconf)),
-               "Lecture : 30,5% des répondant·es n'avaient jamais usage de la visioconférence avant le confinement.")
+               "Lecture : 30,5% des répondant·es n'avaient jamais usage de la visioconférence avant le confinement")
 ```
 
 ## Evolution de l'opinion sur la visioconférence depuis le confinement
@@ -967,7 +969,7 @@ ggplot(drop_na(climat, visioapresconf),
   labs(x="Proportion des répondant·es", y="", title="Depuis le confinement, votre expérience vous a-t-elle rendu·e plus favorable
 ou moins favorable à la visioconférence ou l’audioconférence ?") +
   source_champ(nrow(drop_na(climat, visioapresconf)),
-               "Lecture : 29% des répondant·es sont beaucoup plus favorables à la visioconférence qu'avant le confinement.")
+               "Lecture : 29% des répondant·es sont beaucoup plus favorables à la visioconférence qu'avant le confinement")
 
 ```
 
@@ -993,7 +995,7 @@ ggplot(drop_na(climat, solreducrech2),
     labs(x="Proportion des répondant·es", y="",
          title="La France s’est engagée à réduire d’un tiers ses émissions\nde gaz à effet de serre d'ici à 2030.\nDans ce cadre, pensez-vous que la recherche publique doit :") +
   source_champ(nrow(drop_na(climat, solreducrech2)),
-               "Lecture : 48% des répondant·es pensent que la recherche publique doit réduire ses émissions de plus d'un tiers d'ici à 2030.")
+               "Lecture : 48% des répondant·es pensent que la recherche publique doit réduire ses émissions de plus d'un tiers d'ici à 2030")
 ```
 
 ## Réductions individuelles des émissions de GES dans le cadre professionnel d'ici à 2030
@@ -1021,7 +1023,7 @@ drop_na(dat) %>%
          title="Êtes-vous prêt·e à réduire vos émissions de gaz à effet de serre\nd’ici à 2030 dans les domaines suivants ?") +
   source_champ(max(table(filter(drop_na(dat), valeur != "Non concerné·e")$variable)),
                "Note : la proportion de personnes concernées varie selon la question
-Lecture : 32% des répondant·es déclarent ne pas pouvoir réduire leurs émissions liées aux vols pour les conférences\ncar elles sont déjà très basses.")
+Lecture : 32% des répondant·es déclarent ne pas pouvoir réduire leurs émissions liées aux vols pour les conférences\ncar elles sont déjà très basses")
 ```
 
 ## Réductions individuelles des émissions de GES des dispositifs expérimentaux d'ici à 2030
@@ -1141,7 +1143,7 @@ drop_na(dat) %>%
     labs(y="Proportion des répondant·es", x="",
          title="Quelles actions les institutions et laboratoires\nde recherche devraient-ils mettre en œuvre\npour réduire leurs émissions de gaz à effet de serre ?") +
   source_champ(max(table(drop_na(dat)$variable)),
-               "Lecture : pour 75% des répondant·es, il est prioritaire de privilégier les équipements qui consomment moins d'énergie.")
+               "Lecture : pour 75% des répondant·es, il est prioritaire de privilégier les équipements qui consomment moins d'énergie")
 ```
 
 ## Covoiturage
@@ -1190,7 +1192,7 @@ drop_na(dat) %>%
     labs(y="Proportion des répondant·es", x="") +
     source_champ(max(table(drop_na(dat)$variable)),
                   "* Les personnes ayant répondu négativement à la question précédente sont classées en « Pas du tout d'accord ».
-Lecture : 59% des répondant·es sont tout à fait d'accord avec l'affirmation selon laquelle\nnous allons bientôt vivre une catastrophe écologique majeure.")
+Lecture : 59% des répondant·es sont tout à fait d'accord avec l'affirmation selon laquelle\nnous allons bientôt vivre une catastrophe écologique majeure")
 ```
 
 
