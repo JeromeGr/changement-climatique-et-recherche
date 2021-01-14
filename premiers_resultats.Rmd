@@ -22,6 +22,13 @@ author:
 - name: Julien Gros (CNRS, LEST)
 ---
 
+
+![](Logo Labos 1.5.svg){width=200px}
+
+&nbsp; \
+&nbsp;
+
+
 ```{r preparation, echo=FALSE, message=FALSE}
 library(tidyverse)
 library(ggplot2)
