@@ -512,10 +512,9 @@ ggplot(DFNbJourTravailles,  aes(x=prop, y=volsjours )) +
             hjust=-0.2, size=3)+
   coord_cartesian(xlim=c(0, 0.62)) +
   labs(y="", x="Part des déplacements en avion",
-       title="Part des déplacements professionnels en avion,
-selon le temps travaillé sur place") +
+       title="Temps travaillé sur place lors d'un déplacement professionnel en avion en 2019") +
   source_champ(sum(climat$volsremplis, na.rm=TRUE),
-               "Lecture : sur 100 vols professionnels, 5 correspondaient à un séjour de plus d'un mois")
+               "Lecture : sur 100 vols professionnels en 2019, 5 correspondaient à un séjour de plus d'un mois")
 
 #En fonction de la distance totale parcourue
 DFNbJourTravailles<- climat %>% 
@@ -535,10 +534,10 @@ ggplot(DFNbJourTravailles,  aes(x=prop, y=volsjours )) +
             hjust=-0.2, size=3)+
   coord_cartesian(xlim=c(0, 0.53)) +
   labs(y="", x="Part du total des distances parcourues en avion",
-       title="Part du total des distances parcourues en avion,
-       selon le temps travaillé sur place") +
+       title="Part du total des distances parcourues en avion en 2019,
+selon le temps travaillé sur place") +
   source_champ(sum(climat$volsremplis, na.rm=TRUE),
-               "Lecture : sur 100 km parcourus en avion, 12 km l'ont été pour des séjours de plus d'un mois")
+               "Lecture : sur 100 km parcourus en avion en 2019, 12 km l'ont été pour des séjours de plus d'un mois")
 ```
 
 ## Motif principal des déplacements professionnels en avion
@@ -565,7 +564,7 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volsmotif, prop) )) +
   coord_cartesian(xlim=c(0, 0.42)) +
   labs(y="",
        x="Part des déplacements en avion",
-       title="Motif principal pour les déplacements professionnels\neffectués en avion") +
+       title="Motif principal des déplacements professionnels en avion en 2019") +
   source_champ(sum(climat$volsremplis, na.rm=TRUE),
                "Lecture : sur 100 vols professionnels, 40 avaient pour motif une présentation dans une conférence")
 
@@ -587,7 +586,7 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volsmotif, prop) )) +
             hjust=-0.2, size=3)+
   coord_cartesian(xlim=c(0, 0.45)) +
   labs(y="", x="Part du total des distances parcourues en avion",
-       title="Part du total des distances parcourues en avion\nselon le motif principal du déplacement professionnel") +
+       title="Part du total des distances parcourues en avion en 2019\nselon le motif principal du déplacement professionnel") +
   source_champ(sum(climat$volsremplis, na.rm=TRUE),
                "Lecture : sur 100 km parcourus en avion, 43 km l'ont été pour une présentation dans une conférence")
 
@@ -607,7 +606,7 @@ DFDistMoyAvion<- climat %>%
 ggplot(DFDistMoyAvion,  aes(x=DistMoy, y=fct_reorder(volsmotif, DistMoy) )) +
   geom_col() +
     labs(y="",
-         title="Distance parcourue en avion selon le motif principal\ndu déplacement professionnel",
+         title="Distance moyenne d'un trajet aller-retour en avion en 2019\nselon le motif principal du déplacement professionnel",
        x="Distance moyenne parcourue en avion (en km)") +
   source_champ(sum(climat$volsremplis, na.rm=TRUE),
                "Lecture : en moyenne, les vols liés au terrain ou au recueil de données font 10 400 km (aller-retour)")
@@ -629,7 +628,7 @@ DFDistAvion <- climat %>%
                            "Moins de 3h de train",
                            if_else(volstrain6h == "Oui" | volstrain6h == "Parfois",
                                    "Entre 3h et 6h de train",
-                                   "Plus de 6h de train ou impossible"))) %>%
+                                   "Plus de 6h de train\nou impossible"))) %>%
   group_by(volstrain) %>%
   summarize(DistTotale=sum(volsges*volsnb, na.rm=T)) %>%
   drop_na(volstrain) %>%
@@ -643,7 +642,7 @@ ggplot(DFDistAvion,  aes(x=prop, y=fct_reorder(volstrain, prop) )) +
             hjust=-0.2, size=3)+
   coord_cartesian(xlim=c(0, 1)) +
   labs(y="", x=bquote("Part du total des émissions en" ~CO[2] *"e"),
-       title="Répartition des émissions de gaz à effet de serre des déplacements professionnels\nen avion selon le temps nécessaire pour faire ce même déplacement en train") +
+       title="Répartition des émissions de gaz à effet de serre des déplacements professionnels\nen avion en 2019 selon le temps nécessaire pour faire ce trajet en train") +
   source_champ(sum(climat$volsremplis, na.rm=TRUE),
                "0,2% des émissions de gaz à effet de serre des vols correspondent à des déplacements\nqui auraient pu être réalisés en moins de 3h de train")
 
