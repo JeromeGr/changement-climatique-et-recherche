@@ -25,9 +25,9 @@ author:
 
 ![](Logo Labos 1.5.svg){width=200px}
 
-&nbsp; \
 &nbsp;
 
+Version du 14 janvier 2021
 
 ```{r preparation, echo=FALSE, message=FALSE}
 library(tidyverse)
