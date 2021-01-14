@@ -712,7 +712,7 @@ ggplot(drop_na(climat, renoncedep.env),
        title = "En 2019, avez-vous renoncé à un ou plusieurs déplacements
 professionnels à l’étranger pour des considérations environnementales ?") +
   source_champ(nrow(drop_na(climat, renoncedep.env)),
-               "Lecture : En 2019, 14% des répondant·es ont renoncé à un déplacement professionnel \npour des considérations environnementales et c'était une raison déterminante de ce choix.")
+               "Lecture : en 2019, 14% des répondant·es ont renoncé à un déplacement professionnel\nprincipalement pour des considérations environnementales.")
 ```
 
 ## Travail à domicile
@@ -731,7 +731,7 @@ ggplot(drop_na(climat, joursdomicile),
 travaillez-vous uniquement de chez vous ? Ne tenez pas compte des éventuels 
 jours travaillés le week-end.") +
   source_champ(nrow(drop_na(climat, joursdomicile)),
-               "Lecture : 48% des répondant·es ne travaillent jamais de chez eux.")
+               "Lecture : 48% des répondant·es ne travaillent jamais de leur domicile.")
 ```
 
 ## Déplacements domicile-travail
@@ -766,7 +766,7 @@ ggplot(TpsTransportDomT,  aes(x=prop, y=fct_reorder(TypeTransport, prop) )) +
        title="Part du temps total passé dans les déplacements domicile-travail,
 par l'ensemble des répondant·es, par mode de transport") +
   source_champ(sum(climat$tpsdomtravrempli),
-               "Lecture : Sur 100 heures de trajet domicile-travail, les répondant·es en passent 24 seul·es dans leur voiture.")
+               "Lecture : sur 100 heures de trajet domicile-travail, les répondant·es en passent 24 seul·es dans leur voiture.")
 ```
 
 ## Raisons de ne pas covoiturer
@@ -801,9 +801,9 @@ ggplot(Covoit,  aes(x=prop, y=fct_reorder(RaisonsPasCovoit, prop) )) +
             hjust=-0.2, size=3) +
   coord_cartesian(xlim=c(0, 0.47)) +
   labs(y="", x="Proportion parmi les répondant·es autosolistes",
-       title="Pour les trajets que vous réalisez seul·e dans votre voiture,\npourquoi ne faites-vous pas du covoiturage ?",
-       caption=sprintf("Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS prenant la voiture seul·es\npour leurs trajets domicile-travail (n=%i)", sum(aumoinsunecochee)),
-               "Lecture : 44% des répondant·es qui ne covoiturent pas en passent 24 seul·es dans leur voiture.")
+       title="Raison(s) de ne pas faire du covoiturage\npour les trajets domicile-travail",
+       caption=sprintf("Lecture : 44%% des répondant·es qui prennent la voiture seul·es le font parce qu'elles/ils tiennent à la flexibilité de leurs horaires
+Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS prenant la voiture seuls pour leurs trajets domicile-travail (n=%i)", sum(aumoinsunecochee)))
 
 ```
 
@@ -859,7 +859,7 @@ drop_na(dat) %>%
             position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(y="", x="Proportion des répondant·es",
-       title="Part des répondants n'ayant jamais testé chaque usage de la visioconférence") +
+       title="Part des répondant·es n'ayant jamais testé chaque usage de la visioconférence") +
   source_champ(max(table(drop_na(dat)$variable)),
                "Lecture : 26% des répondant·es n'ont jamais testé la visioconférence pour un oral de jury.")
 
@@ -875,8 +875,8 @@ drop_na(dat[dat$valeur != "Je n'ai jamais testé",]) %>%
   labs(y="Proportion parmi les répondant·es ayant déjà testé", x="", fill="",
        title="Actuellement, pour quels usages la visioconférence ou l'audioconférence 
        vous semblent-elles adaptées ?",
-       caption=sprintf("Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS ayant déjà testé chaque usage de la visioconférence (n=%i)",  max(table(drop_na(dat[dat$valeur != "Je n'ai jamais testé",])$variable))),
-               "Lecture : Plus de la moitié des répondant·es l'ayant déjà testé trouvent que la visioconférence est très adaptée à une réunion de 3 à 5 personnes. Environ 20% trouvent qu'elle n'est pas du tout adaptée à un oral de jury.")
+       caption=sprintf("Lecture : 54%% des répondant·es ayant déjà testé la visioconférence pour une réunion de 3 à 5 personnes\nla trouvent très adaptée à cet usage
+Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS ayant déjà testé chaque usage de la visioconférence (n=%i)",  max(table(drop_na(dat[dat$valeur != "Je n'ai jamais testé",])$variable))))
 
 ```
 
@@ -921,7 +921,7 @@ drop_na(dat) %>%
 en voiture. Les raisons suivantes pourraient-elles vous pousser à
 privilégier la visioconférence ou l’audioconférence à un déplacement ?") +
   source_champ(max(table(drop_na(dat)$variable)),
-               "Lecture : Un quart des répondant·es déclarent que pouvoir faire autre chose en même temps que la réunion n'est pas du tout une raison pouvant les pousser à privilégier la visioconférence à un déplacement dans cette situations.")
+               "Lecture : pour 62% des répondant·es, pouvoir réunir de nombreuses personnes éloignées\nest une raison pouvant beaucoup les pousser à privilégier la visioconférence.")
 
 ```
 
@@ -941,7 +941,7 @@ ggplot(drop_na(climat, visioavtconf),
   labs(x="Proportion des répondant·es", y="", title="Avant le confinement quel était votre usage habituel de la visioconférence
 ou de l’audioconférence dans le cadre professionnel ?") +
   source_champ(nrow(drop_na(climat, visioavtconf)),
-               "Lecture : 30,4% des répondant·es n'avaient jamais usage de la visioconférence avant le confinement.")
+               "Lecture : 30,5% des répondant·es n'avaient jamais usage de la visioconférence avant le confinement.")
 ```
 
 ## Evolution de l'opinion sur la visioconférence depuis le confinement
@@ -959,7 +959,7 @@ ggplot(drop_na(climat, visioapresconf),
   labs(x="Proportion des répondant·es", y="", title="Depuis le confinement, votre expérience vous a-t-elle rendu·e plus favorable
 ou moins favorable à la visioconférence ou l’audioconférence ?") +
   source_champ(nrow(drop_na(climat, visioapresconf)),
-               "Lecture : 29% des répondant·es déclarent être beaucoup plus favorable à la visioconférence qu'avant le confinement.")
+               "Lecture : 29% des répondant·es sont beaucoup plus favorables à la visioconférence qu'avant le confinement.")
 
 ```
 
@@ -985,7 +985,7 @@ ggplot(drop_na(climat, solreducrech2),
     labs(x="Proportion des répondant·es", y="",
          title="La France s’est engagée à réduire d’un tiers ses émissions\nde gaz à effet de serre d'ici à 2030.\nDans ce cadre, pensez-vous que la recherche publique doit :") +
   source_champ(nrow(drop_na(climat, solreducrech2)),
-               "Lecture : 48% des répondant·es pensent que la recherche publique doit montrer l'exemple.")
+               "Lecture : 48% des répondant·es pensent que la recherche publique doit réduire ses émissions de plus d'un tiers d'ici à 2030.")
 ```
 
 ## Réductions individuelles des émissions de GES dans le cadre professionnel d'ici à 2030
@@ -1012,7 +1012,8 @@ drop_na(dat) %>%
     labs(y="Proportion des répondant·es", x="",
          title="Êtes-vous prêt·e à réduire vos émissions de gaz à effet de serre\nd’ici à 2030 dans les domaines suivants ?") +
   source_champ(max(table(filter(drop_na(dat), valeur != "Non concerné·e")$variable)),
-               "Note : la proportion de personnes concernées varie selon la question")
+               "Note : la proportion de personnes concernées varie selon la question
+Lecture : 32% des répondant·es déclarent ne pas pouvoir réduire leurs émissions liées aux vols pour les conférences\ncar elles sont déjà très basses.")
 ```
 
 ## Réductions individuelles des émissions de GES des dispositifs expérimentaux d'ici à 2030
@@ -1038,6 +1039,7 @@ drop_na(dat) %>%
     labs(y="Proportion parmi les répondant·es utilisant un dispositif expérimental", x="",
          title="Êtes-vous prêt·e à réduire d'ici à 2030 les émissions de gaz à effet de serre\nliées à la fabrication et au fonctionnement du matériel destiné\nà vos expériences et observations scientifiques, par les moyens suivants ?",
          caption=sprintf("Note : la proportion de personnes concernées varie selon la question
+Lecture : 34%% des répondant·es déclarent ne pas pouvoir réduire leurs émissions en renouvelant\nle matériel moins fréquemment car elles sont déjà très basses.
 Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020
 Champ : personnels permanents affiliés à une unité du CNRS, utilisant un dispositif expérimental (n=%i)", max(table(filter(drop_na(dat), valeur != "Non concerné·e")$variable))))
 ```
@@ -1046,12 +1048,12 @@ Champ : personnels permanents affiliés à une unité du CNRS, utilisant un disp
 ## Risques liés à la réduction des émissions de GES des dispositifs expérimentaux
 
 ```{r echo=FALSE, fig.height=6, fig.width=7.5}
-dat <- rbind(data.frame(variable="Vous faire prendre du retard\npar rapport aux équipes concurrentes", valeur=climat$solrisqreducmateriel.retard),
-             data.frame(variable="Diminuer la qualité de vos travaux", valeur=climat$solrisqreducmateriel.qual),
+dat <- rbind(data.frame(variable="Diminuer la qualité de vos travaux", valeur=climat$solrisqreducmateriel.qual),
+             data.frame(variable="Vous faire prendre du retard\npar rapport aux équipes concurrentes", valeur=climat$solrisqreducmateriel.retard),
              data.frame(variable="Réduire votre accès aux financements", valeur=climat$solrisqreducmateriel.fin),
              data.frame(variable="Réduire votre nombre de publications", valeur=climat$solrisqreducmateriel.publi),
              data.frame(variable="Vous imposer un changement\nde thèmes de recherche", valeur=climat$solrisqreducmateriel.themes)) %>%
-    mutate(variable=factor(variable, levels=unique(variable)),
+    mutate(variable=factor(variable, levels=rev(unique(variable))),
            valeur=fct_relevel(valeur, c("C'est probable et c'est un problème", "Sans opinion", "C'est probable mais ce n'est pas un problème", "C'est peu probable")))
 
 drop_na(dat) %>%
@@ -1067,6 +1069,7 @@ drop_na(dat) %>%
     labs(y="Proportion parmi les répondant·es utilisant un dispositif expérimental", x="",
          title="Quels seraient les risques liés à une politique de réduction des émissions\nde gaz à effet de serre liées à la fabrication et au fonctionnement\ndu matériel destiné aux expériences et aux observations scientifiques ?",
          caption=sprintf("Note : la proportion de personnes concernées varie selon la question
+Lecture : 48%% des répondant·es pensent qu'il est probable qu'une politique de réduction des émissions\nliées aux expériences et observations diminue la qualité de leurs travaux, et que c'est un problème
 Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020
 Champ : personnels affiliés à une unité du CNRS, utilisant un dispositif expérimental (n=%i)", max(table(filter(drop_na(dat), valeur != "Non concerné·e")$variable))))
 ```
@@ -1098,7 +1101,8 @@ drop_na(dat) %>%
     labs(y="Proportion des répondant·es", x="",
          title="Quels seraient les risques liés à la mise en place d'une politique\nde réduction des vols professionnels en avion dans la recherche ?") +
     source_champ(max(table(filter(drop_na(dat), valeur != "Non concerné·e")$variable)),
-                 "Note : la proportion de personnes concernées varie selon la question")
+                 "Note : la proportion de personnes concernées varie selon la question
+Lecture : 54% des répondant·es pensent qu'il est probable qu'une réduction du nombre des vols\nnuise à l'insertion des jeunes chercheurs et que c'est un problème")
 ```
 
 ## Solutions institutionnelles
@@ -1128,7 +1132,8 @@ drop_na(dat) %>%
     guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
     labs(y="Proportion des répondant·es", x="",
          title="Quelles actions les institutions et laboratoires\nde recherche devraient-ils mettre en œuvre\npour réduire leurs émissions de gaz à effet de serre ?") +
-  source_champ(max(table(drop_na(dat)$variable)))
+  source_champ(max(table(drop_na(dat)$variable)),
+               "Lecture : pour 75% des répondant·es, il est prioritaire de privilégier les équipements qui consomment moins d'énergie.")
 ```
 
 ## Covoiturage
@@ -1144,7 +1149,8 @@ ggplot(drop_na(climat, solcovoit),
             hjust=-0.2, size=3) +
     labs(x="Proportion parmi les répondant·es prenant la voiture", y="",
          title="Si le covoiturage était organisé à l'échelle de votre laboratoire ou de votre site,\nseriez-vous prêt·e à y recourir pour vos trajets domicile-travail ?",
-         caption=sprintf("Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020
+         caption=sprintf("Lecture : 24%% des répondant·es qui prennent la voiture pour leurs trajets domicile-travail\nrecourraient certainement au covoiturage s'il était organisé à l'échelle du laboratoire
+Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020
 Champ : personnels affiliés à une unité du CNRS prenant la voiture pour leurs déplacements domicile-travail (n=%i)",  nrow(drop_na(climat, solcovoit))))
 ```
 
@@ -1152,7 +1158,7 @@ Champ : personnels affiliés à une unité du CNRS prenant la voiture pour leurs
 
 ## Opinions sur l'écologie
 
-```{r echo=FALSE, fig.height=5}
+```{r echo=FALSE, fig.height=5.5}
 dat <- rbind(data.frame(variable="Il ne sert à rien que je fasse des efforts pour l'environnement\nsi les autres ne font pas de même", valeur=climat$opinionecolo.efforts),
 data.frame(variable="La plupart des problèmes environnementaux peuvent être résolus\npar le développement de technologies plus performantes",
                         valeur=climat$opinionecolo.techno),
@@ -1175,7 +1181,8 @@ drop_na(dat) %>%
     guides(fill=guide_legend(reverse = TRUE, nrow=3, byrow=TRUE)) +
     labs(y="Proportion des répondant·es", x="") +
     source_champ(max(table(drop_na(dat)$variable)),
-                  "* Les personnes ayant répondu négativement à la question précédente sont classées en « Pas du tout d'accord ».")
+                  "* Les personnes ayant répondu négativement à la question précédente sont classées en « Pas du tout d'accord ».
+Lecture : 59% des répondant·es sont tout à fait d'accord avec l'affirmation selon laquelle\nnous allons bientôt vivre une catastrophe écologique majeure.")
 ```
 
 
@@ -1209,7 +1216,8 @@ drop_na(dat) %>%
     geom_text(aes(label=reponse), position=position_fill(vjust=0.5), size=3) +
     labs(y="Proportion des répondant·es", x="",
          title="Estimations des émissions de gaz à effet de serre") +
-    source_champ(max(table(drop_na(dat)$variable)))
+    source_champ(max(table(drop_na(dat)$variable)),
+                 "Lecture : 64% des répondant·es ont choisi la bonne estimation des émissions liées à 3h de visioconférence, ou une estimation proche")
 ```
 
 Dans cette variante, une réponse n'est correcte que si la bonne modalité a été exactement choisie. Elle est considérée comme une légère sous- ou surestimation en cas d'écart d'une catégorie.
@@ -1240,5 +1248,6 @@ drop_na(dat) %>%
     geom_text(aes(label=reponse), position=position_fill(vjust=0.5), size=3) +
     labs(y="Proportion des répondant·es", x="",
          title="Estimations des émissions de gaz à effet de serre") +
-    source_champ(max(table(drop_na(dat)$variable)))
+    source_champ(max(table(drop_na(dat)$variable)),
+                 "Lecture : 26% des répondant·es ont choisi la bonne estimation des émissions liées à 3h de visioconférence")
 ```
