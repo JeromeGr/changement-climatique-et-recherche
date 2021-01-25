@@ -623,7 +623,7 @@ ggplot(DFDistMoyAvion,  aes(x=DistMoy, y=fct_reorder(volsmotif, DistMoy) )) +
 
 ## Répartition des émissions de GES en avion selon le temps nécessaire pour faire le même déplacement en train
 
-Les temps de trajet en train sont obtenus à partir des horaires de la SNCF (ou des entreprises équivalentes pour l'étranger). Les émissions de gaz à effet de serre sont calculées à partir de la distance orthodromique + 95 km, selon la méthode [GES 1point5](https://labos1point5.org/ges-1point5).
+Les temps de trajet en train sont obtenus à partir des horaires de la SNCF (ou des entreprises équivalentes pour l'étranger). Les émissions de gaz à effet de serre sont calculées à partir de la distance orthodromique + 95 km, selon la méthode [GES 1point5](https://labos1point5.org/ges-1point5). Note : les vols intérieurs avec une correspondance peuvent ne pas avoir été déclarés séparément par les répondant·es, ce qui peut entraîner une sous-estimation des émissions des vols courts.
 
 ```{r echo=FALSE, message=FALSE}
 DFDistAvion <- climat %>% 
