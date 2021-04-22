@@ -1,0 +1,586 @@
+---
+title: "Vols, sexe et enfants : premières explorations"
+author: ""
+date: "Avril 2021"
+output:  
+  html_document:
+    fig_width: 7.5
+    fig_height: 4.5
+    dev: svg
+    fontsize: 12pt
+    highlight: haddock
+    number_sections: yes
+    theme: united
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, warning=F, message=F)
+load("climat.RData")
+source("recodages.R", encoding = "UTF-8")
+library(GGally)
+library(ggeffects)
+library(labelled)
+library(gtsummary)
+
+
+climat$vols_dicho <- as.factor(climat$vols_dicho)
+## Recodage de climat$enfantsnb en climat$enfantsnb_rec
+climat$enfantsnb_rec <- as.character(climat$enfantsnb)
+climat$enfantsnb_rec <- fct_recode(climat$enfantsnb_rec,
+                                   "2 ou plus" = "2",
+                                   "2 ou plus" = "3",
+                                   "2 ou plus" = "4",
+                                   "2 ou plus" = "5",
+                                   "2 ou plus" = "13",
+                                   "2 ou plus" = "6",
+                                   "2 ou plus" = "9",
+                                   "2 ou plus" = "7",
+                                   "2 ou plus" = "10"
+)
+
+
+# labels plus jolis
+var_label(climat$sexe) <- "Sexe"
+var_label(climat$ageAgr) <- "Groupes d'âge"
+var_label(climat$sitpro2) <- "Sit pro"
+var_label(climat$enfantsnb_rec) <- "Nombre d'enfants"
+
+#recodage du nombre d'enfants avec l'âge
+climat$enfantsage_rec <- NULL
+climat$enfantsage_rec[climat$enfantsage <= 5] <- "moins de 5 ans"
+climat$enfantsage_rec[climat$enfantsage <= 15 &
+                                  climat$enfantsage > 5 ] <- "Entre 5 et 15 ans"
+# climat$enfantsage_rec[climat$enfantsage <= 15 &
+#                                   climat$enfantsage > 10 ] <- "Entre 10 et 15 ans"
+climat$enfantsage_rec[climat$enfantsage > 15 ] <- "Plus de 15 ans"
+climat$enfantsage_rec[climat$enfantsnb_rec == "0" ] <- "Sans enfant"
+climat$enfantsage_rec <- as.factor(climat$enfantsage_rec)
+## Réordonnancement de climat$enfantsage_rec
+climat$enfantsage_rec <- factor(climat$enfantsage_rec,
+                                          levels = c("Sans enfant", "moins de 5 ans", "Entre 5 et 15 ans", "Plus de 15 ans")
+)
+
+# sexe*enfants
+climat$enfsexe <- NULL
+climat$enfsexe[!is.na(climat$enfantsnb_rec)] <- 
+  paste(climat$sexe[!is.na(climat$enfantsnb_rec)], 
+        climat$enfantsnb_rec[!is.na(climat$enfantsnb_rec)])
+freq(climat$enfsexe)
+
+# sexe*age des enfants
+climat$enfagesexe <- NULL
+climat$enfagesexe[!is.na(climat$enfantsage_rec)] <- 
+  paste(climat$sexe[!is.na(climat$enfantsage_rec)], 
+        climat$enfantsage_rec[!is.na(climat$enfantsage_rec)])
+## Réordonnancement de climat$enfagesexe
+climat$enfagesexe <- factor(climat$enfagesexe,
+  levels = c(
+    "Femme Sans enfant", "Femme moins de 5 ans", "Femme Entre 5 et 15 ans",
+    "Femme Plus de 15 ans", "Homme Sans enfant", "Homme moins de 5 ans",
+    "Homme Entre 5 et 15 ans", "Homme Plus de 15 ans"
+  )
+)
+
+# vols en classes avec modalité "aucun vol"
+climat$volsh_classes <- NULL
+climat$volsh_classes <- as.character(climat$volsh)
+climat$volsh_classes[climat$vols_dicho=="pas_vol"] <- "Aucun vol"
+
+
+# définition de la situation de référence
+climat$enfantsnb_rec <- fct_relevel(climat$enfantsnb_rec, "0")
+climat$sitpro2 <- fct_relevel(climat$sitpro2, "Maître·sse de conférences")
+climat$ageAgr <- fct_relevel(climat$ageAgr, "35-39 ans")
+climat$sexe <- fct_relevel(climat$sexe, "Homme")
+
+
+
+# sous base seulement recherche
+climat_recherche <- climat[!climat$sitpro2 %in% c(
+  "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
+  "Chargé·e d'études/de mission","Adjoint·e technique",
+  "Autre"
+),]
+climat_recherche <- climat_recherche[climat_recherche$sexe!="Autre",]
+
+
+```
+
+
+# Exploration des effets bruts du sexe et de la présence d'enfants
+
+
+En moyenne, les hommes volent un peu plus que les femmes. 
+
+
+```{r  heures de vol sexe, fig.height = 4, fig.width = 4}
+ggplot(climat_recherche[!is.na(climat_recherche$volsh_classes)&
+                                 !is.na(climat_recherche$sexe),]) + 
+  geom_bar(aes(x = sexe, fill=fct_rev(factor(volsh_classes, 
+                                        levels = c(
+    "Aucun vol", "De 1h à 10h", "De 11h à 20h", 
+    "De 20h à 50h", "Plus de 50h")
+    ))), 
+    position = "fill", color="black") +
+  scale_fill_manual(values=c("black", "grey25", "grey50", "grey75", "white")) +
+  labs(title="Heures de vol en 2019 selon le sexe", x="", y="", fill="")+
+  scale_y_continuous(labels = scales::percent)+ 
+  theme_minimal() #Change le thème (plusieurs thèmes disponibles)
+
+```
+
+```{r heures de vol sexe enfants}
+ggplot(climat_recherche[!is.na(climat_recherche$volsh_classes)&
+                                 !is.na(climat_recherche$enfsexe),]) + 
+  geom_bar(aes(x = enfsexe, fill=fct_rev(factor(volsh_classes, 
+                                        levels = c(
+    "Aucun vol", "De 1h à 10h", "De 11h à 20h", 
+    "De 20h à 50h", "Plus de 50h")
+    ))), 
+    position = "fill", color="black") +
+  scale_fill_manual(values=c("black", "grey25", "grey50", "grey75", "white")) +
+  labs(title="Heures de vol en 2019 selon le sexe et le nombre d'enfants", x="", y="", fill="")+
+  scale_y_continuous(labels = scales::percent)+ 
+  theme_minimal() 
+
+```
+
+Premier constat: plus on a d'enfants, moins on ne vole pas (le taux de personne n'ayant pas du tout volé diminue avec le nombre d'enfants). C'est valable pour les deux sexes, mais la tendance semble un peu plus forte pour les hommes. 
+
+Deuxième constat, concernant les durées de vol. Les hommes sont plus nombreux que les femmes à avoir réalisé de nombreuses heures de vol (plus de 20h). Et ils le sont d'autant plus qu'ils ont plus d'enfants. Pour les femmes c'est aussi le cas, mais de manière moins nette et dans une moindre mesure. 
+
+Ce constat contre-intuitif est probablement dû à un effet caché de l'âge, du statut, de la carrière: plus on est vieux, plus on est avancé dans la carrière, plus on vole - et plus on a d'enfants. Si les personnes sans enfants volent peu, c'est en partie au moins parce qu'elles sont jeunes. 
+
+
+```{r heures de vol sexe age des enfants}
+ggplot(climat_recherche[!is.na(climat_recherche$volsh_classes)&
+                                 !is.na(climat_recherche$enfagesexe),]) + 
+  geom_bar(aes(x = enfagesexe, fill=fct_rev(factor(volsh_classes, 
+                                        levels = c(
+    "Aucun vol", "De 1h à 10h", "De 11h à 20h", 
+    "De 20h à 50h", "Plus de 50h")
+    ))), 
+    position = "fill", color="black") +
+  scale_fill_manual(values=c("black", "grey25", "grey50", "grey75", "white")) +
+  labs(title="Heures de vol en 2019 selon le sexe et l'âge 
+       du plus jeune des enfants", x="", y="", fill="")+
+  scale_y_continuous(labels = scales::percent)+ 
+  theme_minimal() +coord_flip()
+```
+
+De manière très nette, les femmes avec un enfant de moins de 5 ans volent moins (et moins que tout le monde. Elles volent plus lorsque l'enfant le plus jeune est plus grand - avec un tassement, qu'on observe chez les femmes comme chez les hommes, du nombre d'heures de vol quand le plus jeune des enfants est adulte (ou presque), mais ce qui signifie aussi que le répondant est vieux (et le fait de prendre l'avion diminue beaucoup après 65 ans). 
+
+Enfin, cette chute du nombre d'heures de vol qu'on observe chez les mères d'un enfant de moins de 5 ans ne s'observe pas pour les pères - au contraire, ils réalisent un nombre d'heures de vol particulièrement élevé, au niveau que celui que rattrapent les femmes lorsque l'enfant a plus de 5 ans. 
+
+
+
+# Modélisation 1 : la probabilité de n'avoir pas du tout pris l'avion 
+
+
+
+Qu'est-ce qui fait qu'on n'a pas du tout volé en 2019 ? 
+
+Modélisons la probabilité de n'avoir pas volé du tout, à l'aide d'une régression logistique sur la variable dichotomique dont voici la distribution :
+
+```{r fig.height = 3, fig.width = 4}
+ggplot(climat_recherche)+ geom_bar(aes(x=vols_dicho), fill="white", color="black")+theme_minimal()
+```
+
+## Effet du sexe
+
+Dans un premier temps, on modélise sans effets d'interaction l'effet du sexe à statut et âge contrôlés.
+
+```{r}
+# pas vol en modalité de référence
+climat_recherche$vols_dicho <- fct_relevel(climat_recherche$vols_dicho, "vol")
+reglog1 <- glm(vols_dicho ~ ageAgr  + sitpro2 +  sexe, data=climat_recherche, family=binomial())
+tbl_regression(reglog1, exponentiate = T)
+
+```
+
+
+On constate un effet propre du sexe, mais faible : les femmes ont, à statut et âge égal, un peu plus de chances de n'avoir pas du tout pris l'avion (1,14 fois plus que les hommes). 
+
+Je passe pour l'instant sur l'effet de l'âge et du statut. 
+
+
+## Effet du sexe et de la présence d'enfants
+
+
+Regardons ce que ça donne si notre variable d'intérêt n'est plus le sexe, mais le croisement sexe*nombre d'enfants. La modalité de référence est une femme sans enfants.
+
+
+```{r}
+reglog2 <- glm(vols_dicho ~ ageAgr  + sitpro2 +  enfsexe, data=climat_recherche, family=binomial())
+tbl_regression(reglog2, exponentiate = T)
+
+```
+
+
+S'il semble que, par rapport à une femme sans enfants, une femme avec un enfant ait plus de chance de n'avoir pas pris l'avion, le coefficient (pourtant élevé) n'est pas significatif. 
+
+## Effet du sexe et de l'âge du plus jeune enfant
+
+Regardons ce que ça donne avec l'âge des enfants. 
+
+```{r}
+reglog3 <- glm(vols_dicho ~ ageAgr  + sitpro2 +  enfagesexe, data=climat_recherche, family=binomial())
+tbl_regression(reglog3, exponentiate = T)
+
+```
+
+
+Malgré le nombre de modalités, on constate que, par rapport aux femmes sans enfants, les femmes avec au moins un enfant de moins de 5 ans ont plus de chances de n'avoir pas du tout pris l'avion (1,6 fois plus de chances). Si on met comme situation de référence la modalité "femme avec enfant de moins 5 ans", on constate que les hommes dans la même situation ont 1,7 fois moins de chances qu'elles de n'avoir pas du tout pris l'avion. 
+
+Comparons ces modèles dans un même graphique pour les rendre plus lisibles. 
+
+
+```{r fig.width=8, fig.height=6, fig.asp = 1.2}
+# climat_recherche$enfagesexe <- fct_relevel(climat_recherche$enfagesexe, "Femme Sans enfant")
+ggcoef_compare(list("Modèle 1"=reglog1, 
+                    "Modèle 2 (nombre d'enfants)"=reglog2,
+                    "Modèle 3 (âge des enfants)"=reglog3), 
+               exponentiate = T)
+
+```
+
+
+Les tranches d'âge des enfants sont assez peu satisfaisantes passé 5 ans (en raison d'effectifs faibles) qui rendent difficile d'apprécier l'effet des enfants lorsqu'ils sont plus grands. A ce stade, on peut néanmoins considérer vraisemblable le résultat selon lequel la présence d'un enfant de moins de 5 ans augmente significativement les chances des femmes de ne pas avoir pris l'avion, ce qui n'est pas le cas pour les hommes. 
+
+*Point un peu mystérieux pour moi : Si je veux affirmer que les mères avec un enfant de moins de cinq ans ont significativement plus de chances que les pères de n'avoir pas volé, je ne peux pas le faire avec ce modèle, puisque les intervalles de confiance ("femmes moins de 5 ans" et "hommes moins de 5 ans") se croisent. MAIS, si je passe la situation "femme moins de 5 ans" en situation de référence, alors tout le monde (y compris les hommes avec enfant de moins de 5 ans) ont significativement moins de chances qu'elles de ne pas avoir pris l'avion - les coefficients sont tous significatifs. Ca m'embête un peu d'avoir à tripatouiller des situations de référence pour qu'un résultat devienne vrai...*
+
+
+
+
+
+# Modalisation 2 : le nombre d'heures de vol
+
+
+
+Qu'est-ce qui fait qu'on a beaucoup volé en 2019 ? 
+
+Pour ça, on a transformé la variable collectée, en classes, en une variable numérique dont voici la distribution - qui est par conséquent une distribution continue qui ne prend dans les faits que cinq valeurs : 
+
+```{r fig.height = 3, fig.width = 4}
+ggplot(climat_recherche)+ geom_histogram(aes(x=volshnum), fill="white", color="black")+theme_minimal()
+
+```
+
+## Sans interactions : des femmes qui volent un peu moins, un effet de la présence d'enfants invisible
+
+Examinons d'abord l'effet du sexe à âge et statut contrôlé.
+
+```{r}
+reg1 <- lm(volshnum ~ ageAgr  + sitpro2 + sexe, data=climat_recherche)
+
+tbl_regression(reg1, intercept = T)
+
+```
+
+
+Les femmes, à statut et âge controlé, volent 1,4h de moins que les hommes. 
+
+*Point d'explication de la signification des coefficients (ça servira pour les effets d'interaction plus bas) :*
+
+*On essaye de déterminer ce qui apporte un avantage ou un handicap quant au fait de prendre l'avion. Si le vocabulaire de 'l'avantage" à prendre l'avion heurte le parti, on peut remplacer les heures d'avion par une taille, une vitesse à la course, un salaire...*
+
+*On a déjà bien vu que certains statuts professionnels avantageaient et d'autres handicapaient. Pour le mesurer, on fixe des situations de référence, parce qu'on ne peut pas dire de combien ça avantage dans l'absolu, mais seulement par rapport à d'autres. On pourra dire "être un prof apporte un avantage de X par rapport à être un maître de conf", X étant un nombre d'heures de vol.*
+
+*Ici, la situation de référence est un homme maître de conf qui a entre 35 et 39 ans.*
+
+*Les résultats de la régression nous apprennent qu'un tel individu vole en moyenne 9,2h.*
+
+*Par rapport à lui, une femme avec le même profil volera en moyenne 1,4h de moins que lui.*
+
+Examinons maintenant ce que donne ce modèle si l'on contrôle par le nombre d'enfants. 
+
+
+```{r}
+reg2 <- lm(volshnum ~ ageAgr  + sitpro2 + sexe + enfantsnb_rec, data=climat_recherche)
+tbl_regression(reg2, intercept = T)
+
+```
+
+
+*Ici, la situation de référence est un homme maître de conf qui a entre 35 et 39 ans.*
+
+*Un homme identique mais avec un enfant volera en moyenne 1h de moins que lui - mais l'effet n'étant pas significatif, et donc nos données ne nous permettent pas d'affirmer que ce coefficient est différent de 0 - donc que ce handicap existe.* 
+
+*Un chargé de recherche avec les mêmes caractéristiques par ailleurs volera 5h de plus que lui.*
+
+*Tout ça se cumule, ce sont des effets (handicaps ou avantages) moyens pour chaque modalité, par rapport à la modalité de référence.*
+
+*Une femme avec un enfant volera en moyenne 1,6 (le fait d'être une femme) + 1 (le fait d'avoir un enfant) = 2,6 heures de moins que l'homme de la situation de référence. Mais là encore, les données ne nous permettent pas d'affirmer que la présence d'enfants diminue réellement le nombre d'heures de vol*
+
+*Mais parfois, cumuler deux modalités ce n'est pas seulement additionner les effets de chacune des modalités prises séparément. Il peut y avoir des effets d'amplification, des effets spécifiques à l'association de cette modalité à une autre. Avoir des enfants peut, en moyenne pour les répondants, diminuer d'une heure la durée de vols mais avoir un effet plus fort pour les femmes. On veut donc voir si l'interaction a un effet propre (si elle apporte un avantage ou un handicap supplémentaire à celui qu'apportaient les deux modalités prises séparément).* 
+
+
+## Avec interactions : Un effet spécifiquement féminin de la préence d'enfants
+
+Voici la régression avec effet d'interaction entre le sexe et la présence d'enfants.
+
+
+```{r}
+reg3 <- lm(volshnum ~ enfantsnb_rec*sexe + ageAgr  + sitpro2, data=climat_recherche)
+tbl_regression(reg3)
+
+```
+
+
+*On voit ici que par rapport à cet homme maître de conf de 35 ans sans enfants, être une femme avec un enfant de même profil par ailleurs augmente de 0,41h (un enfant) + 0,23h (femme), mais diminue de 3,4h (handicap propre de l'interaction femme x un enfant) le nombre d'heures de vol. Et cette fois, le coefficient associé à la modalité "1 enfant" pour les femmes est significatif. Autrement dit, on peut raisonnablement affirmer que cela présente pour elles un handicap propre : elles voleront 2,75h de moins que la sitaution de référence.*
+
+*Cela indique l’effet spécifique moyen qui s’applique aux femmes avec un enfant, d’une part par rapport aux hommes (modalité de référence) avec un enfant et d’autre part par rapport aux femmes sans enfants (modalité de référence de "enfants").*
+
+La représentation suivante met bien en évidence le fait que la présence d'enfants diminue le nombre d'heures de vol des femmes. Par ailleurs, une fois cette interaction contrôlée, il n'y a plus d'effet propre du sexe. C'est parce que les femmes avec enfants avaient un handicap spécifique que les femmes, en moyenne, volaient moins que les hommes. 
+
+```{r}
+ggcoef_compare(list("Sans interaction"=reg2,
+               "Avec interaction"=reg3))
+```
+
+
+## L'âge des enfants
+
+Reparcourons le même chemin avec cette fois la variable renseignant l'âge de l'enfant le plus jeune. 
+
+```{r}
+reg4 <- lm(volshnum ~ ageAgr  + sitpro2 + sexe + enfantsage_rec, data=climat_recherche)
+tbl_regression(reg4, intercept = T)
+```
+
+Cette fois, on constate un effet moyen (pour l'ensemble des répondants) et significatif de la présence d'un enfant de moins de 5 ans. En moyenne, avoir un enfant de moins de 5 ans diminue de 1,9 heures la durée de vol. Pour une femme, par rapport à la situation de référence (toujours la même), ce handicap s'ajoute à celui d'être une femme (1,6h). Ca fait 3,4 h de moins. 
+
+
+```{r}
+reg5 <- lm(volshnum ~ enfantsage_rec*sexe + ageAgr  + sitpro2, data=climat_recherche)
+tbl_regression(reg5, intercept = T)
+```
+
+L'effet du sexe et du jeune enfant ne sont désormais plus significatifs, ce qui signifie qu'ils ont été globalement absorbés par l'interaction. En effet, par rapport à la situation de référence, la durée de vol d'une femme avec un enfant de moins de 5 ans est estimée à : 9,8 - 0,3 + 0,25 - 4,2 soit 5,55 h (autrement dit, un handicap de 4,25 heures).
+
+Voici la représentation graphique. 
+
+```{r fig.width=8, fig.height=6, fig.asp = 1.2}
+ggcoef_compare(list("Sans interaction"=reg4,
+               "Avec interaction"=reg5))
+```
+
+
+On retrouve donc le résultat précédent: le fait d'avoir un enfant de moins de 5 ans a un effet négatif sur les vols professionnels des femmes. 
+
+
+## Vérification 1 avec la variable plus détaillées sur les heures de vol
+
+On dispose, pour la moitié de l'échantillon, d'une variable plus détaillée sur le nomre d'heures de vol. Voici sa distribution:
+
+```{r fig.height = 3, fig.width = 4}
+ggplot(climat_recherche)+ geom_histogram(aes(x=volsh_tot), fill="white", color="black")+theme_minimal()
+```
+
+On reproduit les régressions précédentes. 
+
+Contrôle par l'âge et le statut
+```{r}
+reg1 <- lm(volsh_tot ~ ageAgr  + sitpro2 + sexe, data=climat_recherche)
+tbl_regression(reg1, intercept = T)
+
+```
+
+On ajoute le nombre d'enfants en variable de contrôle
+
+```{r}
+
+reg2 <- lm(volsh_tot ~ ageAgr  + sitpro2 + sexe + enfantsnb_rec, data=climat_recherche)
+tbl_regression(reg2, intercept = T)
+
+```
+
+On ajoute l'effet d'interaction sexe * enfants
+
+```{r}
+reg3 <- lm(volsh_tot ~ enfantsnb_rec*sexe + ageAgr  + sitpro2, data=climat_recherche)
+tbl_regression(reg3)
+
+```
+
+Comparaison des deux modèles 
+
+```{r}
+ggcoef_compare(list("Sans interaction"=reg2,
+               "Avec interaction"=reg3))
+
+```
+
+On remplace le nombre d'enfants par l'âge du plus jeune (sans interaction)
+
+```{r}
+reg4 <- lm(volsh_tot ~ ageAgr  + sitpro2 + sexe + enfantsage_rec, data=climat_recherche)
+tbl_regression(reg4, intercept = T)
+
+```
+
+La même avec interaction
+
+```{r}
+reg5 <- lm(volsh_tot ~ enfantsage_rec*sexe + ageAgr  + sitpro2, data=climat_recherche)
+tbl_regression(reg5, intercept = T)
+```
+
+```{r fig.width=8, fig.height=6, fig.asp = 1.2}
+ggcoef_compare(list("Sans interaction"=reg4,
+               "Avec interaction"=reg5))
+```
+
+Déjà, ce qui est intéressant, c'est qu'on repère la même structure (âge, sexe, statut, enfants - âge et nombre) avec les mêmes ordres de grandeur des coefficients qu'avec la variable fictivement continue disponible pour tout l'échantillon. Mais très peu de résultats sont significatifs. 
+
+
+## Vérification 2 avec la variable nombre de vols
+
+Je me suis dit que la présence d'enfants jouait peut-être moins sur le temps passé dans l'avion que sur la fréquence des vols. Du coup ça pourrait être pas mal d'approfondir un peu. J'ai pas trop le temps donc je sors juste les modèles et vous dis rapidement ce qu'il m'a semblé voir : ça change pas grand chose mais les effets sont globalement moins significatif. 
+Peut-être que ça peut être dû mécaniquement (mathématiquement) au fait que le nombre de vol s'étend sur une amplitude moins grande (et que donc les différences sont moindres) que les durées de vol. C'est possible ?
+
+
+On dispose d'une variable nombre de vols pour la totalité de l'échantillon dont voici la distribution:
+
+```{r fig.height = 3, fig.width = 4}
+ggplot(climat_recherche)+ geom_histogram(aes(x=volsnb), fill="white", color="black")+theme_minimal()
+```
+
+On reproduit les régressions précédentes. 
+
+Contrôle par l'âge et le statut
+```{r}
+reg1 <- lm(volsnb ~ ageAgr  + sitpro2 + sexe, data=climat_recherche)
+tbl_regression(reg1, intercept = T)
+
+```
+
+On ajoute le nombre d'enfants en variable de contrôle
+
+```{r}
+
+reg2 <- lm(volsnb ~ ageAgr  + sitpro2 + sexe + enfantsnb_rec, data=climat_recherche)
+tbl_regression(reg2, intercept = T)
+
+```
+
+On ajoute l'effet d'interaction sexe * enfants
+
+```{r}
+reg3 <- lm(volsnb ~ enfantsnb_rec*sexe + ageAgr  + sitpro2, data=climat_recherche)
+tbl_regression(reg3, intercept = T)
+
+```
+
+Ici, on voit que les femmes avec deux enfants ou plus font moins de vols et que cette différence est significative.
+
+Comparaison des deux modèles 
+
+```{r}
+ggcoef_compare(list("Sans interaction"=reg2,
+               "Avec interaction"=reg3))
+
+```
+
+On remplace le nombre d'enfants par l'âge du plus jeune (sans interaction)
+
+```{r}
+reg4 <- lm(volsnb ~ ageAgr  + sitpro2 + sexe + enfantsage_rec, data=climat_recherche)
+tbl_regression(reg4, intercept = T)
+
+```
+
+La même avec interaction
+
+```{r}
+reg5 <- lm(volsnb ~ enfantsage_rec*sexe + ageAgr  + sitpro2, data=climat_recherche)
+tbl_regression(reg5, intercept = T)
+```
+
+Effet pas significatif, mais pas très loin, de l'interaction femmes*enfants.
+
+
+```{r fig.width=8, fig.height=6, fig.asp = 1.2}
+ggcoef_compare(list("Sans interaction"=reg4,
+               "Avec interaction"=reg5))
+```
+
+<!-- On peut prédire qu'une femme maîtresse de conf avec un enfant volera le nombre d'heure suivant :  -->
+
+<!-- Constante (intercept) = 9,15 (nombre moyen d'heures de vol pour la situation de référence) -->
+<!-- + effet statut = 0 (référence) -->
+<!-- + effet âge  = 0 (référence) -->
+<!-- + effet sexe = 0,23 -->
+<!-- + effet enfants = 0,41 -->
+<!-- + effet d'interaction sexe*enfants = -3,4 -->
+<!-- Soit 6,39 heures.  -->
+
+<!-- Un homme dans la même situation (avec un enfant) volera 9,15+0+0+0+0,41+0 soit 9,56 heures.  -->
+
+<!-- # Le problème -->
+
+<!-- Le problème que j'ai c'est que ça corespond pas à ce que me sort la fonction prédiction dans R.  -->
+<!-- Si je lui demande de prédire à l'aide des coefficients beta, j'obtiens:  -->
+<!-- intercept 9,14+ 0+0+0,24 (sexe) +0,41 (1 enfant) - 0,62 (interaction) soit 9,17. -->
+
+<!-- J'ai repris les représentations suivantes là: http://larmarange.github.io/analyse-R/effets-d-interaction.html -->
+
+<!-- ```{r} -->
+<!-- library(breakDown) -->
+<!-- nouvelle_observation <- climat_recherche[1,] -->
+<!-- nouvelle_observation$sexe[1] <- "Femme" -->
+<!-- nouvelle_observation$ageAgr[1] <- "35-39 ans" -->
+<!-- nouvelle_observation$sitpro2[1] <- "Maître·sse de conférences" -->
+<!-- nouvelle_observation$enfantsnb_rec[1] <- "1" -->
+<!-- plot( -->
+<!--   broken(reg3, nouvelle_observation, predict.function = betas) -->
+<!-- )  -->
+<!-- ``` -->
+
+
+<!-- Un homme dans la même situation :  -->
+<!-- 9,14+0,41 (1 enfant) (le reste c'est la situation de référence), soit 9,56 (ce que je trouvais "à la main").  -->
+
+
+<!-- ```{r} -->
+
+<!-- nouvelle_observation <- climat_recherche[1,] -->
+<!-- nouvelle_observation$sexe[1] <- "Homme" -->
+<!-- nouvelle_observation$ageAgr[1] <- "35-39 ans" -->
+<!-- nouvelle_observation$sitpro2[1] <- "Maître·sse de conférences" -->
+<!-- nouvelle_observation$enfantsnb_rec[1] <- "1" -->
+<!-- plot( -->
+<!--   broken(reg3, nouvelle_observation, predict.function = betas) -->
+<!-- )  -->
+<!-- ``` -->
+
+<!-- Que se passe-t-il ?  -->
+
+<!-- # Différence entre les valeurs prédites -->
+
+<!-- Enfin, si je cherche à représenter les valeurs prédites en fonction du sexe et de la présence d'enfants, selon ce que je formule j'obtiens deux choses différentes et je ne vois pas à quoi c'est dû. -->
+
+<!-- Au passage, ça rejoint la question que je posais sur whatsapp : pourquoi les intervales de confiance se croisent ici alors que ce n'est pas le cas dans le modèle ?  -->
+
+<!-- Avec ggeffect -->
+
+<!-- ```{r} -->
+<!-- a <- ggeffect(reg3, c("enfantsnb_rec", "sexe")) -->
+<!-- a -->
+<!-- plot(a) -->
+<!-- ``` -->
+
+<!-- Avec ggpredict (et là je retrouve, je crois, les coefficients calculés à la main). -->
+
+
+
+<!-- ```{r} -->
+<!-- b <- ggpredict(reg3, c("enfantsnb_rec", "sexe")) -->
+<!-- b -->
+<!-- plot(b) -->
+<!-- ``` -->
+
+
+
