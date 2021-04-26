@@ -82,7 +82,7 @@ data.frame(statut=factor(names(repstatut)), taux=repstatut) %>%
   geom_text(aes(label=scales::percent(repstatut, accuracy=1, decimal.mark=",")),
             stat="identity", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="Proportion", y="",
+  labs(x="Proportion des invitations envoyées", y="",
        title="Taux de réponse à la première page du questionnaire selon le statut", 
        caption="Lecture : 34% des ingénieur·es de recherche à qui une invitation a été envoyée
        ont répondu au moins à la première page du questionnaire")
