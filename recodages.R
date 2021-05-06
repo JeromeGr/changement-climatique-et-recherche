@@ -359,7 +359,7 @@ for(i in 1:5) {
   volsdisti <- paste0("volsdist", i)
   volshi <- paste0("volsh", i)
   volsgesi <- paste0("volsges", i)
-
+  
   # Si le trajet a été renseigné mais pas son nombre, on suppose un aller-retour unique
   climat[is.na(climat[[volsnbi]]) & !is.na(climat[[volsdisti]]), volsnbi] <- 1
 
@@ -372,13 +372,30 @@ for(i in 1:5) {
            !is.na(climat$volsremplis) & climat$volsremplis, volshi] <- 0
   climat[is.na(climat[[volsgesi]]) &
            !is.na(climat$volsremplis) & climat$volsremplis, volsgesi] <- 0
-}
+  
+  
+  # Calcul de la distance/tps/GES totaux par ligne du tableau en fonction du nombre d'aller-retour déclarés
+  volsdist_toti <- paste0("volsdist_tot", i)
+  climat[[volsdist_toti]] <- climat[[volsdisti]] * climat[[volsnbi]]
+  
+  volsh_toti <- paste0("volsh_tot", i)
+  climat[[volsh_toti]] <- climat[[volshi]] * climat[[volsnbi]]
+  
+  volsges_toti <- paste0("volsges_tot", i)
+  climat[[volsges_toti]] <- climat[[volshi]] * climat[[volsnbi]]
+  
+  }
+
+
+
 
 # Somme des vols déclarés dans le tableau
 climat$volsnb_tot <- rowSums(select(climat, paste0("volsnb", 1:5)))
-climat$volsdist_tot <- rowSums(select(climat, paste0("volsdist", 1:5)))
-climat$volsh_tot <- rowSums(select(climat, paste0("volsh", 1:5)))
-climat$volsges_tot <- rowSums(select(climat, paste0("volsges", 1:5)))
+
+climat$volsdist_tot <- rowSums(select(climat, paste0("volsdist", 1:5)) * select(climat, paste0("volsnb", 1:5)))
+
+climat$volsh_tot <- rowSums(select(climat, paste0("volsh", 1:5)) * select(climat, paste0("volsnb", 1:5)))
+climat$volsges_tot <- rowSums(select(climat, paste0("volsges", 1:5))* select(climat, paste0("volsnb", 1:5)))
 
 # Pour ceux qui ont atteint le nombre maximum de lignes,
 # prendre le nombre d'heures estimé à partir de la tranche déclarée initialement
@@ -616,6 +633,9 @@ climat$paie <- relevel(climat$paie , ref = "Mal payé·e")
 
 climat$employeur <- as.factor(climat$employeur)
 climat$employeur <- relevel(climat$employeur , ref = "Une université")
+
+
+climat$preoccupe <- relevel(climat$preoccupe , ref = "Très préoccupé·e")
 
 #climat$NumVague <- as.factor(climat$NumVague)
 #climat$NumVague <- relevel(climat$NumVague, ref = "Après premier message")

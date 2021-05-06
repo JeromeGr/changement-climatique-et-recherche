@@ -302,3 +302,24 @@ climat$Part_ANR_ERC[climat$projets.anr_r %in% c(0, NA) & climat$projets.anr_m %i
 "Part_ANR_ERCProjet européen"="Participation projet européen",
 "Part_ANR_ERCProjet ANR et projet européen" ="Participation projet ANR et projet européen",
 "revenuAgrDe 1 500 à 2 499 euros par mois"="1 500 à 2 499 euros par mois",
+
+####################################Mai 2001###################
+#A partir des valeurs précises du tableau
+freq(climat$volsnb_tot)
+freq(climat$volsdist_tot)
+freq(climat$tiragemodule)
+freq(climat$volshnum)
+freq(climat$sexe)
+table(climat$sexe)
+cumsum(table(climat$sexe))
+cumsum(table(climat$volshnum))
+cumsum(table(climat$volsnb_tot))
+cumsum(table(climat$volsnb))
+
+
+
+
+
+
+
+

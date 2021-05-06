@@ -282,6 +282,18 @@ tbl_regression(reg1, intercept = T)
 
 Les femmes, à statut et âge controlé, volent 1,4h de moins que les hommes. 
 
+Détaillons :
+On peut regarder à partir des déclarations précises pour les 5 premiers trajets de 2019 (qui, pour l'essentiel des gens, couvrent tous leurs trajets). Examinons la distance totale parcourue (on pourrait aussi prendre les heures, par exemple la variable climat$volsh_tot2 qui permet de tenir compte de la déclaration du nombre d'heures totale pour ceux qui sont susceptibles d'avoir fait plus de 5 trajets) :
+
+```{r}
+reg1bis <- lm(volsdist_tot ~ ageAgr  + sitpro2 + sexe, data=climat_recherche)
+
+tbl_regression(reg1bis, intercept = T)
+
+```
+Les femmes ont parcouru 1500km de moins que les hommes.
+
+
 *Point d'explication de la signification des coefficients (ça servira pour les effets d'interaction plus bas) :*
 
 *On essaye de déterminer ce qui apporte un avantage ou un handicap quant au fait de prendre l'avion. Si le vocabulaire de 'l'avantage" à prendre l'avion heurte le parti, on peut remplacer les heures d'avion par une taille, une vitesse à la course, un salaire...*
