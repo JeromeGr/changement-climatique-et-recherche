@@ -646,6 +646,15 @@ res.reg1 <- lm(nbpublis ~ sexe + ageAgr + sitpro2 + discipline_agr3 + apportconf
                  international.postdoc + international.prog + international.asso, data=climat_recherche)
 
 
+res.reg1 <- lm(nbpublis ~ sexe + ageAgr + sitpro2 + discipline_agr3 + conffois5ans + apportconf.travaux + apportconf.reseaux +
+                 apportconf.collegues+ apportconf.cv+ apportconf.tourisme+
+                 international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso, data=climat_recherche)
+res.reg1 <- lm(nbpublis ~ sexe + ageAgr + sitpro2 + discipline_agr3 + conffois5ans + apportconf.travaux + apportconf.reseaux , data=climat_recherche)
+
+res.reg1 <- lm(nbpublis ~ sexe + ageAgr + sitpro2 + discipline_agr3 + conffois5ans + apportconf.travaux + apportconf.reseaux +
+                 apportconf.collegues+ apportconf.cv+ apportconf.tourisme, data=climat_recherche)
+
+
 summary(res.reg1)
 
 freq(climat_recherche$apportconf.collegues)
