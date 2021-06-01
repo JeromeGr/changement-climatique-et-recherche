@@ -24,6 +24,21 @@ climat$revenuAgr<-climat$revenu
 climat$revenuAgr[climat$revenu %in% c("De 10 000 à 15 000 euros par mois", "Plus de 15 000 par mois", "De 8 000 à 9 999 euros par mois")]<-"Au moins 8000 euros par mois"
 
 
+#Nombre de vol en avion perso en numérique (approximation)
+
+climat_recherche$avionpersonum[climat_recherche$avionperso=="Aucun aller-retour"]<-0
+climat_recherche$avionpersonum[climat_recherche$avionperso=="1 ou 2 allers-retours"]<-1.5
+climat_recherche$avionpersonum[climat_recherche$avionperso=="3 ou 4 allers-retours"]<-3.5
+climat_recherche$avionpersonum[climat_recherche$avionperso=="Plus de 5 allers-retours"]<-6
+
+
+#S'estimer bien ou mal payé
+freq(climat_recherche$paie)
+climat_recherche$malpaye[climat_recherche$paie %in% c("Mal payé·e" , "Très mal payé·e")]<-"Oui"
+climat_recherche$malpaye[climat_recherche$paie %in% c("Bien payé·e", "Correctement payé·e", "Très bien payé·e")]<-"Non"
+climat_recherche$malpaye<-fct_relevel(climat_recherche$malpaye, "Non")
+
+
 ##########################################
 #Régressions
 mean(climat$volshnum, na.rm=T)
@@ -112,7 +127,17 @@ res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro2 + avionperso + revenuTete, da
 res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro2 + avionpersochgt, data=climat)
 res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro2 + avionperso + avionpersochgt, data=climat)
 res.reg9 <- lm(volshnum ~ sexe + ageAgr  + sitpro2 + avionperso + avionpersochgt + revenuTete, data=climat)
-summary(res.reg9)
+
+
+#Nb de vol (et juste pour le personnel de recherche)
+res.reg9 <- lm(volsnb ~ sexe + ageAgr  + sitpro2 + avionpersochgt , data=climat_recherche)
+res.reg9 <- lm(volsnb ~ sexe + ageAgr  + sitpro2 + avionperso , data=climat_recherche)
+res.reg9 <- lm(volsnb ~ sexe + ageAgr  + sitpro2 + avionpersochgt + revenuTete, data=climat_recherche)
+res.reg9 <- lm(volsnb ~ sexe + ageAgr  + sitpro2 + avionperso + avionpersochgt, data=climat_recherche)
+res.reg9 <- lm(volsnb ~ sexe + ageAgr  + sitpro2 + avionperso + avionpersochgt + revenuTete, data=climat_recherche)
+
+
+
 
 #Score écolo
 res.reg9 <- lm(volshnum ~ sexe + ageAgr  + ScoreEcolo, data=climat)
@@ -257,6 +282,311 @@ climat$Evol_GesVol.conf.
 climatPersPubli<-climat %>% filter(!(sitpro %in% c("Technicien·ne", "Adjoint·e technique", "Autre")))
 
 
+##########################################################################################################################################################
+##########################################################################################################################################################
+#Sur le nombre de vol (mai 2021)
+
+#Distribution
+ggplot(climat_recherche, aes(x = volsnb)) +
+        geom_bar(stat = "count", position = position_dodge(),
+                 colour = "grey30") +
+        labs( x= "Nombre de vols aller-retour en 2019", y="nombre de répondants")
+
+ggsave("/Users/jeromegreffion/Changement climatique et recherche/Figures, graphs/Nombre de vols aller-retour en 2019, distribution.pdf",
+       width=9, height=5)
+
+mean(climat_recherche$volsnb, na.rm=T)
+summary(reglog2)
+reglog2 <- lm(volsnb ~ sexe +ageAgr , data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe  + ageaccad_tranch2 , data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe +ageAgr + ageaccad_tranch2 , data=climat_recherche )
+
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2, data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3, data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb, data=climat_recherche )
+
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 + Moinsavionperso, data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 +avionpersochgt, data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 +Moinsavionperso , data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 +Moinsavionperso +avionperso, data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 +avionpersochgt +avionperso, data=climat_recherche )
+
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 +Moinsavionconf , data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 +conffois5ans , data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 +conffois5ans + Moinsavionconf , data=climat_recherche )
+
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 + revenuTete, data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 + revenuparadulte, data=climat_recherche )
+
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 + revenuTete +avionperso, data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 + revenuTete +avionperso +ScoreEcolo, data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 +ScoreEcolo, data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan , data=climat_recherche )
+
+
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 + carriere, data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 + carriere + malpaye, data=climat_recherche )
+
+
+reglog2 <- lm(volsnb ~ sexe +ageAgr + volsnb , data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe +ageAgr +  ScoreEcolo , data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe +ageAgr +  revenuTete + ScoreEcolo , data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe +ageAgr + volsnb + revenuTete + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan , data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe +ageAgr + volsnb + revenuTete + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan + effortsconso, data=climat_recherche )
+
+
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb + revenuTete + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan + effortsconso, data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb +  dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan + effortsconso, data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 + preoccupe, data=climat_recherche )
+
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.techno + opinionecolo.proteger + opinionecolo.efforts+ 
+                       opinionecolo.contraintes +  opinionecolo.decroissance + opinionecolo.cata , data=climat_recherche )
+
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.techno + opinionecolo.proteger + 
+                       opinionecolo.contraintes +  opinionecolo.decroissance + opinionecolo.cata +opinionecolo.effondrement, data=climat_recherche )
+
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.decroissance , data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.decroissance + opinionecolo.efforts + opinionecolo.cata + opinionecolo.techno + opinionecolo.proteger + opinionecolo.contraintes, data=climat_recherche )
+
+freq(climat_recherche$carriere)
+
+summary(reglog2)
+reglog2 <- lm(volsnb ~ sexe*enfantsnb_rec +ageAgr + sitpro2 ,data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe*enfantsnb_rec +ageAgr + sitpro2 + discipline_agr3 ,data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe*enfantsnb_rec +ageAgr + sitpro2 + discipline_agr3  + revenuTete,data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe*enfantsage_rec +ageAgr + sitpro2 ,data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe*enfantsage_rec +ageAgr + sitpro2 + discipline_agr3 ,data=climat_recherche )
+
+reglog2 <- lm(volshnum ~ sexe*enfantsnb_rec +ageAgr + sitpro2 + discipline_agr3 ,data=climat_recherche )
+reglog2 <- lm(volshnum ~ sexe*enfantsage_rec +ageAgr + sitpro2 + discipline_agr3 ,data=climat_recherche )
+
+
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 + nbpublistranch2 ,data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsduree_moy +nbpublistranch2 ,data=climat_recherche )
+
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 + hindextranch2 ,data=climat_recherche )
+
+reglog2 <- lm(volsnb ~ sexe +ageAgr + sitpro2 + discipline_agr3 + conffois5ans ,data=climat_recherche )
+
+
+reglog2 <- lm(volsnb ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 , data=climat_recherche )
+
+reglog2 <- lm(volsnb ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso, data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe + ageAgr  + sitpro2 + discipline_agr3 , data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 +
+                      international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso, data=climat_recherche )
+
+
+reglog2 <- lm(volsnb ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + volsduree_moy, data=climat_recherche )
+reglog2 <- lm(volsnb ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + couple, data=climat_recherche )
+
+
+summary(reglog2)
+
+
+#The giga modèle complet avec variable statut/carrière/professionnel, sans var écolo assez peu signif
+
+reglog2 <- lm(volsnb ~ sexe + ageAgr +ageaccad_tranch2  + sitpro2  + discipline_agr3 +recheco +carriere + nbpublistranch2 +  projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 + 
+                       international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso +
+                       avionperso, data=climat_recherche)
+
+
+#Durée moyenne des vols effectués (hors module ?)
+climat_recherche$volsduree_moy<-climat_recherche$volshnum/climat_recherche$volsnb
+climat_recherche$volsduree_moy[climat_recherche$volsnb==0]<-0
+
+reglog2 <- lm(volsduree_moy ~ sexe*enfantsnb_rec +ageAgr + sitpro2 ,data=climat_recherche )
+reglog2 <- lm(volsduree_moy ~ sexe*enfantsage_rec +ageAgr + sitpro2 ,data=climat_recherche )
+
+
+
+
+
+##################
+#Voler/pas voler depuis 3 ans
+climat_recherche$vols_dicho3ans <- ifelse(climat_recherche$volsnb=="0", ifelse(climat_recherche$vols2ans=="Non", "N'a pas volé en 3 ans", "A volé depuis 3 ans"),  "A volé depuis 3 ans")
+climat_recherche$vols_dicho3ans[is.na(climat_recherche$volsnb)] <- NA
+
+climat_recherche$vols_dicho3ans <- fct_relevel(climat_recherche$vols_dicho3ans, "N'a pas volé en 3 ans")
+climat_recherche$vols_dicho3ans <- as_factor(climat_recherche$vols_dicho3ans)
+
+freq(climat_recherche$vols_dicho3ans)
+freq(climat_recherche$vols2ans)
+
+library(GGally)
+library(ggeffects)
+library(labelled)
+library(gtsummary)
+
+reglog1 <- glm(vols_dicho3ans ~ sexe + ageAgr  + sitpro2 , data=climat_recherche, family=binomial())
+tbl_regression(reglog2, exponentiate = T)
+
+summary (reglog2)
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho3ans ~ sexe  + ageaccad_tranch2 , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + ageaccad_tranch2 , data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr +ageaccad_tranch2+ sitpro2 + discipline_agr3, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3 + recheco, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3  + Moinsavionperso, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3 + avionpersochgt, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3 + avionperso, data=climat_recherche, family=binomial())
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3 + avionperso + revenuTete, data=climat_recherche, family=binomial())
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3 +  revenuTete, data=climat_recherche, family=binomial())
+
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3 + carriere, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr +ageaccad_tranch2 + sitpro2 + discipline_agr3 + carriere, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3 + malpaye, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3 + carriere + malpaye, data=climat_recherche, family=binomial(logit))
+
+freq(climat_recherche$preoccupe)
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + ScoreEcolo , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3  + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + ageaccad_tranch2 + sitpro2 + discipline_agr3 + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + ageaccad_tranch2 + sitpro2 + discipline_agr3 + effortsconso, data=climat_recherche, family=binomial(logit))
+
+summary (reglog2)
+
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3 + preoccupe, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3 + pluspreoccupe, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3 + preoccupe + pluspreoccupe, data=climat_recherche, family=binomial(logit))
+
+
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.techno + opinionecolo.proteger + opinionecolo.efforts+ 
+                       opinionecolo.contraintes +  opinionecolo.decroissance + opinionecolo.cata , data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.techno + opinionecolo.proteger + 
+                       opinionecolo.contraintes +  opinionecolo.decroissance + opinionecolo.cata +opinionecolo.effondrement, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.decroissance , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.decroissance + opinionecolo.efforts +
+                       opinionecolo.cata + opinionecolo.techno + opinionecolo.proteger + opinionecolo.contraintes, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3 +  nbpublistranch2 + opinionecolo.decroissance + opinionecolo.efforts +
+                       opinionecolo.cata + opinionecolo.techno + opinionecolo.proteger + opinionecolo.contraintes, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3 +  nbpublistranch2 + malpaye +carriere + opinionecolo.decroissance + opinionecolo.efforts +
+                       opinionecolo.cata + opinionecolo.techno + opinionecolo.proteger + opinionecolo.contraintes, data=climat_recherche, family=binomial(logit))
+
+summary(reglog2)
+
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3  + revenuTete,data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho3ans ~ sexe*enfantsnb_rec +ageAgr + sitpro2 + discipline_agr3,data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho3ans ~ sexe*enfantsnb_rec +ageAgr ,data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho3ans ~ sexe*enfantsage_rec +ageAgr + sitpro2 + discipline_agr3,data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3 + nbpublistranch2 ,data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr +ageaccad_tranch2 + sitpro2 + discipline_agr3 + nbpublistranch2 ,data=climat_recherche, family=binomial(logit))
+
+
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3 + hindextranch2 ,data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho3ans ~ sexe +ageAgr + sitpro2 + discipline_agr3 + conffois5ans ,data=climat_recherche, family=binomial(logit))
+
+
+reglog2 <- glm(vols_dicho3ans ~ sexe + ageAgr +ageaccad_tranch2  + sitpro2 + discipline_agr3 + projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho3ans ~ sexe + ageAgr +ageaccad_tranch2  + sitpro2 + nbpublistranch2 + discipline_agr3 + projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 , data=climat_recherche, family=binomial(logit))
+
+
+reglog2 <- glm(vols_dicho3ans ~ sexe + ageAgr+ageaccad_tranch2  + sitpro2 + discipline_agr3 +  international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso, data=climat_recherche,family=binomial(logit))
+
+summary (reglog2)
+
+#The giga modèle complet avec variable statut/carrière/professionnel, sans var écolo assez peu signif
+
+reglog2 <- glm(vols_dicho3ans ~ sexe + ageAgr +ageaccad_tranch2  + sitpro2  + discipline_agr3 +recheco +carriere + nbpublistranch2 +  projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 + 
+                       international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso +
+                       avionperso, data=climat_recherche, family=binomial(logit))
+
+
+
+
+
+#Ne pas voler en 2019
+climat_recherche$vols_dicho <- ifelse(climat_recherche$volsnb=="0", "N'a pas volé en 2019", "A volé en 2019")
+climat_recherche$vols_dicho[is.na(climat_recherche$volsnb)] <- NA
+
+climat_recherche$vols_dicho <- fct_relevel(climat_recherche$vols_dicho, "N'a pas volé en 2019")
+climat_recherche$vols_dicho <- as_factor(climat_recherche$vols_dicho)
+
+
+summary (reglog2)
+
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho ~ sexe  + ageaccad_tranch2 , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + ageaccad_tranch2 , data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + sitpro2, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + sitpro2 + discipline_agr3, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb +Moinsavionperso, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb +avionpersochgt, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb +avionpersochgt +avionperso, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + sitpro2 + discipline_agr3 + carriere, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + sitpro2 + discipline_agr3 + carriere + malpaye, data=climat_recherche, family=binomial(logit))
+
+
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + volsnb , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr +  ScoreEcolo , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + volsnb + revenuTete + ScoreEcolo , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + volsnb + revenuTete + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + volsnb + revenuTete + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan + effortsconso, data=climat_recherche, family=binomial(logit))
+
+
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb + revenuTete + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan + effortsconso, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb +  dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan + effortsconso, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + sitpro2 + discipline_agr3 + preoccupe, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.techno + opinionecolo.proteger + opinionecolo.efforts+ 
+                       opinionecolo.contraintes +  opinionecolo.decroissance + opinionecolo.cata , data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.techno + opinionecolo.proteger + 
+                       opinionecolo.contraintes +  opinionecolo.decroissance + opinionecolo.cata +opinionecolo.effondrement, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.decroissance , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.decroissance + opinionecolo.efforts +
+                       opinionecolo.cata + opinionecolo.techno + opinionecolo.proteger + opinionecolo.contraintes, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb + opinionecolo.decroissance + opinionecolo.efforts +
+                       opinionecolo.cata + opinionecolo.techno + opinionecolo.proteger + opinionecolo.contraintes, data=climat_recherche, family=binomial(logit))
+
+
+summary(reglog2)
+
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb ,data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + sitpro2 + discipline_agr3  + revenuTete,data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho ~ sexe*enfantsnb_rec +ageAgr + sitpro2 + discipline_agr3,data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho ~ sexe*enfantsnb_rec +ageAgr ,data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho ~ sexe*enfantsage_rec +ageAgr + sitpro2 + discipline_agr3,data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + sitpro2 + discipline_agr3 + nbpublistranch2 ,data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + sitpro2 + discipline_agr3 + hindextranch2 ,data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb +hindextranch2 ,data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho ~ sexe +ageAgr + sitpro2 + discipline_agr3 + conffois5ans ,data=climat_recherche, family=binomial(logit))
+
+
+reglog2 <- glm(vols_dicho ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(vols_dicho ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + volsnb + projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 , data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(vols_dicho ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + volsnb + international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso, data=climat_recherche,family=binomial(logit))
+reglog2 <- glm(vols_dicho ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso, data=climat_recherche,family=binomial(logit))
+
+summary (reglog2)
+
+
+
 #############################################################################@@@
 #################################################################################@@@
 #Rebus
@@ -303,7 +633,7 @@ climat$Part_ANR_ERC[climat$projets.anr_r %in% c(0, NA) & climat$projets.anr_m %i
 "Part_ANR_ERCProjet ANR et projet européen" ="Participation projet ANR et projet européen",
 "revenuAgrDe 1 500 à 2 499 euros par mois"="1 500 à 2 499 euros par mois",
 
-####################################Mai 2001###################
+####################################Mai 2021###################
 #A partir des valeurs précises du tableau
 freq(climat$volsnb_tot)
 freq(climat$volsdist_tot)
@@ -317,9 +647,481 @@ cumsum(table(climat$volsnb_tot))
 cumsum(table(climat$volsnb))
 
 
+#####################################################################################################################################@
+#Evolution des émissions de GES pour des vols en avions pour des conf, réunions, congrès (et juste pour le personnel de recherche)
+
+#Distribution
+ggplot(climat_recherche, aes(x = factor(solevolges.conf))) +
+        geom_bar(stat = "count", position = position_dodge(),
+                 colour = "grey30") + coord_flip() +
+        labs( x= "Evolution des GES ces 5 dernières années \n concernant les vols en avion pour les confs, réunions, congrès ", y="nombre de répondants")
+
+ggsave("/Users/jeromegreffion/Changement climatique et recherche/Figures, graphs/Chgt des pratiques avion pro conf, nb de répondants par modalité.pdf",
+       width=9, height=5)
+
+#Comme on a changé l'intitué de la question avant la dernière vague (pour tenir compte du confinement), 
+#on regarde si ça a eu un effet majeur
+
+#Graphiques : changement des pratiques de vols en fonction de la vague de réponse
+
+#Variable avec uniquement la date
+climat_recherche$dateDebut<-strftime(strptime(climat_recherche$startdate, "%Y-%m-%d %H:%M:%S"), "%Y-%m-%d")
+climat_recherche$dateFin<-strftime(strptime(climat_recherche$datestamp, "%Y-%m-%d %H:%M:%S"), "%Y-%m-%d")
+
+climat_recherche$NumVague[climat_recherche$dateDebut<"2020-07-07"]<-"Après premier message"
+climat_recherche$NumVague["2020-07-07"<=climat_recherche$dateDebut & climat_recherche$dateDebut<"2020-09-07"]<-"Après première relance"
+climat_recherche$NumVague["2020-09-07"<=climat_recherche$dateDebut & climat_recherche$dateDebut<"2020-10-12"]<-"Après deuxième relance"
+climat_recherche$NumVague["2020-10-12"<=climat_recherche$dateDebut & climat_recherche$dateDebut<"2020-11-16"]<-"Après troisième relance"
+climat_recherche$NumVague["2020-11-16"<=climat_recherche$dateDebut]<-"Après quatrième relance"
+
+climat_recherche$NumVague <- factor(climat_recherche$NumVague,
+                                        levels = c("Après premier message", "Après première relance", "Après deuxième relance", "Après troisième relance", "Après quatrième relance"))
+
+graphEffectif<-climat_recherche %>% group_by(solevolges.conf, NumVague) %>%summarise(Effectif=n())
+graphEffectif$NumVague <- ordered(graphEffectif$NumVague, levels = c("Après premier message", "Après première relance", "Après deuxième relance", "Après troisième relance", "Après quatrième relance"))
+
+effectifsvague<-climat_recherche %>% group_by(NumVague) %>%summarise(Effectifvague=n())
+graphEffectif<-merge(graphEffectif, effectifsvague, by="NumVague", all =TRUE )
+graphEffectif$PourcentEffectif<-graphEffectif$Effectif/graphEffectif$Effectifvague*100
+
+ggplot(graphEffectif, aes(x = solevolges.conf, y = PourcentEffectif, fill = NumVague)) +
+        geom_bar(stat = "identity", position = position_dodge(),
+                 colour = "grey30") + coord_flip() + guides(fill=guide_legend(reverse = TRUE)) +
+                scale_fill_viridis_d() +
+                labs(y="% des répondants par vague", x= "Changement des pratiques de déplacement en avion\n dans la vie privé depuis 5 ans")
 
 
+#La même chose sans les nons réponses
+
+graphEffectif<-climat_recherche %>% filter(!is.na(solevolges.conf)) %>% group_by(solevolges.conf, NumVague) %>%summarise(Effectif=n())
+graphEffectif$NumVague <- ordered(graphEffectif$NumVague, levels = c("Après premier message", "Après première relance", "Après deuxième relance", "Après troisième relance", "Après quatrième relance"))
+
+effectifsvague<-climat_recherche %>% filter(!is.na(solevolges.conf)) %>%group_by(NumVague) %>%summarise(Effectifvague=n())
+graphEffectif<-merge(graphEffectif, effectifsvague, by="NumVague", all =TRUE )
+graphEffectif$PourcentEffectif<-graphEffectif$Effectif/graphEffectif$Effectifvague*100
+
+ggplot(graphEffectif, aes(x = solevolges.conf, y = PourcentEffectif, fill = NumVague)) +
+        geom_bar(stat = "identity", position = position_dodge(),
+                 colour = "grey30") + coord_flip() +  guides(fill=guide_legend(reverse = TRUE)) +
+        scale_fill_viridis_d() +
+        labs(y="% des répondants par vague (hors non-réponses)", x= "Changement des pratiques de déplacement en avion\n dans la vie privé depuis 5 ans")
+
+ggsave("/Users/jeromegreffion/Changement climatique et recherche/Figures, graphs/Chgt des pratiques avion pro conf, pourcentage de répondants par vague, hors NA, répartition réponses.pdf",
+       width=9, height=5)
+freq(climat_recherche$solevolges.conf)
+
+#Contruction variable : Prendre moins l'avion depuis 5 ans pour des confs, réunions, congrès
+climat_recherche$Moinsavionconf[climat_recherche$solevolges.conf %in% c("Fortement diminué", "Fortement diminué")]<-"Oui"
+climat_recherche$Moinsavionconf[climat_recherche$solevolges.conf %in% c("Été à peu près stables", "Un peu augmenté", "Fortement augmenté")]<-"Non"
+climat_recherche$Moinsavionconf<-as.factor(climat_recherche$Moinsavionconf)
+
+summary(reglog2)
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionconf ~ sexe  + ageaccad_tranch2 , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + ageaccad_tranch2 , data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 + recheco, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb +Moinsavionperso, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb +avionpersochgt, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb +avionpersochgt +avionperso, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 + carriere, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 + carriere + malpaye, data=climat_recherche, family=binomial(logit))
 
 
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + volsnb , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr +  ScoreEcolo , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + volsnb + revenuTete + ScoreEcolo , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + volsnb + revenuTete + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + volsnb + revenuTete + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan + effortsconso, data=climat_recherche, family=binomial(logit))
+
+
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb + revenuTete + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan + effortsconso, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb +  dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan + effortsconso, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 + preoccupe, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 + pluspreoccupe, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 +preoccupe + pluspreoccupe, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.techno + opinionecolo.proteger + opinionecolo.efforts+ 
+                       opinionecolo.contraintes +  opinionecolo.decroissance + opinionecolo.cata , data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.techno + opinionecolo.proteger + 
+                       opinionecolo.contraintes +  opinionecolo.decroissance + opinionecolo.cata +opinionecolo.effondrement, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.decroissance , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.decroissance + opinionecolo.efforts +
+                       opinionecolo.cata + opinionecolo.techno + opinionecolo.proteger + opinionecolo.contraintes, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb + opinionecolo.decroissance + opinionecolo.efforts +
+                       opinionecolo.cata + opinionecolo.techno + opinionecolo.proteger + opinionecolo.contraintes, data=climat_recherche, family=binomial(logit))
+
+
+summary(reglog2)
+
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb ,data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb + revenuTete,data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionconf ~ sexe*enfantsnb_rec +ageAgr + sitpro2 + discipline_agr3 + volsnb + revenuTete,data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionconf ~ sexe*enfantsage_rec +ageAgr + sitpro2 + discipline_agr3 + volsnb + revenuTete,data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 + nbpublistranch2 ,data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb +nbpublistranch2 ,data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 + hindextranch2 ,data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb +hindextranch2 ,data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsavionconf ~ sexe +ageAgr + sitpro2 + discipline_agr3 + conffois5ans ,data=climat_recherche, family=binomial(logit))
+
+
+reglog2 <- glm(Moinsavionconf ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionconf ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + volsnb + projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 , data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsavionconf ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + volsnb + international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso, data=climat_recherche,family=binomial(logit))
+reglog2 <- glm(Moinsavionconf ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso, data=climat_recherche,family=binomial(logit))
+
+
+summary(reglog2)
+
+#####################################################################################################################################@
+#Evolution des émissions de GES pour des vols en avions pour recueillir des données (et juste pour le personnel de recherche)
+
+#Distribution
+ggplot(climat_recherche, aes(x = factor(solevolges.donnees))) +
+        geom_bar(stat = "count", position = position_dodge(),
+                 colour = "grey30") + coord_flip() +
+        labs( x= "Evolution des GES ces 5 dernières années \n concernant les vols en avion pour recueillir des données ", y="nombre de répondants")
+
+ggsave("/Users/jeromegreffion/Changement climatique et recherche/Figures, graphs/Chgt des pratiques avion pro recueil des données, nb de répondants par modalité.pdf",
+       width=9, height=5)
+
+#Comme on a changé l'intitué de la question avant la dernière vague (pour tenir compte du confinement), 
+#on regarde si ça a eu un effet majeur
+
+#Graphiques : changement des pratiques de vols en fonction de la vague de réponse
+
+#Variable avec uniquement la date
+
+graphEffectif<-climat_recherche %>% group_by(solevolges.donnees, NumVague) %>%summarise(Effectif=n())
+graphEffectif$NumVague <- ordered(graphEffectif$NumVague, levels = c("Après premier message", "Après première relance", "Après deuxième relance", "Après troisième relance", "Après quatrième relance"))
+
+effectifsvague<-climat_recherche %>% group_by(NumVague) %>%summarise(Effectifvague=n())
+graphEffectif<-merge(graphEffectif, effectifsvague, by="NumVague", all =TRUE )
+graphEffectif$PourcentEffectif<-graphEffectif$Effectif/graphEffectif$Effectifvague*100
+
+ggplot(graphEffectif, aes(x = solevolges.donnees, y = PourcentEffectif, fill = NumVague)) +
+        geom_bar(stat = "identity", position = position_dodge(),
+                 colour = "grey30") + coord_flip() + guides(fill=guide_legend(reverse = TRUE)) +
+        scale_fill_viridis_d() +
+        labs(y="% des répondants par vague", x= "Changement des pratiques de déplacement en avion\n dans la vie privé depuis 5 ans")
+
+
+#La même chose sans les nons réponses
+
+graphEffectif<-climat_recherche %>% filter(!is.na(solevolges.donnees)) %>% group_by(solevolges.donnees, NumVague) %>%summarise(Effectif=n())
+graphEffectif$NumVague <- ordered(graphEffectif$NumVague, levels = c("Après premier message", "Après première relance", "Après deuxième relance", "Après troisième relance", "Après quatrième relance"))
+
+effectifsvague<-climat_recherche %>% filter(!is.na(solevolges.donnees)) %>%group_by(NumVague) %>%summarise(Effectifvague=n())
+graphEffectif<-merge(graphEffectif, effectifsvague, by="NumVague", all =TRUE )
+graphEffectif$PourcentEffectif<-graphEffectif$Effectif/graphEffectif$Effectifvague*100
+
+ggplot(graphEffectif, aes(x = solevolges.donnees, y = PourcentEffectif, fill = NumVague)) +
+        geom_bar(stat = "identity", position = position_dodge(),
+                 colour = "grey30") + coord_flip() +  guides(fill=guide_legend(reverse = TRUE)) +
+        scale_fill_viridis_d() +
+        labs(y="% des répondants par vague (hors non-réponses)", x= "Changement des pratiques de déplacement en avion\n dans la vie privé depuis 5 ans")
+
+
+#Contruction variable : Prendre moins l'avion/voiture/bateau depuis 5 ans pour le recueil de données
+climat_recherche$Moinsaviondonnees[climat_recherche$solevolges.donnees %in% c("Fortement diminué", "Fortement diminué")]<-"Oui"
+climat_recherche$Moinsaviondonnees[climat_recherche$solevolges.donnees %in% c("Été à peu près stables", "Un peu augmenté", "Fortement augmenté")]<-"Non"
+climat_recherche$Moinsaviondonnees<-as.factor(climat_recherche$Moinsaviondonnees)
+
+summary(reglog2)
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees ~ sexe  + ageaccad_tranch2 , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + ageaccad_tranch2 , data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + sitpro2, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + sitpro2 + discipline_agr3, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + sitpro2 + discipline_agr3  +Moinsavionperso, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb +Moinsavionperso, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + sitpro2 + discipline_agr3  +avionpersochgt, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + sitpro2 + discipline_agr3  +avionpersochgt +avionperso, data=climat_recherche, family=binomial(logit))
+
+
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + volsnb , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr +  ScoreEcolo , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr +  revenuTete + ScoreEcolo , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan + effortsconso, data=climat_recherche, family=binomial(logit))
+
+summary(reglog2)
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + sitpro2 + discipline_agr3 + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan + effortsconso, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb +  dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan + effortsconso, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + sitpro2 + discipline_agr3 + preoccupe, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.techno + opinionecolo.proteger + opinionecolo.efforts+ 
+                       opinionecolo.contraintes +  opinionecolo.decroissance + opinionecolo.cata , data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.techno + opinionecolo.proteger + 
+                       opinionecolo.contraintes +  opinionecolo.decroissance + opinionecolo.cata +opinionecolo.effondrement, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.decroissance , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.decroissance + opinionecolo.efforts +
+                       opinionecolo.cata + opinionecolo.techno + opinionecolo.proteger + opinionecolo.contraintes, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb + opinionecolo.decroissance + opinionecolo.efforts +
+                       opinionecolo.cata + opinionecolo.techno + opinionecolo.proteger + opinionecolo.contraintes, data=climat_recherche, family=binomial(logit))
+summary(reglog2)
+
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb ,data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb + revenuTete,data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees ~ sexe*enfantsnb_rec +ageAgr + sitpro2 + discipline_agr3 ,data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsaviondonnees ~ sexe*enfantsnb_rec +ageAgr + sitpro2 + discipline_agr3 + volsnb + revenuTete,data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees ~ sexe*enfantsage_rec +ageAgr + sitpro2 + discipline_agr3 + volsnb + revenuTete,data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + sitpro2 + discipline_agr3 + nbpublistranch2 ,data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb +nbpublistranch2 ,data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + sitpro2 + discipline_agr3 + hindextranch2 ,data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb +hindextranch2 ,data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsaviondonnees ~ sexe +ageAgr + sitpro2 + discipline_agr3 + conffois5ans ,data=climat_recherche, family=binomial(logit))
+
+
+reglog2 <- glm(Moinsaviondonnees ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + volsnb + projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 , data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsaviondonnees ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + volsnb + international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso, data=climat_recherche,family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso, data=climat_recherche,family=binomial(logit))
+
+
+summary(reglog2)
+
+#Contruction variable alternative (sans les "stables") : Prendre moins l'avion/voiture/bateau depuis 5 ans pour le recueil de données
+#On ne tient pas compte des "stables"
+climat_recherche$Moinsaviondonnees2[climat_recherche$solevolges.donnees %in% c("Fortement diminué", "Fortement diminué")]<-"Oui"
+climat_recherche$Moinsaviondonnees2[climat_recherche$solevolges.donnees %in% c("Un peu augmenté", "Fortement augmenté")]<-"Non"
+climat_recherche$Moinsaviondonnees2<-as.factor(climat_recherche$Moinsaviondonnees2)
+
+
+summary(reglog2)
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe  + ageaccad_tranch2 , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + ageaccad_tranch2 , data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + sitpro2, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + sitpro2 + discipline_agr3, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + sitpro2 + discipline_agr3  +Moinsavionperso, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb +Moinsavionperso, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + sitpro2 + discipline_agr3  +avionpersochgt, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + sitpro2 + discipline_agr3  +avionpersochgt +avionperso, data=climat_recherche, family=binomial(logit))
+
+
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + volsnb , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr +  ScoreEcolo , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr +  revenuTete + ScoreEcolo , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan + effortsconso, data=climat_recherche, family=binomial(logit))
+
+summary(reglog2)
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + sitpro2 + discipline_agr3 + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan + effortsconso, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb +  dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan + effortsconso, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + sitpro2 + discipline_agr3 + preoccupe, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.techno + opinionecolo.proteger + opinionecolo.efforts+ 
+                       opinionecolo.contraintes +  opinionecolo.decroissance + opinionecolo.cata , data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.techno + opinionecolo.proteger + 
+                       opinionecolo.contraintes +  opinionecolo.decroissance + opinionecolo.cata +opinionecolo.effondrement, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.decroissance , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.decroissance + opinionecolo.efforts +  opinionecolo.cata + opinionecolo.techno + opinionecolo.proteger + opinionecolo.contraintes, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb + opinionecolo.decroissance + opinionecolo.efforts +
+                       opinionecolo.cata + opinionecolo.techno + opinionecolo.proteger + opinionecolo.contraintes, data=climat_recherche, family=binomial(logit))
+summary(reglog2)
+
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb ,data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb + revenuTete,data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe*enfantsnb_rec +ageAgr + sitpro2 + discipline_agr3 + volsnb + revenuTete,data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe*enfantsage_rec +ageAgr + sitpro2 + discipline_agr3 + volsnb + revenuTete,data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + sitpro2 + discipline_agr3 + nbpublistranch2 ,data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb +nbpublistranch2 ,data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + sitpro2 + discipline_agr3 + hindextranch2 ,data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + sitpro2 + discipline_agr3 + volsnb +hindextranch2 ,data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe +ageAgr + sitpro2 + discipline_agr3 + conffois5ans ,data=climat_recherche, family=binomial(logit))
+
+
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + volsnb + projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 , data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + volsnb + international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso, data=climat_recherche,family=binomial(logit))
+reglog2 <- glm(Moinsaviondonnees2 ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso, data=climat_recherche,family=binomial(logit))
+
+
+summary(reglog2)
+
+
+#####################################################################################################################################@
+#Avion perso (et juste pour le personnel de recherche)
+
+#Distribution nb de vols et changement pratiques
+
+ggplot(climat_recherche, aes(x = factor(avionperso))) +
+        geom_bar(stat = "count", position = position_dodge(),
+                 colour = "grey30") + coord_flip() +
+        labs( x= "Nombre de vols en avion dans la vie privé en 2019", y="nombre de répondants")
+
+ggsave("/Users/jeromegreffion/Changement climatique et recherche/Figures, graphs/Nombre de vols avion vie privée, répartition réponses.pdf",
+       width=9, height=5)
+
+
+ggplot(climat_recherche, aes(x = factor(avionpersochgt))) +
+        geom_bar(stat = "count", position = position_dodge(),
+                 colour = "grey30") + coord_flip() +
+        labs( x= "Changement des pratiques de déplacement en avion\n dans la vie privé depuis 5 ans", y="nombre de répondants")
+
+ggsave("/Users/jeromegreffion/Changement climatique et recherche/Figures, graphs/Changement des pratiques avion vie privée, répartition réponses.pdf",
+       width=9, height=5)
+
+#Moyennes par catégorie de changement de pratiques : distribution
+graphMoyenne<-climat_recherche %>% group_by(avionpersochgt) %>%summarise(MoyenneVols = mean(avionpersonum, na.rm=T),
+                                                                          Ecart = sd(avionpersonum, na.rm=T))
+
+ggplot(graphMoyenne, aes(x = avionpersochgt, y = MoyenneVols, fill = avionpersochgt)) +
+        geom_bar(stat = "identity", position = position_dodge(),
+                 colour = "grey30") + coord_flip() +
+        geom_errorbar(
+                aes(ymin = MoyenneVols - Ecart, ymax = MoyenneVols + Ecart),
+                width = .2, position = position_dodge(.9), size = 1
+        ) + 
+        scale_fill_viridis_d() +
+        guides(fill = FALSE) +
+        labs(y="Nombre moyens de vols en avion dans la vie privé en 2019", x= "Changement des pratiques de déplacement en avion\n dans la vie privé depuis 5 ans")
+
+ggsave("/Users/jeromegreffion/Changement climatique et recherche/Figures, graphs/Nombre moyen de vols privés en fonction du degré d'évolution de la prise de l'avion.pdf",
+       width=9, height=5)
+
+#Si on enlève ceux qui sont à zéro vols (potentiellement des gens qui ne volent jamais et qui ne peuvent pas réduire)
+graphMoyenne<-climat_recherche %>% filter(avionpersonum>0) %>%
+        group_by(avionpersochgt) %>%summarise(MoyenneVols = mean(avionpersonum, na.rm=T),
+                                                                         Ecart = sd(avionpersonum, na.rm=T))
+
+ggplot(graphMoyenne, aes(x = avionpersochgt, y = MoyenneVols, fill = avionpersochgt)) +
+        geom_bar(stat = "identity", position = position_dodge(),
+                 colour = "grey30") + coord_flip() +
+        geom_errorbar(
+                aes(ymin = MoyenneVols - Ecart, ymax = MoyenneVols + Ecart),
+                width = .2, position = position_dodge(.9), size = 1
+        ) + 
+        scale_fill_viridis_d() +
+        guides(fill = FALSE) +
+        labs(y="Nombre moyens de vols en avion dans la vie privé en 2019\n pour ceux qui ont volé", x= "Changement des pratiques de déplacement en avion\n dans la vie privé depuis 5 ans")
+
+ggsave("/Users/jeromegreffion/Changement climatique et recherche/Figures, graphs/Nombre moyen de vols privés en fonction du degré d'évolution de la prise de l'avion, pour ceux qui ont volé.pdf",
+       width=9, height=5)
+
+
+res.reg9 <- lm(avionpersonum ~ sexe + ageAgr , data=climat_recherche)
+res.reg9 <- lm(avionpersonum ~ sexe + ageAgr  + sitpro2  , data=climat_recherche)
+
+res.reg9 <- lm(avionpersonum ~ sexe + ageAgr  + sitpro2 + avionpersochgt , data=climat_recherche)
+res.reg9 <- lm(avionpersonum ~ sexe + ageAgr  + sitpro2 + avionpersochgt +  revenuTete, data=climat_recherche)
+res.reg9 <- lm(avionpersonum ~ sexe*enfantsage_rec + ageAgr  + sitpro2 + avionpersochgt , data=climat_recherche)
+res.reg9 <- lm(avionpersonum ~ sexe*enfantsnb_rec + ageAgr  + sitpro2 + avionpersochgt , data=climat_recherche)
+
+
+res.reg9 <- lm(avionpersonum ~ sexe + ageAgr  + sitpro2 + statutpar.p , data=climat_recherche)
+res.reg9 <- lm(avionpersonum ~ sexe + ageAgr  + sitpro2 + dippar.p , data=climat_recherche)
+res.reg9 <- lm(avionpersonum ~ sexe + ageAgr  + sitpro2 + statutpar.p +revenuparadulte , data=climat_recherche)
+res.reg9 <- lm(avionpersonum ~ sexe + ageAgr  + sitpro2 + dippar.p +revenuparadulte, data=climat_recherche)
+res.reg9 <- lm(avionpersonum ~ sexe + ageAgr  + sitpro2 + revenuTete, data=climat_recherche)
+
+res.reg9 <- lm(avionpersonum ~ sexe + ageAgr  + sitpro2+ discipline_agr3 , data=climat_recherche)
+res.reg9 <- lm(avionpersonum ~ sexe + ageAgr  + sitpro2+ discipline_agr3 + revenuTete, data=climat_recherche)
+res.reg9 <- lm(avionpersonum ~ sexe + ageAgr  + sitpro2+ discipline_agr3 + revenuparadulte, data=climat_recherche)
+
+
+res.reg9 <- lm(avionpersonum ~   avionpersochgt , data=climat_recherche)
+res.reg9 <- lm(avionpersonum ~   avionpersochgt +scorecolo , data=climat_recherche)
+
+res.reg9 <- lm(revenuTete ~ sexe   , data=climat_recherche)
+
+summary(res.reg9)
+
+mean(climat_recherche$avionpersonum, na.rm=T)
+freq(climat_recherche$Moinsavionperso)
+freq(climat_recherche$avionpersochgt)
+freq(climat_recherche$ageAgr)
+freq(climat_recherche$revenuTete)
+
+
+#Prendre moins l'avion depuis 5 ans dans la vie privée
+climat_recherche$Moinsavionperso[climat_recherche$avionpersochgt %in% c("Oui, je le prends beaucoup moins", "Oui, je le prends un peu moins")]<-"Oui"
+climat_recherche$Moinsavionperso[climat_recherche$avionpersochgt %in% c("Oui, je le prends beaucoup plus", "Oui, je le prends un peu plus", "Non")]<-"Non"
+climat_recherche$Moinsavionperso<-as.factor(climat_recherche$Moinsavionperso)
+
+climat_recherche$aucunvolperso[climat_recherche$avionperso!="Aucun aller-retour" & !is.na(climat_recherche$avionperso)]<-"Non"
+climat_recherche$aucunvolperso[climat_recherche$avionperso=="Aucun aller-retour"]<-"Oui"
+freq(climat_recherche$aucunvolperso)
+
+reglog2 <- glm(Moinsavionperso ~ sexe +ageAgr , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionperso ~ sexe +ageAgr + aucunvolperso , data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsavionperso ~ sexe +ageAgr + ScoreEcolo , data=climat_recherche, family=binomial(logit))
+
+
+reglog2 <- glm(Moinsavionperso ~ sexe +ageAgr + aucunvolperso + revenuTete + ScoreEcolo , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionperso ~ sexe +ageAgr + aucunvolperso + revenuTete + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionperso ~ sexe +ageAgr + aucunvolperso + revenuTete + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan + effortsconso, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsavionperso ~ sexe +ageAgr + sitpro2 + discipline_agr3 + aucunvolperso + revenuTete + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan + effortsconso, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionperso ~ sexe +ageAgr + sitpro2 + discipline_agr3 + aucunvolperso +  dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan + effortsconso, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionperso ~ sexe +ageAgr + sitpro2 + discipline_agr3 + preoccupe, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionperso ~ sexe +ageAgr + sitpro2 + discipline_agr3 + pluspreoccupe, data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionperso ~ sexe +ageAgr + sitpro2 + discipline_agr3 +preoccupe + pluspreoccupe, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsavionperso ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.techno + opinionecolo.proteger + opinionecolo.efforts+ 
+                       opinionecolo.contraintes +  opinionecolo.decroissance + opinionecolo.cata , data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsavionperso ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.techno + opinionecolo.proteger + 
+                       opinionecolo.contraintes +  opinionecolo.decroissance + opinionecolo.cata +opinionecolo.effondrement, data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsavionperso ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.decroissance , data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionperso ~ sexe +ageAgr + sitpro2 + discipline_agr3 + opinionecolo.decroissance + opinionecolo.efforts +
+                       opinionecolo.cata + opinionecolo.techno + opinionecolo.proteger + opinionecolo.contraintes, data=climat_recherche, family=binomial(logit))
+summary(reglog2)
+
+reglog2 <- glm(Moinsavionperso ~ sexe +ageAgr + sitpro2 + discipline_agr3 + aucunvolperso ,data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsavionperso ~ sexe +ageAgr + sitpro2 + discipline_agr3 + aucunvolperso + revenuTete,data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionperso ~ sexe*enfantsnb_rec +ageAgr + sitpro2 + discipline_agr3 + aucunvolperso + revenuTete,data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionperso ~ sexe*enfantsage_rec +ageAgr + sitpro2 + discipline_agr3 + aucunvolperso + revenuTete,data=climat_recherche, family=binomial(logit))
+
+reglog2 <- glm(Moinsavionperso ~ sexe +ageAgr + sitpro2 + avionperso+ revenuTete,data=climat_recherche, family=binomial(logit))
+reglog2 <- glm(Moinsavionperso ~ sexe +ageAgr + sitpro2 + avionperso+ revenuTete,data=climat_recherche, family=binomial(logit))
+
+
+summary(reglog2)
+
+freq(climat_recherche$opinionecolo.decroissance)
+
+climat_recherche$aucunvolperso<- climat_recherche$avionperso!="Aucun aller-retour" & 
 
 

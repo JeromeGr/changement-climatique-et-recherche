@@ -1,10 +1,36 @@
 ####Revenu par tête
 
 reg2 <- lm(revenuTete ~ sexe + ageAgr, data=climat_recherche)
+reg2 <- lm(revenuTete ~ sexe + ageaccad_tranch2, data=climat_recherche)
 reg2 <- lm(revenuTete ~ sexe + ageAgr + sitpro2 + discipline_agr3, data=climat_recherche)
 reg2 <- lm(revenuTete ~ sexe + ageAgr + sitpro2 + discipline_agr3 + paie, data=climat_recherche)
 summary(reg2)
 
+
+####Revenu par adulte
+
+climat_recherche$nbadultes<-1+climat_recherche$couple1
+
+climat_recherche$revenuparadulte[climat_recherche$revenu=="Moins de 1 500 euros par mois" & !is.na(climat_recherche$revenu) ]<-750/climat_recherche$nbadultes[climat_recherche$revenu=="Moins de 1 500 euros par mois" & !is.na(climat_recherche$revenu)]
+climat_recherche$revenuparadulte[climat_recherche$revenu=="De 1 500 à 2 499 euros par mois" & !is.na(climat_recherche$revenu)]<-2000/climat_recherche$nbadultes[climat_recherche$revenu=="De 1 500 à 2 499 euros par mois" & !is.na(climat_recherche$revenu)]
+climat_recherche$revenuparadulte[climat_recherche$revenu=="De 2 500 à 3 499 euros par mois" & !is.na(climat_recherche$revenu)]<-3000/climat_recherche$nbadultes[climat_recherche$revenu=="De 2 500 à 3 499 euros par mois" & !is.na(climat_recherche$revenu)]
+climat_recherche$revenuparadulte[climat_recherche$revenu=="De 3 500 à 4 499 euros par mois" & !is.na(climat_recherche$revenu)]<-4000/climat_recherche$nbadultes[climat_recherche$revenu=="De 3 500 à 4 499 euros par mois" & !is.na(climat_recherche$revenu)]
+climat_recherche$revenuparadulte[climat_recherche$revenu=="De 6 000 à 7 999 euros par mois" & !is.na(climat_recherche$revenu)]<-7000/climat_recherche$nbadultes[climat_recherche$revenu=="De 6 000 à 7 999 euros par mois" & !is.na(climat_recherche$revenu)]
+climat_recherche$revenuparadulte[climat_recherche$revenu=="De 8 000 à 9 999 euros par mois" & !is.na(climat_recherche$revenu)]<-9000/climat_recherche$nbadultes[climat_recherche$revenu=="De 8 000 à 9 999 euros par mois" & !is.na(climat_recherche$revenu)]
+climat_recherche$revenuparadulte[climat_recherche$revenu=="De 10 000 à 15 000 euros par mois" & !is.na(climat_recherche$revenu)]<-12500/climat_recherche$nbadultes[climat_recherche$revenu=="De 10 000 à 15 000 euros par mois" & !is.na(climat_recherche$revenu)]
+climat_recherche$revenuparadulte[climat_recherche$revenu=="Plus de 15 000 par mois" & !is.na(climat_recherche$revenu)]<-20000/climat_recherche$nbadultes[climat_recherche$revenu=="Plus de 15 000 par mois" & !is.na(climat_recherche$revenu)]
+
+
+reg2 <- lm(revenuparadulte ~ sexe + ageAgr, data=climat_recherche)
+reg2 <- lm(revenuparadulte ~ sexe + ageaccad_tranch2, data=climat_recherche)
+reg2 <- lm(revenuparadulte ~ sexe + ageAgr + sitpro2 + discipline_agr3, data=climat_recherche)
+reg2 <- lm(revenuparadulte ~ sexe + ageAgr + sitpro2 + discipline_agr3 + paie, data=climat_recherche)
+reg2 <- lm(revenuparadulte ~ sexe + ageAgr + sitpro2 + dippar.p , data=climat_recherche)
+reg2 <- lm(revenuparadulte ~ sexe + ageAgr + sitpro2 + statutpar.p , data=climat_recherche)
+reg2 <- lm(revenuparadulte ~ sexe + ageAgr + sitpro2 + dippar.m , data=climat_recherche)
+
+
+summary(reg2)
 
 #S'estimer bien ou mal payé
 freq(climat_recherche$paie)

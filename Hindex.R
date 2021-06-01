@@ -1,6 +1,7 @@
 library(texreg)
 library(dplyr)
 library(ggplot2)
+library(GGally)
 
 # sous base seulement recherche
 climat_recherche <- climat[!climat$sitpro2 %in% c(
@@ -45,6 +46,8 @@ climat_recherche$volsnbtranch2 <- cut(climat_recherche$volsnb,
                                       breaks = c(0, 0.4, 1, 2, 3, 4, 5, 8, 65)
 )
 
+
+
 #Construction de la variable dichotomique "connaitre son h-index"
 climat_recherche$hindexconnDicho[climat_recherche$hindexconn=="Oui"]<-"Oui"
 climat_recherche$hindexconnDicho[climat_recherche$hindexconn %in% c("Non", "Je ne suis pas certain de ce qu'est le h-index")]<-"Non"
@@ -56,12 +59,76 @@ climat_recherche$conffois5ans<-ifelse(climat_recherche$conf!="Oui, dans les 5 de
 ## Réordonnancement de climat_recherche$conffois5ans
 climat_recherche$conffois5ans <- factor(climat_recherche$conffois5ans,
                                         levels = c(
-                                          "Zéro fois", "Une fois par an", "Moins d'une fois par an",
+                                          "Zéro fois", "Moins d'une fois par an", "Une fois par an", 
                                           "Deux fois par an", "Trois fois par an", "Plus de trois fois par an"
                                         )
 )
+
+## Réordonnancement de ageAgr
+climat_recherche$ageAgr <- factor(climat_recherche$ageAgr,
+                  levels = c( "Moins de 29 ans", "30-34 ans", "35-39 ans", "40-44 ans", "45-49 ans","50-54 ans", "55-64 ans", "65 ans et plus" ))
+climat_recherche$ageAgr <- relevel(climat_recherche$ageAgr, ref = "50-54 ans")
+freq(climat_recherche$ageAgr)
+freq(climat$ageAgr)
 #On met le temps de vol à zéro pour ceux qui n'ont indiqué aucun vol
 climat_recherche$volsh<-ifelse(!is.na(climat_recherche$volsnb) & climat_recherche$volsnb==0, "0h", as.character(climat_recherche$volsh))
+
+## Recodage de climat$enfantsnb en climat$enfantsnb_rec
+climat_recherche$enfantsnb_rec <- as.character(climat_recherche$enfantsnb)
+climat_recherche$enfantsnb_rec <- fct_recode(climat_recherche$enfantsnb_rec,
+                                   "2 ou plus" = "2",
+                                   "2 ou plus" = "3",
+                                   "2 ou plus" = "4",
+                                   "2 ou plus" = "5",
+                                   "2 ou plus" = "13",
+                                   "2 ou plus" = "6",
+                                   "2 ou plus" = "9",
+                                   "2 ou plus" = "7",
+                                   "2 ou plus" = "10"
+)
+
+
+#recodage du nombre d'enfants avec l'âge
+climat_recherche$enfantsage_rec <- NULL
+climat_recherche$enfantsage_rec[climat_recherche$enfantsage <= 5] <- "moins de 5 ans"
+climat_recherche$enfantsage_rec[climat_recherche$enfantsage <= 15 &
+                        climat_recherche$enfantsage > 5 ] <- "Entre 5 et 15 ans"
+# climat_recherche$enfantsage_rec[climat_recherche$enfantsage <= 15 &
+#                                   climat_recherche$enfantsage > 10 ] <- "Entre 10 et 15 ans"
+climat_recherche$enfantsage_rec[climat_recherche$enfantsage > 15 ] <- "Plus de 15 ans"
+climat_recherche$enfantsage_rec[climat_recherche$enfantsnb_rec == "0" ] <- "Sans enfant"
+climat_recherche$enfantsage_rec <- as.factor(climat_recherche$enfantsage_rec)
+## Réordonnancement de climat_recherche$enfantsage_rec 
+climat_recherche$enfantsage_rec <- factor(climat_recherche$enfantsage_rec,
+                                levels = c("Sans enfant", "moins de 5 ans", "Entre 5 et 15 ans", "Plus de 15 ans")
+)
+
+#Age accadémique
+climat_recherche$ageaccad<-2020-climat_recherche$theseannee
+freq(climat_recherche$ageaccad_tranch2)
+
+climat_recherche$ageaccad_tranch<-quant.cut(climat_recherche$ageaccad, 6)
+
+climat_recherche$ageaccad_tranch2 <- ifelse(climat_recherche$these=="Non", "Pas de thèse", as.character(cut(climat_recherche$ageaccad,
+                                      include.lowest = TRUE,
+                                      right = TRUE,
+                                      breaks = c(0, 2, 5, 8, 13, 18, 23, 29, 114))))
+climat_recherche$ageaccad_tranch2 <- factor(climat_recherche$ageaccad_tranch2,
+                                        levels = c(
+                                          "Pas de thèse", "[0,2]", "(2,5]",
+                                          "(5,8]", "(8,13]", "(13,18]", "(18,23]", "(29,114]"
+                                        )
+)
+
+
+#Nombre de conférences en numérique (approximation)
+
+climat_recherche$conffois5ansnum[climat_recherche$conffois5ans=="Zéro fois"]<-0
+climat_recherche$conffois5ansnum[climat_recherche$conffois5ans=="Moins d'une fois par an"]<-0.5
+climat_recherche$conffois5ansnum[climat_recherche$conffois5ans=="Une fois par an"]<-1
+climat_recherche$conffois5ansnum[climat_recherche$conffois5ans=="Deux fois par an"]<-2
+climat_recherche$conffois5ansnum[climat_recherche$conffois5ans=="Trois fois par an"]<-3
+climat_recherche$conffois5ansnum[climat_recherche$conffois5ans=="Plus de trois fois par an"]<-4.5
 
 
 #########################################
@@ -75,12 +142,12 @@ climat_recherche$volsdist_tot<-ifelse(climat_recherche$volsnb==0 & climat_recher
 #Idem pour le nombre de vol
 climat_recherche$volsnb_tot<-ifelse(climat_recherche$volsnb==0 & climat_recherche$tiragemodule=="1", 0, climat_recherche$volsnb_tot)
 
-#Durée moyenne des vols effectués
+#Durée moyenne des vols effectués (hors module ?)
 climat_recherche$volsduree_moy<-climat_recherche$volshnum/climat_recherche$volsnb
-climat_recherche$volsduree_moy[climat_recherche$volsnb==0 & climat_recherche$tiragemodule=="1"]<-0
+climat_recherche$volsduree_moy[climat_recherche$volsnb==0]<-0
 
-#Distance moyenne des vols effectués et déclaré dans le tableau
-climat_recherche$volsdist_moy<-climat_recherche$volsdist_tot/climat_recherche$volsnb
+#Distance moyenne des vols effectués et déclaré dans le tableau (Attention j'avais oublié _tot après volsnb : refaire les régressions :((( ?))))
+climat_recherche$volsdist_moy<-climat_recherche$volsdist_tot/climat_recherche$volsnb_tot
 climat_recherche$volsdist_moy[climat_recherche$volsnb==0 & climat_recherche$tiragemodule=="1"]<-0
 
 #Calcul distance totale par motif de vol, par personne
@@ -285,30 +352,371 @@ climat_recherche$conffois5ans<-fct_relevel(climat_recherche$conffois5ans, "Zéro
 
 climat_recherche$volsh<-fct_relevel(climat_recherche$volsh, "De 1h à 10h")
 
-
+climat_recherche$ageaccad_tranch2<-fct_relevel(climat_recherche$ageaccad_tranch2, "[0,2]")
 ##########################################################################################################################################
 ##########################################################################################################################################
 ##Exploration des distributions des variables d'intérêts et des liens entre elles, hors régressions
-#hindex et nombre de publis
+#hindex, nombre de publis et nombre de vols
+
+
+#Publis
+distrinbpublis<-climat_recherche %>% group_by(nbpublis) %>% summarize(nbpersonnes=n())
+
+ggplot(distrinbpublis, aes(x=nbpublis, y=nbpersonnes))+
+  geom_bar(stat="identity", fill="steelblue", width=0.5)+
+  theme_minimal()+
+  labs(y="nombre d'enquêtés", x="Nombre de publications depuis 2017,")
+
+ggsave("/Users/jeromegreffion/Changement climatique et recherche/Figures, graphs/Distribution nbpublis.pdf",
+       width=9, height=5)
+
+distrinbpublis<-climat_recherche %>% group_by(nbpublistranch2) %>% summarize(nbpersonnes=n())
+
+ggplot(distrinbpublis, aes(x=nbpublistranch2, y=nbpersonnes))+
+  geom_bar(stat="identity", fill="steelblue", width=0.5)+
+  theme_minimal()+ 
+  labs(y="nombre d'enquêtés", x="Nombre de publications depuis 2017, en tranche")
+
+ggsave("/Users/jeromegreffion/Changement climatique et recherche/Figures, graphs/Distribution nbpublis en tranche.pdf",
+       width=9, height=5)
+
+#Hindex
 
 distrihindex<-climat_recherche %>% group_by(hindex) %>% summarize(nbpersonnes=n())
 
 ggplot(distrihindex, aes(x=hindex, y=nbpersonnes))+
   geom_bar(stat="identity", fill="steelblue", width=0.5)+
-  theme_minimal()
+  theme_minimal()+
+  labs(y="nombre d'enquêtés", x="h-index")
 
-distrinbpublis<-climat_recherche %>% group_by(nbpublis) %>% summarize(nbpersonnes=n())
+ggsave("/Users/jeromegreffion/Changement climatique et recherche/Figures, graphs/Distribution Hindex.pdf",
+       width=9, height=5)
 
-ggplot(distrinbpublis, aes(x=nbpublis, y=nbpersonnes))+
+distrihindex<-climat_recherche %>% group_by(hindextranch2) %>% summarize(nbpersonnes=n())
+
+ggplot(distrihindex, aes(x=hindextranch2, y=nbpersonnes))+
+  geom_bar(stat="identity", fill="steelblue", width=0.5)+
+  theme_minimal()+ 
+  labs(y="nombre d'enquêtés", x="h-index en tranche")
+
+ggsave("/Users/jeromegreffion/Changement climatique et recherche/Figures, graphs/Distribution Hindex en tranche.pdf",
+       width=9, height=5)
+
+
+#Distrib du log du h-index
+climat_recherche$hindexln<-log(climat_recherche$hindex)
+freq(climat_recherche$hindexln)
+distrihindexln<-climat_recherche %>% filter(hindexln>=0)%>% group_by(hindexln) %>% summarize(nbpersonnes=n())
+
+ggplot(distrihindexln, aes(x=hindexln, y=nbpersonnes))+
   geom_bar(stat="identity", fill="steelblue", width=0.5)+
   theme_minimal()
 
 
+#Nb vols
+
+distrivolsnb<-climat_recherche %>% group_by(volsnb) %>% summarize(nbpersonnes=n())
+
+ggplot(distrivolsnb, aes(x=volsnb, y=nbpersonnes))+
+  geom_bar(stat="identity", fill="steelblue", width=0.5)+
+  theme_minimal()+
+  labs(y="nombre d'enquêtés", x="Nombre de vols en 2019,")
+
+ggsave("/Users/jeromegreffion/Changement climatique et recherche/Figures, graphs/Distribution volsnb.pdf",
+       width=9, height=5)
+
+distrivolsnb<-climat_recherche %>% group_by(volsnbtranch2) %>% summarize(nbpersonnes=n())
+
+ggplot(distrivolsnb, aes(x=volsnbtranch2, y=nbpersonnes))+
+  geom_bar(stat="identity", fill="steelblue", width=0.5)+
+  theme_minimal()+ 
+  labs(y="nombre d'enquêtés", x="Nombre de vols en 2019, en tranche")
+
+ggsave("/Users/jeromegreffion/Changement climatique et recherche/Figures, graphs/Distribution volsnb en tranche.pdf",
+       width=9, height=5)
+
+#Nbconférences lors des 5 dernières années
+
+districonffois5ans<-climat_recherche %>% group_by(conffois5ans) %>% summarize(nbpersonnes=n())
+
+ggplot(districonffois5ans, aes(x=conffois5ans, y=nbpersonnes))+
+  geom_bar(stat="identity", fill="steelblue", width=0.5)+
+  theme_minimal()+ 
+  labs(y="nombre d'enquêtés", x="Nombre de participations à des conférences à l'étranger, les 5 dernières années")
+
+ggsave("/Users/jeromegreffion/Changement climatique et recherche/Figures, graphs/Distribution du nombre de participation conf étranger.pdf",
+       width=9, height=5)
+
+freq(climat_recherche$conffois5ans)
+
+#Distribution par discipline et sexe, boxplot
+ggplot(climat_recherche)+
+  geom_boxplot(aes(y=nbpublis, x=discipline_agr3))+coord_flip()
+
 
 ggplot(climat_recherche)+
   geom_boxplot(aes(y=nbpublis, x=discipline_agr3, color=sexe))+coord_flip()
+
+ggplot(climat_recherche)+
+  geom_boxplot(aes(y=hindex, x=discipline_agr3))+coord_flip()
+
 ggplot(climat_recherche)+
   geom_boxplot(aes(y=hindex, x=discipline_agr3, color=sexe))+coord_flip()
+
+####Distribution des vols par tranche de nombre de publis et de h-index
+
+#Boxplot
+ggplot(climat_recherche)+
+  geom_boxplot(aes(y=volsnb, x=nbpublistranch2))+
+labs(y="Nombre moyens de vols en avion en 2019", x= "Nombre de publications 2017-mi2020")
+
+ggsave("/Users/jeromegreffion/Changement climatique et recherche/Figures, graphs/Boxplot, nombre de vols en fonction du nombre de publis en tranches.pdf",
+       width=9, height=5)
+
+
+ggplot(climat_recherche)+
+  geom_boxplot(aes(y=nbpublistranch2, x=volsnb))+coord_flip()
+ggplot(climat_recherche)+
+  geom_boxplot(aes(y=hindextranch2, x=volsnb))+coord_flip()
+
+ggplot(climat_recherche, aes(x = , y = volsnb, fill = hindextranch2)) +
+  geom_boxplot(colour = "grey30") + 
+  scale_fill_viridis_d() +
+  scale_y_continuous(limits = c(0, NA),
+                     expand = c(0, 0)) +
+  guides(fill = FALSE)
+
+#Moyennes
+graphMoyenne<-climat_recherche %>% group_by(nbpublistranch2) %>%summarise(MoyenneVols = mean(volsnb, na.rm=T),
+                                                                           Ecart = sd(volsnb, na.rm=T))
+
+ggplot(graphMoyenne, aes(x = nbpublistranch2, y = MoyenneVols, fill = nbpublistranch2)) +
+  geom_bar(stat = "identity", position = position_dodge(),
+           colour = "grey30") +
+  geom_errorbar(
+    aes(ymin = MoyenneVols - Ecart, ymax = MoyenneVols + Ecart),
+    width = .2, position = position_dodge(.9), size = 1
+  ) + 
+  scale_fill_viridis_d() +
+  guides(fill = FALSE) +
+  labs(y="Nombre moyens de vols en avion en 2019", x= "Nombre de publications 2017-mi2020")
+
+ggsave("/Users/jeromegreffion/Changement climatique et recherche/Figures, graphs/Nombre moyen de vols en fonction du nombre de publis en tranches, moyennes.pdf",
+       width=9, height=5)
+
+graphMoyenne<-climat_recherche %>% group_by(hindextranch2) %>%summarise(MoyenneVols = mean(volsnb, na.rm=T),
+                                                                          Ecart = sd(volsnb, na.rm=T))
+
+ggplot(graphMoyenne, aes(x = hindextranch2, y = MoyenneVols, fill = hindextranch2)) +
+  geom_bar(stat = "identity", position = position_dodge(),
+           colour = "grey30") + +
+  geom_errorbar(
+    aes(ymin = MoyenneVols - Ecart, ymax = MoyenneVols + Ecart),
+    width = .2, position = position_dodge(.9), size = 1
+  ) + 
+  scale_fill_viridis_d() +
+  guides(fill = FALSE) +
+  labs(y="Nombre moyens de vols en avion en 2019", x= "H-index")
+
+ggsave("/Users/jeromegreffion/Changement climatique et recherche/Figures, graphs/Nombre moyen de vols en fonction du hindex en tranches, moyennes.pdf",
+       width=9, height=5)
+
+
+
+graphMoyenne<-climat_recherche %>% group_by(volsnbtranch2) %>%summarise(MoyennePublis = mean(nbpublis, na.rm=T),
+                                                                          Ecart = sd(nbpublis, na.rm=T))
+
+ggplot(graphMoyenne, aes(x = volsnbtranch2, y = MoyennePublis, fill = volsnbtranch2)) +
+  geom_bar(stat = "identity", position = position_dodge(),
+           colour = "grey30") +
+  geom_errorbar(
+    aes(ymin = MoyennePublis - Ecart, ymax = MoyennePublis+ Ecart),
+    width = .2, position = position_dodge(.9), size = 1
+  ) + 
+  scale_fill_viridis_d() +
+  guides(fill = FALSE) +
+  labs(y="Nombre moyens de publications 2017-mi2020", x= "Nombre de voyages en avion en 2019")
+
+
+####Distribution du nombre de conférences par nombre de publis et h-index
+#Nombre de conf en numérique (conversion approx)
+
+
+graphMoyenne<-climat_recherche %>% group_by(nbpublistranch2) %>%summarise(Moyenneconf = mean(conffois5ansnum, na.rm=T),
+                                                                          Ecart = sd(conffois5ansnum, na.rm=T))
+
+ggplot(graphMoyenne, aes(x = nbpublistranch2, y = Moyenneconf, fill = nbpublistranch2)) +
+  geom_bar(stat = "identity", position = position_dodge(),
+           colour = "grey30") +
+  geom_errorbar(
+    aes(ymin = Moyenneconf - Ecart, ymax = Moyenneconf + Ecart),
+    width = .2, position = position_dodge(.9), size = 1
+  ) + 
+  scale_fill_viridis_d() +
+  guides(fill = FALSE) +
+  labs(y="Nombre annuel moyen de conférences à l'étranger ces 5 dernières années", x= "Nombre de publications 2017-mi2020")
+
+ggsave("/Users/jeromegreffion/Changement climatique et recherche/Figures, graphs/Nombre moyen de conférences à l'étranger en fonction du nombre de publis en tranches, moyennes.pdf",
+       width=9, height=5)
+
+
+#Distinction entre les écolos (angle changement climatique) et les autres dans les distributions
+
+#Ecolo angle changement climatique : inquiets/chgt pratiques avion/marche climat
+climat_recherche$ecolochgtclimat<-ifelse(climat_recherche$dixannees.marche=="Oui" & 
+                                           climat_recherche$avionpersochgt %in% c("Oui, je le prends beaucoup moins", "Oui, je le prends un peu moins") & 
+                                           climat_recherche$preoccupe=="Extrêmement préoccupé·e", "Ecolo préoccupé et agissant", "Autre")
+
+#Trop peu de monde dans la tranche sup des publis quand on prend que les écolos (il faut agrandir les tranches)
+climat_recherche$nbpublistranch3 <- cut(climat_recherche$nbpublis,
+                                        include.lowest = TRUE,
+                                        right = TRUE,
+                                        breaks = c(0, 0.5, 2, 4, 7, 12, 20, 40)
+)
+
+graphMoyenneEcolo<-climat_recherche %>% filter(!is.na(nbpublistranch3) & !is.na(ecolochgtclimat)) %>%
+  group_by(nbpublistranch3,ecolochgtclimat) %>% summarise(MoyenneVols = mean(volsnb, na.rm=T),
+                                                                          Ecart = sd(volsnb, na.rm=T), Effectifs = n())
+
+ggplot(graphMoyenneEcolo, aes(x = nbpublistranch3, y = MoyenneVols, fill = ecolochgtclimat)) +
+  geom_bar(stat = "identity", position = position_dodge(),
+           colour = "grey30") +
+  geom_errorbar(
+    aes(ymin = MoyenneVols - Ecart, ymax = MoyenneVols + Ecart),
+    width = .2, position = position_dodge(.9), size = 1
+  ) + 
+  scale_fill_viridis_d() +
+  labs(y="Nombre moyens de vols en avion en 2019", x= "Nombre de publications 2017-mi2020")
+
+
+graphMoyenneEcolo<-climat_recherche %>% group_by(volsnbtranch2,ecolochgtclimat ) %>%summarise(MoyennePublis = mean(nbpublis, na.rm=T),
+                                                                        Ecart = sd(nbpublis, na.rm=T), Effectifs=n())
+
+ggplot(graphMoyenneEcolo, aes(x = volsnbtranch2, y = MoyennePublis, fill = ecolochgtclimat)) +
+  geom_bar(stat = "identity", position = position_dodge(),
+           colour = "grey30") +
+  geom_errorbar(
+    aes(ymin = MoyennePublis - Ecart, ymax = MoyennePublis+ Ecart),
+    width = .2, position = position_dodge(.9), size = 1
+  ) + 
+  scale_fill_viridis_d() +
+  labs(y="Nombre moyens de publications 2017-mi2020", x= "Nombre de voyages en avion en 2019")
+
+
+#Pour avoir des crochets autour des effectifs
+Tabgraph$Effectif<-paste("[", Tabgraph$Effectif, "]", sep="")
+
+Tabgraph %>% filter(Av_SansTop8 %in% c("Moy_ParMembre", "Moy_ParMembre_8mb")) %>%
+  ggplot(aes(x=AnneeEntree, y=Moy_av, fill=Av_SansTop8, order=Av_SansTop8))+
+  geom_bar(stat="identity", position=position_dodge())+
+  geom_text(aes(label=Effectif), position=position_dodge(width=0.9), vjust=-0.4, size=3) +
+  theme_classic()+
+  scale_fill_manual(name = "",
+                    breaks= c("Moy_ParMembre", "Moy_ParMembre_8mb"),
+                    values=c("black", "grey"),
+                    labels= c("Moy_ParMembre"="All members [headcount]" ,
+                              "Moy_ParMembre_8mb"="Minus top 9 beneficiaries\n of all TCs since 2000 [headcount]"))+
+  xlab("Date of TC entry") +
+  ylab("Average amount received\n between 2013 and mid-2019 (euros)")+
+  theme(legend.position = c(0.70, 0.85))
+
+ggsave("/Users/jeromegreffion/Documents/Recherche/ANR Medici/Commission transparence/Chapitre livre Hélène/Illustrations/Average amount by date of TC entrance, non normalisé, en barre, années regroup.pdf",
+       width=9, height=5)
+
+
+#Ecolo en général (pas forcemment angle changt climatique) : fort "score écolo"
+climat_recherche$scorecoloaggr<-ifelse(climat_recherche$ScoreEcoloPond>5, "Elevé", "Non élevé")
+
+graphMoyenneEcolo<-climat_recherche %>% group_by(nbpublistranch2,scorecoloaggr) %>%summarise(MoyenneVols = mean(volsnb, na.rm=T),
+                                                                                               Ecart = sd(volsnb, na.rm=T))
+
+ggplot(graphMoyenneEcolo, aes(x = nbpublistranch2, y = MoyenneVols, fill = scorecoloaggr)) +
+  geom_bar(stat = "identity", position = position_dodge(),
+           colour = "grey30") +
+  geom_errorbar(
+    aes(ymin = MoyenneVols - Ecart, ymax = MoyenneVols + Ecart),
+    width = .2, position = position_dodge(.9), size = 1
+  ) + 
+  scale_fill_viridis_d() +
+  labs(y="Nombre moyens de vols en avion en 2019", x= "Nombre de publications 2017-mi2020")
+
+
+climat$score
+
+#Graphique montant totaux par date d'entrée
+
+Tot_AnneeEntr<-MontantAvZero2000 %>% 
+  filter(DatesortieCT > "2001-01-01" & MoisAnneeAv >="2013-01-01" &
+           !(nom %in% c("SIMONIN", "THIERRY", "VIENS", "FOUCAUD", "BERTHEZENE", "PETIT", "CASTAIGNE", "DUPUIS",
+                        "TOULOUSE", "CHANU","PARROT", "BLAESI", "ALLEMAND", "RACT", "RICATTE", "PEPIN", "BLUM BOISGARD",  
+                        "CROCHET", "BAYET", "AMEDEE MANESME", "LEGRAND SIBENALER", "LASSALE"))) %>%
+  group_by(AnneeEntree, Nom.Prénom) %>% 
+  summarize(montant=sum(Montant.Ttc), 
+            montantNorm=sum(MontantNorm)) %>%
+  ungroup %>% group_by(AnneeEntree) %>% 
+  summarize(Moy_ParMembre=mean(montant), ET_entreMembres=sd(montant),  
+            Coef_de_variation=ET_entreMembres/Moy_ParMembre, Effectif=n(),
+            Moy_ParMembreNorm=mean(montantNorm))
+
+Tot_AnneeEntr_8mb<-MontantAvZero2000 %>% 
+  filter(DatesortieCT > "2001-01-01" & MoisAnneeAv >="2013-01-01" &
+           !(Nom.Prénom %in% c("FALISSARD BRUNO", "DANCHIN NICOLAS",	"BONNET FABRICE",	"VESPIGNANI HERVE",	"TOURAINE PHILIPPE", "GUERET PASCAL",	"POUCHAIN DENIS",	"STAHL JEAN PAUL",	"VARIN REMI"))&
+           !(nom %in% c("SIMONIN", "THIERRY", "VIENS", "FOUCAUD", "BERTHEZENE", "PETIT", "CASTAIGNE", "DUPUIS",
+                        "TOULOUSE", "CHANU","PARROT", "BLAESI", "ALLEMAND", "RACT", "RICATTE", "PEPIN", "BLUM BOISGARD", 
+                        "CROCHET", "BAYET", "AMEDEE MANESME", "LEGRAND SIBENALER", "LASSALE"))) %>%
+  group_by(AnneeEntree, Nom.Prénom) %>% 
+  summarize(montant=sum(Montant.Ttc), 
+            montantNorm=sum(MontantNorm)) %>%
+  ungroup %>% group_by(AnneeEntree) %>% 
+  summarize(Moy_ParMembre=mean(montant), ET_entreMembres=sd(montant),  
+            Coef_de_variation=ET_entreMembres/Moy_ParMembre, Effectif=n(),
+            Moy_ParMembreNorm=mean(montantNorm))
+
+
+
+Tabgraph1<- Tot_AnneeEntr_8mb %>% 
+  select("AnneeEntree", "Moy_ParMembre", "Effectif", "Moy_ParMembreNorm") %>%
+  rename(Moy_ParMembre_8mb = Moy_ParMembre, Moy_ParMembreNorm_8mb = Moy_ParMembreNorm) %>%
+  pivot_longer(cols = c("Moy_ParMembre_8mb", "Moy_ParMembreNorm_8mb"), 
+               names_to = "Av_SansTop8", 
+               values_to = "Moy_av")
+Tabgraph2<- Tot_AnneeEntr %>% 
+  select("AnneeEntree", "Moy_ParMembre", "Effectif", "Moy_ParMembreNorm") %>%
+  pivot_longer(cols = c("Moy_ParMembre", "Moy_ParMembreNorm"),
+               names_to = "Av_SansTop8", 
+               values_to = "Moy_av")
+
+
+Tabgraph<-rbind(Tabgraph1, Tabgraph2)
+#Plutôt diagramme en barre qui donne moins l'impression d'une évolution (temps en abscisse)
+Tabgraph$AnneeEntree<-as.factor(Tabgraph$AnneeEntree)
+#Tabgraph$Annee<-paste("TC", Tabgraph$Annee, sep=" ")
+#Je réordonne le factor pour avoir les barres dans le bon ordre
+#Tabgraph$Av_SansTop8 <- ordered(Tabgraph$Av_SansTop8, levels = c("Moy_ParMembre", "Moy_ParMembre_2mb", "Mont_moyMoins66ans", "Mont_moyPlus66ans"))
+
+#Si années regroupées
+#Tabgraph$AnneeEntree <- ordered(Tabgraph$AnneeEntree, levels = c("Before 2003", "2003-2005", "2008", "2011-2013", "2014-2015", "2017-2020"))
+Tabgraph$AnneeEntree <- ordered(Tabgraph$AnneeEntree, levels = c("Before 2003", "2003", "2005", "2008", "2011-2013", "2014-2015", "2017-2020"))
+
+#Pour avoir des crochets autour des effectifs
+Tabgraph$Effectif<-paste("[", Tabgraph$Effectif, "]", sep="")
+
+Tabgraph %>% filter(Av_SansTop8 %in% c("Moy_ParMembre", "Moy_ParMembre_8mb")) %>%
+  ggplot(aes(x=AnneeEntree, y=Moy_av, fill=Av_SansTop8, order=Av_SansTop8))+
+  geom_bar(stat="identity", position=position_dodge())+
+  geom_text(aes(label=Effectif), position=position_dodge(width=0.9), vjust=-0.4, size=3) +
+  theme_classic()+
+  scale_fill_manual(name = "",
+                    breaks= c("Moy_ParMembre", "Moy_ParMembre_8mb"),
+                    values=c("black", "grey"),
+                    labels= c("Moy_ParMembre"="All members [headcount]" ,
+                              "Moy_ParMembre_8mb"="Minus top 9 beneficiaries\n of all TCs since 2000 [headcount]"))+
+  xlab("Date of TC entry") +
+  ylab("Average amount received\n between 2013 and mid-2019 (euros)")+
+  theme(legend.position = c(0.70, 0.85))
+
+ggsave("/Users/jeromegreffion/Documents/Recherche/ANR Medici/Commission transparence/Chapitre livre Hélène/Illustrations/Average amount by date of TC entrance, non normalisé, en barre, années regroup.pdf",
+       width=9, height=5)
 
 
 
@@ -581,12 +989,29 @@ res.reg2<- lm(nbpublis ~ sexe + ageAgr  + sitpro2  + discipline_agr3 + volsnb, d
 
 #Hors avions
 res.reg1<- lm(nbpublis ~ sexe + ageAgr, data=climat_recherche)
+res.reg1<- lm(nbpublis ~ sexe + ageAgr + ageaccad_tranch2, data=climat_recherche)
+
 res.reg1<- lm(nbpublis ~ sexe + ageAgr  + sitpro2, data=climat_recherche)
+res.reg1<- lm(nbpublis ~ sexe + ageAgr + ageaccad_tranch2  + sitpro2, data=climat_recherche)
 res.reg1 <- lm(nbpublis ~ sexe + ageAgr  + sitpro2 + discipline_agr3, data=climat_recherche)
 res.reg1<- lm(nbpublis ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + revenuTete  , data=climat_recherche)
 res.reg1 <- lm(nbpublis ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + hindex, data=climat_recherche)
 
+
+
+climat_recherche$ageAgr<-fct_relevel(climat_recherche$ageAgr, "35-39 ans")
+
 res.reg1 <- lm(nbpublis ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + enfantsnb + couple , data=climat_recherche)
+res.reg1 <- lm(nbpublis ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + enfantsnb , data=climat_recherche)
+res.reg1 <- lm(nbpublis ~ sexe*enfantsnb_rec + ageAgr  + sitpro2 + discipline_agr3 , data=climat_recherche)
+res.reg1 <- lm(nbpublis ~ sexe*enfantsnb_rec*ageAgr  + sitpro2 + discipline_agr3 , data=climat_recherche)
+res.reg1 <- lm(nbpublis ~ sexe + enfantsnb_rec*ageAgr  + sitpro2 + discipline_agr3 , data=climat_recherche)
+res.reg1 <- lm(nbpublis ~ sexe*enfantsage_rec + ageAgr  + sitpro2 + discipline_agr3 + couple , data=climat_recherche)
+
+summary(res.reg1)
+
+
+
 res.reg1 <- lm(nbpublis ~ sexe + ageAgr  + sitpro2 + discipline_agr3 +  carriere , data=climat_recherche)
 res.reg1 <- lm(nbpublis ~ sexe + ageAgr  + sitpro2 + discipline_agr3 +  dippar.p , data=climat_recherche)
 res.reg1 <- lm(nbpublis ~ sexe + ageAgr  + discipline_agr3 +  dippar.m , data=climat_recherche)
@@ -632,7 +1057,14 @@ res.reg1 <- lm(nbpublis ~ sexe + ageAgr + sitpro2 + discipline_agr3 + conffois5a
 res.reg1 <- lm(nbpublis ~ sexe + ageAgr + sitpro2 + discipline_agr3 + apportconf.tourisme, data=climat_recherche)
 summary(res.reg1)
 
+res.reg2 <- lm(nbpublis ~ sexe + ageAgr + sitpro2 + discipline_agr3 + apportconf.tourisme + conffois5ans, data=climat_recherche)
+
+res.reg2 <- lm(nbpublis ~ sexe + ageAgr + sitpro2 + discipline_agr3 + apportconf.tourisme + conffois5ans + apportconf.tourisme:conffois5ans, data=climat_recherche)
+
 res.reg2 <- lm(nbpublis ~ sexe + ageAgr + sitpro2 + discipline_agr3 + apportconf.tourisme:conffois5ans, data=climat_recherche)
+res.reg2 <- lm(nbpublis ~ sexe + ageAgr + sitpro2 + discipline_agr3 + apportconf.tourisme*conffois5ans, data=climat_recherche)
+
+summary(res.reg2)
 ggcoef_model(res.reg2)
 
 summary(res.reg1)
@@ -665,6 +1097,10 @@ res.reg1 <- lm(nbpublis ~ sexe + ageAgr + sitpro2 + discipline_agr3 + avionperso
 
 res.reg1 <- lm(nbpublis ~ sexe + ageAgr + sitpro2 + discipline_agr3 + 
                  international.postdoc + international.prog + international.asso +volsnb, data=climat_recherche)
+
+res.reg1 <- lm(nbpublis ~ sexe + ageAgr + volsnb + ecolochgtclimat, data=climat_recherche)
+
+
 
 summary(res.reg1)
 freq(climat$volsnb)
@@ -750,8 +1186,22 @@ res.reg1 <- lm(volsnb ~ sexe + ageAgr + sitpro2 + discipline_agr3 + nbpublis + h
 
 res.reg1 <- lm(volsnb ~ sexe + ageAgr + sitpro2 + discipline_agr3 + nbpublistranch2 + hindextranch2, data=climat_recherche)
 
-summary(res.reg1)
+#Lien avec être plus ou moins écolo
+res.reg1 <- lm(volsnb ~ sexe + ageAgr + sitpro2 + discipline_agr3 + nbpublis + ecolochgtclimat, data=climat_recherche)
+res.reg1 <- lm(volsnb ~ sexe + ageAgr + sitpro2 + discipline_agr3 + ecolochgtclimat, data=climat_recherche)
+res.reg1 <- lm(volsnb ~ sexe + ageAgr + sitpro2 + discipline_agr3 + nbpublistranch3 + ecolochgtclimat, data=climat_recherche)
 
+res.reg1 <- lm(volsnb ~ sexe + ageAgr + sitpro2 + discipline_agr3 + nbpublistranch3 + dixannees.marche +preoccupe + avionpersochgt  , data=climat_recherche)
+
+res.reg1 <- lm(volsnb ~ sexe + ageAgr + sitpro2 + discipline_agr3 +  dixannees.marche +preoccupe + avionpersochgt  , data=climat_recherche)
+
+res.reg1 <- lm(volsnb ~ sexe + ageAgr + sitpro2 + discipline_agr3 +  dixannees.marche +preoccupe + avionpersochgt +chgtpratique  , data=climat_recherche)
+res.reg1 <- lm(volsnb ~ sexe + ageAgr + sitpro2 + discipline_agr3 +  dixannees.marche +preoccupe + avionpersochgt +effortsconso  , data=climat_recherche)
+
+res.reg1 <- lm(volsnb ~ sexe + ageAgr + sitpro2 + discipline_agr3 +  dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan , data=climat_recherche)
+
+summary(res.reg1)
+climat$chgt
 
 ######################################################################################################################################################
 #################################################################################################################################
@@ -778,3 +1228,9 @@ summary(reglog2)
 
 freq(climat_recherche$PR_DR)
 
+
+
+########################
+#Ressources. Sur les produits de variables et analyses des interactions entre deux variables :
+#http://larmarange.github.io/analyse-R/effets-d-interaction.html
+#https://commonweb.unifr.ch/artsdean/pub/gestens/f/as/files/4665/9547_131825.pdf
