@@ -3,32 +3,12 @@ library(tidyverse)
 
 
 ####################################@
-#RECODAGE
-#Variable avec uniquement la date
-climat$dateDebut<-strftime(strptime(climat$startdate, "%Y-%m-%d %H:%M:%S"), "%Y-%m-%d")
-climat$dateFin<-strftime(strptime(climat$datestamp, "%Y-%m-%d %H:%M:%S"), "%Y-%m-%d")
-
-#Durée de remplissage
-climat$datestamp1 <- as.POSIXct(climat$datestamp, format ="%Y-%m-%d %H:%M:%S")
-climat$startdate1 <- as.POSIXct(climat$startdate, format ="%Y-%m-%d %H:%M:%S")
-climat$TpsRempliMin<-as.numeric(difftime(climat$datestamp1, climat$startdate1,  units="mins"))
 mean(climat$TpsRempliMin)
 #Ca donne pas la même chose que ça : 
 mean(climat$interviewtime)
 1873/60
 
-#Durée de remplissage sur le même jour
-climat$TpsRemp_MmJour[climat$dateDebut==climat$dateFin]<-as.numeric(difftime(climat$datestamp1[climat$dateDebut==climat$dateFin], climat$startdate1[climat$dateDebut==climat$dateFin],  units="mins"))
 mean(climat$TpsRemp_MmJour, na.rm=T)
-
-
-#Dichotomie par vague
-climat$NumVague[climat$dateDebut<"2020-07-07"]<-"Après premier message"
-climat$NumVague["2020-07-07"<=climat$dateDebut & climat$dateDebut<"2020-09-07"]<-"Après première relance"
-climat$NumVague["2020-09-07"<=climat$dateDebut & climat$dateDebut<"2020-10-12"]<-"Après deuxième relance"
-climat$NumVague["2020-10-12"<=climat$dateDebut & climat$dateDebut<"2020-11-16"]<-"Après troisième relance"
-climat$NumVague["2020-11-16"<=climat$dateDebut]<-"Après quatrième relance"
-
 
 #Passage en numérique de la variable "inquiétude"
 climat$preoccupeNum[climat$preoccupe=="Pas du tout préoccupé·e"]<-0
@@ -40,11 +20,6 @@ climat$preoccupeNum[climat$preoccupe=="Un peu préoccupé·e"]<-1
 climat$preoccupeNum[climat$preoccupe=="Un peu préoccupé·e"]<-1
 
 
-#Temps partiel en numérique : porportion d'un temps complet (1 pour les temps complets)
-climat$tpsquotiteNum[climat$tpsplein=="Oui"]<-1
-climat<-tidyr::extract(climat, tpsquotite, "tpsquotiteVal", "(\\d+)", remove=FALSE)
-climat$tpsquotiteVal<-as.numeric(climat$tpsquotiteVal)
-climat$tpsquotiteNum<-climat$tpsquotiteVal/100
 
 #Doctorants : numérique
 climat$doctoNum[climat$docto=="Oui"]<-1

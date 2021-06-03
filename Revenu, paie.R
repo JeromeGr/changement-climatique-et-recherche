@@ -32,12 +32,6 @@ reg2 <- lm(revenuparadulte ~ sexe + ageAgr + sitpro2 + dippar.m , data=climat_re
 
 summary(reg2)
 
-#S'estimer bien ou mal payé
-freq(climat_recherche$paie)
-climat$malpaye[climat$paie %in% c("Mal payé·e" , "Très mal payé·e")]<-"Oui"
-climat$malpaye[climat$paie %in% c("Bien payé·e", "Correctement payé·e", "Très bien payé·e")]<-"Non"
-climat$malpaye<-fct_relevel(climat$malpaye, "Non")
-
 # sous base seulement recherche
 climat_recherche <- climat[!climat$sitpro2 %in% c(
   "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
