@@ -986,10 +986,39 @@ climat$quizfacteurs.steak4 <- as.numeric(recode_quiz3(climat$quizfacteurs.steak,
 
 rm(recode_quiz3)
 
-#REmarque : au passage en numérique, ça ajoute 1, mais on s'en fout
+#Remarque : au passage en numérique, ça ajoute 1, mais on s'en fout
 
 climat$scorequiz <- rowSums(select(climat, quizfacteurs.voiture4, quizfacteurs.avion4, quizfacteurs.TGV4, quizfacteurs.ordi4,
-                                   quizfacteurs.visio4, quizfacteurs.these4, quizfacteurs.steak4))                                
+                                   quizfacteurs.visio4, quizfacteurs.these4, quizfacteurs.steak4))
+
+# Corrélation entre les réponses d'un individu et les réponses correctes
+# (permet de tenir compte des estimations des émissions relatives en ignorant
+# la tendance d'un individu à sur- ou sous-estimer les émissions en général)
+cor_quiz <- function(x, method="pearson") {
+  # Si toutes les réponses sont les mêmes, la corrélation donne une erreur
+  if(length(unique(x)) == 1)
+    return(NaN)
+  
+  reponses <- c("10 g"=10, "100 g"=100, "1 kg"=1000, "5 kg"=5000,
+                "25 kg"=25000, "50 kg"=50000, "100 kg"=100000, 
+                "250 kg"=250000, "500 kg"=500000, "1 000 kg"=1000000,
+                "2000 kg"=2000000, "3 000 kg"=3000000, "5 000 kg"=5000000)
+  correct <- c("3 000 kg", "1 000 kg", "5 kg", "250 kg", "100 g", "5 kg", "5 kg")
+  cor(reponses[correct], reponses[x], method=method)
+}
+
+vars <- paste0("quizfacteurs.",
+               c("voiture", "avion", "TGV",
+                 "ordi", "visio", "these", "steak"))
+
+climat$quizfacteurs.corpearson <- transmute(rowwise(climat), cor_quiz(c_across(all_of(vars)),
+                                                                      method="pearson"))
+climat$quizfacteurs.corspearman <- transmute(rowwise(climat), cor_quiz(c_across(all_of(vars)),
+                                                                       method="spearman"))
+climat$quizfacteurs.corkendall <- transmute(rowwise(climat), cor_quiz(c_across(all_of(vars)),
+                                                                      method="kendall"))
+
+rm(cor_quiz, vars)
 
 #Sous estimer le poids de l'avion
 #On considère pour cela qu'il faut à la fois le sous estimer, mais plus que les autres items (car si on sous estime tout, c'est juste qu'on se rend pas compte de l'importance générale du poids carbone des choses)
