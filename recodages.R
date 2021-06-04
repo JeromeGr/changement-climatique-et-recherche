@@ -991,6 +991,9 @@ rm(recode_quiz3)
 climat$scorequiz <- rowSums(select(climat, quizfacteurs.voiture4, quizfacteurs.avion4, quizfacteurs.TGV4, quizfacteurs.ordi4,
                                    quizfacteurs.visio4, quizfacteurs.these4, quizfacteurs.steak4))                                
 
+#Sous estimer le poids de l'avion
+#On considère pour cela qu'il faut à la fois le sous estimer, mais plus que les autres items (car si on sous estime tout, c'est juste qu'on se rend pas compte de l'importance générale du poids carbone des choses)
+
 
 
 #Avoir déposé un commentaire
