@@ -205,37 +205,6 @@ climat$enfantsage_rec[climat$enfantsnb_rec == "0" ] <- "Sans enfant"
 climat$enfantsage_rec <- as.factor(climat$enfantsage_rec)
 
 
-#####Ordonner des variables
-# situation professionnelle sitpro réordonnée par logique hiérarchique ----
-climat$sitpro <- factor(climat$sitpro,
-                        levels = c(
-                          "Directeur·rice de recherche", "Professeur·e des universités",
-                          "Chargé·e de recherche", "Maître·sse de conférences", "Post-doctorant·e",
-                          "ATER", "Doctorant·e contractuel·le", "Doctorant·e CIFRE", "Ingénieur·e de recherche",
-                          "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
-                          "Chargé·e d'études/de mission", "Adjoint·e technique", "Autre"
-                        ))
-
-
-climat$NumVague <- factor(climat$NumVague,
-                                    levels = c("Après premier message", "Après première relance", "Après deuxième relance", "Après troisième relance", "Après quatrième relance"))
-
-
-climat$conffois5ans <- factor(climat$conffois5ans,
-                                        levels = c(
-                                          "Zéro fois", "Moins d'une fois par an", "Une fois par an", 
-                                          "Deux fois par an", "Trois fois par an", "Plus de trois fois par an"
-                                        )
-)
-
-
-climat$ageAgr <- factor(climat$ageAgr,
-                                  levels = c( "Moins de 29 ans", "30-34 ans", "35-39 ans", "40-44 ans", "45-49 ans","50-54 ans", "55-64 ans", "65 ans et plus" ))
-climat$ageAgr <- relevel(climat$ageAgr, ref = "50-54 ans")
-
-climat$enfantsage_rec <- factor(climat$enfantsage_rec,
-                                          levels = c("Sans enfant", "moins de 5 ans", "Entre 5 et 15 ans", "Plus de 15 ans"))
-
 # Fusionner les deux variables de discipline (chercheurs vs. ITA)
 climat$discipline <- coalesce(climat$discipline, climat$disciplineita)
 
@@ -1062,6 +1031,37 @@ climat$NumVague["2020-11-16"<=climat$dateDebut]<-"Après quatrième relance"
 
 
 
+
+#####Ordonner des variables
+# situation professionnelle sitpro réordonnée par logique hiérarchique ----
+climat$sitpro <- factor(climat$sitpro,
+                        levels = c(
+                          "Directeur·rice de recherche", "Professeur·e des universités",
+                          "Chargé·e de recherche", "Maître·sse de conférences", "Post-doctorant·e",
+                          "ATER", "Doctorant·e contractuel·le", "Doctorant·e CIFRE", "Ingénieur·e de recherche",
+                          "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
+                          "Chargé·e d'études/de mission", "Adjoint·e technique", "Autre"
+                        ))
+
+
+climat$NumVague <- factor(climat$NumVague,
+                          levels = c("Après premier message", "Après première relance", "Après deuxième relance", "Après troisième relance", "Après quatrième relance"))
+
+
+climat$conffois5ans <- factor(climat$conffois5ans,
+                              levels = c(
+                                "Zéro fois", "Moins d'une fois par an", "Une fois par an", 
+                                "Deux fois par an", "Trois fois par an", "Plus de trois fois par an"
+                              )
+)
+
+
+climat$ageAgr <- factor(climat$ageAgr,
+                        levels = c( "Moins de 29 ans", "30-34 ans", "35-39 ans", "40-44 ans", "45-49 ans","50-54 ans", "55-64 ans", "65 ans et plus" ))
+climat$ageAgr <- relevel(climat$ageAgr, ref = "50-54 ans")
+
+climat$enfantsage_rec <- factor(climat$enfantsage_rec,
+                                levels = c("Sans enfant", "moins de 5 ans", "Entre 5 et 15 ans", "Plus de 15 ans"))
 
 
 
