@@ -890,6 +890,11 @@ climat$malpaye[climat$paie %in% c("Mal payé·e" , "Très mal payé·e")]<-"Oui"
 climat$malpaye[climat$paie %in% c("Bien payé·e", "Correctement payé·e", "Très bien payé·e")]<-"Non"
 climat$malpaye<-fct_relevel(climat$malpaye, "Non")
 
+climat$res.idf <- if_else(climat$res.dep %in% c("75", "77", "78", "91", "92", "93", "94", "95"),
+                          "Île de France", "Province")
+climat$trav.idf <- if_else(climat$trav.dep %in% c("75", "77", "78", "91", "92", "93", "94", "95"),
+                           "Île de France", "Province")
+
 #Le quiz
 
 recode_quiz <- function(x, rep) {
