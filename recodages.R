@@ -1131,6 +1131,8 @@ climat$volsh<-fct_relevel(climat$volsh, "De 1h à 10h")
 
 climat$ageaccad_tranch2<-fct_relevel(climat$ageaccad_tranch2, "[0,2]")
 
+climat$quiz<-fct_relevel(climat$quiz, "Je décline le quiz")
+
 ################
 #Recodage pour les ACM
 
