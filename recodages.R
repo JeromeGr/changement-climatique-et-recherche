@@ -981,11 +981,11 @@ vars <- paste0("quizfacteurs.",
                  "ordi", "visio", "these", "steak"))
 
 climat$quizfacteurs.corpearson <- transmute(rowwise(climat), cor_quiz(c_across(all_of(vars)),
-                                                                      method="pearson"))
+                                                                      method="pearson"))[[1]]
 climat$quizfacteurs.corspearman <- transmute(rowwise(climat), cor_quiz(c_across(all_of(vars)),
-                                                                       method="spearman"))
+                                                                       method="spearman"))[[1]]
 climat$quizfacteurs.corkendall <- transmute(rowwise(climat), cor_quiz(c_across(all_of(vars)),
-                                                                      method="kendall"))
+                                                                      method="kendall"))[[1]]
 
 rm(cor_quiz, vars)
 
