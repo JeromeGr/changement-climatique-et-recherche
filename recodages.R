@@ -1019,7 +1019,7 @@ climat$quizfacteurs.corspearman <- transmute(rowwise(climat), cor_quiz(c_across(
 climat$quizfacteurs.corkendall <- transmute(rowwise(climat), cor_quiz(c_across(all_of(vars)),
                                                                       method="kendall"))[[1]]
 climat$quizfacteurs.corpearson2 <- transmute(rowwise(climat), cor_quiz2(c_across(all_of(vars))))[[1]]
-climat$quizfacteurs.ecartabs <- transmute(rowwise(climat), dev_quiz(c_across(all_of(vars))))[[1]]
+climat$quizfacteurs.ecartabs <- transmute(rowwise(climat), ecartabs_quiz(c_across(all_of(vars))))[[1]]
 
 
 rm(cor_quiz, vars)
@@ -1030,7 +1030,6 @@ passagenum<- function(x) {
   ifelse(x=="10 g", 0.01, ifelse(x=="100 g", 0.1, ifelse(x=="1 kg", 1, ifelse(x=="5 kg", 5, ifelse(x=="25 kg", 25, ifelse(x=="50 kg", 50, ifelse(x=="100 kg", 100, ifelse(x=="250 kg", 250, ifelse(x=="500 kg", 500, ifelse(x=="1 000 kg", 1000, ifelse(x=="2 000 kg", 2000, ifelse(x=="3 000 kg", 3000, 5000))))))))))))
 }
 
-?subset
 climat$quizfacteurs.voiturenum <- passagenum(climat$quizfacteurs.voiture)
 climat$quizfacteurs.avionnum <- passagenum(climat$quizfacteurs.avion)
 climat$quizfacteurs.TGVnum <- passagenum(climat$quizfacteurs.TGV)
