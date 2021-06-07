@@ -971,7 +971,7 @@ cor_quiz <- function(x, method="pearson") {
   reponses <- c("10 g"=10, "100 g"=100, "1 kg"=1000, "5 kg"=5000,
                 "25 kg"=25000, "50 kg"=50000, "100 kg"=100000, 
                 "250 kg"=250000, "500 kg"=500000, "1 000 kg"=1000000,
-                "2000 kg"=2000000, "3 000 kg"=3000000, "5 000 kg"=5000000)
+                "2 000 kg"=2000000, "3 000 kg"=3000000, "5 000 kg"=5000000)
   correct <- c("3 000 kg", "1 000 kg", "5 kg", "250 kg", "100 g", "5 kg", "5 kg")
   cor(reponses[correct], reponses[x], method=method)
 }
@@ -989,7 +989,40 @@ climat$quizfacteurs.corkendall <- transmute(rowwise(climat), cor_quiz(c_across(a
 
 rm(cor_quiz, vars)
 
-#Sous estimer le poids de l'avion
+#Autre façon de calculer un score au quizz
+
+passagenum<- function(x) {
+  ifelse(x=="10 g", 0.01, ifelse(x=="100 g", 0.1, ifelse(x=="1 kg", 1, ifelse(x=="5 kg", 5, ifelse(x=="25 kg", 25, ifelse(x=="50 kg", 50, ifelse(x=="100 kg", 100, ifelse(x=="250 kg", 250, ifelse(x=="500 kg", 500, ifelse(x=="1 000 kg", 1000, ifelse(x=="2 000 kg", 2000, ifelse(x=="3 000 kg", 3000, 5000))))))))))))
+}
+
+?subset
+climat$quizfacteurs.voiturenum <- passagenum(climat$quizfacteurs.voiture)
+climat$quizfacteurs.avionnum <- passagenum(climat$quizfacteurs.avion)
+climat$quizfacteurs.TGVnum <- passagenum(climat$quizfacteurs.TGV)
+climat$quizfacteurs.ordinum <- passagenum(climat$quizfacteurs.ordi)
+climat$quizfacteurs.visionum <- passagenum(climat$quizfacteurs.visio)
+climat$quizfacteurs.thesenum <- passagenum(climat$quizfacteurs.these)
+climat$quizfacteurs.steaknum <- passagenum(climat$quizfacteurs.steak)
+
+recode_quiz3 <- function(x, rep) {
+  ifelse(x>=rep, x/rep, rep/x)
+}
+
+climat$quizfacteurs.voiture_err <- recode_quiz3(climat$quizfacteurs.voiturenum, 3000)
+climat$quizfacteurs.avion_err <- recode_quiz3(climat$quizfacteurs.avionnum, 1000)
+climat$quizfacteurs.TGV_err <- recode_quiz3(climat$quizfacteurs.TGVnum, 5)
+climat$quizfacteurs.ordi_err <- recode_quiz3(climat$quizfacteurs.ordinum, 250)
+climat$quizfacteurs.visio_err <- recode_quiz3(climat$quizfacteurs.visionum, 0.1)
+climat$quizfacteurs.these_err <- recode_quiz3(climat$quizfacteurs.thesenum, 5)
+climat$quizfacteurs.steak_err <- recode_quiz3(climat$quizfacteurs.steaknum, 5)
+
+
+
+climat$scorequiz_err <- rowSums(select(climat, quizfacteurs.voiture_err, quizfacteurs.avion_err, quizfacteurs.TGV_err, quizfacteurs.ordi_err,
+                                   quizfacteurs.visio_err, quizfacteurs.these_err, quizfacteurs.steak_err))
+
+
+#Sous estimer le poids de l'avion (à faire)
 #On considère pour cela qu'il faut à la fois le sous estimer, mais plus que les autres items (car si on sous estime tout, c'est juste qu'on se rend pas compte de l'importance générale du poids carbone des choses)
 
 
