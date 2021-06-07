@@ -976,6 +976,19 @@ cor_quiz <- function(x, method="pearson") {
   cor(reponses[correct], reponses[x], method=method)
 }
 
+cor_quiz2 <- function(x) {
+  # Si toutes les réponses sont les mêmes, la corrélation donne une erreur
+  if(length(unique(x)) == 1)
+    return(NaN)
+  
+  reponses <- c("10 g"=1, "100 g"=2, "1 kg"=3, "5 kg"=4,
+                "25 kg"=5, "50 kg"=6, "100 kg"=7, 
+                "250 kg"=8, "500 kg"=9, "1 000 kg"=10,
+                "2 000 kg"=11, "3 000 kg"=12, "5 000 kg"=13)
+  correct <- c("3 000 kg", "1 000 kg", "5 kg", "250 kg", "100 g", "5 kg", "5 kg")
+  cor(reponses[correct], reponses[x])
+}
+
 vars <- paste0("quizfacteurs.",
                c("voiture", "avion", "TGV",
                  "ordi", "visio", "these", "steak"))
@@ -986,6 +999,7 @@ climat$quizfacteurs.corspearman <- transmute(rowwise(climat), cor_quiz(c_across(
                                                                        method="spearman"))[[1]]
 climat$quizfacteurs.corkendall <- transmute(rowwise(climat), cor_quiz(c_across(all_of(vars)),
                                                                       method="kendall"))[[1]]
+climat$quizfacteurs.corpearson2 <- transmute(rowwise(climat), cor_quiz2(c_across(all_of(vars))))[[1]]
 
 rm(cor_quiz, vars)
 
