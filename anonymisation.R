@@ -26,7 +26,8 @@ excl <- c("id", "email", "startlanguage", "seed", "token",
           "volsdepart1code", "volsdepart2code", "volsdepart3code", "volsdepart4code", "volsdepart5code",
           "volsarrivee1code", "volsarrivee2code", "volsarrivee3code", "volsarrivee4code", "volsarrivee5code",
           "textedomtrav",
-          "communes.SaisieVille", "communes.SaisieVilleTravail", "res.cp", "trav.cp",
+          "communes.SaisieVille", "communes.SaisieVilleTravail",
+          "res.codeinsee", "trav.codeinsee", "res.cp", "trav.cp",
           "recontact.other")
 
 climat <- select(climat, !any_of(excl) &
