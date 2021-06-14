@@ -8,23 +8,68 @@ communes$code_insee <- if_else(nchar(communes$CODGEO) == 4 & !is.na(communes$COD
                                communes$CODGEO)
 
 communes$TAAV2017 <- fct_recode(as.character(communes$TAAV2017),
-                                "Commune hors attraction des villes"="0",
-                                "Aire de moins de 50 000 habitants"="1",
-                                "Aire de 50 000 à moins de 200 000 habitants"="2",
-                                "Aire de 200 000 à moins de 700 000 habitants"="3",
-                                "Aire de 700 000 habitants ou plus (hors Paris)"="4",
+                                "Hors attraction des villes"="0",
+                                "Moins de 50 000 habitants"="1",
+                                "50 000 à 199 000 habitants"="2",
+                                "200 000 à 699 000 habitants"="3",
+                                "700 000 habitants ou plus (hors Paris)"="4",
                                 "Aire de Paris"="5")
+
+communes$TDAAV2017 <- fct_recode(as.character(communes$TDAAV2017),
+                                 "Hors attraction des villes"="0",
+                                 "Moins de 10 000 habitants"="11",
+                                 "10 000 à 19 999 habitants"="12",
+                                 "20 000 à 29 999 habitants"="13",
+                                 "30 000 à 49 999 habitants"="14",
+                                 "50 000 à 74 999 habitants"="21",
+                                 "75 000 à 99 999 habitants"="22",
+                                 "100 000 à 124 999 habitants"="23",
+                                 "125 000 à 149 999 habitants"="24",
+                                 "150 000 à 199 999 habitants"="25",
+                                 "200 000 à 299 999 habitants"="31",
+                                 "300 000 à 399 999 habitants"="32",
+                                 "400 000 à 499 999 habitants"="33",
+                                 "500 000 à 699 999 habitants"="34",
+                                 "700 000 à 999 999 habitants"="41",
+                                 "1 000 000 habitants ou plus (hors Paris)"="42",
+                                 "Aire de Paris"="50")
 
 communes$TUU2017 <- fct_recode(as.character(communes$TUU2017),
                                "Commune rurale"="0",
-                               "Commune appartenant à une unité urbaine de 2 000 à 4 999 habitants"="1",
-                               "Commune appartenant à une unité urbaine de 5 000 à 9 999 habitants"="2",
-                               "Commune appartenant à une unité urbaine de 10 000 à 19 999 habitants"="3",
-                               "Commune appartenant à une unité urbaine de 20 000 à 49 999 habitants"="4",
-                               "Commune appartenant à une unité urbaine de 50 000 à 99 999 habitants"="5",
-                               "Commune appartenant à une unité urbaine de 100 000 à 199 999 habitants"="6",
-                               "Commune appartenant à une unité urbaine de 200 000 à 1 999 999 habitants"="7",
-                               "Commune appartenant à l'unité urbaine de Paris"="8")
+                               "2 000 à 4 999 habitants"="1",
+                               "5 000 à 9 999 habitants"="2",
+                               "10 000 à 19 999 habitants"="3",
+                               "20 000 à 49 999 habitants"="4",
+                               "50 000 à 99 999 habitants"="5",
+                               "100 000 à 199 999 habitants"="6",
+                               "200 000 à 1 999 999 habitants"="7",
+                               "Unité urbaine de Paris"="8")
+
+
+communes$TDUU2017 <- fct_recode(as.character(communes$TDUU2017),
+                                "Commune hors unité urbaine"="7",
+                                "Moins de 2 500 habitants"="11",
+                                "2 500 à 2 999 habitants"="12",
+                                "3 000 à 3 999 habitants"="13",
+                                "4 000 à 4 999 habitants"="14",
+                                "5 000 à 6 999 habitants"="21",
+                                "7 000 à 9 999 habitants"="22",
+                                "10 000 à 14 999 habitants"="31",
+                                "15 000 à 19 999 habitants"="32",
+                                "20 000 à 24 999 habitants"="41",
+                                "25 000 à 29 999 habitants"="42",
+                                "30 000 à 39 999 habitants"="43",
+                                "40 000 à 49 999 habitants"="44",
+                                "50 000 à 69 999 habitants"="51",
+                                "70 000 à 99 999 habitants"="52",
+                                "100 000 à 149 999 habitants"="61",
+                                # Aucun cas
+                                # 150 000 à 199 999 habitants"="62",
+                                "200 000 à 299 999 habitants"="71",
+                                "300 000 à 499 999 habitants"="72",
+                                "500 000 à 1 999 999 habitants"="73",
+                                "Unité urbaine de Paris"="80")
+communes$TDUU2017 <- relevel(communes$TDUU2017, "Commune hors unité urbaine")
 
 communes$CATEAAV2020 <- fct_recode(as.character(communes$CATEAAV2020),
                                    "Commune-centre"="11",
@@ -48,7 +93,6 @@ communes_cp <- merge(cp, communes, by.x="Code.INSEE", by.y="code_insee", all=T)
 communes_cp$Code.Postal[communes_cp$LIBGEO == "Lyon"] <- "69000"
 communes_cp$Code.Postal[communes_cp$LIBGEO == "Paris"] <- "75000"
 communes_cp$Code.Postal[communes_cp$LIBGEO == "Marseille"] <- "13000"
-
 
 communes_cp$codenom <- sprintf("[%s] %s", communes_cp$Code.Postal,
                                gsub("œ", "oe", communes_cp$LIBGEO))
@@ -155,7 +199,8 @@ climat$res.dep <- if_else(!is.na(climat$res.codeinsee), substr(climat$res.codein
 climat$trav.dep <- if_else(!is.na(climat$trav.codeinsee), substr(climat$trav.codeinsee, 1, 2),
                            substr(climat$trav.cp, 1, 2))
 
-vars <- c("Code.INSEE", "TAAV2017", "TUU2017", "CATEAAV2020")
+vars <- c("Code.INSEE", "AAV2020", "TAAV2017", "TDAAV2017",
+          "TUU2017", "TDUU2017", "CATEAAV2020")
 
 climat <- left_join(climat, rename_with(select(communes_cp, all_of(vars)), ~ paste0("res.", .x)),
                     by=c("res.codeinsee"="res.Code.INSEE"), na_matches="never")

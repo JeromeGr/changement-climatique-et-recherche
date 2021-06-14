@@ -895,6 +895,45 @@ climat$res.idf <- if_else(climat$res.dep %in% c("75", "77", "78", "91", "92", "9
 climat$trav.idf <- if_else(climat$trav.dep %in% c("75", "77", "78", "91", "92", "93", "94", "95"),
                            "Île de France", "Province")
 
+# Nom en clair des aires d'attraction des villes de 500 000 habitants et plus
+climat$res.metropole <- recode_factor(climat$res.AAV2020,
+                                      "1"="Paris",
+                                      "2"="Lyon",
+                                      "3"="Aix-Marseille",
+                                      "4"="Lille",
+                                      "5"="Toulouse",
+                                      "6"="Bordeaux",
+                                      "8"="Nantes",
+                                      "10"="Strasbourg",
+                                      "12"="Montpellier",
+                                      "13"="Rennes",
+                                      "14"="Grenoble",
+                                      "15"="Rouen",
+                                      "17"="Nice",
+                                      "18"="Toulon",
+                                      "19"="Tours",
+                                      "20"="Nancy",
+                                      .default="Autre")
+climat$trav.metropole <- recode_factor(climat$trav.AAV2020,
+                                       "1"="Paris",
+                                       "2"="Lyon",
+                                       "3"="Aix-Marseille",
+                                       "4"="Lille",
+                                       "5"="Toulouse",
+                                       "6"="Bordeaux",
+                                       "8"="Nantes",
+                                       "10"="Strasbourg",
+                                       "12"="Montpellier",
+                                       "13"="Rennes",
+                                       "14"="Grenoble",
+                                       "15"="Rouen",
+                                       "17"="Nice",
+                                       "18"="Toulon",
+                                       "19"="Tours",
+                                       "20"="Nancy",
+                                       .default="Autre")
+
+
 #Le quiz
 
 recode_quiz <- function(x, rep) {
