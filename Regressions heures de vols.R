@@ -1,5 +1,11 @@
 library(texreg)
 
+climat_recherche <- climat[!climat$sitpro2 %in% c(
+        "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
+        "Chargé·e d'études/de mission","Adjoint·e technique",
+        "Autre"
+),]
+
 ################################
 #Recodage pour la régression
 freq(climat$solevolges.conf)
@@ -230,10 +236,9 @@ b<-tapply(climat_recherche$ScoreEcolo, climat_recherche$recheco, mean, na.rm=T)
 cor(a,b)
 
 
-freq(climat_recherche$discipline_agr3)
-
 mean(climat_recherche$volsnb, na.rm=T)
 summary(reglog2)
+exp(reglog2$coefficients)
 reglog2 <- lm(volsnb ~ sexe +ageAgr , data=climat_recherche )
 reglog2 <- lm(volsnb ~ sexe  + ageaccad_tranch2 , data=climat_recherche )
 reglog2 <- lm(volsnb ~ sexe +ageAgr + ageaccad_tranch2 , data=climat_recherche )
@@ -272,6 +277,9 @@ reglog2 <- lm(volsnb ~ sexe +ageAgr + volsnb + revenuTete + dixannees.marche + d
 reglog2 <- lm(volsnb ~ sexe +ageAgr + volsnb + revenuTete + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan + effortsconso, data=climat_recherche )
 
 reglog2 <- lm(volsnb ~ sexe +ageAgr +  sitpro2 + discipline_agr3 +  revenuTete + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso +dixannees.bilan + effortsconso, data=climat_recherche )
+
+
+
 
 reglog2 <- lm(volsnb ~ sexe +ageAgr +  sitpro2 + discipline_agr3 + ScoreEcolo, data=climat_recherche )
 reglog2 <- lm(volsnb ~ sexe +ageAgr +  sitpro2 + discipline_agr3*ScoreEcolo, data=climat_recherche )
@@ -662,6 +670,88 @@ reglog2 <- glm(Moinsavionconf ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + int
 
 summary(reglog2)
 
+#Mutinomiale
+
+library(nnet)
+library(GGally)
+library(ggeffects)
+library(labelled)
+library(gtsummary)
+climat_recherche$solevolges.conf<-fct_relevel(climat_recherche$solevolges.conf ,"Été à peu près stables")
+
+freq(climat_recherche$solevolges.conf)
+freq(climat_recherche$docto)
+
+#On supprime les non 
+climat_recherche2<-climat_recherche %>% filter(!(solevolges.conf %in% c("Non concerné·e", "Je ne sais pas")) | sexe!="Autre" | docto=="Non")
+
+
+
+#Je vire les sexes "autres" qui tassent le graph de ggcoef à cause des écarts types énormes (les "autre" restent dans le graph, mais la catégorie doit être vide ; 
+#elle reste dans les représentations graphiques sans doute à cause d'un level qq part
+regm <- multinom(solevolges.conf ~ sexe , data = climat_recherche, 
+                 subset= !(solevolges.conf %in% c("Non concerné·e", "Je ne sais pas")) & !(sexe=="Autre") )
+
+#Pour ne pas avoir les modalités vides représentées dans la représentation graphique ggcoef
+climat_recherche <- droplevels(climat_recherche)
+regm <- multinom(solevolges.conf ~ sexe , data = climat_recherche, subset= solevolges.conf %in% c("Fortement augmenté", "Un peu augmenté" ,"Été à peu près stables", "Un peu diminué","Fortement diminué") )
+
+regm <- multinom(solevolges.conf ~ sexe + ageAgr  + sitpro2 + discipline_agr3 , data = climat_recherche, 
+                 subset= !(solevolges.conf %in% c("Non concerné·e", "Je ne sais pas")) & !(sexe=="Autre") &
+                         docto=="Non" & !(sitpro2 %in% c("Doctorant·e CIFRE", "Doctorant·e contractuel·le")))
+
+#Test avec climat_recherche2 pour éviter d'avoir les levels vides (bof ça marche pas...)
+
+
+regm <- multinom(solevolges.conf ~ sexe + ageAgr  + sitpro2 + discipline_agr3 , data = droplevels( 
+        filter(climat_recherche, !(solevolges.conf %in% c("Non concerné·e", "Je ne sais pas")) | !(sexe=="Autre") |
+        docto=="Non" | !(sitpro2 %in% c("Doctorant·e CIFRE", "Doctorant·e contractuel·le")))))
+                                                                                                                  
+
+regm <- multinom(solevolges.conf ~ sexe + ageaccad_tranch2  + sitpro2 + discipline_agr3 , data = climat_recherche, 
+                 subset= !(solevolges.conf %in% c("Non concerné·e", "Je ne sais pas")) & !(sexe=="Autre") &
+                         docto=="Non" & !(sitpro2 %in% c("Doctorant·e CIFRE", "Doctorant·e contractuel·le")))
+regm <- multinom(solevolges.conf ~ sexe + ageaccad_tranch2  + sitpro2 + discipline_agr3 , data = climat_recherche, 
+                 subset= !(solevolges.conf %in% c("Non concerné·e", "Je ne sais pas")) & !(sexe=="Autre") &
+                         docto=="Non" & !(sitpro2 %in% c("Doctorant·e CIFRE", "Doctorant·e contractuel·le")) & ageaccad_tranch2!="Pas de thèse")
+
+regm <- multinom(solevolges.conf ~ sexe + ageaccad_tranch2  + sitpro2 + discipline_agr3 +dixannees.marche , data = climat_recherche, 
+                 subset= !(solevolges.conf %in% c("Non concerné·e", "Je ne sais pas")) & !(sexe=="Autre") &
+                         docto=="Non" & !(sitpro2 %in% c("Doctorant·e CIFRE", "Doctorant·e contractuel·le")) & ageaccad_tranch2!="Pas de thèse")
+
+regm <- multinom(solevolges.conf ~ dixannees.marche , data = climat_recherche, 
+                 subset= !(solevolges.conf %in% c("Non concerné·e", "Je ne sais pas")) & !(sexe=="Autre") &
+                         docto=="Non" & !(sitpro2 %in% c("Doctorant·e CIFRE", "Doctorant·e contractuel·le")) & ageaccad_tranch2!="Pas de thèse")
+
+regm <- multinom(solevolges.conf ~ dixannees.marche , data = climat_recherche, 
+                 subset= !(solevolges.conf %in% c("Non concerné·e", "Je ne sais pas")) & !(sexe=="Autre") &
+                         docto=="Non" & !(sitpro2 %in% c("Doctorant·e CIFRE", "Doctorant·e contractuel·le")) & ageaccad_tranch2!="Pas de thèse")
+
+
+
+freq(climat$ageaccad_tranch2)
+
+regm <- multinom(solevolges.conf ~ sexe + ageAgr  + sitpro2 + discipline_agr3 , data = climat_recherche, subset= !(solevolges.conf %in% c("Non concerné·e", "Je ne sais pas")) )
+
+
+
+regm <- multinom(solevolges.conf ~ sexe + ageAgr  + sitpro2 + discipline_agr3, data = climat_recherche2)
+
+ggcoef_multinom(regm, exponentiate = TRUE)
+summary(regm)
+tbl_regression(regm, exponentiate = TRUE)
+#http://larmarange.github.io/analyse-R/regression-logistique.html#r%C3%A9gression-logistique-multinomiale
+
+
+freq(climat$trav.dep)
+freq(climat$trav.CATEAAV2020)
+freq(climat$trav.TAAV2017)
+freq(climat$trav.TUU2017)
+
+freq(climat$res.TUU2017)
+freq(climat$res.TAAV2017)
+freq(climat$res.CATEAAV2020)
+
 #####################################################################################################################################@
 #Evolution des émissions de GES pour des vols en avions pour recueillir des données (et juste pour le personnel de recherche)
 
@@ -985,8 +1075,73 @@ reglog2 <- glm(Moinsavionperso ~ sexe +ageAgr + sitpro2 + avionperso+ revenuTete
 summary(reglog2)
 
 freq(climat_recherche$opinionecolo.decroissance)
+climat$volsnbtranch2
+
+reglog2 <- lm(volsnb ~ solevolges.conf,data=climat_recherche)
+climat_recherche$solevolges.conf<-fct_relevel(climat_recherche$solevolges.conf ,"Été à peu près stables")
+
+reglog2 <- glm(Moinsavionconf ~ carriere, data=climat_recherche, family=binomial(logit))
+summary(reglog2)
+#################################################################################################################@
+#Nombre de publis : premières explorations (réunion du 4 juin)
+
+tapply(climat_recherche$nbpublis, climat_recherche$discipline_agr3, mean, na.rm=T)
+
+reglog2 <- lm(nbpublis ~ sexe + ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
+reglog2 <- lm(nbpublis ~ sexe +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
+
+reglog2 <- lm(nbpublis ~ sexe +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 +enfantsnb , data=climat_recherche )
+reglog2 <- lm(nbpublis ~ sexe*enfantsnb_rec +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
+reglog2 <- lm(nbpublis ~ sexe*enfantsage_rec +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
+reglog2 <- lm(nbpublis ~ sexe:enfantsage_rec +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
 
 
+summary(reglog2)
+
+
+reglog2 <- glm(nbpublis ~ sexe +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche, family = poisson )
+
+reglog2 <- glm(nbpublis ~ sexe +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche, family = quasipoisson() )
+
+reglog2 <- glm(nbpublis ~ sexe*enfantsnb_rec +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche, family = quasipoisson() )
+
+
+library(MASS)
+#Binomiale négative (Dans Xie) : peut être la meilleure solution (le plus flexible)
+reglog3 <- glm.nb(nbpublis ~ sexe +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
+
+reglog3 <- glm.nb(nbpublis ~ sexe*enfantsnb_rec +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
+
+
+summary(reglog3)
+
+#Log et régression (Steven Stack, Gender, research) Il garde juste les gens qui ont une thèse depuis plus de 4 ans (et il regarde les publis depuis 5 ans)
+#Intérêt du Poisson : gérer les zéros
+reglog2 <- lm(log(nbpublis) ~ sexe +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
+
+cbind(reglog2$coefficients, reglog3$coefficients)
+
+#Contrôler par le % de femmes dans chaque discipline
+
+#Réf pour la loi de poisson : article de Xie
+#Article qui utilise loi de poisson Rotolo, When Does Centrality Matter? (pour Weighted Citation Index)
+
+cor(fitted(reglog2),reglog2$y)
+cor(fitted(reglog2),reglog2$model$nbpublis )
+b<-tapply(climat_recherche$ScoreEcolo, climat_recherche$discipline_agr3, mean, na.rm=T)
+
+#Uiliser boostrap ?
+freq(climat_recherche$discipline_agr3)
+
+
+reglog2 <- lm(nbpublis ~ sexe +ageAgr + ageaccad_tranch2 +  sitpro2 + discipline_agr3 +  revenuTete, data=climat_recherche )
+reglog2 <- lm(nbpublis ~ sexe +ageAgr + ageaccad_tranch2 +  sitpro2 + discipline_agr3 + avionperso+  revenuTete, data=climat_recherche )
+reglog2 <- lm(nbpublis ~ sexe +ageAgr + ageaccad_tranch2 +  sitpro2 + discipline_agr3 + avionperso, data=climat_recherche )
+reglog2 <- lm(nbpublis ~ sexe +ageAgr + ageaccad_tranch2 +  sitpro2 + discipline_agr3 + avionperso + volsnbtranch2 + international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso + revenuTete, data=climat_recherche )
+
+reglog2 <- lm(nbpublis ~ sexe +ageAgr + ageaccad_tranch2*discipline_agr3 + international.natio +  international.naiss + international.scol + international.etudes + dippar.p + dippar.m, data=climat_recherche )
+
+summary(reglog2)
 
         #Mutinomiale
 

@@ -1016,10 +1016,16 @@ climat$quizfacteurs.visio_err <- recode_quiz3(climat$quizfacteurs.visionum, 0.1)
 climat$quizfacteurs.these_err <- recode_quiz3(climat$quizfacteurs.thesenum, 5)
 climat$quizfacteurs.steak_err <- recode_quiz3(climat$quizfacteurs.steaknum, 5)
 
-
-
 climat$scorequiz_err <- rowSums(select(climat, quizfacteurs.voiture_err, quizfacteurs.avion_err, quizfacteurs.TGV_err, quizfacteurs.ordi_err,
                                    quizfacteurs.visio_err, quizfacteurs.these_err, quizfacteurs.steak_err))
+
+mean(climat$quizfacteurs.TGVnum, na.rm=T)
+mean(climat$quizfacteurs.avionnum, na.rm=T)
+mean(climat$quizfacteurs.voiturenum, na.rm=T)
+
+cor(climat$quizfacteurs.corkendall, climat$quizfacteurs.corspearman,  use="na")
+cor(climat$quizfacteurs.corpearson, climat$quizfacteurs.corspearman,  use="na")
+cor(climat$quizfacteurs.corspearman, climat$scorequiz_err,  use="na")
 
 
 #Sous estimer le poids de l'avion (à faire)
