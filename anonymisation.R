@@ -15,6 +15,8 @@ for(var in names(climat)) {
 
 source("Aéroports/aéroports.R")
 
+source("codes_postaux/recodage_des_codes_postaux.R")
+
 source("pondération.R")
 
 excl <- c("id", "email", "startlanguage", "seed", "token",
@@ -24,7 +26,9 @@ excl <- c("id", "email", "startlanguage", "seed", "token",
           "volsdepart1code", "volsdepart2code", "volsdepart3code", "volsdepart4code", "volsdepart5code",
           "volsarrivee1code", "volsarrivee2code", "volsarrivee3code", "volsarrivee4code", "volsarrivee5code",
           "textedomtrav",
-          "communes.SaisieVille", "communes.SaisieVilleTravail", "recontact.other")
+          "communes.SaisieVille", "communes.SaisieVilleTravail",
+          "res.codeinsee", "trav.codeinsee", "res.cp", "trav.cp",
+          "recontact.other")
 
 climat <- select(climat, !any_of(excl) &
                      !starts_with("volstexte") &

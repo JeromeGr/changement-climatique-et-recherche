@@ -890,6 +890,50 @@ climat$malpaye[climat$paie %in% c("Mal payé·e" , "Très mal payé·e")]<-"Oui"
 climat$malpaye[climat$paie %in% c("Bien payé·e", "Correctement payé·e", "Très bien payé·e")]<-"Non"
 climat$malpaye<-fct_relevel(climat$malpaye, "Non")
 
+climat$res.idf <- if_else(climat$res.dep %in% c("75", "77", "78", "91", "92", "93", "94", "95"),
+                          "Île de France", "Province")
+climat$trav.idf <- if_else(climat$trav.dep %in% c("75", "77", "78", "91", "92", "93", "94", "95"),
+                           "Île de France", "Province")
+
+# Nom en clair des aires d'attraction des villes de 500 000 habitants et plus
+climat$res.metropole <- recode_factor(climat$res.AAV2020,
+                                      "1"="Paris",
+                                      "2"="Lyon",
+                                      "3"="Aix-Marseille",
+                                      "4"="Lille",
+                                      "5"="Toulouse",
+                                      "6"="Bordeaux",
+                                      "8"="Nantes",
+                                      "10"="Strasbourg",
+                                      "12"="Montpellier",
+                                      "13"="Rennes",
+                                      "14"="Grenoble",
+                                      "15"="Rouen",
+                                      "17"="Nice",
+                                      "18"="Toulon",
+                                      "19"="Tours",
+                                      "20"="Nancy",
+                                      .default="Autre")
+climat$trav.metropole <- recode_factor(climat$trav.AAV2020,
+                                       "1"="Paris",
+                                       "2"="Lyon",
+                                       "3"="Aix-Marseille",
+                                       "4"="Lille",
+                                       "5"="Toulouse",
+                                       "6"="Bordeaux",
+                                       "8"="Nantes",
+                                       "10"="Strasbourg",
+                                       "12"="Montpellier",
+                                       "13"="Rennes",
+                                       "14"="Grenoble",
+                                       "15"="Rouen",
+                                       "17"="Nice",
+                                       "18"="Toulon",
+                                       "19"="Tours",
+                                       "20"="Nancy",
+                                       .default="Autre")
+
+
 #Le quiz
 
 recode_quiz <- function(x, rep) {
@@ -976,6 +1020,38 @@ cor_quiz <- function(x, method="pearson") {
   cor(reponses[correct], reponses[x], method=method)
 }
 
+# Corrélation en attribuant des valeurs de 1 à 13 aux réponses
+# (ne tient pas compte du niveau d'émissions qu'elles représentent)
+cor_quiz2 <- function(x) {
+  # Si toutes les réponses sont les mêmes, la corrélation donne une erreur
+  if(length(unique(x)) == 1)
+    return(NaN)
+  
+  reponses <- c("10 g"=1, "100 g"=2, "1 kg"=3, "5 kg"=4,
+                "25 kg"=5, "50 kg"=6, "100 kg"=7, 
+                "250 kg"=8, "500 kg"=9, "1 000 kg"=10,
+                "2 000 kg"=11, "3 000 kg"=12, "5 000 kg"=13)
+  correct <- c("3 000 kg", "1 000 kg", "5 kg", "250 kg", "100 g", "5 kg", "5 kg")
+  cor(reponses[correct], reponses[x])
+}
+
+# Score d'écart par rapport aux bonnes réponses en soustrayant la moyenne
+# (approche similaire à la précédente)
+ecartabs_quiz <- function(x) {
+  # Si toutes les réponses sont les mêmes, la corrélation donne une erreur
+  if(length(unique(x)) == 1)
+    return(NaN)
+
+  reponses <- c("10 g"=1, "100 g"=2, "1 kg"=3, "5 kg"=4,
+                "25 kg"=5, "50 kg"=6, "100 kg"=7, 
+                "250 kg"=8, "500 kg"=9, "1 000 kg"=10,
+                "2 000 kg"=11, "3 000 kg"=12, "5 000 kg"=13)
+  correct <- c("3 000 kg", "1 000 kg", "5 kg", "250 kg", "100 g", "5 kg", "5 kg")
+  correctcentre <- reponses[correct] - mean(reponses[correct])
+  xcentre <- reponses[x] - mean(reponses[x])
+  sum(abs(correctcentre - xcentre))
+}
+
 vars <- paste0("quizfacteurs.",
                c("voiture", "avion", "TGV",
                  "ordi", "visio", "these", "steak"))
@@ -986,6 +1062,9 @@ climat$quizfacteurs.corspearman <- transmute(rowwise(climat), cor_quiz(c_across(
                                                                        method="spearman"))[[1]]
 climat$quizfacteurs.corkendall <- transmute(rowwise(climat), cor_quiz(c_across(all_of(vars)),
                                                                       method="kendall"))[[1]]
+climat$quizfacteurs.corpearson2 <- transmute(rowwise(climat), cor_quiz2(c_across(all_of(vars))))[[1]]
+climat$quizfacteurs.ecartabs <- transmute(rowwise(climat), ecartabs_quiz(c_across(all_of(vars))))[[1]]
+
 
 rm(cor_quiz, vars)
 
@@ -995,7 +1074,6 @@ passagenum<- function(x) {
   ifelse(x=="10 g", 0.01, ifelse(x=="100 g", 0.1, ifelse(x=="1 kg", 1, ifelse(x=="5 kg", 5, ifelse(x=="25 kg", 25, ifelse(x=="50 kg", 50, ifelse(x=="100 kg", 100, ifelse(x=="250 kg", 250, ifelse(x=="500 kg", 500, ifelse(x=="1 000 kg", 1000, ifelse(x=="2 000 kg", 2000, ifelse(x=="3 000 kg", 3000, 5000))))))))))))
 }
 
-?subset
 climat$quizfacteurs.voiturenum <- passagenum(climat$quizfacteurs.voiture)
 climat$quizfacteurs.avionnum <- passagenum(climat$quizfacteurs.avion)
 climat$quizfacteurs.TGVnum <- passagenum(climat$quizfacteurs.TGV)
