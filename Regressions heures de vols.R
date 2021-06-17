@@ -1,4 +1,23 @@
 library(texreg)
+library(dplyr)
+library(ggplot2)
+library(GGally)
+
+#Juste les vols extérieurs
+climat$volsnb_ext<-ifelse(climat$tiragemodule == "1", climat$volsnb_tot-climat$volsnbFrance, NA)
+
+climat$volsnb_ext<-ifelse(!(is.na(climat$volsnb_tot)), climat$volsnb_tot-climat$volsnbFrance, NA)
+
+freq(climat$volsnb_ext)
+freq(climat$volsnb_tot)
+freq(climat$volsnbFrance)
+mean(climat$volsnb_tot, na.rm=T)
+mean(climat$volsnbFrance, na.rm=T)
+mean(climat$volsnb_ext, na.rm=T)
+test<-climat_recherche %>% select(volsnb_ext)
+test<- select(climat_recherche, "volsnbFrance")
+test<- subset(climat_recherche, select= c("volsnb_tot", "volsnbFrance", "volsnb_ext"))
+freq(climat$volsnb_ext)
 
 climat_recherche <- climat[!climat$sitpro2 %in% c(
         "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
@@ -349,9 +368,54 @@ reglog2 <- lm(volsnb ~ sexe + ageAgr +ageaccad_tranch2  + sitpro2  + discipline_
 reglog2 <- lm(volsduree_moy ~ sexe*enfantsnb_rec +ageAgr + sitpro2 ,data=climat_recherche )
 reglog2 <- lm(volsduree_moy ~ sexe*enfantsage_rec +ageAgr + sitpro2 ,data=climat_recherche )
 
+library(MASS)
+#Binomiale négative
+reglog3 <- glm.nb(volsnb ~ sexe + ageAgr + ageaccad_tranch2  + sitpro2  + discipline_agr3, data=climat_recherche )
+
+reglog3 <- glm.nb(volsnb ~ sexe + ageAgr +ageaccad_tranch2  + sitpro2  + discipline_agr3 +recheco +carriere + nbpublistranch2 +  projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 + 
+                      international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso +
+                      avionperso, data=climat_recherche)
+
+reglog3 <- glm.nb(volsnb ~ sexe + ageAgr +ageaccad_tranch2  + sitpro2  + discipline_agr3 +recheco +carriere + nbpublistranch2 +  projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 + 
+                          international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso +
+                          avionperso + trav.metropole, data=climat_recherche)
+
+reglog3 <- glm.nb(volsnb ~ sexe + ageAgr +ageaccad_tranch2  + sitpro2  + discipline_agr3 +recheco +carriere + nbpublistranch2 +  projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 + 
+                          international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso +
+                          avionperso + trav.TUU2017, data=climat_recherche)
+reglog3 <- glm.nb(volsnb ~ sexe + ageAgr +ageaccad_tranch2  + sitpro2  + discipline_agr3 +recheco +carriere + nbpublistranch2 +  projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 + 
+                          international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso +
+                          avionperso + trav.TAAV2017, data=climat_recherche)
+
+summary(reglog3)
+
+#Juste vols intérieurs
+climat_recherche_mod1<- climat_recherche %>% filter(tiragemodule == "1")
+
+reglog3 <- glm.nb(volsnbFrance ~ sexe + ageAgr +ageaccad_tranch2  + sitpro2  + discipline_agr3 +recheco +carriere + nbpublistranch2 +  projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 + 
+                          international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso +
+                          avionperso + trav.metropole, data=climat_recherche_mod1)
+
+reglog3 <- glm.nb(volsnbFrance ~ sexe + ageAgr +ageaccad_tranch2  + sitpro2  + discipline_agr3 +recheco +carriere + nbpublistranch2 +  projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 + 
+                          international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso +
+                          avionperso + trav.TUU2017, data=climat_recherche_mod1)
+reglog3 <- glm.nb(volsnbFrance ~ sexe + ageAgr +ageaccad_tranch2  + sitpro2  + discipline_agr3 +recheco +carriere + nbpublistranch2 +  projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 + 
+                          international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso +
+                          avionperso + trav.TAAV2017, data=climat_recherche_mod1)
+
+summary(reglog3)
+
+freq(climat$trav.metropole)
+freq(climat$volsnb)
+
+#Juste les vols extérieurs
 
 
-
+reglog3 <- glm.nb(volsnb_ext ~ sexe + ageAgr +ageaccad_tranch2  + sitpro2  + discipline_agr3 +recheco +carriere + nbpublistranch2 +  projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 + 
+                          international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso +
+                          avionperso + trav.metropole, data=climat_recherche)
+?subset
+?select
 
 ##################
 #Voler/pas voler depuis 3 ans
@@ -751,7 +815,7 @@ freq(climat$trav.TUU2017)
 freq(climat$res.TUU2017)
 freq(climat$res.TAAV2017)
 freq(climat$res.CATEAAV2020)
-
+freq(climat$res.metropole)
 #####################################################################################################################################@
 #Evolution des émissions de GES pour des vols en avions pour recueillir des données (et juste pour le personnel de recherche)
 
@@ -1082,75 +1146,6 @@ climat_recherche$solevolges.conf<-fct_relevel(climat_recherche$solevolges.conf ,
 
 reglog2 <- glm(Moinsavionconf ~ carriere, data=climat_recherche, family=binomial(logit))
 summary(reglog2)
-#################################################################################################################@
-#Nombre de publis : premières explorations (réunion du 4 juin)
-
-tapply(climat_recherche$nbpublis, climat_recherche$discipline_agr3, mean, na.rm=T)
-
-reglog2 <- lm(nbpublis ~ sexe + ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
-reglog2 <- lm(nbpublis ~ sexe +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
-
-reglog2 <- lm(nbpublis ~ sexe +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 +enfantsnb , data=climat_recherche )
-reglog2 <- lm(nbpublis ~ sexe*enfantsnb_rec +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
-reglog2 <- lm(nbpublis ~ sexe*enfantsage_rec +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
-reglog2 <- lm(nbpublis ~ sexe:enfantsage_rec +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
-
-
-summary(reglog2)
-
-
-reglog2 <- glm(nbpublis ~ sexe +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche, family = poisson )
-
-reglog2 <- glm(nbpublis ~ sexe +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche, family = quasipoisson() )
-
-reglog2 <- glm(nbpublis ~ sexe*enfantsnb_rec +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche, family = quasipoisson() )
-
-
-library(MASS)
-#Binomiale négative (Dans Xie) : peut être la meilleure solution (le plus flexible)
-reglog3 <- glm.nb(nbpublis ~ sexe +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
-
-reglog3 <- glm.nb(nbpublis ~ sexe*enfantsnb_rec +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
-
-
-summary(reglog3)
-
-#Log et régression (Steven Stack, Gender, research) Il garde juste les gens qui ont une thèse depuis plus de 4 ans (et il regarde les publis depuis 5 ans)
-#Intérêt du Poisson : gérer les zéros
-reglog2 <- lm(log(nbpublis) ~ sexe +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
-
-cbind(reglog2$coefficients, reglog3$coefficients)
-
-#Contrôler par le % de femmes dans chaque discipline
-
-#Réf pour la loi de poisson : article de Xie
-#Article qui utilise loi de poisson Rotolo, When Does Centrality Matter? (pour Weighted Citation Index)
-
-cor(fitted(reglog2),reglog2$y)
-cor(fitted(reglog2),reglog2$model$nbpublis )
-b<-tapply(climat_recherche$ScoreEcolo, climat_recherche$discipline_agr3, mean, na.rm=T)
-
-#Uiliser boostrap ?
-freq(climat_recherche$discipline_agr3)
-
-
-reglog2 <- lm(nbpublis ~ sexe +ageAgr + ageaccad_tranch2 +  sitpro2 + discipline_agr3 +  revenuTete, data=climat_recherche )
-reglog2 <- lm(nbpublis ~ sexe +ageAgr + ageaccad_tranch2 +  sitpro2 + discipline_agr3 + avionperso+  revenuTete, data=climat_recherche )
-reglog2 <- lm(nbpublis ~ sexe +ageAgr + ageaccad_tranch2 +  sitpro2 + discipline_agr3 + avionperso, data=climat_recherche )
-reglog2 <- lm(nbpublis ~ sexe +ageAgr + ageaccad_tranch2 +  sitpro2 + discipline_agr3 + avionperso + volsnbtranch2 + international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso + revenuTete, data=climat_recherche )
-
-reglog2 <- lm(nbpublis ~ sexe +ageAgr + ageaccad_tranch2*discipline_agr3 + international.natio +  international.naiss + international.scol + international.etudes + dippar.p + dippar.m, data=climat_recherche )
-
-summary(reglog2)
-
-        #Mutinomiale
-
-        library(nnet)
-regm <- multinom(parents_3mod ~ sexe_rec + AGEREVQ_rec, data = rp17sample)
-ggcoef_multinom(
-        regm,
-        exponentiate = TRUE
-)
 
 
 ######

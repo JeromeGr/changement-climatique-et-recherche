@@ -544,216 +544,214 @@ climat$volsdist_moy[climat$volsnb==0 & climat$tiragemodule=="1"]<-0
 
 #Calcul distance totale par motif de vol, par personne
 
-climat$volsdist_totconf <- ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Conférence, présentation", climat$volsdist_tot1, 0) + 
+climat$volsdist_totconf <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Conférence, présentation", climat$volsdist_tot1, 0) + 
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Conférence, présentation", climat$volsdist_tot2, 0) +
   ifelse(!is.na(climat$volsmotif3) & climat$volsmotif3=="Conférence, présentation", climat$volsdist_tot3, 0) +
   ifelse(!is.na(climat$volsmotif4) & climat$volsmotif4=="Conférence, présentation", climat$volsdist_tot4, 0) +
-  ifelse(!is.na(climat$volsmotif4) & climat$volsmotif5=="Conférence, présentation", climat$volsdist_tot5, 0)
+  ifelse(!is.na(climat$volsmotif4) & climat$volsmotif5=="Conférence, présentation", climat$volsdist_tot5, 0), NA )
 
-climat$volsdist_totsejrech <- ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Séjour de recherche", climat$volsdist_tot1, 0) + 
+climat$volsdist_totsejrech <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Séjour de recherche", climat$volsdist_tot1, 0) + 
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Séjour de recherche", climat$volsdist_tot2, 0) +
   ifelse(!is.na(climat$volsmotif3) & climat$volsmotif3=="Séjour de recherche", climat$volsdist_tot3, 0) +
   ifelse(!is.na(climat$volsmotif4) & climat$volsmotif4=="Séjour de recherche", climat$volsdist_tot4, 0) +
-  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Séjour de recherche", climat$volsdist_tot5, 0)
+  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Séjour de recherche", climat$volsdist_tot5, 0), NA )
 
-climat$volsdist_totworkshop <- ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Réunion, workshop", climat$volsdist_tot1, 0) + 
+climat$volsdist_totworkshop <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Réunion, workshop", climat$volsdist_tot1, 0) + 
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Réunion, workshop", climat$volsdist_tot2, 0) +
   ifelse(!is.na(climat$volsmotif3) & climat$volsmotif3=="Réunion, workshop", climat$volsdist_tot3, 0) +
   ifelse(!is.na(climat$volsmotif4) & climat$volsmotif4=="Réunion, workshop", climat$volsdist_tot4, 0) +
-  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Réunion, workshop", climat$volsdist_tot5, 0)
+  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Réunion, workshop", climat$volsdist_tot5, 0), NA )
 
-climat$volsdist_totcours <- ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Enseignement, formation, école d'été", climat$volsdist_tot1, 0) + 
+climat$volsdist_totcours <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Enseignement, formation, école d'été", climat$volsdist_tot1, 0) + 
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Enseignement, formation, école d'été", climat$volsdist_tot2, 0) +
   ifelse(!is.na(climat$volsmotif3) & climat$volsmotif3=="Enseignement, formation, école d'été", climat$volsdist_tot3, 0) +
   ifelse(!is.na(climat$volsmotif4) & climat$volsmotif4=="Enseignement, formation, école d'été", climat$volsdist_tot4, 0) +
-  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Enseignement, formation, école d'été", climat$volsdist_tot5, 0)
+  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Enseignement, formation, école d'été", climat$volsdist_tot5, 0), NA )
 
-climat$volsdist_totterrain <- ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Terrain, production et recueil de données", climat$volsdist_tot1, 0) + 
+climat$volsdist_totterrain <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Terrain, production et recueil de données", climat$volsdist_tot1, 0) + 
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Terrain, production et recueil de données", climat$volsdist_tot2, 0) +
   ifelse(!is.na(climat$volsmotif3) & climat$volsmotif3=="Terrain, production et recueil de données", climat$volsdist_tot3, 0) +
   ifelse(!is.na(climat$volsmotif4) & climat$volsmotif4=="Terrain, production et recueil de données", climat$volsdist_tot4, 0) +
-  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Terrain, production et recueil de données", climat$volsdist_tot5, 0)
+  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Terrain, production et recueil de données", climat$volsdist_tot5, 0), NA )
 
-climat$volsdist_totfinanc <- ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Obtention de financements", climat$volsdist_tot1, 0) + 
+climat$volsdist_totfinanc <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Obtention de financements", climat$volsdist_tot1, 0) + 
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Obtention de financements", climat$volsdist_tot2, 0) +
   ifelse(!is.na(climat$volsmotif3) & climat$volsmotif3=="Obtention de financements", climat$volsdist_tot3, 0) +
   ifelse(!is.na(climat$volsmotif4) & climat$volsmotif4=="Obtention de financements", climat$volsdist_tot4, 0) +
-  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Obtention de financements", climat$volsdist_tot5, 0)
+  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Obtention de financements", climat$volsdist_tot5, 0), NA )
 
-climat$volsdist_toteval <- ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Évaluation de la recherche", climat$volsdist_tot1, 0) + 
+climat$volsdist_toteval <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Évaluation de la recherche", climat$volsdist_tot1, 0) + 
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Évaluation de la recherche", climat$volsdist_tot2, 0) +
   ifelse(!is.na(climat$volsmotif3) & climat$volsmotif3=="Évaluation de la recherche", climat$volsdist_tot3, 0) +
   ifelse(!is.na(climat$volsmotif4) & climat$volsmotif4=="Évaluation de la recherche", climat$volsdist_tot4, 0) +
-  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Évaluation de la recherche", climat$volsdist_tot5, 0)
+  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Évaluation de la recherche", climat$volsdist_tot5, 0), NA )
 
-climat$volsdist_totjury <- ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Jury", climat$volsdist_tot1, 0) + 
+climat$volsdist_totjury <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Jury", climat$volsdist_tot1, 0) + 
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Jury", climat$volsdist_tot2, 0) +
   ifelse(!is.na(climat$volsmotif3) & climat$volsmotif3=="Jury", climat$volsdist_tot3, 0) +
   ifelse(!is.na(climat$volsmotif4) & climat$volsmotif4=="Jury", climat$volsdist_tot4, 0) +
-  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Jury", climat$volsdist_tot5, 0)
+  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Jury", climat$volsdist_tot5, 0), NA )
 
-climat$volsdist_totautre <- ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Autre", climat$volsdist_tot1, 0) + 
+climat$volsdist_totautre <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Autre", climat$volsdist_tot1, 0) + 
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Autre", climat$volsdist_tot2, 0) +
   ifelse(!is.na(climat$volsmotif3) & climat$volsmotif3=="Autre", climat$volsdist_tot3, 0) +
   ifelse(!is.na(climat$volsmotif4) & climat$volsmotif4=="Autre", climat$volsdist_tot4, 0) +
-  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Autre", climat$volsdist_tot5, 0)
+  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Autre", climat$volsdist_tot5, 0), NA )
 
 #Nombre de vols par motif
 
-climat$volsnbconf <- ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Conférence, présentation", climat$volsnb1, 0) + 
+climat$volsnbconf <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Conférence, présentation", climat$volsnb1, 0) + 
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Conférence, présentation", climat$volsnb2, 0) +
   ifelse(!is.na(climat$volsmotif3) & climat$volsmotif3=="Conférence, présentation", climat$volsnb3, 0) +
   ifelse(!is.na(climat$volsmotif4) & climat$volsmotif4=="Conférence, présentation", climat$volsnb4, 0) +
-  ifelse(!is.na(climat$volsmotif4) & climat$volsmotif5=="Conférence, présentation", climat$volsnb5, 0)
+  ifelse(!is.na(climat$volsmotif4) & climat$volsmotif5=="Conférence, présentation", climat$volsnb5, 0), NA )
 
-climat$volsnbsejrech <- ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Séjour de recherche", climat$volsnb1, 0) + 
+climat$volsnbsejrech <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Séjour de recherche", climat$volsnb1, 0) + 
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Séjour de recherche", climat$volsnb2, 0) +
   ifelse(!is.na(climat$volsmotif3) & climat$volsmotif3=="Séjour de recherche", climat$volsnb3, 0) +
   ifelse(!is.na(climat$volsmotif4) & climat$volsmotif4=="Séjour de recherche", climat$volsnb4, 0) +
-  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Séjour de recherche", climat$volsnb5, 0)
+  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Séjour de recherche", climat$volsnb5, 0), NA )
 
-climat$volsnbworkshop <- ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Réunion, workshop", climat$volsnb1, 0) + 
+climat$volsnbworkshop <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Réunion, workshop", climat$volsnb1, 0) + 
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Réunion, workshop", climat$volsnb2, 0) +
   ifelse(!is.na(climat$volsmotif3) & climat$volsmotif3=="Réunion, workshop", climat$volsnb3, 0) +
   ifelse(!is.na(climat$volsmotif4) & climat$volsmotif4=="Réunion, workshop", climat$volsnb4, 0) +
-  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Réunion, workshop", climat$volsnb5, 0)
+  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Réunion, workshop", climat$volsnb5, 0), NA )
 
-climat$volsnbcours <- ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Enseignement, formation, école d'été", climat$volsnb1, 0) + 
+climat$volsnbcours <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Enseignement, formation, école d'été", climat$volsnb1, 0) + 
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Enseignement, formation, école d'été", climat$volsnb2, 0) +
   ifelse(!is.na(climat$volsmotif3) & climat$volsmotif3=="Enseignement, formation, école d'été", climat$volsnb3, 0) +
   ifelse(!is.na(climat$volsmotif4) & climat$volsmotif4=="Enseignement, formation, école d'été", climat$volsnb4, 0) +
-  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Enseignement, formation, école d'été", climat$volsnb5, 0)
+  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Enseignement, formation, école d'été", climat$volsnb5, 0), NA )
 
-climat$volsnbterrain <- ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Terrain, production et recueil de données", climat$volsnb1, 0) + 
+climat$volsnbterrain <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Terrain, production et recueil de données", climat$volsnb1, 0) + 
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Terrain, production et recueil de données", climat$volsnb2, 0) +
   ifelse(!is.na(climat$volsmotif3) & climat$volsmotif3=="Terrain, production et recueil de données", climat$volsnb3, 0) +
   ifelse(!is.na(climat$volsmotif4) & climat$volsmotif4=="Terrain, production et recueil de données", climat$volsnb4, 0) +
-  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Terrain, production et recueil de données", climat$volsnb5, 0)
+  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Terrain, production et recueil de données", climat$volsnb5, 0), NA )
 
-climat$volsnbfinanc <- ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Obtention de financements", climat$volsnb1, 0) + 
+climat$volsnbfinanc <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Obtention de financements", climat$volsnb1, 0) + 
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Obtention de financements", climat$volsnb2, 0) +
   ifelse(!is.na(climat$volsmotif3) & climat$volsmotif3=="Obtention de financements", climat$volsnb3, 0) +
   ifelse(!is.na(climat$volsmotif4) & climat$volsmotif4=="Obtention de financements", climat$volsnb4, 0) +
-  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Obtention de financements", climat$volsnb5, 0)
+  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Obtention de financements", climat$volsnb5, 0), NA )
 
-climat$volsnbeval <- ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Évaluation de la recherche", climat$volsnb1, 0) + 
+climat$volsnbeval <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Évaluation de la recherche", climat$volsnb1, 0) + 
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Évaluation de la recherche", climat$volsnb2, 0) +
   ifelse(!is.na(climat$volsmotif3) & climat$volsmotif3=="Évaluation de la recherche", climat$volsnb3, 0) +
   ifelse(!is.na(climat$volsmotif4) & climat$volsmotif4=="Évaluation de la recherche", climat$volsnb4, 0) +
-  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Évaluation de la recherche", climat$volsnb5, 0)
+  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Évaluation de la recherche", climat$volsnb5, 0), NA )
 
-climat$volsnbjury <- ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Jury", climat$volsnb1, 0) + 
+climat$volsnbjury <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Jury", climat$volsnb1, 0) + 
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Jury", climat$volsnb2, 0) +
   ifelse(!is.na(climat$volsmotif3) & climat$volsmotif3=="Jury", climat$volsnb3, 0) +
   ifelse(!is.na(climat$volsmotif4) & climat$volsmotif4=="Jury", climat$volsnb4, 0) +
-  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Jury", climat$volsnb5, 0)
+  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Jury", climat$volsnb5, 0), NA )
 
-climat$volsnbautre <- ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Autre", climat$volsnb1, 0) + 
+climat$volsnbautre <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Autre", climat$volsnb1, 0) + 
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Autre", climat$volsnb2, 0) +
   ifelse(!is.na(climat$volsmotif3) & climat$volsmotif3=="Autre", climat$volsnb3, 0) +
   ifelse(!is.na(climat$volsmotif4) & climat$volsmotif4=="Autre", climat$volsnb4, 0) +
-  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Autre", climat$volsnb5, 0)
+  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Autre", climat$volsnb5, 0), NA )
 
 #Nb de vols, par pays
-climat$volsnbFrance<-ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="FR", 0, climat$volsnb1)+
+climat$volsnbFrance<-ifelse(!(is.na(climat$volsnb_tot)), ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="FR", 0, climat$volsnb1)+
   ifelse(is.na(climat$volsarrivee2pays) | climat$volsarrivee2pays!="FR", 0, climat$volsnb2)+
   ifelse(is.na(climat$volsarrivee3pays) | climat$volsarrivee3pays!="FR", 0, climat$volsnb3)+
   ifelse(is.na(climat$volsarrivee4pays) | climat$volsarrivee4pays!="FR", 0, climat$volsnb4)+
-  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="FR", 0, climat$volsnb5)
+  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="FR", 0, climat$volsnb5), NA )
 
-climat$volsnbUSA<-ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="US", 0, climat$volsnb1)+
+climat$volsnbUSA<-ifelse(!(is.na(climat$volsnb_tot)), ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="US", 0, climat$volsnb1)+
   ifelse(is.na(climat$volsarrivee2pays) | climat$volsarrivee2pays!="US", 0, climat$volsnb2)+
   ifelse(is.na(climat$volsarrivee3pays) | climat$volsarrivee3pays!="US", 0, climat$volsnb3)+
   ifelse(is.na(climat$volsarrivee4pays) | climat$volsarrivee4pays!="US", 0, climat$volsnb4)+
-  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="US", 0, climat$volsnb5)
+  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="US", 0, climat$volsnb5), NA )
 
-climat$volsnbItalie<-ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="IT", 0, climat$volsnb1)+
+climat$volsnbItalie<-ifelse(!(is.na(climat$volsnb_tot)), ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="IT", 0, climat$volsnb1)+
   ifelse(is.na(climat$volsarrivee2pays) | climat$volsarrivee2pays!="IT", 0, climat$volsnb2)+
   ifelse(is.na(climat$volsarrivee3pays) | climat$volsarrivee3pays!="IT", 0, climat$volsnb3)+
   ifelse(is.na(climat$volsarrivee4pays) | climat$volsarrivee4pays!="IT", 0, climat$volsnb4)+
-  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="IT", 0, climat$volsnb5)
+  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="IT", 0, climat$volsnb5), NA )
 
-climat$volsnbAllemagne<-ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="DE", 0, climat$volsnb1)+
+climat$volsnbAllemagne<-ifelse(!(is.na(climat$volsnb_tot)), ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="DE", 0, climat$volsnb1)+
   ifelse(is.na(climat$volsarrivee2pays) | climat$volsarrivee2pays!="DE", 0, climat$volsnb2)+
   ifelse(is.na(climat$volsarrivee3pays) | climat$volsarrivee3pays!="DE", 0, climat$volsnb3)+
   ifelse(is.na(climat$volsarrivee4pays) | climat$volsarrivee4pays!="DE", 0, climat$volsnb4)+
-  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="DE", 0, climat$volsnb5)
+  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="DE", 0, climat$volsnb5), NA )
 
-climat$volsnbEspagne<-ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="ES", 0, climat$volsnb1)+
+climat$volsnbEspagne<-ifelse(!(is.na(climat$volsnb_tot)), ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="ES", 0, climat$volsnb1)+
   ifelse(is.na(climat$volsarrivee2pays) | climat$volsarrivee2pays!="ES", 0, climat$volsnb2)+
   ifelse(is.na(climat$volsarrivee3pays) | climat$volsarrivee3pays!="ES", 0, climat$volsnb3)+
   ifelse(is.na(climat$volsarrivee4pays) | climat$volsarrivee4pays!="ES", 0, climat$volsnb4)+
-  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="ES", 0, climat$volsnb5)
+  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="ES", 0, climat$volsnb5), NA )
 
-climat$volsnbCanada<-ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="CA", 0, climat$volsnb1)+
+climat$volsnbCanada<-ifelse(!(is.na(climat$volsnb_tot)), ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="CA", 0, climat$volsnb1)+
   ifelse(is.na(climat$volsarrivee2pays) | climat$volsarrivee2pays!="CA", 0, climat$volsnb2)+
   ifelse(is.na(climat$volsarrivee3pays) | climat$volsarrivee3pays!="CA", 0, climat$volsnb3)+
   ifelse(is.na(climat$volsarrivee4pays) | climat$volsarrivee4pays!="CA", 0, climat$volsnb4)+
-  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="CA", 0, climat$volsnb5)
+  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="CA", 0, climat$volsnb5), NA )
 
-climat$volsnbGB<-ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="GB", 0, climat$volsnb1)+
+climat$volsnbGB<-ifelse(!(is.na(climat$volsnb_tot)), ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="GB", 0, climat$volsnb1)+
   ifelse(is.na(climat$volsarrivee2pays) | climat$volsarrivee2pays!="GB", 0, climat$volsnb2)+
   ifelse(is.na(climat$volsarrivee3pays) | climat$volsarrivee3pays!="GB", 0, climat$volsnb3)+
   ifelse(is.na(climat$volsarrivee4pays) | climat$volsarrivee4pays!="GB", 0, climat$volsnb4)+
-  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="GB", 0, climat$volsnb5)
+  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="GB", 0, climat$volsnb5), NA )
 
-climat$volsnbChine<-ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="CN", 0, climat$volsnb1)+
+climat$volsnbChine<-ifelse(!(is.na(climat$volsnb_tot)), ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="CN", 0, climat$volsnb1)+
   ifelse(is.na(climat$volsarrivee2pays) | climat$volsarrivee2pays!="CN", 0, climat$volsnb2)+
   ifelse(is.na(climat$volsarrivee3pays) | climat$volsarrivee3pays!="CN", 0, climat$volsnb3)+
   ifelse(is.na(climat$volsarrivee4pays) | climat$volsarrivee4pays!="CN", 0, climat$volsnb4)+
-  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="CN", 0, climat$volsnb5)
+  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="CN", 0, climat$volsnb5), NA )
 
-climat$volsnbJapon<-ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="JP", 0, climat$volsnb1)+
+climat$volsnbJapon<-ifelse(!(is.na(climat$volsnb_tot)), ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="JP", 0, climat$volsnb1)+
   ifelse(is.na(climat$volsarrivee2pays) | climat$volsarrivee2pays!="JP", 0, climat$volsnb2)+
   ifelse(is.na(climat$volsarrivee3pays) | climat$volsarrivee3pays!="JP", 0, climat$volsnb3)+
   ifelse(is.na(climat$volsarrivee4pays) | climat$volsarrivee4pays!="JP", 0, climat$volsnb4)+
-  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="JP", 0, climat$volsnb5)
+  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="JP", 0, climat$volsnb5), NA )
 
-climat$volsnbAutriche<-ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="AT", 0, climat$volsnb1)+
+climat$volsnbAutriche<-ifelse(!(is.na(climat$volsnb_tot)), ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="AT", 0, climat$volsnb1)+
   ifelse(is.na(climat$volsarrivee2pays) | climat$volsarrivee2pays!="AT", 0, climat$volsnb2)+
   ifelse(is.na(climat$volsarrivee3pays) | climat$volsarrivee3pays!="AT", 0, climat$volsnb3)+
   ifelse(is.na(climat$volsarrivee4pays) | climat$volsarrivee4pays!="AT", 0, climat$volsnb4)+
-  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="AT", 0, climat$volsnb5)
+  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="AT", 0, climat$volsnb5), NA )
 
-climat$volsnbPortugal<-ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="PT", 0, climat$volsnb1)+
+climat$volsnbPortugal<-ifelse(!(is.na(climat$volsnb_tot)), ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="PT", 0, climat$volsnb1)+
   ifelse(is.na(climat$volsarrivee2pays) | climat$volsarrivee2pays!="PT", 0, climat$volsnb2)+
   ifelse(is.na(climat$volsarrivee3pays) | climat$volsarrivee3pays!="PT", 0, climat$volsnb3)+
   ifelse(is.na(climat$volsarrivee4pays) | climat$volsarrivee4pays!="PT", 0, climat$volsnb4)+
-  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="PT", 0, climat$volsnb5)
+  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="PT", 0, climat$volsnb5), NA )
 
-climat$volsnbPologne<-ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="PL", 0, climat$volsnb1)+
+climat$volsnbPologne<-ifelse(!(is.na(climat$volsnb_tot)), ifelse(is.na(climat$volsarrivee1pays) | climat$volsarrivee1pays!="PL", 0, climat$volsnb1)+
   ifelse(is.na(climat$volsarrivee2pays) | climat$volsarrivee2pays!="PL", 0, climat$volsnb2)+
   ifelse(is.na(climat$volsarrivee3pays) | climat$volsarrivee3pays!="PL", 0, climat$volsnb3)+
   ifelse(is.na(climat$volsarrivee4pays) | climat$volsarrivee4pays!="PL", 0, climat$volsnb4)+
-  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="PL", 0, climat$volsnb5)
+  ifelse(is.na(climat$volsarrivee5pays) | climat$volsarrivee5pays!="PL", 0, climat$volsnb5), NA )
 
 ###Calcul en fonction des durées (il faudrait pondérer par le nombre d'aller-retour)
 
-climat$volsnbmoins2j <- ifelse(!is.na(climat$volsjours1) & climat$volsjours1=="Moins de deux jours", climat$volsnb1, 0) + 
+climat$volsnbmoins2j <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsjours1) & climat$volsjours1=="Moins de deux jours", climat$volsnb1, 0) + 
   ifelse(!is.na(climat$volsjours2) & climat$volsjours2=="Moins de deux jours", climat$volsnb2, 0) +
   ifelse(!is.na(climat$volsjours3) & climat$volsjours3=="Moins de deux jours", climat$volsnb3, 0) +
   ifelse(!is.na(climat$volsjours4) & climat$volsjours4=="Moins de deux jours", climat$volsnb4, 0) +
-  ifelse(!is.na(climat$volsjours4) & climat$volsjours5=="Moins de deux jours", climat$volsnb5, 0)
+  ifelse(!is.na(climat$volsjours4) & climat$volsjours5=="Moins de deux jours", climat$volsnb5, 0), NA )
 
-climat$volsnb_2j_1sem <- ifelse(!is.na(climat$volsjours1) & climat$volsjours1=="De deux jours à une semaine", climat$volsnb1, 0) + 
+climat$volsnb_2j_1sem <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsjours1) & climat$volsjours1=="De deux jours à une semaine", climat$volsnb1, 0) + 
   ifelse(!is.na(climat$volsjours2) & climat$volsjours2=="De deux jours à une semaine", climat$volsnb2, 0) +
   ifelse(!is.na(climat$volsjours3) & climat$volsjours3=="De deux jours à une semaine", climat$volsnb3, 0) +
   ifelse(!is.na(climat$volsjours4) & climat$volsjours4=="De deux jours à une semaine", climat$volsnb4, 0) +
-  ifelse(!is.na(climat$volsjours5) & climat$volsjours5=="De deux jours à une semaine", climat$volsnb5, 0)
+  ifelse(!is.na(climat$volsjours5) & climat$volsjours5=="De deux jours à une semaine", climat$volsnb5, 0), NA )
 
-climat$volsnb_1sem_1mois <- ifelse(!is.na(climat$volsjours1) & climat$volsjours1=="De plus d'une semaine à un mois", climat$volsnb1, 0) + 
+climat$volsnb_1sem_1mois <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsjours1) & climat$volsjours1=="De plus d'une semaine à un mois", climat$volsnb1, 0) + 
   ifelse(!is.na(climat$volsjours2) & climat$volsjours2=="De plus d'une semaine à un mois", climat$volsnb2, 0) +
   ifelse(!is.na(climat$volsjours3) & climat$volsjours3=="De plus d'une semaine à un mois", climat$volsnb3, 0) +
   ifelse(!is.na(climat$volsjours4) & climat$volsjours4=="De plus d'une semaine à un mois", climat$volsnb4, 0) +
-  ifelse(!is.na(climat$volsjours5) & climat$volsjours5=="De plus d'une semaine à un mois", climat$volsnb5, 0)
+  ifelse(!is.na(climat$volsjours5) & climat$volsjours5=="De plus d'une semaine à un mois", climat$volsnb5, 0), NA )
 
-climat$volsnb_sup1mois <- ifelse(!is.na(climat$volsjours1) & climat$volsjours1=="Plus d'un mois", climat$volsnb1, 0) + 
+climat$volsnb_sup1mois <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsjours1) & climat$volsjours1=="Plus d'un mois", climat$volsnb1, 0) + 
   ifelse(!is.na(climat$volsjours2) & climat$volsjours2=="Plus d'un mois", climat$volsnb2, 0) +
   ifelse(!is.na(climat$volsjours3) & climat$volsjours3=="Plus d'un mois", climat$volsnb3, 0) +
   ifelse(!is.na(climat$volsjours4) & climat$volsjours4=="Plus d'un mois", climat$volsnb4, 0) +
-  ifelse(!is.na(climat$volsjours5) & climat$volsjours5=="Plus d'un mois", climat$volsnb5, 0)
-
-
+  ifelse(!is.na(climat$volsjours5) & climat$volsjours5=="Plus d'un mois", climat$volsnb5, 0), NA )
 
 #Recodage temps de transport domicile travail
 varstpsdomtrav <- paste0("tpsdomtrav.", c("urbain_h", "urbain_m", "tgv_h", "tgv_m", "train_h", "train_m",
@@ -865,8 +863,7 @@ climat$Profin_Mb_Resp[is.na(climat$Profin_Mb_Resp) & (climat$projets.anr_m2 == "
 climat$Profin_Mb_Resp[is.na(climat$Profin_Mb_Resp)]<-"Ni membre ni resp d'un 1 projet financé"
 
 #REvenu : on agrège les catégories avec peu de monde
-climat$revenuAgr<-climat$revenu
-climat$revenuAgr[climat$revenu %in% c("De 10 000 à 15 000 euros par mois", "Plus de 15 000 par mois", "De 8 000 à 9 999 euros par mois")]<-"Au moins 8000 euros par mois"
+climat$revenuAgr<-ifelse(climat$revenu %in% c("De 10 000 à 15 000 euros par mois", "Plus de 15 000 par mois", "De 8 000 à 9 999 euros par mois"), "Au moins 8000 euros par mois", as.character(climat$revenu))
 
 
 #Calcul du revenu par tête dans le foyer
@@ -1264,6 +1261,10 @@ climat$vols_dicho <- as_factor(climat$vols_dicho)
 
 climat$hindexconnDicho<-as.factor(climat$hindexconnDicho)
 climat$hindexconnDicho<-fct_relevel(climat$hindexconnDicho, "Non")
+
+
+climat$trav.TUU2017<-fct_relevel(climat$trav.TUU2017, "Unité urbaine de Paris")
+climat$trav.TAAV2017<-fct_relevel(climat$trav.TAAV2017, "Aire de Paris")
 
 climat$dippar.p<-fct_relevel(climat$dippar.p, "Bac +4 ou 5")
 climat$dippar.m<-fct_relevel(climat$dippar.m, "Bac +4 ou 5")
