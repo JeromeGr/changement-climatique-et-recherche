@@ -460,12 +460,8 @@ ggplot(drop_na(climat, solevolges.conf),
 ## Heures de vol en avion en 2019 (hors trajets domicile-travail)
 
 ```{r echo=FALSE}
-climat$volshTot<-climat$volsh
-levels(climat$volshTot)<-c("0h", levels(climat$volshTot))
-climat$volshTot[climat$volsnb==0]<-"0h"
-
-ggplot(drop_na(climat, volshTot),
-       aes(y=fct_rev(volshTot), x=..prop.., group=1)) +
+ggplot(drop_na(climat, volsh),
+       aes(y=fct_rev(volsh), x=..prop.., group=1)) +
   geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
   coord_cartesian(xlim=c(0, 0.78)) +
@@ -474,8 +470,8 @@ ggplot(drop_na(climat, volshTot),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="",
        title="Heures de vol en avion dans le cadre professionnel en 2019") +
-  source_champ(nrow(drop_na(climat, volshTot)),
-               "Lecture : 75% des répondant·es n'ont pas volé au cours des cinq dernières années, et 10% ont volé mais moins de 10h")
+  source_champ(nrow(drop_na(climat, volsh)),
+               "Lecture : 50% des répondant·es n'ont pas volé au cours des cinq dernières années, et 25% ont volé mais moins de 10h")
 ```
 
 ## Heures de vol en avion en 2017 et 2018 pour celles et ceux n'ayant pas pris l'avion en 2019
