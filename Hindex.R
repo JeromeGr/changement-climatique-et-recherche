@@ -677,6 +677,11 @@ freq(climat$volsnb)
 
 freq(climat_recherche$avionpersochgt)
 
+#Binomiale négative
+
+reglog3 <- glm.nb(nbpublis ~ sexe + ageAgr  + sitpro2 + ageaccad_tranch2 + discipline_agr3, data=climat_recherche )
+
+summary(reglog3)
 
 
 ####Nb publis en tranche
@@ -736,15 +741,99 @@ res.reg2<- lm(nbpublis ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + volsnbmoin
 
 res.reg2<- lm(nbpublis ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + volsnb_tot + volsdist_moy +volsnbFrance, data=climat_recherche_mod1)
 
+res.reg2<- lm(nbpublis ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + trav.TUU2017+ volsnbFrance +volsnbUSA + volsnbItalie + volsnbAllemagne + volsnbCanada + volsnbEspagne+ volsnbGB, data=climat_recherche_mod1)
 
 res.reg2<- lm(hindex ~ nbpublis, data=climat_recherche)
 
-
-summary(res.reg2)
-
 summary(res.reg2)
 
 
+library(MASS)
+#Binomiale négative
+reglog3 <- glm.nb(nbpublis ~ sexe + ageAgr + ageaccad_tranch2  + sitpro2 + discipline_agr3 + trav.TUU2017+ volsnbFrance +volsnbUSA + volsnbItalie + volsnbAllemagne + volsnbCanada + volsnbEspagne+ volsnbGB, data=climat_recherche_mod1 )
+reglog3 <- glm.nb(nbpublis ~ sexe + ageAgr + ageaccad_tranch2  + sitpro2 + discipline_agr3 + trav.TAAV2017+ volsnbFrance +volsnbUSA + volsnbItalie + volsnbAllemagne + volsnbCanada + volsnbEspagne+ volsnbGB, data=climat_recherche_mod1 )
+
+reglog3 <- glm.nb(nbpublis ~ sexe + ageAgr + ageaccad_tranch2  + sitpro2 + discipline_agr3 + trav.metropole + volsnbFrance +volsnbUSA + volsnbItalie + volsnbAllemagne + volsnbCanada + volsnbEspagne+ volsnbGB, data=climat_recherche_mod1 )
+reglog3 <- glm.nb(nbpublis ~ sexe + ageAgr + ageaccad_tranch2  + sitpro2 + discipline_agr3  + volsnbFrance +volsnbUSA + volsnbItalie + volsnbAllemagne + volsnbCanada + volsnbEspagne+ volsnbGB, data=climat_recherche_mod1 )
+
+
+reglog3 <- glm.nb(nbpublis ~ trav.TUU2017, data=climat_recherche_mod1 )
+reglog3 <- glm.nb(nbpublis ~ trav.TAAV2017, data=climat_recherche_mod1 )
+
+
+reglog3 <- glm.nb(nbpublis ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + volsnbFrance +volsnbUSA + volsnbItalie + volsnbAllemagne + volsnbCanada + volsnbEspagne+ volsnbGB, data=climat_recherche_mod1 )
+
+summary(reglog3)
+freq(climat_recherche_mod1$volsnbFrance)
+#################################################################################################################@
+#Nombre de publis : premières explorations (réunion du 4 juin)
+
+tapply(climat_recherche$nbpublis, climat_recherche$discipline_agr3, mean, na.rm=T)
+
+reglog2 <- lm(nbpublis ~ sexe + ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
+reglog2 <- lm(nbpublis ~ sexe +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
+
+reglog2 <- lm(nbpublis ~ sexe +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 +enfantsnb , data=climat_recherche )
+reglog2 <- lm(nbpublis ~ sexe*enfantsnb_rec +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
+reglog2 <- lm(nbpublis ~ sexe*enfantsage_rec +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
+reglog2 <- lm(nbpublis ~ sexe:enfantsage_rec +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
+
+
+summary(reglog2)
+
+
+reglog2 <- glm(nbpublis ~ sexe +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche, family = poisson )
+
+reglog2 <- glm(nbpublis ~ sexe +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche, family = quasipoisson() )
+
+reglog2 <- glm(nbpublis ~ sexe*enfantsnb_rec +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche, family = quasipoisson() )
+
+
+library(MASS)
+#Binomiale négative (Dans Xie) : peut être la meilleure solution (le plus flexible)
+reglog3 <- glm.nb(nbpublis ~ sexe +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
+
+reglog3 <- glm.nb(nbpublis ~ sexe*enfantsnb_rec +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
+
+
+summary(reglog3)
+
+#Log et régression (Steven Stack, Gender, research) Il garde juste les gens qui ont une thèse depuis plus de 4 ans (et il regarde les publis depuis 5 ans)
+#Intérêt du Poisson : gérer les zéros
+reglog2 <- lm(log(nbpublis) ~ sexe +ageAgr+ ageaccad_tranch2+ sitpro2 + discipline_agr3 , data=climat_recherche )
+
+cbind(reglog2$coefficients, reglog3$coefficients)
+
+#Contrôler par le % de femmes dans chaque discipline
+
+#Réf pour la loi de poisson : article de Xie
+#Article qui utilise loi de poisson Rotolo, When Does Centrality Matter? (pour Weighted Citation Index)
+
+cor(fitted(reglog2),reglog2$y)
+cor(fitted(reglog2),reglog2$model$nbpublis )
+b<-tapply(climat_recherche$ScoreEcolo, climat_recherche$discipline_agr3, mean, na.rm=T)
+
+#Uiliser boostrap ?
+freq(climat_recherche$discipline_agr3)
+
+
+reglog2 <- lm(nbpublis ~ sexe +ageAgr + ageaccad_tranch2 +  sitpro2 + discipline_agr3 +  revenuTete, data=climat_recherche )
+reglog2 <- lm(nbpublis ~ sexe +ageAgr + ageaccad_tranch2 +  sitpro2 + discipline_agr3 + avionperso+  revenuTete, data=climat_recherche )
+reglog2 <- lm(nbpublis ~ sexe +ageAgr + ageaccad_tranch2 +  sitpro2 + discipline_agr3 + avionperso, data=climat_recherche )
+reglog2 <- lm(nbpublis ~ sexe +ageAgr + ageaccad_tranch2 +  sitpro2 + discipline_agr3 + avionperso + volsnbtranch2 + international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso + revenuTete, data=climat_recherche )
+
+reglog2 <- lm(nbpublis ~ sexe +ageAgr + ageaccad_tranch2*discipline_agr3 + international.natio +  international.naiss + international.scol + international.etudes + dippar.p + dippar.m, data=climat_recherche )
+
+summary(reglog2)
+
+#Mutinomiale
+
+library(nnet)
+regm <- multinom(parents_3mod ~ sexe_rec + AGEREVQ_rec, data = rp17sample)
+ggcoef_multinom(
+  regm,
+  exponentiate = TRUE
+)
 
 
 

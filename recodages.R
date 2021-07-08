@@ -55,7 +55,6 @@ climat$ageAgr[climat$age %in% c("55-59 ans", "60-64 ans")]<-"55-64 ans"
 
 #Age accadémique
 climat$ageaccad<-2020-climat$theseannee
-freq(climat$ageaccad_tranch2)
 
 climat$ageaccad_tranch<-quant.cut(climat$ageaccad, 6)
 
@@ -170,7 +169,6 @@ freq(climat$hindexconn, total = T)
 
 #Nombre de conf à l'étranger les cinq dernières années
 climat$conffois5ans<-ifelse(climat$conf!="Oui, dans les 5 dernières années", "Zéro fois", as.character(climat$conffois))
-
 
 #Bilan carbone dichotomique
 climat$bilandicho <- ifelse(climat$dixannees.bilan=="Oui", "Oui", "Non")
@@ -526,13 +524,6 @@ climat$volsh_tot2 <- if_else(is.na(climat$volsdist5) | climat$volsdist5 == 0 |
 
 ####Création de variables à partir des données du module sur l'avion
 
-#On met le temps de vol à zéro pour ceux qui ont indiqué aucun vol et qui sont dans le module 1
-climat$volsdist_tot<-ifelse(climat$volsnb==0 & climat$tiragemodule=="1", 0, climat$volsdist_tot)
-#On récupère une quarantaine de personnes dans la case 0
-#Il faudrait voir si la même manoeuvre ne peut pas être faite pour les sous catégories de volsdist_tot
-
-#Idem pour le nombre de vol
-climat$volsnb_tot<-ifelse(climat$volsnb==0 & climat$tiragemodule=="1", 0, climat$volsnb_tot)
 
 #Durée moyenne des vols effectués (hors module ?)
 climat$volsduree_moy<-climat$volshnum/climat$volsnb
@@ -1293,4 +1284,21 @@ climatACM <- rename.variable(climatACM, "opinionecolo.proteger", "environnt_pas_
 climatACM <- rename.variable(climatACM, "opinionecolo.contraintes", "contrain_reglo_pas_confort")
 climatACM <- rename.variable(climatACM, "opinionecolo.techno", "meilleur_techno_solution")
 
+
+
+
+
+
+
+
+####################################@
+#Rebus
+#On met le temps de vol à zéro pour ceux qui ont indiqué aucun vol et qui sont dans le module 1
+#climat$volsdist_tot<-ifelse(climat$volsnb==0 & climat$tiragemodule=="1", 0, climat$volsdist_tot)
+#On récupère une quarantaine de personnes dans la case 0
+#Il faudrait voir si la même manoeuvre ne peut pas être faite pour les sous catégories de volsdist_tot
+
+#Idem pour le nombre de vol
+#climat$volsnb_tot<-ifelse(climat$volsnb==0 & climat$tiragemodule=="1", 0, climat$volsnb_tot)
+#climat$volsnb_tot<-ifelse(climat$volsnb==0 & climat$tiragemodule=="1" & !(climat$volsnb_tot>0), 0, climat$volsnb_tot)
 

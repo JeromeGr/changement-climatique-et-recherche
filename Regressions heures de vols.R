@@ -4,20 +4,7 @@ library(ggplot2)
 library(GGally)
 
 #Juste les vols extérieurs
-climat$volsnb_ext<-ifelse(climat$tiragemodule == "1", climat$volsnb_tot-climat$volsnbFrance, NA)
-
-climat$volsnb_ext<-ifelse(!(is.na(climat$volsnb_tot)), climat$volsnb_tot-climat$volsnbFrance, NA)
-
-freq(climat$volsnb_ext)
-freq(climat$volsnb_tot)
-freq(climat$volsnbFrance)
-mean(climat$volsnb_tot, na.rm=T)
-mean(climat$volsnbFrance, na.rm=T)
-mean(climat$volsnb_ext, na.rm=T)
-test<-climat_recherche %>% select(volsnb_ext)
-test<- select(climat_recherche, "volsnbFrance")
-test<- subset(climat_recherche, select= c("volsnb_tot", "volsnbFrance", "volsnb_ext"))
-freq(climat$volsnb_ext)
+climat$volsnb_ext<-climat$volsnb_tot-climat$volsnbFrance
 
 climat_recherche <- climat[!climat$sitpro2 %in% c(
         "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
@@ -352,7 +339,6 @@ reglog2 <- lm(volsnb ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + projets.anr_
 reglog2 <- lm(volsnb ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + volsduree_moy, data=climat_recherche )
 reglog2 <- lm(volsnb ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + couple, data=climat_recherche )
 
-
 summary(reglog2)
 
 
@@ -389,6 +375,8 @@ reglog3 <- glm.nb(volsnb ~ sexe + ageAgr +ageaccad_tranch2  + sitpro2  + discipl
 
 summary(reglog3)
 
+freq(climat$trav.metropole, total=T)
+
 #Juste vols intérieurs
 climat_recherche_mod1<- climat_recherche %>% filter(tiragemodule == "1")
 
@@ -403,20 +391,40 @@ reglog3 <- glm.nb(volsnbFrance ~ sexe + ageAgr +ageaccad_tranch2  + sitpro2  + d
                           international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso +
                           avionperso + trav.TAAV2017, data=climat_recherche_mod1)
 
+reglog3 <- glm.nb(volsnbFrance ~ sexe + ageAgr +ageaccad_tranch2  + sitpro2  + discipline_agr3 +recheco +carriere + nbpublistranch2 +  projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 + 
+                          international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso +
+                          avionperso + trav.TAAV2017, data=climat_recherche_mod1)
 summary(reglog3)
 
 freq(climat$trav.metropole)
 freq(climat$volsnb)
 
 #Juste les vols extérieurs
+#Attention aux conflits entre MASS et Dyplr pour select
 
-
-reglog3 <- glm.nb(volsnb_ext ~ sexe + ageAgr +ageaccad_tranch2  + sitpro2  + discipline_agr3 +recheco +carriere + nbpublistranch2 +  projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 + 
+reglog3 <- MASS::glm.nb(volsnb_ext ~ sexe + ageAgr +ageaccad_tranch2  + sitpro2  + discipline_agr3 +recheco +carriere + nbpublistranch2 +  projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 + 
                           international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso +
                           avionperso + trav.metropole, data=climat_recherche)
-?subset
-?select
 
+reglog3 <- MASS::glm.nb(volsnb_ext ~ sexe + ageAgr +ageaccad_tranch2  + sitpro2  + discipline_agr3 +trav.metropole, data=climat_recherche)
+
+reglog3 <- MASS::glm.nb(volsnb_ext ~ sexe + ageAgr +ageaccad_tranch2  + sitpro2  + discipline_agr3 +trav.TUU2017, data=climat_recherche)
+reglog3 <- MASS::glm.nb(volsnb_ext ~ sexe + ageAgr +ageaccad_tranch2  + sitpro2  + discipline_agr3 +trav.TAAV2017, data=climat_recherche)
+
+reglog3 <- MASS::glm.nb(volsnb_ext ~ sexe + ageAgr +ageaccad_tranch2  + sitpro2  + discipline_agr3 +recheco +carriere + nbpublistranch2 +  projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 + 
+                                international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso +
+                                avionperso + trav.TAAV2017, data=climat_recherche)
+
+reglog3 <- MASS::glm.nb(volsnb_ext ~ sexe + ageAgr +ageaccad_tranch2  + statut + employeur + sitpro2  + discipline_agr3 +recheco +carriere + nbpublistranch2 +  projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 + 
+                                international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso +
+                                avionperso + trav.TAAV2017, data=climat_recherche)
+
+
+
+
+freq(climat_recherche$trav.TAAV2017)
+
+summary(reglog3)
 ##################
 #Voler/pas voler depuis 3 ans
 
