@@ -44,3 +44,18 @@ ech$institut2[substr(ech$institut2, 1, 3) == "PDT"] <- "Présidence et Direction
 
 lprop(table(ech$institut2,
             !is.na(ech$lastpage) & ech$lastpage >= 1))
+
+lprop(table(ech$delegation,
+            !is.na(ech$lastpage) & ech$lastpage >= 1))
+
+lprop(table(ech$type,
+            !is.na(ech$lastpage) & ech$lastpage >= 1))
+
+lprop(table(ech$sexe.x,
+            !is.na(ech$lastpage) & ech$lastpage >= 1))
+
+ech$type <- relevel(factor(ech$type), "Chercheur")
+ech$sexe.x <- relevel(factor(ech$sexe.x), "Homme")
+
+m <- glm(!is.na(lastpage) & lastpage >= 1 ~ institut2 + delegation + type + sexe.x, data=ech, family=binomial)
+stargazer(m, type="html", out="~/tmp/out.html", apply.coef=exp, ci=TRUE)

@@ -58,16 +58,15 @@ climat$ageaccad<-2020-climat$theseannee
 
 climat$ageaccad_tranch<-quant.cut(climat$ageaccad, 6)
 
-climat$ageaccad_tranch2 <- ifelse(climat$these=="Non", "Pas de thèse", as.character(cut(climat$ageaccad,
-                                                                                                            include.lowest = TRUE,
-                                                                                                            right = TRUE,
-                                                                                                       breaks = c(0, 2, 5, 8, 13, 18, 23, 29, 114))))
+climat$ageaccad_tranch2 <- ifelse(climat$these=="Non", "Pas de thèse",
+                                  as.character(cut(climat$ageaccad,
+                                                   include.lowest = TRUE,
+                                                   right = TRUE,
+                                                   breaks = c(0, 2, 5, 8, 13, 18, 23, 29, 114))))
 climat$ageaccad_tranch2 <- factor(climat$ageaccad_tranch2,
-                                            levels = c(
-                                              "Pas de thèse", "[0,2]", "(2,5]",
-                                              "(5,8]", "(8,13]", "(13,18]", "(18,23]", "(29,114]"
-                                            )
-)
+                                  levels = c(
+                                    "Pas de thèse", "[0,2]", "(2,5]",
+                                    "(5,8]", "(8,13]", "(13,18]", "(18,23]", "(29,114]"))
 
 
 # variable combinant existence et causes du changement climatique
@@ -143,8 +142,9 @@ climat$volsnbtranch2 <- cut(climat$volsnb,
 )
 
 #On met le temps de vol à zéro pour ceux qui n'ont indiqué aucun vol
-climat$volsh<-ifelse(!is.na(climat$volsnb) & climat$volsnb==0, "0h", as.character(climat$volsh))
-
+climat$volsh<-factor(ifelse(!is.na(climat$volsnb) & climat$volsnb==0, "0h",
+                            as.character(climat$volsh)),
+                     levels=c("0h", "De 1h à 10h", "De 11h à 20h", "De 20h à 50h", "Plus de 50h"))
 
 #Variables en tranche pour hindex, nbpublis
 climat$hindextranch<-quant.cut(climat$hindex, 6)
@@ -1173,103 +1173,80 @@ climat$enfantsage_rec <- factor(climat$enfantsage_rec,
 
 #######################
 #Modalités de référence dans les régressions
-climat$sexe <- as.factor(climat$sexe)
-climat$sexe <- relevel(climat$sexe, ref = "Homme")
 
-climat$ageAgr <- as.factor(climat$ageAgr)
-climat$ageAgr <- relevel(climat$ageAgr, ref = "50-54 ans")
+climatRegr <- climat
 
-climat$couple <- as.factor(climat$couple)
-climat$couple <- relevel(climat$couple, ref = "Oui")
+climatRegr$sexe <- relevel(climatRegr$sexe, ref = "Homme")
 
-#climat$revenuAgr <- as.factor(climat$revenuAgr)
-#climat$revenuAgr <- relevel(climat$revenuAgr, ref = "De 4 500 à 5 999 euros par mois")
+climatRegr$ageAgr <- relevel(climatRegr$ageAgr, ref = "50-54 ans")
 
-climat$sitpro2 <- relevel(climat$sitpro, ref = "Maître·sse de conférences")
+#climatRegr$revenuAgr <- as.factor(climatRegr$revenuAgr)
+#climatRegr$revenuAgr <- relevel(climatRegr$revenuAgr, ref = "De 4 500 à 5 999 euros par mois")
 
-climat$discipline_agr <- relevel(climat$discipline_agr, ref = "Physique")
-climat$discipline_agr2 <- relevel(climat$discipline_agr, ref = "Physique")
-climat$discipline_agr3 <- relevel(climat$discipline_agr3, ref = "Physique")
+climatRegr$sitpro2 <- relevel(climatRegr$sitpro, ref = "Maître·sse de conférences")
 
-climat$discipline <- as.factor(climat$discipline)
-climat$discipline <- relevel(climat$discipline , ref = "25 : Mathématiques")
+climatRegr$discipline_agr <- relevel(climatRegr$discipline_agr, ref = "Physique")
+climatRegr$discipline_agr2 <- relevel(climatRegr$discipline_agr, ref = "Physique")
+climatRegr$discipline_agr3 <- relevel(climatRegr$discipline_agr3, ref = "Physique")
 
-climat$carriere <- as.factor(climat$carriere)
-climat$carriere <- relevel(climat$carriere , ref = "Non")
+climatRegr$discipline <- relevel(climatRegr$discipline , ref = "25 : Mathématiques")
 
-climat$Profin_Mb_Resp <- as.factor(climat$Profin_Mb_Resp)
-climat$Profin_Mb_Resp <- relevel(climat$Profin_Mb_Resp , ref = "Ni membre ni resp d'un 1 projet financé")
+climatRegr$carriere <- relevel(climatRegr$carriere, ref = "Non")
 
-climat$solinstit.limitevols <- as.factor(climat$solinstit.limitevols)
-climat$solinstit.limitevols <- relevel(climat$solinstit.limitevols, ref = "C'est prioritaire")
+climatRegr$Profin_Mb_Resp <- as.factor(climatRegr$Profin_Mb_Resp)
+climatRegr$Profin_Mb_Resp <- relevel(climatRegr$Profin_Mb_Resp, ref = "Ni membre ni resp d'un 1 projet financé")
 
-climat$solinstit.vols6h <- as.factor(climat$solinstit.vols6h)
-climat$solinstit.vols6h <- relevel(climat$solinstit.vols6h, ref = "C'est prioritaire")
+climatRegr$solinstit.limitevols <- relevel(climatRegr$solinstit.limitevols, ref = "C'est prioritaire")
 
-climat$solinstit.train <- as.factor(climat$solinstit.train)
-climat$solinstit.train <- relevel(climat$solinstit.train, ref = "C'est prioritaire")
+climatRegr$solinstit.vols6h <- relevel(climatRegr$solinstit.vols6h, ref = "C'est prioritaire")
 
-climat$solrisqreducavion.qual <- as.factor(climat$solrisqreducavion.qual)
-climat$solrisqreducavion.qual <- relevel(climat$solrisqreducavion.qual, ref = "C'est peu probable")
-climat$solrisqreducavion.fin <- as.factor(climat$solrisqreducavion.fin)
-climat$solrisqreducavion.fin <- relevel(climat$solrisqreducavion.fin, ref = "C'est peu probable")
-climat$solrisqreducavion.diffusion <- as.factor(climat$solrisqreducavion.diffusion)
-climat$solrisqreducavion.diffusion <- relevel(climat$solrisqreducavion.diffusion, ref = "C'est peu probable")
-climat$solrisqreducavion.donnees <- as.factor(climat$solrisqreducavion.donnees)
-climat$solrisqreducavion.donnees <- relevel(climat$solrisqreducavion.donnees, ref = "C'est peu probable")
-climat$solrisqreducavion.avantages <- as.factor(climat$solrisqreducavion.avantages)
-climat$solrisqreducavion.avantages <- relevel(climat$solrisqreducavion.avantages, ref = "C'est peu probable")
-climat$solrisqreducavion.insertion <- as.factor(climat$solrisqreducavion.insertion)
-climat$solrisqreducavion.insertion <- relevel(climat$solrisqreducavion.insertion, ref = "C'est peu probable")
-climat$solrisqreducavion.isoler <- as.factor(climat$solrisqreducavion.isoler)
-climat$solrisqreducavion.isoler <- relevel(climat$solrisqreducavion.isoler, ref = "C'est peu probable")
-climat$solrisqreducavion.bureaucratie <- as.factor(climat$solrisqreducavion.bureaucratie)
-climat$solrisqreducavion.bureaucratie <- relevel(climat$solrisqreducavion.bureaucratie, ref = "C'est peu probable")
+climatRegr$solinstit.train <- relevel(climatRegr$solinstit.train, ref = "C'est prioritaire")
 
-climat$paie <- as.factor(climat$paie)
-climat$paie <- relevel(climat$paie , ref = "Mal payé·e")
+climatRegr$solrisqreducavion.qual <- relevel(climatRegr$solrisqreducavion.qual, ref = "C'est peu probable")
+climatRegr$solrisqreducavion.fin <- relevel(climatRegr$solrisqreducavion.fin, ref = "C'est peu probable")
+climatRegr$solrisqreducavion.diffusion <- relevel(climatRegr$solrisqreducavion.diffusion, ref = "C'est peu probable")
+climatRegr$solrisqreducavion.donnees <- relevel(climatRegr$solrisqreducavion.donnees, ref = "C'est peu probable")
+climatRegr$solrisqreducavion.avantages <- relevel(climatRegr$solrisqreducavion.avantages, ref = "C'est peu probable")
+climatRegr$solrisqreducavion.insertion <- relevel(climatRegr$solrisqreducavion.insertion, ref = "C'est peu probable")
+climatRegr$solrisqreducavion.isoler <- relevel(climatRegr$solrisqreducavion.isoler, ref = "C'est peu probable")
+climatRegr$solrisqreducavion.bureaucratie <- relevel(climatRegr$solrisqreducavion.bureaucratie, ref = "C'est peu probable")
 
-climat$employeur <- as.factor(climat$employeur)
-climat$employeur <- relevel(climat$employeur , ref = "Une université")
+climatRegr$paie2 <- as.factor(climatRegr$paie)
+climatRegr$paie2 <- relevel(climatRegr$paie2, ref = "Mal payé·e")
 
+climatRegr$employeur <- relevel(climatRegr$employeur , ref = "Une université")
 
-climat$preoccupe <- relevel(climat$preoccupe , ref = "Très préoccupé·e")
+climatRegr$preoccupe2 <- relevel(climatRegr$preoccupe, ref = "Très préoccupé·e")
 
-#climat$NumVague <- as.factor(climat$NumVague)
-#climat$NumVague <- relevel(climat$NumVague, ref = "Après premier message")
+#climatRegr$NumVague <- relevel(climatRegr$NumVague, ref = "Après premier message")
 
+climatRegr$commenter<-fct_relevel(climatRegr$commenter, "Non")
 
-climat$commenter<-fct_relevel(climat$commenter, "Non")
-climat$commenter<-as.factor(climat$commenter)
+climatRegr$discipline<-fct_relevel(climatRegr$discipline, "19 : Sociologie, démographie")
 
-climat$discipline<-fct_relevel(climat$discipline, "19 : Sociologie, démographie")
+climatRegr$vols_dicho3ans <- fct_relevel(climatRegr$vols_dicho3ans, "N'a pas volé en 3 ans")
 
-climat$vols_dicho3ans <- fct_relevel(climat$vols_dicho3ans, "N'a pas volé en 3 ans")
-climat$vols_dicho3ans <- as_factor(climat$vols_dicho3ans)
+climatRegr$vols_dicho <- fct_relevel(climatRegr$vols_dicho, "N'a pas volé en 2019")
 
-climat$vols_dicho <- fct_relevel(climat$vols_dicho, "N'a pas volé en 2019")
-climat$vols_dicho <- as_factor(climat$vols_dicho)
+climatRegr$hindexconnDicho<-fct_relevel(climatRegr$hindexconnDicho, "Non")
 
-climat$hindexconnDicho<-as.factor(climat$hindexconnDicho)
-climat$hindexconnDicho<-fct_relevel(climat$hindexconnDicho, "Non")
+climatRegr$trav.TUU2017<-fct_relevel(climatRegr$trav.TUU2017, "Unité urbaine de Paris")
+climatRegr$trav.TAAV2017<-fct_relevel(climatRegr$trav.TAAV2017, "Aire de Paris")
 
+climatRegr$dippar.p<-fct_relevel(climatRegr$dippar.p, "Bac +4 ou 5")
+climatRegr$dippar.m<-fct_relevel(climatRegr$dippar.m, "Bac +4 ou 5")
 
-climat$trav.TUU2017<-fct_relevel(climat$trav.TUU2017, "Unité urbaine de Paris")
-climat$trav.TAAV2017<-fct_relevel(climat$trav.TAAV2017, "Aire de Paris")
+climatRegr$statutpar.p<-fct_relevel(climatRegr$statutpar.p, "Fonctionnaire ou salarié·e du public")
+climatRegr$statutpar.m<-fct_relevel(climatRegr$statutpar.m, "Fonctionnaire ou salarié·e du public")
 
-climat$dippar.p<-fct_relevel(climat$dippar.p, "Bac +4 ou 5")
-climat$dippar.m<-fct_relevel(climat$dippar.m, "Bac +4 ou 5")
+climatRegr$conffois5ans<-fct_relevel(climatRegr$conffois5ans, "Zéro fois")
 
-climat$statutpar.p<-fct_relevel(climat$statutpar.p, "Fonctionnaire ou salarié·e du public")
-climat$statutpar.m<-fct_relevel(climat$statutpar.m, "Fonctionnaire ou salarié·e du public")
+climatRegr$volsh2<-fct_relevel(climatRegr$volsh, "De 1h à 10h")
 
-climat$conffois5ans<-fct_relevel(climat$conffois5ans, "Zéro fois")
+climatRegr$ageaccad_tranch2<-fct_relevel(climatRegr$ageaccad_tranch2, "[0,2]")
 
-climat$volsh<-fct_relevel(climat$volsh, "De 1h à 10h")
+climatRegr$quiz<-fct_relevel(climatRegr$quiz, "Je décline le quiz")
 
-climat$ageaccad_tranch2<-fct_relevel(climat$ageaccad_tranch2, "[0,2]")
-
-climat$quiz<-fct_relevel(climat$quiz, "Je décline le quiz")
 
 ################
 #Recodage pour les ACM
