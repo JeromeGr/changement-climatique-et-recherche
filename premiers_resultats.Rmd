@@ -356,8 +356,8 @@ informatique2$TypeOrdi[informatique2$TypeOrdi=="ordis.tabletteperso"]<-"Tablette
 
 
 informatique2$set[informatique2$set=="nb"]<-"Tous ordinateurs/tablettes"
-informatique2$set[informatique2$set=="5ans"]<-"De moins de 5 ans"
-informatique2$set[informatique2$set=="indisp"]<-"Jugé·es indispensables"
+informatique2$set[informatique2$set=="5ans"]<-"Dont de moins de 5 ans"
+informatique2$set[informatique2$set=="indisp"]<-"Dont jugé·es indispensables"
 
 ggplot(informatique2,  aes(x=prop, y=fct_reorder(TypeOrdi, prop), fill= set )) +
   geom_col(position = "dodge") +
@@ -372,7 +372,7 @@ ggplot(informatique2,  aes(x=prop, y=fct_reorder(TypeOrdi, prop), fill= set )) +
        title="Type de matériel utilisé, selon son âge et son caractère indispensable") +
   source_champ(sum(rowSums(!is.na(select(climat, starts_with("ordis.")))) > 0),
   "Lecture : sur 100 tablettes et ordinateurs utilisé·es professionnellement, 14,3 sont des ordinateurs partagés,
-11,6 sont des ordinateurs partagés qui ont moins de 5 ans, et 5,8 sont des ordinateurs partagés jugés indispensables")
+11,6 sont des ordinateurs partagés jugés indispensables, et 5,8 sont des ordinateurs partagés qui ont moins de 5 ans")
 
 ```
 
