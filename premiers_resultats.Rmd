@@ -27,7 +27,7 @@ author:
 
 &nbsp;
 
-Version du 14 janvier 2021
+Version de septembre 2021
 
 ```{r preparation, echo=FALSE, message=FALSE}
 library(tidyverse)
@@ -939,6 +939,45 @@ privilégier la visioconférence ou l’audioconférence à un déplacement ?") 
 
 ```
 
+## Raisons de ne pas privilégier la visioconférence 
+
+```{r echo=FALSE, fig.height=5}
+
+dat <- rbind(data.frame(variable="C’est plus fatigant à suivre qu’une réunion 
+                        en présentiel", 
+                        valeur=climat$visiopb.fatigue),
+             data.frame(variable="Cela génère des problèmes techniques",
+                        valeur=climat$visiopb.technique),
+             data.frame(variable="Cela rend difficile d’écrire ou dessiner 
+                        en discutant (schémas, formules, équations...)", 
+                        valeur=climat$visiopb.ecrire),
+             data.frame(variable="Cela limite les aspects relationnels", 
+                        valeur=climat$visiopb.relation))%>%
+  mutate(variable=factor(variable, levels=unique(variable)),
+         valeur=fct_relevel(valeur, c(
+           "Oui, beaucoup", 
+           "Oui, un peu", 
+           "Sans opinion", 
+           "Non, pas vraiment", 
+           "Non, pas du tout")))
+
+drop_na(dat) %>%
+  ggplot(aes(x=variable)) +
+  geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
+  scale_fill_manual(values=c("#1a9641", "#a6d96a", "light grey", "#fdae61", "#d7191c"))+
+  scale_y_continuous(labels=scales::percent_format(),
+                     sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
+  coord_flip() +
+  theme(legend.position="bottom") +
+  guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
+  labs(y="Proportion des répondant·es", x="", fill="",
+       title="Imaginons une réunion d’une journée, située à 2h de votre domicile
+en voiture. Les raisons suivantes pourraient-elles vous empêcher de
+privilégier la visioconférence ou l’audioconférence à un déplacement ?") +
+  source_champ(max(table(drop_na(dat)$variable)),
+               "Lecture : pour 16,9 % des répondant·es, les problèmes technique sont une raison pouvant beaucoup\n les pousser à ne pas privilégier la visioconférence")
+
+```
 
 ## Usage pré-confinement de la visioconférence
 
@@ -957,6 +996,25 @@ ou de l’audioconférence dans le cadre professionnel ?") +
   source_champ(nrow(drop_na(climat, visioavtconf)),
                "Lecture : 30,5% des répondant·es n'avaient jamais usage de la visioconférence avant le confinement")
 ```
+
+## Usage pendant le confinement de la visioconférence
+
+```{r echo=FALSE}
+
+ggplot(drop_na(climat, visiopdtconf),
+       aes(y=fct_rev(visiopdtconf), x=..prop.., group=1)) +
+  geom_bar() +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  coord_cartesian(xlim=c(0, 0.44)) +
+  geom_text(aes(label=scales::percent(..prop.., accuracy=0.1, decimal.mark=",")),
+            stat="count", position=position_dodge(.9),
+            hjust=-0.2, size=3) +
+  labs(x="Proportion des répondant·es", y="", title="Pendant le confinement quel a été votre usage de la visioconférence 
+ou de l’audioconférence dans le cadre professionnel ?") +
+  source_champ(nrow(drop_na(climat, visioavtconf)),
+               "Lecture : 2,8% des répondant·es n'ont jamais utilisé la visioconférence pendant le confinement")
+```
+
 
 ## Evolution de l'opinion sur la visioconférence depuis le confinement
 
