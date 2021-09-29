@@ -84,6 +84,24 @@ climat$preoccupe2 <- climat$preoccupe
 climat$preoccupe2[substr(climat$changclim, 1, 3) == "Non"] <- "Pas du tout préoccupé·e"
 climat$preoccupe2[climat$changclim == "Sans opinion"] <- "Sans opinion"
 
+#Nombre total d'ordinateurs et tablettes
+climat$ordis.nbtotal<-ifelse(climat$tiragemodule==2, ifelse(!is.na(climat$ordis.fixeperso_nb), climat$ordis.fixeperso_nb, 0)  + 
+                               ifelse(!is.na(climat$ordis.fixepro_nb), climat$ordis.fixepro_nb, 0)  +
+                               ifelse(!is.na(climat$ordis.partage_nb), climat$ordis.partage_nb, 0)  +
+                               ifelse(!is.na(climat$ordis.portablepro_nb), climat$ordis.portablepro_nb, 0)  +
+                               ifelse(!is.na(climat$ordis.portableperso_nb), climat$ordis.portableperso_nb, 0)  +
+                               ifelse(!is.na(climat$ordis.tablettepro_nb), climat$ordis.tablettepro_nb, 0)  +
+                               ifelse(!is.na(climat$ordis.tabletteperso_nb), climat$ordis.tabletteperso_nb, 0), NA)
+
+#Nombre total d'ordinateurs et tablettes de moins de 5 ans
+climat$ordis.5anstotal<-ifelse(climat$tiragemodule==2, ifelse(!is.na(climat$ordis.fixeperso_5ans), climat$ordis.fixeperso_5ans, 0)  + 
+                               ifelse(!is.na(climat$ordis.fixepro_5ans), climat$ordis.fixepro_5ans, 0)  +
+                               ifelse(!is.na(climat$ordis.partage_5ans), climat$ordis.partage_5ans, 0)  +
+                               ifelse(!is.na(climat$ordis.portablepro_5ans), climat$ordis.portablepro_5ans, 0)  +
+                               ifelse(!is.na(climat$ordis.portableperso_5ans), climat$ordis.portableperso_5ans, 0)  +
+                               ifelse(!is.na(climat$ordis.tablettepro_5ans), climat$ordis.tablettepro_5ans, 0)  +
+                               ifelse(!is.na(climat$ordis.tabletteperso_5ans), climat$ordis.tabletteperso_5ans, 0), NA)
+
 # vols_dicho : a volé ou n'a pas volé ----
 climat$vols_dicho <- ifelse(climat$volsnb=="0", "pas_vol", "vol")
 climat$vols_dicho[is.na(climat$volsnb)] <- NA
@@ -174,6 +192,52 @@ climat$conffois5ans<-ifelse(climat$conf!="Oui, dans les 5 dernières années", "
 climat$bilandicho <- ifelse(climat$dixannees.bilan=="Oui", "Oui", "Non")
 climat$bilandicho[climat$dixannees.bilan=="Je ne souhaite pas répondre"]<-"NA"
 climat$bilandicho <- fct_relevel(climat$bilandicho, "Non")
+
+
+#Privilégier la visio pour des limiter les émissions de GES
+
+climat$visioprivilegiee.emissionsoui[climat$visioprivilegiee.emissions %in% c("Oui, beaucoup","Oui, un peu")]<-"Oui"
+climat$visioprivilegiee.emissionsoui[climat$visioprivilegiee.emissions %in% c("Non, pas vraiment","Non, pas du tout")]<-"Non"
+climat$visioprivilegiee.emissionsoui <- as.factor(climat$visioprivilegiee.emissionsoui)
+climat$visioprivilegiee.emissionsoui <- fct_relevel(climat$visioprivilegiee.emissionsoui, "Non")
+
+
+#La visio génère des pb techniques
+
+climat$visiopb.techniqueoui[climat$visiopb.technique %in% c("Oui, beaucoup","Oui, un peu")]<-"Oui"
+climat$visiopb.techniqueoui[climat$visiopb.technique %in% c("Non, pas vraiment","Non, pas du tout")]<-"Non"
+climat$visiopb.techniqueoui <- as.factor(climat$visiopb.techniqueoui)
+climat$visiopb.techniqueoui <- fct_relevel(climat$visiopb.techniqueoui, "Non")
+
+#La visio limite les aspects relationnels
+
+climat$visiopb.relationoui[climat$visiopb.relation %in% c("Oui, beaucoup","Oui, un peu")]<-"Oui"
+climat$visiopb.relationoui[climat$visiopb.relation %in% c("Non, pas vraiment","Non, pas du tout")]<-"Non"
+climat$visiopb.relationoui <- as.factor(climat$visiopb.relationoui)
+climat$visiopb.relationoui <- fct_relevel(climat$visiopb.relationoui, "Non")
+
+climat$visiopb.relationbcpoui[climat$visiopb.relation %in% c("Oui, beaucoup")]<-"Oui, beaucoup"
+climat$visiopb.relationbcpoui[climat$visiopb.relation %in% c("Oui, un peu", "Non, pas vraiment","Non, pas du tout")]<-"Pas oui beaucoup"
+climat$visiopb.relationbcpoui <- as.factor(climat$visiopb.relationbcpoui)
+climat$visiopb.relationbcpoui <- fct_relevel(climat$visiopb.relationbcpoui, "Pas oui beaucoup")
+
+#Visio : difficile écrire schémas, équation
+
+climat$visiopb.ecrireoui[climat$visiopb.ecrire %in% c("Oui, beaucoup","Oui, un peu")]<-"Oui"
+climat$visiopb.ecrireoui[climat$visiopb.ecrire %in% c("Non, pas vraiment","Non, pas du tout")]<-"Non"
+climat$visiopb.ecrireoui <- as.factor(climat$visiopb.ecrireoui)
+climat$visiopb.ecrireoui <- fct_relevel(climat$visiopb.ecrireoui, "Non")
+
+#La visio plus fatiguante
+
+climat$visiopb.fatigueoui[climat$visiopb.fatigue %in% c("Oui, beaucoup","Oui, un peu")]<-"Oui"
+climat$visiopb.fatigueoui[climat$visiopb.fatigue %in% c("Non, pas vraiment","Non, pas du tout")]<-"Non"
+climat$visiopb.fatigueoui <- as.factor(climat$visiopb.fatigueoui)
+climat$visiopb.fatigueoui <- fct_relevel(climat$visiopb.fatigueoui, "Non")
+
+#Rapport entre poids carbone estimé de l'avion et de la visio
+
+climat$quiz.rapportav.visio<-climat$quizfacteurs.avionnum/climat$quizfacteurs.visionum
 
 
 ## Recodage de climat$enfantsnb en climat$enfantsnb_rec
@@ -1195,6 +1259,9 @@ climatRegr$carriere <- relevel(climatRegr$carriere, ref = "Non")
 
 climatRegr$Profin_Mb_Resp <- as.factor(climatRegr$Profin_Mb_Resp)
 climatRegr$Profin_Mb_Resp <- relevel(climatRegr$Profin_Mb_Resp, ref = "Ni membre ni resp d'un 1 projet financé")
+
+climatRegr$visiopdtconf <- relevel(climatRegr$visiopdtconf, ref = "1 à 3 fois par mois")
+climatRegr$visioavtconf <- relevel(climatRegr$visioavtconf, ref = "1 à 3 fois par mois")
 
 climatRegr$solinstit.limitevols <- relevel(climatRegr$solinstit.limitevols, ref = "C'est prioritaire")
 
