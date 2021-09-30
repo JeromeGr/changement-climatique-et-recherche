@@ -235,11 +235,6 @@ climat$visiopb.fatigueoui[climat$visiopb.fatigue %in% c("Non, pas vraiment","Non
 climat$visiopb.fatigueoui <- as.factor(climat$visiopb.fatigueoui)
 climat$visiopb.fatigueoui <- fct_relevel(climat$visiopb.fatigueoui, "Non")
 
-#Rapport entre poids carbone estimé de l'avion et de la visio
-
-climat$quiz.rapportav.visio<-climat$quizfacteurs.avionnum/climat$quizfacteurs.visionum
-
-
 ## Recodage de climat$enfantsnb en climat$enfantsnb_rec
 climat$enfantsnb_rec <- as.character(climat$enfantsnb)
 climat$enfantsnb_rec <- fct_recode(climat$enfantsnb_rec,
@@ -1149,13 +1144,9 @@ climat$quizfacteurs.steak_err <- recode_quiz3(climat$quizfacteurs.steaknum, 5)
 climat$scorequiz_err <- rowSums(select(climat, quizfacteurs.voiture_err, quizfacteurs.avion_err, quizfacteurs.TGV_err, quizfacteurs.ordi_err,
                                    quizfacteurs.visio_err, quizfacteurs.these_err, quizfacteurs.steak_err))
 
-mean(climat$quizfacteurs.TGVnum, na.rm=T)
-mean(climat$quizfacteurs.avionnum, na.rm=T)
-mean(climat$quizfacteurs.voiturenum, na.rm=T)
+#Rapport entre poids carbone estimé de l'avion et de la visio
 
-cor(climat$quizfacteurs.corkendall, climat$quizfacteurs.corspearman,  use="na")
-cor(climat$quizfacteurs.corpearson, climat$quizfacteurs.corspearman,  use="na")
-cor(climat$quizfacteurs.corspearman, climat$scorequiz_err,  use="na")
+climat$quiz.rapportav.visio<-climat$quizfacteurs.avionnum/climat$quizfacteurs.visionum
 
 
 #Sous estimer le poids de l'avion (à faire)

@@ -888,7 +888,7 @@ drop_na(dat[dat$valeur != "Je n'ai jamais testé",]) %>%
   guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
   labs(y="Proportion parmi les répondant·es ayant déjà testé", x="", fill="",
        title="Actuellement, pour quels usages la visioconférence ou l'audioconférence 
-       vous semblent-elles adaptées ?",
+vous semblent-elles adaptées ?",
        caption=sprintf("Lecture : 54%% des répondant·es ayant déjà testé la visioconférence pour une réunion de 3 à 5 personnes\nla trouvent très adaptée à cet usage
 Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS ayant déjà testé chaque usage de la visioconférence (n=%i)",  max(table(drop_na(dat[dat$valeur != "Je n'ai jamais testé",])$variable))))
 
@@ -971,11 +971,12 @@ drop_na(dat) %>%
   theme(legend.position="bottom") +
   guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
   labs(y="Proportion des répondant·es", x="", fill="",
-       title="Imaginons une réunion d’une journée, située à 2h de votre domicile
-en voiture. Les raisons suivantes pourraient-elles vous empêcher de
-privilégier la visioconférence ou l’audioconférence à un déplacement ?") +
+       title="Imaginons une réunion d’une journée, située à 2h de votre
+domicile en voiture. Les raisons suivantes pourraient-elles
+vous empêcher de privilégier la visioconférence
+ou l’audioconférence à un déplacement ?") +
   source_champ(max(table(drop_na(dat)$variable)),
-               "Lecture : pour 16,9 % des répondant·es, les problèmes technique sont une raison pouvant beaucoup\n les pousser à ne pas privilégier la visioconférence")
+               "Lecture : pour 17% des répondant·es, les problèmes techniques sont une raison\npouvant beaucoup les empêcher de privilégier la visioconférence")
 
 ```
 
@@ -987,7 +988,7 @@ ggplot(drop_na(climat, visioavtconf),
        aes(y=fct_rev(visioavtconf), x=..prop.., group=1)) +
   geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.44)) +
+  coord_cartesian(xlim=c(0, 0.52)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=0.1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
@@ -1005,13 +1006,13 @@ ggplot(drop_na(climat, visiopdtconf),
        aes(y=fct_rev(visiopdtconf), x=..prop.., group=1)) +
   geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.44)) +
+  coord_cartesian(xlim=c(0, 0.52)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=0.1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="", title="Pendant le confinement quel a été votre usage de la visioconférence 
 ou de l’audioconférence dans le cadre professionnel ?") +
-  source_champ(nrow(drop_na(climat, visioavtconf)),
+  source_champ(nrow(drop_na(climat, visiopdtconf)),
                "Lecture : 2,8% des répondant·es n'ont jamais utilisé la visioconférence pendant le confinement")
 ```
 
