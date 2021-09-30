@@ -27,7 +27,7 @@ author:
 
 &nbsp;
 
-Version de septembre 2021
+Version du 14 janvier 2021
 
 ```{r preparation, echo=FALSE, message=FALSE}
 library(tidyverse)
@@ -356,8 +356,8 @@ informatique2$TypeOrdi[informatique2$TypeOrdi=="ordis.tabletteperso"]<-"Tablette
 
 
 informatique2$set[informatique2$set=="nb"]<-"Tous ordinateurs/tablettes"
-informatique2$set[informatique2$set=="5ans"]<-"Dont de moins de 5 ans"
-informatique2$set[informatique2$set=="indisp"]<-"Dont jugé·es indispensables"
+informatique2$set[informatique2$set=="5ans"]<-"De moins de 5 ans"
+informatique2$set[informatique2$set=="indisp"]<-"Jugé·es indispensables"
 
 ggplot(informatique2,  aes(x=prop, y=fct_reorder(TypeOrdi, prop), fill= set )) +
   geom_col(position = "dodge") +
@@ -372,7 +372,7 @@ ggplot(informatique2,  aes(x=prop, y=fct_reorder(TypeOrdi, prop), fill= set )) +
        title="Type de matériel utilisé, selon son âge et son caractère indispensable") +
   source_champ(sum(rowSums(!is.na(select(climat, starts_with("ordis.")))) > 0),
   "Lecture : sur 100 tablettes et ordinateurs utilisé·es professionnellement, 14,3 sont des ordinateurs partagés,
-11,6 sont des ordinateurs partagés jugés indispensables, et 5,8 sont des ordinateurs partagés qui ont moins de 5 ans")
+11,6 sont des ordinateurs partagés qui ont moins de 5 ans, et 5,8 sont des ordinateurs partagés jugés indispensables")
 
 ```
 
@@ -460,8 +460,12 @@ ggplot(drop_na(climat, solevolges.conf),
 ## Heures de vol en avion en 2019 (hors trajets domicile-travail)
 
 ```{r echo=FALSE}
-ggplot(drop_na(climat, volsh),
-       aes(y=fct_rev(volsh), x=..prop.., group=1)) +
+climat$volshTot<-climat$volsh
+levels(climat$volshTot)<-c("0h", levels(climat$volshTot))
+climat$volshTot[climat$volsnb==0]<-"0h"
+
+ggplot(drop_na(climat, volshTot),
+       aes(y=fct_rev(volshTot), x=..prop.., group=1)) +
   geom_bar() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
   coord_cartesian(xlim=c(0, 0.78)) +
@@ -470,8 +474,8 @@ ggplot(drop_na(climat, volsh),
             hjust=-0.2, size=3) +
   labs(x="Proportion des répondant·es", y="",
        title="Heures de vol en avion dans le cadre professionnel en 2019") +
-  source_champ(nrow(drop_na(climat, volsh)),
-               "Lecture : 50% des répondant·es n'ont pas volé au cours des cinq dernières années, et 25% ont volé mais moins de 10h")
+  source_champ(nrow(drop_na(climat, volshTot)),
+               "Lecture : 75% des répondant·es n'ont pas volé au cours des cinq dernières années, et 10% ont volé mais moins de 10h")
 ```
 
 ## Heures de vol en avion en 2017 et 2018 pour celles et ceux n'ayant pas pris l'avion en 2019
@@ -939,45 +943,6 @@ privilégier la visioconférence ou l’audioconférence à un déplacement ?") 
 
 ```
 
-## Raisons de ne pas privilégier la visioconférence 
-
-```{r echo=FALSE, fig.height=5}
-
-dat <- rbind(data.frame(variable="C’est plus fatigant à suivre qu’une réunion 
-                        en présentiel", 
-                        valeur=climat$visiopb.fatigue),
-             data.frame(variable="Cela génère des problèmes techniques",
-                        valeur=climat$visiopb.technique),
-             data.frame(variable="Cela rend difficile d’écrire ou dessiner 
-                        en discutant (schémas, formules, équations...)", 
-                        valeur=climat$visiopb.ecrire),
-             data.frame(variable="Cela limite les aspects relationnels", 
-                        valeur=climat$visiopb.relation))%>%
-  mutate(variable=factor(variable, levels=unique(variable)),
-         valeur=fct_relevel(valeur, c(
-           "Oui, beaucoup", 
-           "Oui, un peu", 
-           "Sans opinion", 
-           "Non, pas vraiment", 
-           "Non, pas du tout")))
-
-drop_na(dat) %>%
-  ggplot(aes(x=variable)) +
-  geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
-  scale_fill_manual(values=c("#1a9641", "#a6d96a", "light grey", "#fdae61", "#d7191c"))+
-  scale_y_continuous(labels=scales::percent_format(),
-                     sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
-  coord_flip() +
-  theme(legend.position="bottom") +
-  guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
-  labs(y="Proportion des répondant·es", x="", fill="",
-       title="Imaginons une réunion d’une journée, située à 2h de votre domicile
-en voiture. Les raisons suivantes pourraient-elles vous empêcher de
-privilégier la visioconférence ou l’audioconférence à un déplacement ?") +
-  source_champ(max(table(drop_na(dat)$variable)),
-               "Lecture : pour 16,9 % des répondant·es, les problèmes technique sont une raison pouvant beaucoup\n les pousser à ne pas privilégier la visioconférence")
-
-```
 
 ## Usage pré-confinement de la visioconférence
 
@@ -996,25 +961,6 @@ ou de l’audioconférence dans le cadre professionnel ?") +
   source_champ(nrow(drop_na(climat, visioavtconf)),
                "Lecture : 30,5% des répondant·es n'avaient jamais usage de la visioconférence avant le confinement")
 ```
-
-## Usage pendant le confinement de la visioconférence
-
-```{r echo=FALSE}
-
-ggplot(drop_na(climat, visiopdtconf),
-       aes(y=fct_rev(visiopdtconf), x=..prop.., group=1)) +
-  geom_bar() +
-  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.44)) +
-  geom_text(aes(label=scales::percent(..prop.., accuracy=0.1, decimal.mark=",")),
-            stat="count", position=position_dodge(.9),
-            hjust=-0.2, size=3) +
-  labs(x="Proportion des répondant·es", y="", title="Pendant le confinement quel a été votre usage de la visioconférence 
-ou de l’audioconférence dans le cadre professionnel ?") +
-  source_champ(nrow(drop_na(climat, visioavtconf)),
-               "Lecture : 2,8% des répondant·es n'ont jamais utilisé la visioconférence pendant le confinement")
-```
-
 
 ## Evolution de l'opinion sur la visioconférence depuis le confinement
 
@@ -1063,29 +1009,33 @@ ggplot(drop_na(climat, solreducrech2),
 ## Réductions individuelles des émissions de GES dans le cadre professionnel d'ici à 2030
 
 ```{r echo=FALSE, fig.height=6}
+
+
 dat <- rbind(data.frame(variable="Les expériences et observations\nscientifiques", valeur=climat$solreducperso.exp),
              data.frame(variable="Les déplacements pour missions de terrain,\nd'observation ou de collecte de données", valeur=climat$solreducperso.donnees),
              data.frame(variable="Les déplacements domicile-travail\nen voiture, moto, scooter ou avion", valeur=climat$solreducperso.domicile),
              data.frame(variable="L'équipement en postes informatiques\net sa fréquence de renouvellement", valeur=climat$solreducperso.info),
              data.frame(variable="Les vols en avion\npour les conférences, réunions, congrès", valeur=climat$solreducperso.conf)) %>%
-    mutate(variable=factor(variable, levels=unique(variable)),
-           valeur=fct_relevel(valeur, c("Non, car elles sont déjà très basses", "Oui, d'au moins un tiers", "Oui, mais de moins d'un tiers", "Sans opinion", "Non")))
+  mutate(variable=factor(variable, levels=unique(variable)),
+         valeur=fct_relevel(valeur, c("Oui, d'au moins un tiers", "Oui, mais de moins d'un tiers", "Non, car elles sont déjà très basses", "Sans opinion", "Non")))
 
 drop_na(dat) %>%
-    filter(valeur != "Non concerné·e") %>%
-    ggplot(aes(x=variable)) +
-    geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
-    scale_fill_manual(values=c("#d7191c", "light grey", "#66bd63", "#1a9641", "#3690c0")) +
-    scale_y_continuous(labels=scales::percent_format(),
-                       sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
-    coord_flip() + labs(fill="") +
-    theme(legend.position="bottom") +
-    guides(fill=guide_legend(reverse = TRUE, nrow=3, byrow=TRUE)) +
-    labs(y="Proportion des répondant·es", x="",
-         title="Êtes-vous prêt·e à réduire vos émissions de gaz à effet de serre\nd’ici à 2030 dans les domaines suivants ?") +
+  filter(valeur != "Non concerné·e") %>%
+  ggplot(aes(x=variable)) +
+  geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
+  scale_fill_manual(values=c("#d7191c", "light grey", "#3690c0", "#66bd63", "#1a9641")) +
+  scale_y_continuous(labels=scales::percent_format(),
+                     sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
+  coord_flip() + labs(fill="") +
+  theme(legend.position="bottom") +
+  guides(fill=guide_legend(reverse = TRUE, nrow=3, byrow=TRUE)) +
+  labs(y="Proportion des répondant·es", x="",
+       title="Êtes-vous prêt·e à réduire vos émissions de gaz à effet de serre\nd’ici à 2030 dans les domaines suivants ?") +
   source_champ(max(table(filter(drop_na(dat), valeur != "Non concerné·e")$variable)),
                "Note : la proportion de personnes concernées varie selon la question
-Lecture : 32% des répondant·es déclarent ne pas pouvoir réduire leurs émissions liées aux vols pour les conférences\ncar elles sont déjà très basses")
+               Lecture : 32% des répondant·es déclarent ne pas pouvoir réduire leurs émissions liées aux vols pour les conférences\ncar elles sont déjà très basses")
+
+
 ```
 
 ## Réductions individuelles des émissions de GES des dispositifs expérimentaux d'ici à 2030
