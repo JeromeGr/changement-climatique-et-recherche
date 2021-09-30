@@ -1063,29 +1063,33 @@ ggplot(drop_na(climat, solreducrech2),
 ## Réductions individuelles des émissions de GES dans le cadre professionnel d'ici à 2030
 
 ```{r echo=FALSE, fig.height=6}
+
+
 dat <- rbind(data.frame(variable="Les expériences et observations\nscientifiques", valeur=climat$solreducperso.exp),
              data.frame(variable="Les déplacements pour missions de terrain,\nd'observation ou de collecte de données", valeur=climat$solreducperso.donnees),
              data.frame(variable="Les déplacements domicile-travail\nen voiture, moto, scooter ou avion", valeur=climat$solreducperso.domicile),
              data.frame(variable="L'équipement en postes informatiques\net sa fréquence de renouvellement", valeur=climat$solreducperso.info),
              data.frame(variable="Les vols en avion\npour les conférences, réunions, congrès", valeur=climat$solreducperso.conf)) %>%
-    mutate(variable=factor(variable, levels=unique(variable)),
-           valeur=fct_relevel(valeur, c("Non, car elles sont déjà très basses", "Oui, d'au moins un tiers", "Oui, mais de moins d'un tiers", "Sans opinion", "Non")))
+  mutate(variable=factor(variable, levels=unique(variable)),
+         valeur=fct_relevel(valeur, c("Oui, d'au moins un tiers", "Oui, mais de moins d'un tiers", "Non, car elles sont déjà très basses", "Sans opinion", "Non")))
 
 drop_na(dat) %>%
-    filter(valeur != "Non concerné·e") %>%
-    ggplot(aes(x=variable)) +
-    geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
-    scale_fill_manual(values=c("#d7191c", "light grey", "#66bd63", "#1a9641", "#3690c0")) +
-    scale_y_continuous(labels=scales::percent_format(),
-                       sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
-    coord_flip() + labs(fill="") +
-    theme(legend.position="bottom") +
-    guides(fill=guide_legend(reverse = TRUE, nrow=3, byrow=TRUE)) +
-    labs(y="Proportion des répondant·es", x="",
-         title="Êtes-vous prêt·e à réduire vos émissions de gaz à effet de serre\nd’ici à 2030 dans les domaines suivants ?") +
+  filter(valeur != "Non concerné·e") %>%
+  ggplot(aes(x=variable)) +
+  geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
+  scale_fill_manual(values=c("#d7191c", "light grey", "#3690c0", "#66bd63", "#1a9641")) +
+  scale_y_continuous(labels=scales::percent_format(),
+                     sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
+  coord_flip() + labs(fill="") +
+  theme(legend.position="bottom") +
+  guides(fill=guide_legend(reverse = TRUE, nrow=3, byrow=TRUE)) +
+  labs(y="Proportion des répondant·es", x="",
+       title="Êtes-vous prêt·e à réduire vos émissions de gaz à effet de serre\nd’ici à 2030 dans les domaines suivants ?") +
   source_champ(max(table(filter(drop_na(dat), valeur != "Non concerné·e")$variable)),
                "Note : la proportion de personnes concernées varie selon la question
-Lecture : 32% des répondant·es déclarent ne pas pouvoir réduire leurs émissions liées aux vols pour les conférences\ncar elles sont déjà très basses")
+               Lecture : 32% des répondant·es déclarent ne pas pouvoir réduire leurs émissions liées aux vols pour les conférences\ncar elles sont déjà très basses")
+
+
 ```
 
 ## Réductions individuelles des émissions de GES des dispositifs expérimentaux d'ici à 2030
@@ -1096,13 +1100,13 @@ dat <- rbind(data.frame(variable="En utilisant moins d'équipements\ndans les di
              data.frame(variable="En utilisant ou en développant\ndes dispositifs plus simples (low tech)", valeur=climat$solreducmateriel.lowtech),
              data.frame(variable="En renouvelant le matériel\nmoins fréquemment", valeur=climat$solreducmateriel.renouv)) %>%
     mutate(variable=factor(variable, levels=unique(variable)),
-           valeur=fct_relevel(valeur, c("Non, car elles sont déjà très basses", "Oui, d'au moins un tiers", "Oui, mais de moins d'un tiers", "Sans opinion", "Non")))
+           valeur=fct_relevel(valeur, c("Oui, d'au moins un tiers", "Oui, mais de moins d'un tiers", "Non, car elles sont déjà très basses", "Sans opinion", "Non")))
 
 drop_na(dat) %>%
     filter(valeur != "Non concerné·e") %>%
     ggplot(aes(x=variable)) +
     geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
-    scale_fill_manual(values=c("#d7191c", "light grey", "#66bd63", "#1a9641", "#3690c0")) +
+    scale_fill_manual(values=c("#d7191c", "light grey", "#3690c0", "#66bd63", "#1a9641")) +
     scale_y_continuous(labels=scales::percent_format(),
                        sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
     coord_flip() + labs(fill="") +
