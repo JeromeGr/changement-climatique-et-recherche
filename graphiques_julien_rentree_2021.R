@@ -25,6 +25,41 @@ source_champ <- function(n=NA, extra=NA) {
 
 
 
+
+# sexe*enfants
+climat$enfsexe <- NULL
+climat$enfsexe[!is.na(climat$enfantsnb_rec)] <- 
+  paste(climat$sexe[!is.na(climat$enfantsnb_rec)], 
+        climat$enfantsnb_rec[!is.na(climat$enfantsnb_rec)])
+freq(climat$enfsexe)
+
+# sexe*age des enfants
+climat$enfagesexe <- NULL
+climat$enfagesexe[!is.na(climat$enfantsage_rec)] <- 
+  paste(climat$sexe[!is.na(climat$enfantsage_rec)], 
+        climat$enfantsage_rec[!is.na(climat$enfantsage_rec)])
+## Réordonnancement de climat$enfagesexe
+climat$enfagesexe <- factor(climat$enfagesexe,
+                            levels = c(
+                              "Femme Sans enfant", "Femme moins de 5 ans", "Femme Entre 5 et 15 ans",
+                              "Femme Plus de 15 ans", "Homme Sans enfant", "Homme moins de 5 ans",
+                              "Homme Entre 5 et 15 ans", "Homme Plus de 15 ans"
+                            )
+)
+
+
+
+
+
+# # sous base seulement recherche
+climat_recherche <- subset(climat, ! sitpro %in% c(
+  "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
+  "Chargé·e d'études/de mission","Adjoint·e technique",
+  "Autre"))
+
+
+
+
 # graphiques premiers résultats révisés ----
 
 # reliquat de budget ----
@@ -298,28 +333,36 @@ ggplot(c, aes(x=a, y=b, label = rownames(c)))+geom_point()+
   annotate('text', x=920, y=2100, label="Moyenne (ensemble)", colour = "red", angle = 90)
 
 
+
+
+# seulement recherche
+
+a <- tapply(climat_recherche$volsdist_totterrain, 
+            climat_recherche$solreducperso.conf, mean, na.rm=T)
+b <- tapply(climat_recherche$volsdist_totconf, 
+            climat_recherche$solreducperso.conf, mean, na.rm=T)
+c <- cbind(a,b)
+c <- as.data.frame(c)
+c$discipline <- rownames(c)
+table <- c
+library(ggrepel)
+ggplot(c, aes(x=a, y=b, label = rownames(c)))+geom_point()+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Distance parcourue en avion pour les conférences et pour le recueil des données 
+       selon la possibilité de réduction des vols pour les conférences", 
+       x="Distance (km) en avion pour le recueil des données",
+       y="Distance (km) en avion pour les conférences") +
+  geom_hline(yintercept=mean(climat$volsdist_totconf, na.rm=TRUE), colour = "red", linetype="dashed") +
+  geom_vline(xintercept=mean(climat$volsdist_totterrain, na.rm=TRUE), colour = "red", linetype="dashed")+ 
+  annotate('text', x=750, y=3000, label="Moyenne (ensemble)", colour = "red")+ 
+  annotate('text', x=920, y=2100, label="Moyenne (ensemble)", colour = "red", angle = 90)
+
+
+
+
 # selon le sexe du répondant et l'âge de ses enfants ----
-
-# sexe*enfants
-climat$enfsexe <- NULL
-climat$enfsexe[!is.na(climat$enfantsnb_rec)] <- 
-  paste(climat$sexe[!is.na(climat$enfantsnb_rec)], 
-        climat$enfantsnb_rec[!is.na(climat$enfantsnb_rec)])
-freq(climat$enfsexe)
-
-# sexe*age des enfants
-climat$enfagesexe <- NULL
-climat$enfagesexe[!is.na(climat$enfantsage_rec)] <- 
-  paste(climat$sexe[!is.na(climat$enfantsage_rec)], 
-        climat$enfantsage_rec[!is.na(climat$enfantsage_rec)])
-## Réordonnancement de climat$enfagesexe
-climat$enfagesexe <- factor(climat$enfagesexe,
-                            levels = c(
-                              "Femme Sans enfant", "Femme moins de 5 ans", "Femme Entre 5 et 15 ans",
-                              "Femme Plus de 15 ans", "Homme Sans enfant", "Homme moins de 5 ans",
-                              "Homme Entre 5 et 15 ans", "Homme Plus de 15 ans"
-                            )
-)
 
 
 a <- tapply(climat$volsdist_totterrain, 
@@ -438,14 +481,15 @@ ggplot(c, aes(x=a, y=b, label = rownames(c)))+geom_point()+
   geom_label_repel(box.padding   = 0.35, 
                    point.padding = 0.5,
                    segment.color = 'grey50')+
-  labs(title="Selon le H index", 
+  labs(title="Selon le H index (recodage 1)", 
        x="Distance (km) en avion pour le recueil des données",
        y="Distance (km) en avion pour les conférences") +
   geom_hline(yintercept=mean(climat$volsdist_totconf, na.rm=TRUE), colour = "red", linetype="dashed") +
   geom_vline(xintercept=mean(climat$volsdist_totterrain, na.rm=TRUE), colour = "red", linetype="dashed")+ 
   annotate('text', x=1500, y=2800, label="Moyenne (ensemble)", colour = "red")+ 
   annotate('text', x=850, y=3000, label="Moyenne (ensemble)", colour = "red", angle = 90)+
-  scale_x_continuous(limits = c(0, 2000))
+  scale_x_continuous(limits = c(0, 2000))+
+  scale_y_continuous(limits = c(0, 6500))
 
 
 
@@ -463,14 +507,15 @@ ggplot(c, aes(x=a, y=b, label = rownames(c)))+geom_point()+
   geom_label_repel(box.padding   = 0.35, 
                    point.padding = 0.5,
                    segment.color = 'grey50')+
-  labs(title="Selon le H index", 
+  labs(title="Selon le H index (recodage 2)", 
        x="Distance (km) en avion pour le recueil des données",
        y="Distance (km) en avion pour les conférences") +
   geom_hline(yintercept=mean(climat$volsdist_totconf, na.rm=TRUE), colour = "red", linetype="dashed") +
   geom_vline(xintercept=mean(climat$volsdist_totterrain, na.rm=TRUE), colour = "red", linetype="dashed")+ 
   annotate('text', x=1500, y=2800, label="Moyenne (ensemble)", colour = "red")+ 
   annotate('text', x=850, y=3000, label="Moyenne (ensemble)", colour = "red", angle = 90)+
-  scale_x_continuous(limits = c(0, 2000))
+  scale_x_continuous(limits = c(0, 2000))+
+  scale_y_continuous(limits = c(0, 6500))
 
 # Selon le nb de publis ----
 
@@ -529,19 +574,135 @@ ggplot(c, aes(x=a, y=b, label = rownames(c)))+geom_point()+
 
 # Recherche seulement (sous-base) ----
 
-# # sous base seulement recherche
-# climat_recherche <- climat[!climat$sitpro2 %in% c(
-#   "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
-#   "Chargé·e d'études/de mission","Adjoint·e technique",
-#   "Autre"
-# ),]
+
+# Sexe et enfants et vols conférences/données----
+
+
+a <- tapply(climat_recherche$volsdist_totterrain, 
+            climat_recherche$enfagesexe, mean, na.rm=T)
+b <- tapply(climat_recherche$volsdist_totconf, 
+            climat_recherche$enfagesexe, mean, na.rm=T)
+c <- cbind(a,b)
+c <- as.data.frame(c)
+c$discipline <- rownames(c)
+table <- c
+library(ggrepel)
+ggplot(c, aes(x=a, y=b, label = rownames(c)))+geom_point()+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Distance parcourue en avion pour les conférences et pour le recueil des données 
+       selon le sexe et l'âge des enfants (seulement le personnel recherche)", 
+       x="Distance (km) en avion pour le recueil des données",
+       y="Distance (km) en avion pour les conférences") +
+  geom_hline(yintercept=mean(climat_recherche$volsdist_totconf, na.rm=TRUE), colour = "red", linetype="dashed") +
+  geom_vline(xintercept=mean(climat_recherche$volsdist_totterrain, na.rm=TRUE), colour = "red", linetype="dashed")+ 
+  annotate('text', x=750, y=3400, label="Moyenne (ensemble)", colour = "red")+ 
+  annotate('text', x=1030, y=2100, label="Moyenne (ensemble)", colour = "red", angle = 90)+
+  scale_x_continuous(limits=c(0, 1400))+
+  scale_y_continuous(limits=c(0, 5500))
 
 
 
+
+
+# Sexe  et vols conférences/données----
+
+
+a <- tapply(climat_recherche$volsdist_totterrain, 
+            climat_recherche$sexe, mean, na.rm=T)
+b <- tapply(climat_recherche$volsdist_totconf, 
+            climat_recherche$sexe, mean, na.rm=T)
+c <- cbind(a,b)
+c <- as.data.frame(c)
+c$discipline <- rownames(c)
+table <- c
+library(ggrepel)
+ggplot(c, aes(x=a, y=b, label = rownames(c)))+geom_point()+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Distance parcourue en avion pour les conférences et pour le recueil des données 
+       selon le sexe et l'âge des enfants (seulement le personnel recherche)", 
+       x="Distance (km) en avion pour le recueil des données",
+       y="Distance (km) en avion pour les conférences") +
+  geom_hline(yintercept=mean(climat_recherche$volsdist_totconf, na.rm=TRUE), colour = "red", linetype="dashed") +
+  geom_vline(xintercept=mean(climat_recherche$volsdist_totterrain, na.rm=TRUE), colour = "red", linetype="dashed")+ 
+  annotate('text', x=750, y=3400, label="Moyenne (ensemble)", colour = "red")+ 
+  annotate('text', x=1030, y=2100, label="Moyenne (ensemble)", colour = "red", angle = 90)+
+  scale_x_continuous(limits=c(0, 1400))+
+  scale_y_continuous(limits=c(0, 5500))
+
+
+
+# boxplots publis et hindex ----
 
 ggplot(climat_recherche)+
   geom_boxplot(aes(y=nbpublis, x=discipline_agr3, color=sexe))+ coord_flip()
 ggplot(climat_recherche)+
   geom_boxplot(aes(y=hindex, x=discipline_agr3, color=sexe))+coord_flip()
+
+
+
+
+
+
+
+# Part de femmes et nb d'h pour confs par discipline----
+
+
+a <- cprop(table(climat_recherche$sexe, 
+            climat_recherche$discipline_agr3))[1,-16]
+b <- tapply(climat_recherche$volsdist_totconf, 
+            climat_recherche$discipline_agr3, mean, na.rm=T)
+c <- cbind(a,b)
+c <- as.data.frame(c)
+c$discipline <- rownames(c)
+table <- c
+library(ggrepel)
+ggplot(c, aes(x=a, y=b, label = rownames(c)))+geom_point()+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Répartition des disciplines selon la part de femmes 
+       et la distance parcourue pour les conférences", 
+       x="Part de femmes",
+       y="Distance (km) en avion pour les conférences") +
+  geom_hline(yintercept=mean(climat_recherche$volsdist_totconf, na.rm=TRUE), colour = "red", linetype="dashed") +
+  geom_vline(xintercept=39.5, colour = "red", linetype="dashed") +
+  annotate('text', x=750, y=3400, label="Moyenne (ensemble)", colour = "red")+ 
+  scale_x_continuous(limits=c(0, 100))+
+  scale_y_continuous(limits=c(0, 5500))
+
+
+
+
+
+# Part de femmes et distance de vol pour terrain par discipline----
+
+
+a <- cprop(table(climat_recherche$enfagesexe, 
+                 climat_recherche$discipline_agr3))[2,-16]
+b <- tapply(climat_recherche$volsdist_totconf, 
+            climat_recherche$discipline_agr3, mean, na.rm=T)
+c <- cbind(a,b)
+c <- as.data.frame(c)
+c$discipline <- rownames(c)
+table <- c
+library(ggrepel)
+ggplot(c, aes(x=a, y=b, label = rownames(c)))+geom_point()+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Répartition des disciplines selon la part de femmes avec un enfant de moins de 5 ans
+       et la distance parcourue pour le recueil des données", 
+       x="Part de femmes",
+       y="Distance (km) en avion pour les conférences") +
+  geom_hline(yintercept=mean(climat_recherche$volsdist_totconf, na.rm=TRUE), colour = "red", linetype="dashed") +
+  geom_vline(xintercept=39.5, colour = "red", linetype="dashed") +
+  annotate('text', x=750, y=3400, label="Moyenne (ensemble)", colour = "red")+ 
+  scale_x_continuous(limits=c(0, 20))+
+  scale_y_continuous(limits=c(0, 5500))
+
 
 
