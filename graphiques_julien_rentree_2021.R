@@ -705,4 +705,253 @@ ggplot(c, aes(x=a, y=b, label = rownames(c)))+geom_point()+
   scale_y_continuous(limits=c(0, 5500))
 
 
+# ACP
 
+summary(climat_recherche$volsdist_totconf)
+summary(climat_recherche$volsdist_totterrain)
+summary(climat_recherche$volsdist_totcours)
+summary(climat_recherche$volsdist_totsejrech)
+summary(climat_recherche$volsdist_totjury)
+summary(climat_recherche$volsdist_totworkshop)
+summary(climat_recherche$volsdist_toteval)
+summary(climat_recherche$volsdist_totfinanc)
+
+
+
+a <- tapply(climat$volsdist_totterrain, 
+            climat$enfagesexe, mean, na.rm=T)
+b <- tapply(climat$volsdist_totconf, 
+            climat$enfagesexe, mean, na.rm=T)
+c <- tapply(climat$volsdist_totcours, 
+            climat$enfagesexe, mean, na.rm=T)
+d <- tapply(climat$volsdist_totsejrech, 
+            climat$enfagesexe, mean, na.rm=T)
+e <- tapply(climat$volsdist_totjury, 
+            climat$enfagesexe, mean, na.rm=T)
+f <- tapply(climat$volsdist_totworkshop, 
+            climat$enfagesexe, mean, na.rm=T)
+g <- tapply(climat$volsdist_toteval, 
+            climat$enfagesexe, mean, na.rm=T)
+h <- tapply(climat$volsdist_totfinanc, 
+            climat$enfagesexe, mean, na.rm=T)
+
+motifs <- cbind(a, b, c, d, e, f, g, h)
+colnames(motifs) <- c("confs", "terrain", "cours", "sejourrech", "jury", "workshop",
+                 "eval", "financ")
+library(FactoMineR)
+library(explor)
+library(factoextra)
+
+acp <- PCA(motifs, scale.unit=F)
+
+
+fviz_pca_biplot(acp, repel = T)+ xlim(-2.5, 4) + ylim (-3, 3)
+fviz_pca_biplot(acp, repel = T)+ xlim(-2.5, 4) + ylim (-3, 3)
+
+fviz_pca_ind(acp, repel = T)
+fviz_pca_biplot(acp, axes = c(1,3), repel = T)+ xlim(-2.5, 4) + ylim (-3, 3)
+
+
+
+freq(climat$discipline_agr3)
+
+cprop(table(climat$preoccupe, climat$discipline_agr3))
+cprop(table(climat$preoccupe, climat$sitpro))
+
+
+
+
+
+# seulement recherche, discipline rapport terrain/conf
+
+# tout le monde : par discipline ----
+
+a <- tapply(climat_recherche$volsdist_totterrain, 
+            climat_recherche$discipline_agr3, mean, na.rm=T)
+b <- tapply(climat_recherche$volsdist_totconf, 
+            climat_recherche$discipline_agr3, mean, na.rm=T)
+total <- tapply(climat_recherche$volsdist_tot, 
+             climat_recherche$discipline_agr3, mean, na.rm=T)
+c <- cbind(a,b,total)
+c <- as.data.frame(c)
+c$discipline <- rownames(c)
+c$rapport <- c$b/c$a
+table <- c
+library(ggrepel)
+ggplot(c, aes(x=total, y=rapport, label = rownames(c)))+geom_point()+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Distance parcourue en avion pour les conférences et pour le recueil des données par discipline", 
+       x="Distance (km) totale en avion",
+       y="Rapport entre la distance parcourue pour les conférences et la distance parcourue pour les données") +
+   geom_hline(yintercept=1, colour = "red", linetype="dashed") +
+  # geom_vline(xintercept=mean(climat$climat_recherche, na.rm=TRUE), colour = "red", linetype="dashed")+ 
+  # annotate('text', x=3300, y=2900, label="Moyenne (ensemble)", colour = "red")+ 
+  annotate('text', x=6000, y=1, label="terrain=confs", colour = "red")+
+  scale_x_continuous(limits = c(0,14000))+
+  scale_y_log10()
+
+
+a <- tapply(climat_recherche$volsdist_totterrain, 
+            climat_recherche$discipline, mean, na.rm=T)
+b <- tapply(climat_recherche$volsdist_totconf, 
+            climat_recherche$discipline, mean, na.rm=T)
+total <- tapply(climat_recherche$volsdist_tot, 
+                climat_recherche$discipline, mean, na.rm=T)
+c <- cbind(a,b,total)
+c <- as.data.frame(c)
+c$discipline <- substr(rownames(c),1)
+c$rapport <- c$b/c$a
+table <- c
+library(ggrepel)
+ggplot(c, aes(x=total, y=rapport, label = discipline))+geom_point()+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Distance parcourue en avion pour les conférences et pour le recueil des données par discipline", 
+       x="Distance (km) totale en avion",
+       y="Rapport entre la distance parcourue pour les conférences et la distance parcourue pour les données") +
+  geom_hline(yintercept=1, colour = "red", linetype="dashed") +
+  # geom_vline(xintercept=mean(climat$climat_recherche, na.rm=TRUE), colour = "red", linetype="dashed")+ 
+  # annotate('text', x=3300, y=2900, label="Moyenne (ensemble)", colour = "red")+ 
+  annotate('text', x=6000, y=1, label="terrain=confs", colour = "red")+
+  scale_x_continuous(limits = c(0,20000))+
+  scale_y_log10()
+
+
+
+# traitements par discipline ----
+
+freq(climat$preoccupe)
+freq(climat$preoccupe2)
+freq(climat$pluspreoccupe)
+freq(climat$changclim)
+freq(climat$acthum)
+freq(climat$recheco)
+freq(climat$chgtpratique)
+freq(climat$opinionecolo.cata)
+freq(climat$opinionecolo.effondrement2)
+freq(climat$solreducrech)
+freq(climat$solreducperso.conf)
+freq(climat$solreducperso.info)
+freq(climat$solre)
+
+names(climat)[1:50]
+
+copie(cprop(table(climat$discipline, climat$preoccupe)))
+
+
+a <- cbind(
+  lprop(table(climat$discipline, climat$preoccupe2), drop = F)[,4]+
+lprop(table(climat$discipline, climat$preoccupe2), drop = F)[,5],
+
+lprop(table(climat$discipline, climat$pluspreoccupe), drop = F)[,1],
+
+lprop(table(climat$discipline, climat$changclim), drop = F)[,1],
+
+lprop(table(climat$discipline, climat$acthum), drop = F)[,3]+
+  lprop(table(climat$discipline, climat$acthum), drop = F)[,4],
+
+ lprop(table(climat$discipline, climat$recheco), drop = F)[,1],
+
+lprop(table(climat$discipline, climat$chgtpratique), drop = F)[,1]+
+  lprop(table(climat$discipline, climat$chgtpratique), drop = F)[,2],
+lprop(table(climat$discipline, climat$chgtpratique), drop = F)[,1],
+
+lprop(table(climat$discipline, climat$opinionecolo.cata), drop = F)[,1]+
+  lprop(table(climat$discipline, climat$opinionecolo.cata), drop = F)[,2],
+
+lprop(table(climat$discipline, climat$opinionecolo.effondrement2), drop = F)[,1]+
+  lprop(table(climat$discipline, climat$opinionecolo.effondrement2), drop = F)[,2],
+
+lprop(table(climat$discipline, climat$solreducrech), drop = F)[,1]+
+  lprop(table(climat$discipline, climat$solreducrech), drop = F)[,2],
+lprop(table(climat$discipline, climat$solreducrech), drop = F)[,1],
+
+lprop(table(climat$discipline, climat$solreducperso.conf), drop = F)[,4],
+lprop(table(climat$discipline, climat$solreducperso.info), drop = F)[,4],
+lprop(table(climat$discipline, climat$solreducperso.exp), drop = F)[,4],
+lprop(table(climat$discipline, climat$solreducperso.donnees), drop = F)[,4],
+lprop(table(climat$discipline, climat$solreducperso.domicile), drop = F)[,4]
+)
+
+a
+
+
+colnames(a) <- c("preoccupe : très ou extrêmement", 
+                "beaucoup plus préoccupé qu'avant",
+                "il y a certainement un changement climatique",
+                "activités humaines causent le chgt climatique (unique ou grand rôle)",
+                "a réorienté ses recherches",
+                "exige des chgt profonds dans nos métiers : plutôt ou tout à fait ok",
+                "dont tout à fait d'accord", 
+                "catastrophe : plutôt ou tout à fait OK",
+                "effonrement : plutôt ou tout à fait OK", 
+                "Recherche : réduire d'au moins un tiers", 
+                "Dont montrer l'exemple",
+                "non à réduction des confs",
+                "non à reduction du matos info", 
+                "non à réduction des expériences",
+                "non à réduction des vols pour données",
+                "non à réduction des trajets domicile travail")
+
+
+
+b <- cbind(
+  lprop(table(climat$discipline_agr3, climat$preoccupe2), drop = F)[,4]+
+    lprop(table(climat$discipline_agr3, climat$preoccupe2), drop = F)[,5],
+  
+  lprop(table(climat$discipline_agr3, climat$pluspreoccupe), drop = F)[,1],
+  
+  lprop(table(climat$discipline_agr3, climat$changclim), drop = F)[,1],
+  
+  lprop(table(climat$discipline_agr3, climat$acthum), drop = F)[,3]+
+    lprop(table(climat$discipline_agr3, climat$acthum), drop = F)[,4],
+  
+  lprop(table(climat$discipline_agr3, climat$recheco), drop = F)[,1],
+  
+  lprop(table(climat$discipline_agr3, climat$chgtpratique), drop = F)[,1]+
+    lprop(table(climat$discipline_agr3, climat$chgtpratique), drop = F)[,2],
+  lprop(table(climat$discipline_agr3, climat$chgtpratique), drop = F)[,1],
+  
+  lprop(table(climat$discipline_agr3, climat$opinionecolo.cata), drop = F)[,1]+
+    lprop(table(climat$discipline_agr3, climat$opinionecolo.cata), drop = F)[,2],
+  
+  lprop(table(climat$discipline_agr3, climat$opinionecolo.effondrement2), drop = F)[,1]+
+    lprop(table(climat$discipline_agr3, climat$opinionecolo.effondrement2), drop = F)[,2],
+  
+  lprop(table(climat$discipline_agr3, climat$solreducrech), drop = F)[,1]+
+    lprop(table(climat$discipline_agr3, climat$solreducrech), drop = F)[,2],
+  lprop(table(climat$discipline_agr3, climat$solreducrech), drop = F)[,1],
+  
+  lprop(table(climat$discipline_agr3, climat$solreducperso.conf), drop = F)[,4],
+  lprop(table(climat$discipline_agr3, climat$solreducperso.info), drop = F)[,4],
+  lprop(table(climat$discipline_agr3, climat$solreducperso.exp), drop = F)[,4],
+  lprop(table(climat$discipline_agr3, climat$solreducperso.donnees), drop = F)[,4],
+  lprop(table(climat$discipline_agr3, climat$solreducperso.domicile), drop = F)[,4]
+)
+
+
+
+colnames(b) <- c("preoccupe : très ou extrêmement", 
+                 "beaucoup plus préoccupé qu'avant",
+                 "il y a certainement un changement climatique",
+                 "activités humaines causent le chgt climatique (unique ou grand rôle)",
+                 "a réorienté ses recherches",
+                 "exige des chgt profonds dans nos métiers : plutôt ou tout à fait ok",
+                 "dont tout à fait d'accord", 
+                 "catastrophe : plutôt ou tout à fait OK",
+                 "effonrement : plutôt ou tout à fait OK", 
+                 "Recherche : réduire d'au moins un tiers", 
+                 "Dont montrer l'exemple",
+                 "non à réduction des confs",
+                 "non à reduction du matos info", 
+                 "non à réduction des expériences",
+                 "non à réduction des vols pour données",
+                 "non à réduction des trajets domicile travail")
+
+copie(b)
+
+copie(table(climat$discipline))
+copie(tapply(climat$volshnum, climat$discipline, mean, na.rm=T))
