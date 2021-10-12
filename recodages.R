@@ -80,6 +80,11 @@ climat$acthum2 <- factor(climat$acthum,
 climat$acthum2[substr(climat$changclim, 1, 3) == "Non"] <- "Il n'y a pas de changement climatique"
 climat$acthum2[climat$changclim == "Sans opinion"] <- "Sans opinion"
 
+climat$acthum3 <- fct_collapse(climat$acthum2,
+                               "Oui, elles jouent un grand rôle ou en sont l'unique cause"=
+                                   c("Oui, elles en sont l'unique cause", 
+                                     "Oui, elles jouent un grand rôle"))
+
 climat$preoccupe2 <- climat$preoccupe
 climat$preoccupe2[substr(climat$changclim, 1, 3) == "Non"] <- "Pas du tout préoccupé·e"
 climat$preoccupe2[climat$changclim == "Sans opinion"] <- "Sans opinion"
@@ -509,6 +514,87 @@ climat$discipline_agr3 <- fct_recode(climat$discipline,
 "Autres lettres et sciences humaines"="74 : Sciences et techniques des activités physiques et sportives",
 "Autres lettres et sciences humaines"="76 : Théologie catholique",
 "Autres lettres et sciences humaines"="77 : Théologie protestante",
+"Santé"="80/85 : Sciences physico-chimiques et ingénierie appliquée à la santé (ex-39)",
+"Santé"="81/86 : Sciences du médicament et des autres produits de santé (ex-40)",
+"Santé"="82/87 : Sciences biologiques, fondamentales et cliniques (ex-41)",
+"Santé"="90 : Maïeutique",
+"Santé"="91 : Sciences de la rééducation et de la réadaptation",
+"Santé"="92 : Sciences infirmières"
+)
+
+
+climat$discipline_agr4 <- fct_recode(climat$discipline,
+"Droit, économie, gestion"="01 : Droit privé et sciences criminelles",
+"Droit, économie, gestion"="02 : Droit public",
+"Droit, économie, gestion"="03 : Histoire du droit et des institutions",
+"Droit, économie, gestion"="04 : Science politique",
+"Droit, économie, gestion"="05 : Sciences économiques",
+"Droit, économie, gestion"="06 : Sciences de gestion",
+"Autres sciences humaines"="07 : Sciences du langage : linguistique et phonétique générales",
+"Lettres, philo, arts"="08 : Langues et littératures anciennes",
+"Lettres, philo, arts"="09 : Langue et littérature françaises",
+"Lettres, philo, arts"="10 : Littératures comparées",
+"Lettres, philo, arts"="11 : Langues et littératures anglaises et anglo-saxonnes",
+"Lettres, philo, arts"="12 : Langues et littératures germaniques et scandinaves",
+"Lettres, philo, arts"="13 : Langues et littératures slaves",
+"Lettres, philo, arts"="14 : Langues et littératures romanes : espagnol, italien, portugais, autres langues romanes",
+"Lettres, philo, arts"="15 : Langues et littératures arabes, chinoises, japonaises, hébraïques, d'autres domaines linguistiques",
+"Autres sciences humaines"="16 : Psychologie, psychologie clinique, psychologie sociale",
+"Lettres, philo, arts"="17 : Philosophie",
+"Lettres, philo, arts"="18 : Architecture et Arts : plastiques, du spectacle, musique, musicologie, esthétique, sciences de l'art",
+"Autres sciences humaines"="19 : Sociologie, démographie",
+"Anthropologie"="20 : Anthropologie biologique, ethnologie, préhistoire",
+"Histoire, géo, urba"="21 : Histoire et civilisations : histoire et archéologie des mondes anciens et des mondes médiévaux",
+"Histoire, géo, urba"="22 : Histoire et civilisations : histoire des mondes modernes, histoire du monde contemporain",
+"Histoire, géo, urba"="23 : Géographie physique, humaine, économique et régionale",
+"Histoire, géo, urba"="24 : Aménagement de l'espace, urbanisme",
+"Mathématiques"="25 : Mathématiques",
+"Mathématiques"="26 : Mathématiques appliquées et applications des mathématiques",
+"Informatique"="27 : Informatique",
+"Physique"="28 : Milieux denses et matériaux",
+"Physique"="29 : Constituants élémentaires",
+"Physique"="30 : Milieux dilués et optique",
+"Chimie"="31 : Chimie théorique, physique, analytique",
+"Chimie"="32 : Chimie organique, inorganique, industrielle",
+"Chimie"="33 : Chimie des matériaux",
+"Astro, géologie"="34 : Astronomie, astrophysique",
+"Astro, géologie"="35 : Structure et évolution de la Terre et des autres planètes",
+"Astro, géologie"="36 : Terre solide : géodynamique des enveloppes supérieures, paléobiosphère",
+"Météo, océano, physique environt"="37 : Météorologie, océanographie physique et physique de l'environnement",
+"Santé"="42 : Morphologie et morphogenèse",
+"Santé"="43 : Biophysique et imagerie médicale",
+"Santé"="44 : Biochimie, biologie cellulaire et moléculaire, physiologie et nutrition",
+"Santé"="45 : Microbiologie, maladies transmissibles et hygiène",
+"Santé"="46 : Santé publique, environnement et société",
+"Santé"="47 : Cancérologie, génétique, hématologie, immunologie",
+"Santé"="48 : Anesthésiologie, réanimation, médecine d'urgence, pharmacologie et thérapeutique",
+"Santé"="49 : Pathologie nerveuse et musculaire, pathologie mentale, handicap et rééducation",
+"Santé"="50 : Pathologie ostéo-articulaire, dermatologie et chirurgie plastique",
+"Santé"="51 : Pathologie cardiorespiratoire et vasculaire",
+"Santé"="52 : Maladies des appareils digestif et urinaire",
+"Santé"="53 : Médecine interne, gériatrie, chirurgie générale et médecine générale",
+"Santé"="54 : Développement et pathologie de l'enfant, gynécologie-obstétrique, endocrinologie et reproduction",
+"Santé"="55 : Pathologie de la tête et du cou",
+"Santé"="56 : Développement, croissance et prévention",
+"Santé"="57 : Sciences biologiques, médecine et chirurgie buccales",
+"Santé"="58 : Sciences physiques et physiologiques endodontiques et prothétiques",
+"Ingénierie"="60 : Mécanique, génie mécanique, génie civil",
+"Ingénierie"="61 : Génie informatique, automatique et traitement du signal",
+"Ingénierie"="62 : Énergétique, génie des procédés",
+"Ingénierie"="63 : Génie Électrique, Électronique, optronique et systèmes",
+"Biologie"="64 : Biochimie et biologie moléculaire",
+"Biologie"="65 : Biologie cellulaire",
+"Biologie"="66 : Physiologie",
+"Biologie des populations et écologie"="67 : Biologie des populations et écologie",
+"Biologie"="68 : Biologie des organismes",
+"Biologie"="69 : Neurosciences",
+"Autres sciences humaines"="70 : Sciences de l'éducation",
+"Autres sciences humaines"="71 : Sciences de l'information et de la communication",
+"Lettres, philo, arts"="72 : Épistémologie, histoire des sciences et des techniques",
+"Lettres, philo, arts"="73 : Cultures et langues régionales",
+"Autres sciences humaines"="74 : Sciences et techniques des activités physiques et sportives",
+"Lettres, philo, arts"="76 : Théologie catholique",
+"Lettres, philo, arts"="77 : Théologie protestante",
 "Santé"="80/85 : Sciences physico-chimiques et ingénierie appliquée à la santé (ex-39)",
 "Santé"="81/86 : Sciences du médicament et des autres produits de santé (ex-40)",
 "Santé"="82/87 : Sciences biologiques, fondamentales et cliniques (ex-41)",
@@ -1243,6 +1329,7 @@ climatRegr$sitpro2 <- relevel(climatRegr$sitpro, ref = "Maître·sse de confére
 climatRegr$discipline_agr <- relevel(climatRegr$discipline_agr, ref = "Physique")
 climatRegr$discipline_agr2 <- relevel(climatRegr$discipline_agr, ref = "Physique")
 climatRegr$discipline_agr3 <- relevel(climatRegr$discipline_agr3, ref = "Physique")
+climatRegr$discipline_agr4 <- relevel(climatRegr$discipline_agr4, ref = "Physique")
 
 climatRegr$discipline <- relevel(climatRegr$discipline , ref = "25 : Mathématiques")
 
