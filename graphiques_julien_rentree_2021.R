@@ -924,40 +924,40 @@ colnames(a) <- c("preoccupe : très ou extrêmement",
                 "non à réduction des vols pour données",
                 "non à réduction des trajets domicile travail")
 
-
+copie(a)
 
 b <- cbind(
-  lprop(table(climat$discipline_agr3, climat$preoccupe2), drop = F)[,4]+
-    lprop(table(climat$discipline_agr3, climat$preoccupe2), drop = F)[,5],
+  lprop(table(climat$discipline_agr4, climat$preoccupe2), drop = F)[,4]+
+    lprop(table(climat$discipline_agr4, climat$preoccupe2), drop = F)[,5],
   
-  lprop(table(climat$discipline_agr3, climat$pluspreoccupe), drop = F)[,1],
+  lprop(table(climat$discipline_agr4, climat$pluspreoccupe), drop = F)[,1],
   
-  lprop(table(climat$discipline_agr3, climat$changclim), drop = F)[,1],
+  lprop(table(climat$discipline_agr4, climat$changclim), drop = F)[,1],
   
-  lprop(table(climat$discipline_agr3, climat$acthum), drop = F)[,3]+
-    lprop(table(climat$discipline_agr3, climat$acthum), drop = F)[,4],
+  lprop(table(climat$discipline_agr4, climat$acthum), drop = F)[,3]+
+    lprop(table(climat$discipline_agr4, climat$acthum), drop = F)[,4],
   
-  lprop(table(climat$discipline_agr3, climat$recheco), drop = F)[,1],
+  lprop(table(climat$discipline_agr4, climat$recheco), drop = F)[,1],
   
-  lprop(table(climat$discipline_agr3, climat$chgtpratique), drop = F)[,1]+
-    lprop(table(climat$discipline_agr3, climat$chgtpratique), drop = F)[,2],
-  lprop(table(climat$discipline_agr3, climat$chgtpratique), drop = F)[,1],
+  lprop(table(climat$discipline_agr4, climat$chgtpratique), drop = F)[,1]+
+    lprop(table(climat$discipline_agr4, climat$chgtpratique), drop = F)[,2],
+  lprop(table(climat$discipline_agr4, climat$chgtpratique), drop = F)[,1],
   
-  lprop(table(climat$discipline_agr3, climat$opinionecolo.cata), drop = F)[,1]+
-    lprop(table(climat$discipline_agr3, climat$opinionecolo.cata), drop = F)[,2],
+  lprop(table(climat$discipline_agr4, climat$opinionecolo.cata), drop = F)[,1]+
+    lprop(table(climat$discipline_agr4, climat$opinionecolo.cata), drop = F)[,2],
   
-  lprop(table(climat$discipline_agr3, climat$opinionecolo.effondrement2), drop = F)[,1]+
-    lprop(table(climat$discipline_agr3, climat$opinionecolo.effondrement2), drop = F)[,2],
+  lprop(table(climat$discipline_agr4, climat$opinionecolo.effondrement2), drop = F)[,1]+
+    lprop(table(climat$discipline_agr4, climat$opinionecolo.effondrement2), drop = F)[,2],
   
-  lprop(table(climat$discipline_agr3, climat$solreducrech), drop = F)[,1]+
-    lprop(table(climat$discipline_agr3, climat$solreducrech), drop = F)[,2],
-  lprop(table(climat$discipline_agr3, climat$solreducrech), drop = F)[,1],
+  lprop(table(climat$discipline_agr4, climat$solreducrech), drop = F)[,1]+
+    lprop(table(climat$discipline_agr4, climat$solreducrech), drop = F)[,2],
+  lprop(table(climat$discipline_agr4, climat$solreducrech), drop = F)[,1],
   
-  lprop(table(climat$discipline_agr3, climat$solreducperso.conf)[,-5], drop = F)[,4],
-  lprop(table(climat$discipline_agr3, climat$solreducperso.info)[,-5], drop = F)[,4],
-  lprop(table(climat$discipline_agr3, climat$solreducperso.exp)[,-5], drop = F)[,4],
-  lprop(table(climat$discipline_agr3, climat$solreducperso.donnees)[,-5], drop = F)[,4],
-  lprop(table(climat$discipline_agr3, climat$solreducperso.domicile)[,-5], drop = F)[,4]
+  lprop(table(climat$discipline_agr4, climat$solreducperso.conf)[,-5], drop = F)[,4],
+  lprop(table(climat$discipline_agr4, climat$solreducperso.info)[,-5], drop = F)[,4],
+  lprop(table(climat$discipline_agr4, climat$solreducperso.exp)[,-5], drop = F)[,4],
+  lprop(table(climat$discipline_agr4, climat$solreducperso.donnees)[,-5], drop = F)[,4],
+  lprop(table(climat$discipline_agr4, climat$solreducperso.domicile)[,-5], drop = F)[,4]
 )
 
 
@@ -981,12 +981,67 @@ colnames(b) <- c("preoccupe : très ou extrêmement",
 
 copie(b)
 
-copie(table(climat$discipline))
+copie(table(climat$discipline_agr4))
 copie(tapply(climat$volshnum, climat$discipline, mean, na.rm=T))
 
+dispositifs_exp <- cbind(
+lprop(table(climat$discipline_agr4, climat$solreducmateriel.lowtech)[,-5], drop = F)[,4],
+lprop(table(climat$discipline_agr4, climat$solreducmateriel.util)[,-5], drop = F)[,4],
+lprop(table(climat$discipline_agr4, climat$solreducmateriel.moins)[,-5], drop = F)[,4],
+lprop(table(climat$discipline_agr4, climat$solreducmateriel.renouv)[,-5], drop = F)[,4]
+)
+
+climat$solrisqreducavion.insertion
+colnames(dispositifs_exp) <- c("Matos expériences : non au lowtech", 
+                 "Matos expériences : non à l'utiliser moins souvent",
+                 "Matos expériences : en utilisant moins d'équipements",
+                 "Matos expériences : en le renouvelant moins souvent")
+
+copie(dispositifs_exp)
 
 
 
+
+risques <- cbind(
+  lprop(table(climat$discipline_agr4, climat$solrisqreducavion.avantages)[,-5], drop = F)[,1],
+  lprop(table(climat$discipline_agr4, climat$solrisqreducavion.qual)[,-5], drop = F)[,1],
+  lprop(table(climat$discipline_agr4, climat$solrisqreducavion.fin)[,-5], drop = F)[,1],
+  lprop(table(climat$discipline_agr4, climat$solrisqreducavion.diffusion)[,-5], drop = F)[,1],
+  lprop(table(climat$discipline_agr4, climat$solrisqreducavion.donnees)[,-5], drop = F)[,1],
+  lprop(table(climat$discipline_agr4, climat$solrisqreducavion.insertion)[,-5], drop = F)[,1],
+  lprop(table(climat$discipline_agr4, climat$solrisqreducavion.isoler)[,-5], drop = F)[,1]
+)
+lprop(table(climat$discipline_agr4, climat$solrisqreducavion.bureaucratie)[,-5], drop = F)[,1]
+copie(lprop(table(climat$sitpro, climat$solrisqreducavion.bureaucratie)[,-5], drop = F)[,1])
+
+colnames(risques) <- c("Risques : avantages du métier", 
+                               "Risques : qualité des travaux",
+                               "Risques : réduire financements",
+                               "Risques : diffusion des travaux",
+                               "Risques : gêner le recueil des données",
+                               "Risques : insertion des jeunes",
+                               "Risques : isoler la recherche")
+
+copie(risques)
+
+
+
+
+risques_matos <- cbind(
+  lprop(table(climat$discipline_agr4, climat$solrisqreducmateriel.qual)[,-5], drop = F)[,1],
+  lprop(table(climat$discipline_agr4, climat$solrisqreducmateriel.themes)[,-5], drop = F)[,1],
+  lprop(table(climat$discipline_agr4, climat$solrisqreducmateriel.fin)[,-5], drop = F)[,1],
+  lprop(table(climat$discipline_agr4, climat$solrisqreducmateriel.retard)[,-5], drop = F)[,1],
+  lprop(table(climat$discipline_agr4, climat$solrisqreducmateriel.publi)[,-5], drop = F)[,1]
+)
+
+colnames(risques_matos) <- c("Risques_matos : qualité des travaux", 
+                       "Risques_matos : chgt thèmes de recherche",
+                       "Risques_matos : réduire financements",
+                       "Risques_matos : faire prendre du retard",
+                       "Risques_matos : réduire publis")
+
+copie(risques_matos)
 
 # traitements par statuts ----
 
@@ -1020,14 +1075,13 @@ a <- cbind(
     lprop(table(climat$sitpro, climat$solreducrech), drop = F)[,2],
   lprop(table(climat$sitpro, climat$solreducrech), drop = F)[,1],
   
-  lprop(table(climat$sitpro, climat$solreducperso.conf), drop = F)[,4],
-  lprop(table(climat$sitpro, climat$solreducperso.info), drop = F)[,4],
-  lprop(table(climat$sitpro, climat$solreducperso.exp), drop = F)[,4],
-  lprop(table(climat$sitpro, climat$solreducperso.donnees), drop = F)[,4],
-  lprop(table(climat$sitpro, climat$solreducperso.domicile), drop = F)[,4]
+  lprop(table(climat$sitpro, climat$solreducperso.conf)[,-5], drop = F)[,4],
+  lprop(table(climat$sitpro, climat$solreducperso.info)[,-5], drop = F)[,4],
+  lprop(table(climat$sitpro, climat$solreducperso.exp)[,-5], drop = F)[,4],
+  lprop(table(climat$sitpro, climat$solreducperso.donnees)[,-5], drop = F)[,4],
+  lprop(table(climat$sitpro, climat$solreducperso.domicile)[,-5], drop = F)[,4]
 )
 
-a
 
 
 colnames(a) <- c("preoccupe : très ou extrêmement", 
@@ -1049,61 +1103,63 @@ colnames(a) <- c("preoccupe : très ou extrêmement",
 
 copie(a)
 
-# b <- cbind(
-#   lprop(table(climat$discipline_agr3, climat$preoccupe2), drop = F)[,4]+
-#     lprop(table(climat$discipline_agr3, climat$preoccupe2), drop = F)[,5],
-#   
-#   lprop(table(climat$discipline_agr3, climat$pluspreoccupe), drop = F)[,1],
-#   
-#   lprop(table(climat$discipline_agr3, climat$changclim), drop = F)[,1],
-#   
-#   lprop(table(climat$discipline_agr3, climat$acthum), drop = F)[,3]+
-#     lprop(table(climat$discipline_agr3, climat$acthum), drop = F)[,4],
-#   
-#   lprop(table(climat$discipline_agr3, climat$recheco), drop = F)[,1],
-#   
-#   lprop(table(climat$discipline_agr3, climat$chgtpratique), drop = F)[,1]+
-#     lprop(table(climat$discipline_agr3, climat$chgtpratique), drop = F)[,2],
-#   lprop(table(climat$discipline_agr3, climat$chgtpratique), drop = F)[,1],
-#   
-#   lprop(table(climat$discipline_agr3, climat$opinionecolo.cata), drop = F)[,1]+
-#     lprop(table(climat$discipline_agr3, climat$opinionecolo.cata), drop = F)[,2],
-#   
-#   lprop(table(climat$discipline_agr3, climat$opinionecolo.effondrement2), drop = F)[,1]+
-#     lprop(table(climat$discipline_agr3, climat$opinionecolo.effondrement2), drop = F)[,2],
-#   
-#   lprop(table(climat$discipline_agr3, climat$solreducrech), drop = F)[,1]+
-#     lprop(table(climat$discipline_agr3, climat$solreducrech), drop = F)[,2],
-#   lprop(table(climat$discipline_agr3, climat$solreducrech), drop = F)[,1],
-#   
-#   lprop(table(climat$discipline_agr3, climat$solreducperso.conf), drop = F)[,4],
-#   lprop(table(climat$discipline_agr3, climat$solreducperso.info), drop = F)[,4],
-#   lprop(table(climat$discipline_agr3, climat$solreducperso.exp), drop = F)[,4],
-#   lprop(table(climat$discipline_agr3, climat$solreducperso.donnees), drop = F)[,4],
-#   lprop(table(climat$discipline_agr3, climat$solreducperso.domicile), drop = F)[,4]
-# )
-# 
 
-# 
-# colnames(b) <- c("preoccupe : très ou extrêmement", 
-#                  "beaucoup plus préoccupé qu'avant",
-#                  "il y a certainement un changement climatique",
-#                  "activités humaines causent le chgt climatique (unique ou grand rôle)",
-#                  "a réorienté ses recherches",
-#                  "exige des chgt profonds dans nos métiers : plutôt ou tout à fait ok",
-#                  "dont tout à fait d'accord", 
-#                  "catastrophe : plutôt ou tout à fait OK",
-#                  "effonrement : plutôt ou tout à fait OK", 
-#                  "Recherche : réduire d'au moins un tiers", 
-#                  "Dont montrer l'exemple",
-#                  "non à réduction des confs",
-#                  "non à reduction du matos info", 
-#                  "non à réduction des expériences",
-#                  "non à réduction des vols pour données",
-#                  "non à réduction des trajets domicile travail")
 
-copie(a)
+dispositifs_exp <- cbind(
+  lprop(table(climat$sitpro, climat$solreducmateriel.lowtech)[,-5], drop = F)[,4],
+  lprop(table(climat$sitpro, climat$solreducmateriel.util)[,-5], drop = F)[,4],
+  lprop(table(climat$sitpro, climat$solreducmateriel.moins)[,-5], drop = F)[,4],
+  lprop(table(climat$sitpro, climat$solreducmateriel.renouv)[,-5], drop = F)[,4]
+)
+
+
+colnames(dispositifs_exp) <- c("Matos expériences : non au lowtech", 
+                               "Matos expériences : non à l'utiliser moins souvent",
+                               "Matos expériences : en utilisant moins d'équipements",
+                               "Matos expériences : en le renouvelant moins souvent")
+
+copie(dispositifs_exp)
+
+
+
+risques <- cbind(
+  lprop(table(climat$sitpro, climat$solrisqreducavion.avantages)[,-5], drop = F)[,1],
+  lprop(table(climat$sitpro, climat$solrisqreducavion.qual)[,-5], drop = F)[,1],
+  lprop(table(climat$sitpro, climat$solrisqreducavion.fin)[,-5], drop = F)[,1],
+  lprop(table(climat$sitpro, climat$solrisqreducavion.diffusion)[,-5], drop = F)[,1],
+  lprop(table(climat$sitpro, climat$solrisqreducavion.donnees)[,-5], drop = F)[,1],
+  lprop(table(climat$sitpro, climat$solrisqreducavion.insertion)[,-5], drop = F)[,1],
+  lprop(table(climat$sitpro, climat$solrisqreducavion.isoler)[,-5], drop = F)[,1]
+)
+
+colnames(risques) <- c("Risques : avantages du métier", 
+                       "Risques : qualité des travaux",
+                       "Risques : réduire financements",
+                       "Risques : diffusion des travaux",
+                       "Risques : gêner le recueil des données",
+                       "Risques : insertion des jeunes",
+                       "Risques : isoler la recherche")
+
+copie(risques)
+
 
 copie(table(climat$sitpro))
 copie(tapply(climat$volshnum, climat$sitpro, mean, na.rm=T))
 
+
+risques_matos <- cbind(
+  lprop(table(climat$sitpro, climat$solrisqreducmateriel.qual)[,-5], drop = F)[,1],
+  lprop(table(climat$sitpro, climat$solrisqreducmateriel.themes)[,-5], drop = F)[,1],
+  lprop(table(climat$sitpro, climat$solrisqreducmateriel.fin)[,-5], drop = F)[,1],
+  lprop(table(climat$sitpro, climat$solrisqreducmateriel.retard)[,-5], drop = F)[,1],
+  lprop(table(climat$sitpro, climat$solrisqreducmateriel.publi)[,-5], drop = F)[,1]
+)
+
+colnames(risques_matos) <- c("Risques_matos : qualité des travaux", 
+                             "Risques_matos : chgt thèmes de recherche",
+                             "Risques_matos : réduire financements",
+                             "Risques_matos : faire prendre du retard",
+                             "Risques_matos : réduire publis")
+
+freq(climat$materiel.aucun)
+copie(risques_matos)
