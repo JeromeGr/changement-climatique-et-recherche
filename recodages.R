@@ -43,6 +43,14 @@ climat<-climat %>% filter (datestamp!="2020-07-01 14:22:52")
 #Peut être rajouter des conditions
 climat<-climat %>% filter(!(sexe=="" & age=="" & statut=="" & employeur=="" & changclim=="" & preoccupe==""))
 
+#Réponse avant ou après 3e relance
+climat$apres3erelance[climat$dateDebut<"2020-10-12"]<-"Avant 3e relance"
+climat$apres3erelance[climat$dateDebut>="2020-10-12"]<-"Après 3e relance"
+
+#Avoir rempli le jour même
+#On devrait affiner (certains ont rempli un jour d'envoi pour une autre vague)
+climat$remplijourenvoi[climat$dateDebut %in% c("2020-06-26", "2020-06-29", "2020-06-30","2020-07-06" ,  "2020-07-07", "2020-09-07", "2020-10-12", "2020-10-15", "2020-11-16", "2020-11-24")]<-"Oui"
+climat$remplijourenvoi[!(climat$dateDebut %in% c("2020-06-26", "2020-06-29", "2020-06-30","2020-07-06" ,  "2020-07-07", "2020-09-07", "2020-10-12", "2020-10-15", "2020-11-16", "2020-11-24"))]<-"Non"
 
 # La modalité Moins de 18 ans est vide : la retirer
 climat$age <- droplevels(climat$age)
@@ -890,6 +898,29 @@ for(inst in c("anr", "europe", "france", "inter", "prive")) {
   }
 }
 
+#On met dans une même variable membres et responsables
+#Certains ont coché membre ET responsable. Par défaut, on les considère comme responsable seulement
+climat$projets.anr[climat$projets.anr_m2=="Membre projet ANR non"]<-"Ni membre ni responsable projet ANR"
+climat$projets.anr[climat$projets.anr_m2=="Membre projet ANR oui"]<-"Membre projet ANR"
+climat$projets.anr[climat$projets.anr_r2=="Responsable projet ANR oui"]<-"Responsable projet ANR"
+
+climat$projets.france[climat$projets.france_m2=="Membre projet France non"]<-"Ni membre ni responsable projet France"
+climat$projets.france[climat$projets.france_m2=="Membre projet France oui"]<-"Membre projet France"
+climat$projets.france[climat$projets.france_r2=="Responsable projet France oui"]<-"Responsable projet France"
+
+climat$projets.europe[climat$projets.europe_m2=="Membre projet européen non"]<-"Ni membre ni responsable projet européen"
+climat$projets.europe[climat$projets.europe_m2=="Membre projet européen oui"]<-"Membre projet européen"
+climat$projets.europe[climat$projets.europe_r2=="Responsable projet européen oui"]<-"Responsable projet européen"
+
+climat$projets.inter[climat$projets.inter_m2=="Membre projet international non"]<-"Ni membre ni responsable projet international"
+climat$projets.inter[climat$projets.inter_m2=="Membre projet international oui"]<-"Membre projet international"
+climat$projets.inter[climat$projets.inter_r2=="Responsable projet international oui"]<-"Responsable projet international"
+
+climat$projets.prive[climat$projets.prive_m2=="Membre projet privé non"]<-"Ni membre ni responsable projet privé"
+climat$projets.prive[climat$projets.prive_m2=="Membre projet privé oui"]<-"Membre projet privé"
+climat$projets.prive[climat$projets.prive_r2=="Responsable projet privé oui"]<-"Responsable projet privé"
+
+
 #Financements : regroupement membres et responsables
 climat$particip_ANR<-0
 climat$particip_ANR[climat$projets.anr_r2 == "Responsable projet ANR oui" | climat$projets.anr_m2 == "Membre projet ANR oui"]<-1
@@ -1158,9 +1189,9 @@ climat$quiz.rapportav.visio<-climat$quizfacteurs.avionnum/climat$quizfacteurs.vi
 climat$commenter<- ifelse(!is.na(climat$commentaires), "Oui", "Non")
 
 #Temps partiel en numérique : porportion d'un temps complet (1 pour les temps complets)
-climat$tpsquotiteNum[climat$tpsplein=="Oui"]<-1
 climat<-tidyr::extract(climat, tpsquotite, "tpsquotiteVal", "(\\d+)", remove=FALSE)
 climat$tpsquotiteVal<-as.numeric(climat$tpsquotiteVal)
+climat$tpsquotiteVal[climat$tpsplein=="Oui"]<-100
 climat$tpsquotiteNum<-climat$tpsquotiteVal/100
 
 #Variables passées en numérique
@@ -1189,6 +1220,12 @@ climat$NumVague["2020-09-07"<=climat$dateDebut & climat$dateDebut<"2020-10-12"]<
 climat$NumVague["2020-10-12"<=climat$dateDebut & climat$dateDebut<"2020-11-16"]<-"Après troisième relance"
 climat$NumVague["2020-11-16"<=climat$dateDebut]<-"Après quatrième relance"
 
+#Vague de réponse numérique
+climat$vaguenum[climat$dateDebut<"2020-07-06"]<-1
+climat$vaguenum["2020-07-06"<=climat$dateDebut & climat$dateDebut<"2020-09-07"]<-2
+climat$vaguenum["2020-09-07"<=climat$dateDebut & climat$dateDebut<"2020-10-12"]<-3
+climat$vaguenum["2020-10-12"<=climat$dateDebut & climat$dateDebut<"2020-11-16"]<-4
+climat$vaguenum["2020-11-16"<=climat$dateDebut]<-5
 
 
 
@@ -1231,12 +1268,15 @@ climat$enfantsage_rec <- factor(climat$enfantsage_rec,
 
 climatRegr <- climat
 
+climatRegr$apres3erelance <- as.factor(climatRegr$apres3erelance)
+climatRegr$apres3erelance <- relevel(climatRegr$apres3erelance, ref = "Avant 3e relance")
+
 climatRegr$sexe <- relevel(climatRegr$sexe, ref = "Homme")
 
 climatRegr$ageAgr <- relevel(climatRegr$ageAgr, ref = "50-54 ans")
 
-#climatRegr$revenuAgr <- as.factor(climatRegr$revenuAgr)
-#climatRegr$revenuAgr <- relevel(climatRegr$revenuAgr, ref = "De 4 500 à 5 999 euros par mois")
+climatRegr$revenuAgr <- as.factor(climatRegr$revenuAgr)
+climatRegr$revenuAgr <- relevel(climatRegr$revenuAgr, ref = "De 4 500 à 5 999 euros par mois")
 
 climatRegr$sitpro2 <- relevel(climatRegr$sitpro, ref = "Maître·sse de conférences")
 
@@ -1269,6 +1309,9 @@ climatRegr$solrisqreducavion.insertion <- relevel(climatRegr$solrisqreducavion.i
 climatRegr$solrisqreducavion.isoler <- relevel(climatRegr$solrisqreducavion.isoler, ref = "C'est peu probable")
 climatRegr$solrisqreducavion.bureaucratie <- relevel(climatRegr$solrisqreducavion.bureaucratie, ref = "C'est peu probable")
 
+climatRegr$solevolges.conf <- relevel(climatRegr$solevolges.conf, ref = "Fortement diminué")
+
+
 climatRegr$paie2 <- as.factor(climatRegr$paie)
 climatRegr$paie2 <- relevel(climatRegr$paie2, ref = "Mal payé·e")
 
@@ -1285,6 +1328,13 @@ climatRegr$discipline<-fct_relevel(climatRegr$discipline, "19 : Sociologie, dém
 climatRegr$vols_dicho3ans <- fct_relevel(climatRegr$vols_dicho3ans, "N'a pas volé en 3 ans")
 
 climatRegr$vols_dicho <- fct_relevel(climatRegr$vols_dicho, "N'a pas volé en 2019")
+
+climatRegr$projets.anr <- fct_relevel(climatRegr$projets.anr, "Ni membre ni responsable projet ANR")
+climatRegr$projets.anr <- fct_relevel(climatRegr$projets.france, "Ni membre ni responsable projet France")
+climatRegr$projets.europe <- fct_relevel(climatRegr$projets.europe, "Ni membre ni responsable projet européen")
+climatRegr$projets.inter <- fct_relevel(climatRegr$projets.inter, "Ni membre ni responsable projet international")
+climatRegr$projets.prive <- fct_relevel(climatRegr$projets.prive, "Ni membre ni responsable projet privé")
+
 
 climatRegr$hindexconnDicho<-fct_relevel(climatRegr$hindexconnDicho, "Non")
 
@@ -1305,6 +1355,10 @@ climatRegr$ageaccad_tranch2<-fct_relevel(climatRegr$ageaccad_tranch2, "[0,2]")
 
 climatRegr$quiz<-fct_relevel(climatRegr$quiz, "Je décline le quiz")
 
+climatRegr$solreducrech<-as.factor(climatRegr$solreducrech)
+climatRegr$solreducrech2[climatRegr$solreducrech=="La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui"]<-"Recherche doit montrer l'exemple, réduire de plus d'1/3"
+climatRegr$solreducrech2[climatRegr$solreducrech=="La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ"]<-"Recherche doit réduire émissions de GES de 1/3 environ"
+climatRegr$solreducrech2[climatRegr$solreducrech=="En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"]<-"Recherche peut bénéficier d'un statut dérogatoire"
 
 ################
 #Recodage pour les ACM

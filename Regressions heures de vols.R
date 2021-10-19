@@ -173,7 +173,22 @@ htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6, res.reg7
 res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + solinstit.limitevols, data=climatRegr)
 res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + solinstit.vols6h, data=climatRegr)
 res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + solinstit.train, data=climatRegr)
+
 summary(res.reg8)
+
+
+#Preoccupe
+res.reg8<- lm(volshnum ~ preoccupe2, data=climatRegr_recherche)
+res.reg8<- lm(volshnum ~ preoccupe2, data=climatRegr_recherche)
+summary(res.reg8)
+reglog3 <- MASS::glm.nb(volshnum ~ preoccupe2, data=climatRegr)
+reglog3 <- MASS::glm.nb(volshnum ~ preoccupe2, data=climatRegr_recherche)
+reglog3 <- MASS::glm.nb(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + preoccupe2, data=climatRegr_recherche)
+summary(reglog3)
+
+
+freq(climatRegr_recherche$preoccupe2)
+
 #Risques
 res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + solrisqreducavion.qual, data=climatRegr)
 res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + solrisqreducavion.fin, data=climatRegr)
@@ -196,10 +211,26 @@ rprop(table(climatRegr$solinstit.train))
 
 rbind(prop.table(table(climatRegr$solinstit.train)), prop.table(table(climatRegr$solinstit.vols6h)))
 
+#Réduction possible des GES perso
 
+res.reg8<- lm(volshnum ~ solreducperso.conf, data=climatRegr_recherche)
+summary(res.reg8)
+res.reg8<- lm(volshnum ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + solreducperso.conf, data=climatRegr_recherche)
+summary(res.reg8)
+climat$solreduc
 
+#Comparaison avec les ordis
+res.reg8<- lm(ordis.nbtotal~ sexe + ageAgr  + sitpro2 + discipline_agr3 + solreducperso.info, data=climatRegr_recherche)
+summary(res.reg8)
+res.reg8<- lm(ordis.nbtotal~ solreducperso.info, data=climatRegr_recherche)
+summary(res.reg8)
 
+res.reg8<- lm(ordis.5anstotal~ sexe + ageAgr  + sitpro2 + discipline_agr3 + solreducperso.info, data=climatRegr_recherche)
+summary(res.reg8)
+res.reg8<- lm(ordis.5anstotal~ solreducperso.info, data=climatRegr_recherche)
+summary(res.reg8)
 
+climat$solreducperso.info
 
 #Evolution de la quantité de vols
 res.reg8<- lm(Evol_GesVol.conf ~ sexe + ageAgr  + sitpro2 + discipline_agr3 , data=climatRegr)
@@ -948,6 +979,9 @@ reglog2 <- glm(Moinsavionconf ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + vol
 
 reglog2 <- glm(Moinsavionconf ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + volsnb + international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso, data=climatRegr_recherche,family=binomial(logit))
 reglog2 <- glm(Moinsavionconf ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso, data=climatRegr_recherche,family=binomial(logit))
+
+reglog2 <- glm(Moinsavionconf ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + quizfacteurs.avionnum , data=climatRegr_recherche,family=binomial(logit))
+reglog2 <- glm(Moinsavionperso ~ sexe + ageAgr  + sitpro2 + discipline_agr3 + quizfacteurs.avionnum , data=climatRegr_recherche,family=binomial(logit))
 
 
 summary(reglog2)
