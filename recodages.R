@@ -97,23 +97,45 @@ climat$preoccupe2 <- climat$preoccupe
 climat$preoccupe2[substr(climat$changclim, 1, 3) == "Non"] <- "Pas du tout préoccupé·e"
 climat$preoccupe2[climat$changclim == "Sans opinion"] <- "Sans opinion"
 
+# Si au moins une case du tableau a été remplie, on remplit les cases vides avec des 0
+# Si la case total de chaque ligne est vide ou inférieure à la case 5 ans ou indispensable,
+# on prend la valeur la plus élevée de la ligne comme total
+vars <- c("ordis.fixeperso", "ordis.fixepro", "ordis.partage",
+          "ordis.portablepro", "ordis.portableperso",
+          "ordis.tablettepro", "ordis.tabletteperso")
+suffixes <- c("_nb", "_5ans", "_indisp")
+climat$ordisremplis <- rowSums(!is.na(select(climat, as.vector(outer(vars, suffixes, paste0))))) > 0
+for(var in vars) {
+    for(suffixe in suffixes)
+        climat[climat$ordisremplis, paste0(var, suffixe)] <-
+            coalesce(climat[climat$ordisremplis, paste0(var, suffixe)], 0)
+
+    climat[[paste0(var, "_nb")]] <- pmax(climat[[paste0(var, "_nb")]],
+                                         climat[[paste0(var, "_5ans")]],
+                                         climat[[paste0(var, "_indisp")]])
+}
+rm(vars, suffixes)
+
 #Nombre total d'ordinateurs et tablettes
-climat$ordis.nbtotal<-ifelse(climat$tiragemodule==2, ifelse(!is.na(climat$ordis.fixeperso_nb), climat$ordis.fixeperso_nb, 0)  + 
-                               ifelse(!is.na(climat$ordis.fixepro_nb), climat$ordis.fixepro_nb, 0)  +
-                               ifelse(!is.na(climat$ordis.partage_nb), climat$ordis.partage_nb, 0)  +
-                               ifelse(!is.na(climat$ordis.portablepro_nb), climat$ordis.portablepro_nb, 0)  +
-                               ifelse(!is.na(climat$ordis.portableperso_nb), climat$ordis.portableperso_nb, 0)  +
-                               ifelse(!is.na(climat$ordis.tablettepro_nb), climat$ordis.tablettepro_nb, 0)  +
-                               ifelse(!is.na(climat$ordis.tabletteperso_nb), climat$ordis.tabletteperso_nb, 0), NA)
+climat$ordis.nbtotal <- rowSums(select(climat, ordis.fixeperso_nb, ordis.fixepro_nb, ordis.partage_nb,
+                                       ordis.portablepro_nb, ordis.portableperso_nb,
+                                       ordis.tablettepro_nb, ordis.tabletteperso_nb))
+
+climat$ordis.nbtotalpro <- rowSums(select(climat, ordis.fixepro_nb, ordis.portablepro_nb, ordis.tablettepro_nb))
 
 #Nombre total d'ordinateurs et tablettes de moins de 5 ans
-climat$ordis.5anstotal<-ifelse(climat$tiragemodule==2, ifelse(!is.na(climat$ordis.fixeperso_5ans), climat$ordis.fixeperso_5ans, 0)  + 
-                               ifelse(!is.na(climat$ordis.fixepro_5ans), climat$ordis.fixepro_5ans, 0)  +
-                               ifelse(!is.na(climat$ordis.partage_5ans), climat$ordis.partage_5ans, 0)  +
-                               ifelse(!is.na(climat$ordis.portablepro_5ans), climat$ordis.portablepro_5ans, 0)  +
-                               ifelse(!is.na(climat$ordis.portableperso_5ans), climat$ordis.portableperso_5ans, 0)  +
-                               ifelse(!is.na(climat$ordis.tablettepro_5ans), climat$ordis.tablettepro_5ans, 0)  +
-                               ifelse(!is.na(climat$ordis.tabletteperso_5ans), climat$ordis.tabletteperso_5ans, 0), NA)
+climat$ordis.5anstotal <- rowSums(select(climat, ordis.fixeperso_5ans, ordis.fixepro_5ans, ordis.partage_5ans,
+                                         ordis.portablepro_5ans, ordis.portableperso_5ans,
+                                         ordis.tablettepro_5ans, ordis.tabletteperso_5ans))
+
+climat$ordis.5anstotalpro <- rowSums(select(climat, ordis.fixepro_5ans, ordis.portablepro_5ans, ordis.tablettepro_5ans))
+
+#Nombre total d'ordinateurs et tablettes indispensables
+climat$ordis.indisptotal <- rowSums(select(climat, ordis.fixeperso_indisp, ordis.fixepro_indisp, ordis.partage_indisp,
+                                           ordis.portablepro_indisp, ordis.portableperso_indisp,
+                                           ordis.tablettepro_indisp, ordis.tabletteperso_indisp))
+
+climat$ordis.indisptotalpro <- rowSums(select(climat, ordis.fixepro_indisp, ordis.portablepro_indisp, ordis.tablettepro_indisp))
 
 # vols_dicho : a volé ou n'a pas volé ----
 climat$vols_dicho <- ifelse(climat$volsnb=="0", "pas_vol", "vol")
