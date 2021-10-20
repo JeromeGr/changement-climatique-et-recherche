@@ -43,15 +43,6 @@ climat<-climat %>% filter (datestamp!="2020-07-01 14:22:52")
 #Peut être rajouter des conditions
 climat<-climat %>% filter(!(sexe=="" & age=="" & statut=="" & employeur=="" & changclim=="" & preoccupe==""))
 
-#Réponse avant ou après 3e relance
-climat$apres3erelance[climat$dateDebut<"2020-10-12"]<-"Avant 3e relance"
-climat$apres3erelance[climat$dateDebut>="2020-10-12"]<-"Après 3e relance"
-
-#Avoir rempli le jour même
-#On devrait affiner (certains ont rempli un jour d'envoi pour une autre vague)
-climat$remplijourenvoi[climat$dateDebut %in% c("2020-06-26", "2020-06-29", "2020-06-30","2020-07-06" ,  "2020-07-07", "2020-09-07", "2020-10-12", "2020-10-15", "2020-11-16", "2020-11-24")]<-"Oui"
-climat$remplijourenvoi[!(climat$dateDebut %in% c("2020-06-26", "2020-06-29", "2020-06-30","2020-07-06" ,  "2020-07-07", "2020-09-07", "2020-10-12", "2020-10-15", "2020-11-16", "2020-11-24"))]<-"Non"
-
 # La modalité Moins de 18 ans est vide : la retirer
 climat$age <- droplevels(climat$age)
 
@@ -1313,6 +1304,15 @@ climat$nbpublisang<-as.numeric(climat$nbpublisang)
 #Variable avec uniquement la date
 climat$dateDebut<-strftime(strptime(climat$startdate, "%Y-%m-%d %H:%M:%S"), "%Y-%m-%d")
 climat$dateFin<-strftime(strptime(climat$datestamp, "%Y-%m-%d %H:%M:%S"), "%Y-%m-%d")
+
+#Réponse avant ou après 3e relance
+climat$apres3erelance[climat$dateDebut<"2020-10-12"]<-"Avant 3e relance"
+climat$apres3erelance[climat$dateDebut>="2020-10-12"]<-"Après 3e relance"
+
+#Avoir rempli le jour même
+#On devrait affiner (certains ont rempli un jour d'envoi pour une autre vague)
+climat$remplijourenvoi[climat$dateDebut %in% c("2020-06-26", "2020-06-29", "2020-06-30","2020-07-06" ,  "2020-07-07", "2020-09-07", "2020-10-12", "2020-10-15", "2020-11-16", "2020-11-24")]<-"Oui"
+climat$remplijourenvoi[!(climat$dateDebut %in% c("2020-06-26", "2020-06-29", "2020-06-30","2020-07-06" ,  "2020-07-07", "2020-09-07", "2020-10-12", "2020-10-15", "2020-11-16", "2020-11-24"))]<-"Non"
 
 #Durée de remplissage
 climat$datestamp1 <- as.POSIXct(climat$datestamp, format ="%Y-%m-%d %H:%M:%S")
