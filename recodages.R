@@ -633,6 +633,21 @@ climat$rechecoB[is.na(climat$recheco)]<-NA
 climat$materiel <- with(climat, materiel.tgir == "Oui" | materiel.info == "Oui" |
                             materiel.extensif == "Oui" | materiel.trescouteux == "Oui" |
                             materiel.couteux == "Oui" | materiel.petit == "Oui")
+climat$champmateriel <- with(climat,
+                             ifelse(is.na(discipline) & is.na(bap), NA,
+                                    substr(discipline, 1, 2) %in% c(25:37, 42:58, 60:82, 90:92) |
+                                        substr(bap, 5, 5) %in% c("A", "B", "C", "E")))
+
+for(var in c("tgir", "info", "extensif", "trescouteux", "couteux", "petit", "aucun"))
+    climat[[paste0("materiel.", var)]] <- fct_expand(climat[[paste0("materiel.", var)]], "Non concerné·e")
+
+climat$materiel.tgir[!climat$champmateriel] <- "Non concerné·e"
+climat$materiel.info[!climat$champmateriel] <- "Non concerné·e"
+climat$materiel.extensif[!climat$champmateriel] <- "Non concerné·e"
+climat$materiel.trescouteux[!climat$champmateriel] <- "Non concerné·e"
+climat$materiel.couteux[!climat$champmateriel] <- "Non concerné·e"
+climat$materiel.petit[!climat$champmateriel] <- "Non concerné·e"
+climat$materiel.aucun[!climat$champmateriel] <- "Non concerné·e"
 
 # Repérer les personnes qui ont rempli le tableau sur les vols,
 # soit parce qu'ils ont déclaré au moins un vol, soit parce qu'ils n'ont pas volé
