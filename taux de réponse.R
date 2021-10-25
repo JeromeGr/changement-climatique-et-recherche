@@ -24,7 +24,7 @@ freq(!is.na(ech$lastpage))
 # Equivalent à :
 # freq(ech$courriel %in% climat$email)
 
-# Taux de réponses complètes et partielles (validation de la page 1 au moins)
+# Taux de réponses complètes et partielles (ouverture de la page 1 au moins)
 freq(!is.na(ech$lastpage) & ech$lastpage >= 1)
 
 # Taux de réponses complètes
