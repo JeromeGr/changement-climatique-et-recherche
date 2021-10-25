@@ -378,7 +378,7 @@ climatRegrsept<-climatRegr%>%filter(datedebut>70)
 res.reg1 <- lm(datedebut ~ sexe + ageAgr   + sitpro2  + discipline_agr3 , data=climatRegrsept )
 res.reg1 <- lm(datedebut ~ sexe + ageAgr    + discipline_agr3 +  employeur, data=climatRegrsept )
 
-freq(climat$volsnbmoins2j)
+freq(climat$volsnb_moins2j)
 
 
 ##############################@

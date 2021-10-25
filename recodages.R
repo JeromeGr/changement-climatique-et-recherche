@@ -889,7 +889,7 @@ climat$volsnbPologne<-ifelse(!(is.na(climat$volsnb_tot)), ifelse(is.na(climat$vo
 
 ###Calcul en fonction des durées (il faudrait pondérer par le nombre d'aller-retour)
 
-climat$volsnbmoins2j <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsjours1) & climat$volsjours1=="Moins de deux jours", climat$volsnb1, 0) + 
+climat$volsnb_moins2j <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsjours1) & climat$volsjours1=="Moins de deux jours", climat$volsnb1, 0) + 
   ifelse(!is.na(climat$volsjours2) & climat$volsjours2=="Moins de deux jours", climat$volsnb2, 0) +
   ifelse(!is.na(climat$volsjours3) & climat$volsjours3=="Moins de deux jours", climat$volsnb3, 0) +
   ifelse(!is.na(climat$volsjours4) & climat$volsjours4=="Moins de deux jours", climat$volsnb4, 0) +
@@ -912,6 +912,36 @@ climat$volsnb_sup1mois <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(clim
   ifelse(!is.na(climat$volsjours3) & climat$volsjours3=="Plus d'un mois", climat$volsnb3, 0) +
   ifelse(!is.na(climat$volsjours4) & climat$volsjours4=="Plus d'un mois", climat$volsnb4, 0) +
   ifelse(!is.na(climat$volsjours5) & climat$volsjours5=="Plus d'un mois", climat$volsnb5, 0), NA )
+
+#Calcul distance totale par durée sur place
+
+climat$volsdist_moins2j <- with(climat, ifelse(!(is.na(volsnb_tot)),
+  ifelse(!is.na(volsjours1) & volsjours1 == "Moins de deux jours", volsdist_tot1, 0) + 
+  ifelse(!is.na(volsjours2) & volsjours2 == "Moins de deux jours", volsdist_tot2, 0) +
+  ifelse(!is.na(volsjours3) & volsjours3 == "Moins de deux jours", volsdist_tot3, 0) +
+  ifelse(!is.na(volsjours4) & volsjours4 == "Moins de deux jours", volsdist_tot4, 0) +
+  ifelse(!is.na(volsjours5) & volsjours5 == "Moins de deux jours", volsdist_tot5, 0), NA))
+
+climat$volsdist_2j_1sem <- with(climat, ifelse(!(is.na(volsnb_tot)),
+  ifelse(!is.na(volsjours1) & volsjours1 == "De deux jours à une semaine", volsdist_tot1, 0) + 
+  ifelse(!is.na(volsjours2) & volsjours2 == "De deux jours à une semaine", volsdist_tot2, 0) +
+  ifelse(!is.na(volsjours3) & volsjours3 == "De deux jours à une semaine", volsdist_tot3, 0) +
+  ifelse(!is.na(volsjours4) & volsjours4 == "De deux jours à une semaine", volsdist_tot4, 0) +
+  ifelse(!is.na(volsjours5) & volsjours5 == "De deux jours à une semaine", volsdist_tot5, 0), NA))
+
+climat$volsdist_1sem_1mois <- with(climat, ifelse(!(is.na(volsnb_tot)),
+  ifelse(!is.na(volsjours1) & volsjours1 == "De plus d'une semaine à un mois", volsdist_tot1, 0) + 
+  ifelse(!is.na(volsjours2) & volsjours2 == "De plus d'une semaine à un mois", volsdist_tot2, 0) +
+  ifelse(!is.na(volsjours3) & volsjours3 == "De plus d'une semaine à un mois", volsdist_tot3, 0) +
+  ifelse(!is.na(volsjours4) & volsjours4 == "De plus d'une semaine à un mois", volsdist_tot4, 0) +
+  ifelse(!is.na(volsjours5) & volsjours5 == "De plus d'une semaine à un mois", volsdist_tot5, 0), NA))
+
+climat$volsdist_sup1mois <- with(climat, ifelse(!(is.na(volsnb_tot)),
+  ifelse(!is.na(volsjours1) & volsjours1 == "Plus d'un mois", volsdist_tot1, 0) + 
+  ifelse(!is.na(volsjours2) & volsjours2 == "Plus d'un mois", volsdist_tot2, 0) +
+  ifelse(!is.na(volsjours3) & volsjours3 == "Plus d'un mois", volsdist_tot3, 0) +
+  ifelse(!is.na(volsjours4) & volsjours4 == "Plus d'un mois", volsdist_tot4, 0) +
+  ifelse(!is.na(volsjours5) & volsjours5 == "Plus d'un mois", volsdist_tot5, 0), NA))
 
 #Recodage temps de transport domicile travail
 varstpsdomtrav <- paste0("tpsdomtrav.", c("urbain_h", "urbain_m", "tgv_h", "tgv_m", "train_h", "train_m",
