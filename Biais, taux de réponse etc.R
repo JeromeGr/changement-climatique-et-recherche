@@ -1,6 +1,19 @@
 library(tidyr)
 library(tidyverse)
 
+###########
+#Taux de réponse complet
+#lastpage = 1 : ça veut dire qu'on a ouvert la page 1 mais qu'on n'est pas allé jusqu'à la page 2
+
+freq((!is.na(climat$lastpage) & climat$lastpage == 8) |
+  (!is.na(climat$rechpub) & climat$rechpub == "Non"))
+freq(climat$dippar.m, total =T)
+#Non réponse à la dernière vraie question du questionnaire :
+freq(climat$revenu, total =T)
+
+climat$lastpagefin<-climat$lastpage
+climat$lastpagefin[climat$lastpagefin==8&!(is.na(climat$revenu))]<-9
+freq(climat$lastpagefin)
 
 ####################################@
 mean(climat$TpsRempliMin)
@@ -38,6 +51,40 @@ climat$preoccupeNum[climat$preoccupe=="Un peu préoccupé·e"]<-1
 #Doctorants : numérique
 climat$doctoNum[climat$docto=="Oui"]<-1
 climat$doctoNum[climat$docto=="Non"]<-0
+
+##########################
+
+a <- cprop(table(climat$preoccupe2, climat$NumVague))
+a <- as.data.frame(a[1:6,])
+## Réordonnancement de a$Var1
+a$Var1 <- factor(a$Var1,
+                 levels = c(
+                   "Pas du tout préoccupé·e", "Un peu préoccupé·e", "Sans opinion",
+                   "Assez préoccupé·e", "Très préoccupé·e", "Extrêmement préoccupé·e"
+                 )
+)
+
+ggplot(a) + geom_bar(aes(x=Var2, y=Freq, fill=Var1), stat="identity")+
+  scale_fill_manual(
+    values=c(
+      "#74add1", "#fee090","light grey", "#fdae61", "#f46d43", "#d73027"))+
+  theme(axis.text.x = element_text(angle = 90))
+
+freq(climat$opinionecolo.cata)
+a <- cprop(table(climat$opinionecolo.cata, climat$NumVague))
+a <- as.data.frame(a[1:5,])
+## Réordonnancement de a$Var1
+a$Var1 <- factor(a$Var1,
+                 levels = c(
+                   "Pas du tout d'accord", "Plutôt pas d'accord",  "Sans opinion","Plutôt d'accord", "Tout à fait d'accord")
+ )
+
+ggplot(a) + geom_bar(aes(x=Var2, y=Freq, fill=Var1), stat="identity")+
+  scale_fill_manual(
+    values=c(
+      "#74add1", "#fee090","light grey", "#fdae61", "#f46d43"))+
+  theme(axis.text.x = element_text(angle = 90))
+
 
 
 ################################################
@@ -106,10 +153,24 @@ summary(reglog3)
 res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso + lastpage , data=climatRegr )
 
 summary(res.reg1)
+#############################################@
+#Qui est allé jusqu'à la fin 
+res.reg1 <- lm(lastpage ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + preoccupe2 + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso , data=climatRegr )
+res.reg1 <- lm(lastpage ~ preoccupe2 , data=climatRegr )
+res.reg1 <- lm(lastpage ~ sexe + ageAgr   + preoccupe2 , data=climatRegr )
+res.reg1 <- lm(lastpage ~ sexe + ageAgr + sitpro2  + discipline_agr4  + preoccupe2 , data=climatRegr )
+res.reg1 <- lm(lastpage ~ sexe + ageAgr + sitpro2  + discipline_agr4  + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso , data=climatRegr )
+res.reg1 <- lm(lastpage ~ sexe + ageAgr + sitpro2  + discipline_agr4  + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso + dixannees.bilan , data=climatRegr )
 
+res.reg1 <- lm(lastpagefin ~ sexe + ageAgr + sitpro2  + discipline_agr4 + preoccupe2 , data=climatRegr )
+
+res.reg1 <- lm(lastpagefin ~ sexe + ageAgr + sitpro2  + discipline_agr4  + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso + dixannees.bilan , data=climatRegr )
+summary(res.reg1)
+
+freq(climat$lastpage)
+freq(climat$ordis.nbtotalpro)
 ######################################
 #Par date (c'est peut être le plus propre ?), ie le nombre de jours écoulés depuis lancement premier message
-climatRegr$datedebut<-as.numeric(as.Date(climatRegr$dateDebut))-18438
 freq(climat$datedebut)
 mean(climatRegr$datedebut)
 
@@ -122,6 +183,9 @@ res.reg1 <- lm(datedebut ~ sitpro2 , data=climatRegr )
 res.reg1 <- lm(datedebut ~ preoccupe2, data=climatRegr )
 res.reg1 <- lm(datedebut ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + preoccupe2, data=climatRegr )
 
+climatRegr$preoccupe2 <- relevel(climatRegr$preoccupe, ref = "Extrêmement préoccupé·e")
+
+
 res.reg1 <- lm(datedebut ~ dixannees.marche , data=climatRegr )
 res.reg1 <- lm(datedebut ~ ageAgr + dixannees.marche , data=climatRegr )
 res.reg1 <- lm(datedebut ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + dixannees.marche , data=climatRegr )
@@ -133,9 +197,10 @@ res.reg1 <- lm(datedebut ~ dixannees.bilan , data=climatRegr )
 res.reg1 <- lm(datedebut ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + dixannees.bilan , data=climatRegr )
 
 
-res.reg1 <- lm(datedebut ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso , data=climatRegr )
+res.reg1 <- lm(datedebut ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso + dixannees.bilan , data=climatRegr )
 
-freq(climatRegr$sitpro2)
+res.reg1 <- lm(datedebut ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + ScoreEcolo , data=climatRegr )
+res.reg1 <- lm(datedebut ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + ScoreEcoloPond , data=climatRegr )
 
 summary(res.reg1)
 
@@ -274,7 +339,29 @@ res.reg1 <- lm(datedebut ~ sexe + ageAgr   + sitpro2  + discipline_agr3 +
 freq(climat$solreducperso.exp)
 
 #Modèle total réduit
+res.reg1 <- lm(datedebut ~ sexe + ageAgr   + sitpro2  + discipline_agr4 +  
+                 preoccupe2 + opinionecolo.proteger + opinionecolo.contraintes +opinionecolo.cata+
+                 solreducrech2 + solinstit.train + solinstit.limitevols + solinstit.bilanges + solinstit.vege +
+                 dixannees.bilan +
+                 solreducperso.donnees + solreducperso.exp +
+                 malpaye + carriere + tpsplein + 
+                 projets.inter  +
+                 international.scol + international.naiss + international.natio
+               , data=climatRegr )
+summary(res.reg1)
+
 res.reg1 <- lm(datedebut ~ sexe + ageAgr   + sitpro2  + discipline_agr3 +  
+                 preoccupe2 + opinionecolo.proteger + opinionecolo.contraintes +opinionecolo.cata+
+                 solreducrech2 + solinstit.train + solinstit.limitevols + solinstit.bilanges + solinstit.vege +
+                 dixannees.bilan +
+                 solreducperso.donnees + solreducperso.exp +
+                 malpaye + carriere + tpsplein + 
+                 projets.inter  +
+                 international.scol + international.naiss + international.natio
+               , data=climatRegr )
+summary(res.reg1)
+
+res.reg1 <- lm(datedebut ~ sexe + ageAgr   + sitpro2  + discipline +  
                  preoccupe2 + opinionecolo.proteger + opinionecolo.contraintes +opinionecolo.cata+
                  solreducrech2 + solinstit.train + solinstit.limitevols + solinstit.bilanges + solinstit.vege +
                  dixannees.bilan +
@@ -292,6 +379,189 @@ res.reg1 <- lm(datedebut ~ sexe + ageAgr   + sitpro2  + discipline_agr3 , data=c
 res.reg1 <- lm(datedebut ~ sexe + ageAgr    + discipline_agr3 +  employeur, data=climatRegrsept )
 
 freq(climat$volsnbmoins2j)
+
+
+##############################@
+#A nouveau par numéro de vague (oct 2021)
+
+mean(climat$vaguenum)
+freq(climat$vaguenum)
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  , data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 , data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr4 , data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sitpro2 , data=climatRegr )
+
+res.reg1 <- lm(vaguenum ~ preoccupe2, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + preoccupe2, data=climatRegr )
+
+res.reg1 <- lm(vaguenum ~ dixannees.marche , data=climatRegr )
+res.reg1 <- lm(vaguenum ~ ageAgr + dixannees.marche , data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + dixannees.marche , data=climatRegr )
+
+res.reg1 <- lm(vaguenum ~ dixannees.vote , data=climatRegr )
+res.reg1 <- lm(vaguenum ~ dixannees.giec , data=climatRegr )
+res.reg1 <- lm(vaguenum ~ dixannees.asso , data=climatRegr )
+res.reg1 <- lm(vaguenum ~ dixannees.bilan , data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + dixannees.bilan , data=climatRegr )
+
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso , data=climatRegr )
+
+summary(res.reg1)
+
+res.reg1 <- lm(vaguenum ~ opinionecolo.cata , data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + opinionecolo.cata , data=climatRegr )
+
+res.reg1 <- lm(vaguenum ~ opinionecolo.decroissance , data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + opinionecolo.decroissance , data=climatRegr )
+
+res.reg1 <- lm(vaguenum ~ opinionecolo.proteger , data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + opinionecolo.proteger , data=climatRegr )
+
+res.reg1 <- lm(vaguenum ~ opinionecolo.efforts , data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + opinionecolo.efforts , data=climatRegr )
+
+res.reg1 <- lm(vaguenum ~ opinionecolo.contraintes , data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + opinionecolo.contraintes , data=climatRegr )
+
+summary(res.reg1)
+
+#Modèle total avec les variables d'opinion qui sont signif
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 
+               + preoccupe2 + dixannees.marche+
+                 opinionecolo.techno + opinionecolo.proteger + opinionecolo.efforts+ 
+                 opinionecolo.contraintes +  opinionecolo.decroissance + opinionecolo.cata , data=climatRegr )
+
+
+res.reg1 <- lm(vaguenum ~ lastpage, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + lastpage, data=climatRegr )
+res.reg1<- lm(vaguenum ~TpsRemp_MmJour  , data=climatRegr)
+res.reg1<- lm(vaguenum ~ sexe + ageAgr  + TpsRemp_MmJour  , data=climatRegr)
+res.reg1<- lm(vaguenum ~ sexe + ageAgr  + interviewtime, data=climatRegr)
+summary(res.reg1)
+
+
+res.reg1<- lm(vaguenum ~ enfantsnb, data=climatRegr)
+res.reg1<- lm(vaguenum ~ ageAgr + enfantsnb, data=climatRegr)
+res.reg1<- lm(vaguenum ~ ageAgr + enfantsage_rec, data=climatRegr)
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + enfantsage_rec, data=climatRegr )
+res.reg1<- lm(vaguenum ~ ageAgr + couple, data=climatRegr)
+res.reg1<- lm(vaguenum ~ sexe + ageAgr + enfantsnb, data=climatRegr)
+
+
+res.reg1<- lm(vaguenum ~ sexe + ageAgr  + employeur, data=climatRegr)
+
+res.reg1<- lm(vaguenum ~ tpsquotiteNum, data=climatRegr)
+res.reg1<- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr3  + tpsquotiteNum, data=climatRegr)
+
+res.reg1<- lm(vaguenum ~ tpsplein, data=climatRegr)
+
+res.reg1<- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr3 + malpaye, data=climatRegr)
+res.reg1<- lm(vaguenum ~ carriere, data=climatRegr)
+
+res.reg1<- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr3 + carriere, data=climatRegr)
+
+summary(res.reg1)
+
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + nbpublistranch2, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + hindextranch2, data=climatRegr )
+
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + volshnum, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + Moinsavionperso, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + avionpersochgt, data=climatRegr )
+
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + solevolges.conf, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + Moinsavionconf, data=climatRegr )
+
+res.reg1 <- lm(vaguenum ~  solreducrech, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + solreducrech, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + solreducperso.donnees, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + solreducperso.conf, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + solreducperso.exp, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + solreducperso.info, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + solreducperso.domicile, data=climatRegr )
+
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + solinstit.train, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + solinstit.compensation, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + solinstit.bilanges, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + solinstit.limitevols, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + solinstit.selection, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + solinstit.vols6h, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + solinstit.conf, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + solinstit.info, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + solinstit.equip, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + solinstit.vege, data=climatRegr )
+
+
+
+
+summary(res.reg1)
+freq(climat$solinstit.vege)
+
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 +  projets.anr, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 +  projets.france, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 +  projets.europe, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 +  projets.inter, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 +  projets.prive, data=climatRegr )
+
+summary(res.reg1)
+
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 +  international.poste, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 +  international.natio, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 +  international.naiss, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 +  international.scol, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 +  international.etudes, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 +  international.postdoc, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 +  international.travail, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 +  international.prog, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 +  international.asso, data=climatRegr )
+
+
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + 
+                 international.poste + international.natio +  international.naiss + international.scol + international.etudes + 
+                 international.postdoc + international.travail + international.prog + international.asso, data=climatRegr )
+
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 +  dippar.m, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 +  dippar.p, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 +  statutpar.m, data=climatRegr )
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 +  statutpar.p, data=climatRegr )
+
+summary(res.reg1)
+
+
+#Modèle total réduit
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr4 +  
+                 preoccupe2 + opinionecolo.proteger + opinionecolo.contraintes +opinionecolo.cata+
+                 solreducrech2 + solinstit.train + solinstit.limitevols + solinstit.bilanges + solinstit.vege +
+                 dixannees.bilan +
+                 solreducperso.donnees + solreducperso.exp +
+                 malpaye + carriere + tpsplein + 
+                 projets.inter  +
+                 international.scol + international.naiss + international.natio
+               , data=climatRegr )
+summary(res.reg1)
+
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr4 +  
+                                  
+                
+                international.natio
+               , data=climatRegr )
+
+
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr4 +  
+                 preoccupe2 + opinionecolo.proteger + opinionecolo.contraintes +opinionecolo.cata+
+                 solreducrech2 + solinstit.train + solinstit.limitevols + solinstit.bilanges + solinstit.vege +
+                 dixannees.bilan +
+                 solreducperso.donnees + solreducperso.exp +
+                 malpaye + carriere + tpsplein + 
+                
+                 international.natio
+               , data=climatRegr )
+summary(res.reg1)
+
+
+
+#####################@@@@
 
 #Avoir rempli le jour même (catégories pas propres : certains n'ont pas remplis le jour même et sont notés comme tel car on remplit un jour d'envoi de message)
 climatRegr$remplijourenvoi<-as.factor(climatRegr$remplijourenvoi)

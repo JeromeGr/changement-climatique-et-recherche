@@ -1310,8 +1310,8 @@ climat$NumVague["2020-10-12"<=climat$dateDebut & climat$dateDebut<"2020-11-16"]<
 climat$NumVague["2020-11-16"<=climat$dateDebut]<-"Après quatrième relance"
 
 #Vague de réponse numérique
-climat$vaguenum[climat$dateDebut<"2020-07-06"]<-1
-climat$vaguenum["2020-07-06"<=climat$dateDebut & climat$dateDebut<"2020-09-07"]<-2
+climat$vaguenum[climat$dateDebut<"2020-07-07"]<-1
+climat$vaguenum["2020-07-07"<=climat$dateDebut & climat$dateDebut<"2020-09-07"]<-2
 climat$vaguenum["2020-09-07"<=climat$dateDebut & climat$dateDebut<"2020-10-12"]<-3
 climat$vaguenum["2020-10-12"<=climat$dateDebut & climat$dateDebut<"2020-11-16"]<-4
 climat$vaguenum["2020-11-16"<=climat$dateDebut]<-5
@@ -1449,6 +1449,9 @@ climatRegr$solreducrech<-as.factor(climatRegr$solreducrech)
 climatRegr$solreducrech2[climatRegr$solreducrech=="La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui"]<-"Recherche doit montrer l'exemple, réduire de plus d'1/3"
 climatRegr$solreducrech2[climatRegr$solreducrech=="La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ"]<-"Recherche doit réduire émissions de GES de 1/3 environ"
 climatRegr$solreducrech2[climatRegr$solreducrech=="En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"]<-"Recherche peut bénéficier d'un statut dérogatoire"
+
+climatRegr$datedebut<-as.numeric(as.Date(climatRegr$dateDebut))-18438
+
 
 ################
 #Recodage pour les ACM
