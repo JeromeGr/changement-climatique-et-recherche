@@ -724,7 +724,7 @@ climat$volsdist_totconf <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(cli
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Conférence, présentation", climat$volsdist_tot2, 0) +
   ifelse(!is.na(climat$volsmotif3) & climat$volsmotif3=="Conférence, présentation", climat$volsdist_tot3, 0) +
   ifelse(!is.na(climat$volsmotif4) & climat$volsmotif4=="Conférence, présentation", climat$volsdist_tot4, 0) +
-  ifelse(!is.na(climat$volsmotif4) & climat$volsmotif5=="Conférence, présentation", climat$volsdist_tot5, 0), NA )
+  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Conférence, présentation", climat$volsdist_tot5, 0), NA )
 
 climat$volsdist_totsejrech <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Séjour de recherche", climat$volsdist_tot1, 0) + 
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Séjour de recherche", climat$volsdist_tot2, 0) +
@@ -780,7 +780,7 @@ climat$volsnbconf <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$vo
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Conférence, présentation", climat$volsnb2, 0) +
   ifelse(!is.na(climat$volsmotif3) & climat$volsmotif3=="Conférence, présentation", climat$volsnb3, 0) +
   ifelse(!is.na(climat$volsmotif4) & climat$volsmotif4=="Conférence, présentation", climat$volsnb4, 0) +
-  ifelse(!is.na(climat$volsmotif4) & climat$volsmotif5=="Conférence, présentation", climat$volsnb5, 0), NA )
+  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Conférence, présentation", climat$volsnb5, 0), NA )
 
 climat$volsnbsejrech <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Séjour de recherche", climat$volsnb1, 0) + 
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Séjour de recherche", climat$volsnb2, 0) +
@@ -909,7 +909,7 @@ climat$volsnb_moins2j <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(clima
   ifelse(!is.na(climat$volsjours2) & climat$volsjours2=="Moins de deux jours", climat$volsnb2, 0) +
   ifelse(!is.na(climat$volsjours3) & climat$volsjours3=="Moins de deux jours", climat$volsnb3, 0) +
   ifelse(!is.na(climat$volsjours4) & climat$volsjours4=="Moins de deux jours", climat$volsnb4, 0) +
-  ifelse(!is.na(climat$volsjours4) & climat$volsjours5=="Moins de deux jours", climat$volsnb5, 0), NA )
+  ifelse(!is.na(climat$volsjours5) & climat$volsjours5=="Moins de deux jours", climat$volsnb5, 0), NA )
 
 climat$volsnb_2j_1sem <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsjours1) & climat$volsjours1=="De deux jours à une semaine", climat$volsnb1, 0) + 
   ifelse(!is.na(climat$volsjours2) & climat$volsjours2=="De deux jours à une semaine", climat$volsnb2, 0) +
