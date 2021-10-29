@@ -556,24 +556,24 @@ climat$discipline_agr4 <- fct_recode(climat$discipline,
 "Droit, économie, gestion"="04 : Science politique",
 "Droit, économie, gestion"="05 : Sciences économiques",
 "Droit, économie, gestion"="06 : Sciences de gestion",
-"Autres sciences humaines"="07 : Sciences du langage : linguistique et phonétique générales",
-"Lettres, philo, arts"="08 : Langues et littératures anciennes",
-"Lettres, philo, arts"="09 : Langue et littérature françaises",
-"Lettres, philo, arts"="10 : Littératures comparées",
-"Lettres, philo, arts"="11 : Langues et littératures anglaises et anglo-saxonnes",
-"Lettres, philo, arts"="12 : Langues et littératures germaniques et scandinaves",
-"Lettres, philo, arts"="13 : Langues et littératures slaves",
-"Lettres, philo, arts"="14 : Langues et littératures romanes : espagnol, italien, portugais, autres langues romanes",
-"Lettres, philo, arts"="15 : Langues et littératures arabes, chinoises, japonaises, hébraïques, d'autres domaines linguistiques",
-"Autres sciences humaines"="16 : Psychologie, psychologie clinique, psychologie sociale",
-"Lettres, philo, arts"="17 : Philosophie",
-"Lettres, philo, arts"="18 : Architecture et Arts : plastiques, du spectacle, musique, musicologie, esthétique, sciences de l'art",
-"Autres sciences humaines"="19 : Sociologie, démographie",
-"Anthropologie"="20 : Anthropologie biologique, ethnologie, préhistoire",
-"Histoire, géo, urba"="21 : Histoire et civilisations : histoire et archéologie des mondes anciens et des mondes médiévaux",
-"Histoire, géo, urba"="22 : Histoire et civilisations : histoire des mondes modernes, histoire du monde contemporain",
-"Histoire, géo, urba"="23 : Géographie physique, humaine, économique et régionale",
-"Histoire, géo, urba"="24 : Aménagement de l'espace, urbanisme",
+"Autres lettres et sciences humaines"="07 : Sciences du langage : linguistique et phonétique générales",
+"Autres lettres et sciences humaines"="08 : Langues et littératures anciennes",
+"Autres lettres et sciences humaines"="09 : Langue et littérature françaises",
+"Autres lettres et sciences humaines"="10 : Littératures comparées",
+"Autres lettres et sciences humaines"="11 : Langues et littératures anglaises et anglo-saxonnes",
+"Autres lettres et sciences humaines"="12 : Langues et littératures germaniques et scandinaves",
+"Autres lettres et sciences humaines"="13 : Langues et littératures slaves",
+"Autres lettres et sciences humaines"="14 : Langues et littératures romanes : espagnol, italien, portugais, autres langues romanes",
+"Autres lettres et sciences humaines"="15 : Langues et littératures arabes, chinoises, japonaises, hébraïques, d'autres domaines linguistiques",
+"Autres lettres et sciences humaines"="16 : Psychologie, psychologie clinique, psychologie sociale",
+"Autres lettres et sciences humaines"="17 : Philosophie",
+"Autres lettres et sciences humaines"="18 : Architecture et Arts : plastiques, du spectacle, musique, musicologie, esthétique, sciences de l'art",
+"Autres lettres et sciences humaines"="19 : Sociologie, démographie",
+"Histoire, géo, urba, anthropo"="20 : Anthropologie biologique, ethnologie, préhistoire",
+"Histoire, géo, urba, anthropo"="21 : Histoire et civilisations : histoire et archéologie des mondes anciens et des mondes médiévaux",
+"Histoire, géo, urba, anthropo"="22 : Histoire et civilisations : histoire des mondes modernes, histoire du monde contemporain",
+"Histoire, géo, urba, anthropo"="23 : Géographie physique, humaine, économique et régionale",
+"Histoire, géo, urba, anthropo"="24 : Aménagement de l'espace, urbanisme",
 "Mathématiques"="25 : Mathématiques",
 "Mathématiques"="26 : Mathématiques appliquées et applications des mathématiques",
 "Informatique"="27 : Informatique",
@@ -587,23 +587,23 @@ climat$discipline_agr4 <- fct_recode(climat$discipline,
 "Géologie"="35 : Structure et évolution de la Terre et des autres planètes",
 "Géologie"="36 : Terre solide : géodynamique des enveloppes supérieures, paléobiosphère",
 "Météo, océano, physique environt"="37 : Météorologie, océanographie physique et physique de l'environnement",
-"Santé"="42 : Morphologie et morphogenèse",
-"Santé"="43 : Biophysique et imagerie médicale",
-"Santé"="44 : Biochimie, biologie cellulaire et moléculaire, physiologie et nutrition",
-"Santé"="45 : Microbiologie, maladies transmissibles et hygiène",
-"Santé"="46 : Santé publique, environnement et société",
-"Santé"="47 : Cancérologie, génétique, hématologie, immunologie",
-"Santé"="48 : Anesthésiologie, réanimation, médecine d'urgence, pharmacologie et thérapeutique",
-"Santé"="49 : Pathologie nerveuse et musculaire, pathologie mentale, handicap et rééducation",
-"Santé"="50 : Pathologie ostéo-articulaire, dermatologie et chirurgie plastique",
-"Santé"="51 : Pathologie cardiorespiratoire et vasculaire",
-"Santé"="52 : Maladies des appareils digestif et urinaire",
-"Santé"="53 : Médecine interne, gériatrie, chirurgie générale et médecine générale",
-"Santé"="54 : Développement et pathologie de l'enfant, gynécologie-obstétrique, endocrinologie et reproduction",
-"Santé"="55 : Pathologie de la tête et du cou",
-"Santé"="56 : Développement, croissance et prévention",
-"Santé"="57 : Sciences biologiques, médecine et chirurgie buccales",
-"Santé"="58 : Sciences physiques et physiologiques endodontiques et prothétiques",
+"Santé et recherche médicale"="42 : Morphologie et morphogenèse",
+"Santé et recherche médicale"="43 : Biophysique et imagerie médicale",
+"Santé et recherche médicale"="44 : Biochimie, biologie cellulaire et moléculaire, physiologie et nutrition",
+"Santé et recherche médicale"="45 : Microbiologie, maladies transmissibles et hygiène",
+"Santé et recherche médicale"="46 : Santé publique, environnement et société",
+"Santé et recherche médicale"="47 : Cancérologie, génétique, hématologie, immunologie",
+"Santé et recherche médicale"="48 : Anesthésiologie, réanimation, médecine d'urgence, pharmacologie et thérapeutique",
+"Santé et recherche médicale"="49 : Pathologie nerveuse et musculaire, pathologie mentale, handicap et rééducation",
+"Santé et recherche médicale"="50 : Pathologie ostéo-articulaire, dermatologie et chirurgie plastique",
+"Santé et recherche médicale"="51 : Pathologie cardiorespiratoire et vasculaire",
+"Santé et recherche médicale"="52 : Maladies des appareils digestif et urinaire",
+"Santé et recherche médicale"="53 : Médecine interne, gériatrie, chirurgie générale et médecine générale",
+"Santé et recherche médicale"="54 : Développement et pathologie de l'enfant, gynécologie-obstétrique, endocrinologie et reproduction",
+"Santé et recherche médicale"="55 : Pathologie de la tête et du cou",
+"Santé et recherche médicale"="56 : Développement, croissance et prévention",
+"Santé et recherche médicale"="57 : Sciences biologiques, médecine et chirurgie buccales",
+"Santé et recherche médicale"="58 : Sciences physiques et physiologiques endodontiques et prothétiques",
 "Ingénierie"="60 : Mécanique, génie mécanique, génie civil",
 "Ingénierie"="61 : Génie informatique, automatique et traitement du signal",
 "Ingénierie"="62 : Énergétique, génie des procédés",
@@ -614,19 +614,19 @@ climat$discipline_agr4 <- fct_recode(climat$discipline,
 "Biologie des populations et écologie"="67 : Biologie des populations et écologie",
 "Biologie"="68 : Biologie des organismes",
 "Biologie"="69 : Neurosciences",
-"Autres sciences humaines"="70 : Sciences de l'éducation",
-"Autres sciences humaines"="71 : Sciences de l'information et de la communication",
-"Lettres, philo, arts"="72 : Épistémologie, histoire des sciences et des techniques",
-"Lettres, philo, arts"="73 : Cultures et langues régionales",
-"Autres sciences humaines"="74 : Sciences et techniques des activités physiques et sportives",
-"Lettres, philo, arts"="76 : Théologie catholique",
-"Lettres, philo, arts"="77 : Théologie protestante",
-"Santé"="80/85 : Sciences physico-chimiques et ingénierie appliquée à la santé (ex-39)",
-"Santé"="81/86 : Sciences du médicament et des autres produits de santé (ex-40)",
-"Santé"="82/87 : Sciences biologiques, fondamentales et cliniques (ex-41)",
-"Santé"="90 : Maïeutique",
-"Santé"="91 : Sciences de la rééducation et de la réadaptation",
-"Santé"="92 : Sciences infirmières"
+"Autres lettres et sciences humaines"="70 : Sciences de l'éducation",
+"Autres lettres et sciences humaines"="71 : Sciences de l'information et de la communication",
+"Autres lettres et sciences humaines"="72 : Épistémologie, histoire des sciences et des techniques",
+"Autres lettres et sciences humaines"="73 : Cultures et langues régionales",
+"Autres lettres et sciences humaines"="74 : Sciences et techniques des activités physiques et sportives",
+"Autres lettres et sciences humaines"="76 : Théologie catholique",
+"Autres lettres et sciences humaines"="77 : Théologie protestante",
+"Santé et recherche médicale"="80/85 : Sciences physico-chimiques et ingénierie appliquée à la santé (ex-39)",
+"Santé et recherche médicale"="81/86 : Sciences du médicament et des autres produits de santé (ex-40)",
+"Santé et recherche médicale"="82/87 : Sciences biologiques, fondamentales et cliniques (ex-41)",
+"Santé et recherche médicale"="90 : Maïeutique",
+"Santé et recherche médicale"="91 : Sciences de la rééducation et de la réadaptation",
+"Santé et recherche médicale"="92 : Sciences infirmières"
 )
 
 ## création d'une variable binaire sur le thème de recherche écolo (pour l'instant oui, non, oui dans le passé)
@@ -634,6 +634,22 @@ climat$rechecoB<-0
 climat$rechecoB[climat$recheco %in% c("Oui", "Non, mais je l'ai fait par le passé")]<-"Oui"
 climat$rechecoB[climat$recheco=="Non" & !is.na(climat$recheco)]<-"Non"
 climat$rechecoB[is.na(climat$recheco)]<-NA
+
+climat$champmateriel <- with(climat,
+                             ifelse(is.na(discipline) & is.na(bap), NA,
+                                    substr(discipline, 1, 2) %in% c(25:37, 42:58, 60:82, 90:92) |
+                                        substr(bap, 5, 5) %in% c("A", "B", "C", "E")))
+
+for(var in c("tgir", "info", "extensif", "trescouteux", "couteux", "petit", "aucun"))
+    climat[[paste0("materiel.", var)]] <- fct_expand(climat[[paste0("materiel.", var)]], "Non concerné·e")
+
+climat$materiel.tgir[!climat$champmateriel] <- "Non concerné·e"
+climat$materiel.info[!climat$champmateriel] <- "Non concerné·e"
+climat$materiel.extensif[!climat$champmateriel] <- "Non concerné·e"
+climat$materiel.trescouteux[!climat$champmateriel] <- "Non concerné·e"
+climat$materiel.couteux[!climat$champmateriel] <- "Non concerné·e"
+climat$materiel.petit[!climat$champmateriel] <- "Non concerné·e"
+climat$materiel.aucun[!climat$champmateriel] <- "Non concerné·e"
 
 climat$materiel <- with(climat, materiel.tgir == "Oui" | materiel.info == "Oui" |
                             materiel.extensif == "Oui" | materiel.trescouteux == "Oui" |
@@ -713,7 +729,7 @@ climat$volsdist_totconf <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(cli
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Conférence, présentation", climat$volsdist_tot2, 0) +
   ifelse(!is.na(climat$volsmotif3) & climat$volsmotif3=="Conférence, présentation", climat$volsdist_tot3, 0) +
   ifelse(!is.na(climat$volsmotif4) & climat$volsmotif4=="Conférence, présentation", climat$volsdist_tot4, 0) +
-  ifelse(!is.na(climat$volsmotif4) & climat$volsmotif5=="Conférence, présentation", climat$volsdist_tot5, 0), NA )
+  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Conférence, présentation", climat$volsdist_tot5, 0), NA )
 
 climat$volsdist_totsejrech <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Séjour de recherche", climat$volsdist_tot1, 0) + 
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Séjour de recherche", climat$volsdist_tot2, 0) +
@@ -769,7 +785,7 @@ climat$volsnbconf <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$vo
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Conférence, présentation", climat$volsnb2, 0) +
   ifelse(!is.na(climat$volsmotif3) & climat$volsmotif3=="Conférence, présentation", climat$volsnb3, 0) +
   ifelse(!is.na(climat$volsmotif4) & climat$volsmotif4=="Conférence, présentation", climat$volsnb4, 0) +
-  ifelse(!is.na(climat$volsmotif4) & climat$volsmotif5=="Conférence, présentation", climat$volsnb5, 0), NA )
+  ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Conférence, présentation", climat$volsnb5, 0), NA )
 
 climat$volsnbsejrech <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Séjour de recherche", climat$volsnb1, 0) + 
   ifelse(!is.na(climat$volsmotif2) & climat$volsmotif2=="Séjour de recherche", climat$volsnb2, 0) +
@@ -894,11 +910,11 @@ climat$volsnbPologne<-ifelse(!(is.na(climat$volsnb_tot)), ifelse(is.na(climat$vo
 
 ###Calcul en fonction des durées (il faudrait pondérer par le nombre d'aller-retour)
 
-climat$volsnbmoins2j <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsjours1) & climat$volsjours1=="Moins de deux jours", climat$volsnb1, 0) + 
+climat$volsnb_moins2j <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsjours1) & climat$volsjours1=="Moins de deux jours", climat$volsnb1, 0) + 
   ifelse(!is.na(climat$volsjours2) & climat$volsjours2=="Moins de deux jours", climat$volsnb2, 0) +
   ifelse(!is.na(climat$volsjours3) & climat$volsjours3=="Moins de deux jours", climat$volsnb3, 0) +
   ifelse(!is.na(climat$volsjours4) & climat$volsjours4=="Moins de deux jours", climat$volsnb4, 0) +
-  ifelse(!is.na(climat$volsjours4) & climat$volsjours5=="Moins de deux jours", climat$volsnb5, 0), NA )
+  ifelse(!is.na(climat$volsjours5) & climat$volsjours5=="Moins de deux jours", climat$volsnb5, 0), NA )
 
 climat$volsnb_2j_1sem <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsjours1) & climat$volsjours1=="De deux jours à une semaine", climat$volsnb1, 0) + 
   ifelse(!is.na(climat$volsjours2) & climat$volsjours2=="De deux jours à une semaine", climat$volsnb2, 0) +
@@ -917,6 +933,36 @@ climat$volsnb_sup1mois <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(clim
   ifelse(!is.na(climat$volsjours3) & climat$volsjours3=="Plus d'un mois", climat$volsnb3, 0) +
   ifelse(!is.na(climat$volsjours4) & climat$volsjours4=="Plus d'un mois", climat$volsnb4, 0) +
   ifelse(!is.na(climat$volsjours5) & climat$volsjours5=="Plus d'un mois", climat$volsnb5, 0), NA )
+
+#Calcul distance totale par durée sur place
+
+climat$volsdist_moins2j <- with(climat, ifelse(!(is.na(volsnb_tot)),
+  ifelse(!is.na(volsjours1) & volsjours1 == "Moins de deux jours", volsdist_tot1, 0) + 
+  ifelse(!is.na(volsjours2) & volsjours2 == "Moins de deux jours", volsdist_tot2, 0) +
+  ifelse(!is.na(volsjours3) & volsjours3 == "Moins de deux jours", volsdist_tot3, 0) +
+  ifelse(!is.na(volsjours4) & volsjours4 == "Moins de deux jours", volsdist_tot4, 0) +
+  ifelse(!is.na(volsjours5) & volsjours5 == "Moins de deux jours", volsdist_tot5, 0), NA))
+
+climat$volsdist_2j_1sem <- with(climat, ifelse(!(is.na(volsnb_tot)),
+  ifelse(!is.na(volsjours1) & volsjours1 == "De deux jours à une semaine", volsdist_tot1, 0) + 
+  ifelse(!is.na(volsjours2) & volsjours2 == "De deux jours à une semaine", volsdist_tot2, 0) +
+  ifelse(!is.na(volsjours3) & volsjours3 == "De deux jours à une semaine", volsdist_tot3, 0) +
+  ifelse(!is.na(volsjours4) & volsjours4 == "De deux jours à une semaine", volsdist_tot4, 0) +
+  ifelse(!is.na(volsjours5) & volsjours5 == "De deux jours à une semaine", volsdist_tot5, 0), NA))
+
+climat$volsdist_1sem_1mois <- with(climat, ifelse(!(is.na(volsnb_tot)),
+  ifelse(!is.na(volsjours1) & volsjours1 == "De plus d'une semaine à un mois", volsdist_tot1, 0) + 
+  ifelse(!is.na(volsjours2) & volsjours2 == "De plus d'une semaine à un mois", volsdist_tot2, 0) +
+  ifelse(!is.na(volsjours3) & volsjours3 == "De plus d'une semaine à un mois", volsdist_tot3, 0) +
+  ifelse(!is.na(volsjours4) & volsjours4 == "De plus d'une semaine à un mois", volsdist_tot4, 0) +
+  ifelse(!is.na(volsjours5) & volsjours5 == "De plus d'une semaine à un mois", volsdist_tot5, 0), NA))
+
+climat$volsdist_sup1mois <- with(climat, ifelse(!(is.na(volsnb_tot)),
+  ifelse(!is.na(volsjours1) & volsjours1 == "Plus d'un mois", volsdist_tot1, 0) + 
+  ifelse(!is.na(volsjours2) & volsjours2 == "Plus d'un mois", volsdist_tot2, 0) +
+  ifelse(!is.na(volsjours3) & volsjours3 == "Plus d'un mois", volsdist_tot3, 0) +
+  ifelse(!is.na(volsjours4) & volsjours4 == "Plus d'un mois", volsdist_tot4, 0) +
+  ifelse(!is.na(volsjours5) & volsjours5 == "Plus d'un mois", volsdist_tot5, 0), NA))
 
 #Recodage temps de transport domicile travail
 varstpsdomtrav <- paste0("tpsdomtrav.", c("urbain_h", "urbain_m", "tgv_h", "tgv_m", "train_h", "train_m",
