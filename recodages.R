@@ -190,6 +190,11 @@ climat$volsh<-factor(ifelse(!is.na(climat$volsnb) & climat$volsnb==0, "0h",
                             as.character(climat$volsh)),
                      levels=c("0h", "De 1h à 10h", "De 11h à 20h", "De 20h à 50h", "Plus de 50h"))
 
+#Dichotomisation extremement preoccupé et réduire les GES
+climat$extrpreoccupe <- ifelse(climat$preoccupe2=="Extrêmement préoccupé·e", "Oui", "Non")
+climat$reducrechexemp <- ifelse(climat$solreducrech=="La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui", "Oui", "Non")
+
+
 #Variables en tranche pour hindex, nbpublis
 climat$hindextranch<-quant.cut(climat$hindex, 6)
 climat$nbpublistranch<-quant.cut(climat$nbpublis, 6)
@@ -1377,6 +1382,7 @@ climat$enfantsage_rec <- factor(climat$enfantsage_rec,
 #######################
 #Modalités de référence dans les régressions
 
+
 climatRegr <- climat
 
 climatRegr$apres3erelance <- as.factor(climatRegr$apres3erelance)
@@ -1473,6 +1479,13 @@ climatRegr$solreducrech2[climatRegr$solreducrech=="La recherche publique doit r�
 climatRegr$solreducrech2[climatRegr$solreducrech=="En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"]<-"Recherche peut bénéficier d'un statut dérogatoire"
 
 climatRegr$datedebut<-as.numeric(as.Date(climatRegr$dateDebut))-18438
+
+climatRegr$extrpreoccupe<-as.factor(climatRegr$extrpreoccupe)
+climatRegr$extrpreoccupe<-fct_relevel(climatRegr$extrpreoccupe, "Non")
+
+
+climatRegr$reducrechexemp<-as.factor(climatRegr$reducrechexemp)
+climatRegr$reducrechexemp<-fct_relevel(climatRegr$reducrechexemp, "Non")
 
 
 ################
