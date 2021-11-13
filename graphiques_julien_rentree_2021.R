@@ -762,7 +762,7 @@ cprop(table(climat$preoccupe, climat$sitpro))
 
 
 
-# seulement recherche, discipline rapport terrain/conf
+# seulement recherche, discipline rapport terrain/conf ----
 
 # tout le monde : par discipline ----
 
@@ -819,6 +819,448 @@ ggplot(c, aes(x=total, y=rapport, label = discipline))+geom_point()+
   scale_x_continuous(limits = c(0,20000))+
   scale_y_log10()
 
+
+
+
+# distance parcourue pour les conférences / distance totale
+
+library(viridis)
+ggplot(c, aes(x=total, y=b/total, label = rownames(c)))+
+  geom_point(aes(size=b*2, 
+                 color=b))+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Distance parcourue en avion pour les conférences", 
+       x="Distance (km) totale en avion",
+       y="Part de la distance totale parcourue pour pour les conférences") +
+  # geom_hline(yintercept=1, colour = "red", linetype="dashed") +
+  # geom_vline(xintercept=mean(climat$climat_recherche, na.rm=TRUE), colour = "red", linetype="dashed")+ 
+  # annotate('text', x=3300, y=2900, label="Moyenne (ensemble)", colour = "red")+ 
+  # annotate('text', x=6000, y=1, label="terrain=confs", colour = "red")+
+  scale_x_continuous(limits = c(0,17000)) +
+  # geom_smooth(color=black, fill=white method = "lm") +
+  scale_color_viridis(option = "D")
+
+
+# distance parcourue pour les données / distance totale
+
+ggplot(c, aes(x=total, y=a/total, label = rownames(c)))+
+  geom_point(aes(size=b, color=b))+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Distance parcourue en avion pour les données", 
+       x="Distance (km) totale en avion",
+       y="Part de la distance parcourue pour pour les données") +
+  # geom_hline(yintercept=1, colour = "red", linetype="dashed") +
+  # geom_vline(xintercept=mean(climat$climat_recherche, na.rm=TRUE), colour = "red", linetype="dashed")+ 
+  # annotate('text', x=3300, y=2900, label="Moyenne (ensemble)", colour = "red")+ 
+  # annotate('text', x=6000, y=1, label="terrain=confs", colour = "red")+
+  scale_x_continuous(limits = c(0,17000))+
+  scale_color_viridis(option = "D")
+
+
+
+# tout le monde : par statut ----
+
+a <- tapply(climat_recherche$volsdist_totterrain, 
+            climat_recherche$sitpro, mean, na.rm=T)
+b <- tapply(climat_recherche$volsdist_totconf, 
+            climat_recherche$sitpro, mean, na.rm=T)
+total <- tapply(climat_recherche$volsdist_tot, 
+                climat_recherche$sitpro, mean, na.rm=T)
+c <- cbind(a,b,total)
+c <- as.data.frame(c)
+c$discipline <- rownames(c)
+c$rapport <- c$b/c$a
+table <- c
+library(ggrepel)
+ggplot(c, aes(x=total, y=rapport, label = rownames(c)))+geom_point()+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Distance parcourue en avion pour les conférences et pour le recueil des données par discipline", 
+       x="Distance (km) totale en avion",
+       y="Rapport entre la distance parcourue pour les conférences et la distance parcourue pour les données") +
+  geom_hline(yintercept=1, colour = "red", linetype="dashed") +
+  # geom_vline(xintercept=mean(climat$climat_recherche, na.rm=TRUE), colour = "red", linetype="dashed")+ 
+  # annotate('text', x=3300, y=2900, label="Moyenne (ensemble)", colour = "red")+ 
+  annotate('text', x=6000, y=1, label="terrain=confs", colour = "red")+
+  scale_x_continuous(limits = c(0,17000))+
+  scale_y_log10()
+
+
+
+
+a <- tapply(climat_recherche$volsdist_totterrain, 
+            climat_recherche$sitpro, mean, na.rm=T)
+b <- tapply(climat_recherche$volsdist_totconf, 
+            climat_recherche$sitpro, mean, na.rm=T)
+total <- tapply(climat_recherche$volsdist_tot, 
+                climat_recherche$sitpro, mean, na.rm=T)
+c <- cbind(a,b,total)
+c <- as.data.frame(c)
+c$discipline <- rownames(c)
+c$rapport <- c$b/c$a
+table <- c
+library(ggrepel)
+ggplot(c, aes(x=total, y=rapport, label = rownames(c)))+geom_point()+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Distance parcourue en avion pour les conférences et pour le recueil des données par discipline", 
+       x="Distance (km) totale en avion",
+       y="Rapport entre la distance parcourue pour les conférences et la distance parcourue pour les données") +
+  geom_hline(yintercept=1, colour = "red", linetype="dashed") +
+  # geom_vline(xintercept=mean(climat$climat_recherche, na.rm=TRUE), colour = "red", linetype="dashed")+ 
+  # annotate('text', x=3300, y=2900, label="Moyenne (ensemble)", colour = "red")+ 
+  annotate('text', x=6000, y=1, label="terrain=confs", colour = "red")+
+  scale_x_continuous(limits = c(0,17000))+
+  scale_y_log10()
+
+ggplot(c, aes(x=total, y=a, label = rownames(c)))+geom_point()+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Distance parcourue en avion pour le recueil des données et distance totale par discipline", 
+       x="Distance (km) totale en avion",
+       y="distance parcourue pour pour les données") +
+  geom_hline(yintercept=1, colour = "red", linetype="dashed") +
+  # geom_vline(xintercept=mean(climat$climat_recherche, na.rm=TRUE), colour = "red", linetype="dashed")+ 
+  # annotate('text', x=3300, y=2900, label="Moyenne (ensemble)", colour = "red")+ 
+  # annotate('text', x=6000, y=1, label="terrain=confs", colour = "red")+
+  scale_x_continuous(limits = c(0,17000))+
+  scale_y_continuous(limits = c(0,17000))
+
+ggplot(c, aes(x=total, y=b, label = rownames(c)))+geom_point()+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Distance parcourue en avion pour les conférences", 
+       x="Distance (km) totale en avion",
+       y="distance parcourue pour pour les données") +
+  geom_hline(yintercept=1, colour = "red", linetype="dashed") +
+  # geom_vline(xintercept=mean(climat$climat_recherche, na.rm=TRUE), colour = "red", linetype="dashed")+ 
+  # annotate('text', x=3300, y=2900, label="Moyenne (ensemble)", colour = "red")+ 
+  # annotate('text', x=6000, y=1, label="terrain=confs", colour = "red")+
+  scale_x_continuous(limits = c(0,17000))
+
+
+
+# distance parcourue pour les confs / distance totale
+
+library(viridis)
+ggplot(c, aes(x=total, y=b/total, label = rownames(c)))+
+  geom_point(aes(size=b*2, 
+                 color=b))+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Distance parcourue en avion pour les conférences", 
+       x="Distance (km) totale en avion",
+       y="Part de la distance totale parcourue pour pour les conférences") +
+  # geom_hline(yintercept=1, colour = "red", linetype="dashed") +
+  # geom_vline(xintercept=mean(climat$climat_recherche, na.rm=TRUE), colour = "red", linetype="dashed")+ 
+  # annotate('text', x=3300, y=2900, label="Moyenne (ensemble)", colour = "red")+ 
+  # annotate('text', x=6000, y=1, label="terrain=confs", colour = "red")+
+  scale_x_continuous(limits = c(0,17000)) +
+  # geom_smooth(color=black, fill=white method = "lm") +
+  scale_color_viridis(option = "D")
+
+
+# distance parcourue pour les données / distance totale
+
+ggplot(c, aes(x=total, y=a/total, label = rownames(c)))+
+  geom_point(aes(size=b, color=b))+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Distance parcourue en avion pour les données", 
+       x="Distance (km) totale en avion",
+       y="Part de la distance parcourue pour pour les données") +
+  # geom_hline(yintercept=1, colour = "red", linetype="dashed") +
+  # geom_vline(xintercept=mean(climat$climat_recherche, na.rm=TRUE), colour = "red", linetype="dashed")+ 
+  # annotate('text', x=3300, y=2900, label="Moyenne (ensemble)", colour = "red")+ 
+  # annotate('text', x=6000, y=1, label="terrain=confs", colour = "red")+
+  scale_x_continuous(limits = c(0,17000))+
+  scale_color_viridis(option = "D")
+
+
+
+
+
+
+
+# Part données * part conférences
+
+ggplot(c, aes(x=b/total, y=a/total, label = rownames(c)))+
+  geom_point(aes(size=total, color=total))+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Part de la distance parcourue pour les données et pour les conférences", 
+       x="Part de la distance totale parcourue pour les conférences",
+       y="Part de la distance totale parcourue pour les données") +
+  # geom_hline(yintercept=1, colour = "red", linetype="dashed") +
+  # geom_vline(xintercept=mean(climat$climat_recherche, na.rm=TRUE), colour = "red", linetype="dashed")+ 
+  # annotate('text', x=3300, y=2900, label="Moyenne (ensemble)", colour = "red")+ 
+  # annotate('text', x=6000, y=1, label="terrain=confs", colour = "red")+
+  scale_x_continuous(limits = c(0,0.6))+
+  scale_y_continuous(limits = c(-0.05,0.6))+
+  scale_color_viridis(option = "D")
+
+
+# part des motifs par discipline ----
+
+
+a <- tapply(climat_recherche$volsdist_totterrain, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+b <- tapply(climat_recherche$volsdist_totsejrech, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+c <- tapply(climat_recherche$volsdist_totworkshop, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+d <- tapply(climat_recherche$volsdist_totcours, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+e <- tapply(climat_recherche$volsdist_totjury, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+f <- tapply(climat_recherche$volsdist_totfinanc, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+g <- tapply(climat_recherche$volsdist_toteval, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+h <- tapply(climat_recherche$volsdist_totautre, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+j <- tapply(climat_recherche$volsdist_totconf, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+total <- tapply(climat_recherche$volsdist_tot, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+
+table <- cbind(a,b,c,d,e,f,g,h,j, total)
+
+table <- cbind(a,b,c,d,e,f,g,h,j, total)
+lprop(table[1:8,-10])
+
+
+colnames(table) <- c("Terrain et données",
+                     "Séjour de recherche",
+                     "Workshop",
+                     "Cours et formations",
+                     "jury",
+                     "financ",
+                     "eval",
+                     "autre",
+                     "Conférences", 
+                     "total")
+table <- as.data.frame(as.table(table))
+
+
+niveaux <- names(sort(tapply(climat_recherche$volsdist_tot, 
+                             climat_recherche$discipline_agr4, mean, na.rm=T)))
+
+table$Var1 <- fct_relevel(table$Var1, niveaux)
+
+# table$Var1 <- fct_relevel(table$Var1, niveaux)
+table$Var2 <- fct_recode(table$Var2,
+                         "Autres" = "jury",
+                         "Autres" = "eval",
+                         "Autres" = "financ",
+                         "Autres"="autre")
+
+table$Var2 <- fct_relevel(table$Var2,
+                          c("Terrain et données",
+                            "Séjour de recherche",
+                            "Cours et formations",
+                            "Autres",
+                            "Workshop",
+                            "Conférences", 
+                            "total")
+)
+
+#ordonnes par poids dans le total des distances parcourues
+table$Var2 <- fct_relevel(table$Var2,
+                          c("Autres","Cours et formations",
+                            "Terrain et données",
+                            "Workshop",
+                            "Séjour de recherche",
+                            "Conférences", 
+                            "total"))
+
+
+library(paletteer)
+
+# cols <- brewer.pal(n=6, "Set2")
+
+ggplot(table[table$Var2!="total",]) + 
+  geom_bar(aes(x=Var1, y=Freq, fill=Var2), stat="identity")+
+  coord_flip()+
+  # scale_fill_manual(values=rev(as.vector(cols[1:6])))+
+  scale_fill_paletteer_d("ggthemes::excel_Celestial")+
+  labs(x="", y="Distance parcourue en avion (km)")
+
+
+
+ggplot(table[table$Var2=="total",],
+       aes(x=Var1, y=Freq)) +
+  stat_summary(geom="bar", fun=mean, na.rm=TRUE) +
+  stat_summary(
+    geom="errorbar", fun.data=mean_cl_normal, 
+    na.rm=TRUE, width=0.2)+
+  coord_flip()+
+  # scale_fill_manual(values=rev(as.vector(cols[1:6])))+
+  scale_fill_paletteer_d("ggthemes::excel_Celestial")+
+  labs(x="", y="Distance parcourue en avion (km)")
+
+# inquiétude sur la qualité des travaux en fonction du rapport vols terrains/confs
+
+a <- tapply(climat_recherche$volsdist_totterrain, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+b <- tapply(climat_recherche$volsdist_totconf, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+total <- cprop(table(climat_recherche$solrisqreducavion.qual, 
+                     climat_recherche$discipline_agr4))[1,-16]
+total2 <- tapply(climat_recherche$volsdist_tot, 
+                climat_recherche$discipline_agr4, mean, na.rm=T)
+c <- cbind(a,b,total, total2)
+c <- as.data.frame(c)
+c$discipline <- rownames(c)
+c$rapport <- c$b/c$a
+library(ggrepel)
+ggplot(c, aes(x=total, y=rapport, label = rownames(c)))+geom_point()+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Distance parcourue en avion pour les conférences 
+       et pour le recueil des données par discipline", 
+       x="Risque de nuire à la qualité des travaux : c'est probable et c'est un problème",
+       y="Rapport entre la distance parcourue pour les conférences et la distance parcourue pour les données") +
+  geom_hline(yintercept=1, colour = "red", linetype="dashed") +
+  # geom_vline(xintercept=mean(climat$climat_recherche, na.rm=TRUE), colour = "red", linetype="dashed")+ 
+  # annotate('text', x=3300, y=2900, label="Moyenne (ensemble)", colour = "red")+ 
+  # annotate('text', x=6000, y=1, label="terrain=confs", colour = "red")+
+  scale_y_log10()
+
+
+ggplot(c, aes(x=total, y=total2, label = rownames(c)))+geom_point()+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Distance totale parcourue en avion 
+       et risque pour la qualité des travaux par discipline", 
+       x="Risque de nuire à la qualité des travaux : c'est probable et c'est un problème",
+       y="Distance totale parcourue en avion") 
+
+
+
+ggplot(c, aes(x=total, y=a, label = rownames(c)))+geom_point()+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Distance parcourue en avion pour le terrain 
+       et risque pour la qualité des travaux par discipline", 
+       x="Risque de nuire à la qualité des travaux : c'est probable et c'est un problème",
+       y="Distance totale parcourue en avion pour le terrain") 
+
+ggplot(c, aes(x=total, y=b, label = rownames(c)))+geom_point()+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Distance parcourue en avion pour les conférences 
+       et risque pour la qualité des travaux par discipline", 
+       x="Risque de nuire à la qualité des travaux : c'est probable et c'est un problème",
+       y="Distance totale parcourue en avion pour les conférences") 
+
+
+
+# inquiétude sur l'accès aux données en fonction du rapport vols terrains/confs ----
+
+a <- tapply(climat_recherche$volsdist_totterrain, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+b <- tapply(climat_recherche$volsdist_totconf, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+total <- cprop(table(climat_recherche$solrisqreducavion.donnees, 
+                     climat_recherche$discipline_agr4))[1,-16]
+total2 <- tapply(climat_recherche$volsdist_tot, 
+                 climat_recherche$discipline_agr4, mean, na.rm=T)
+c <- cbind(a,b,total, total2)
+c <- as.data.frame(c)
+c$discipline <- rownames(c)
+c$rapport <- c$b/c$a
+library(ggrepel)
+ggplot(c, aes(x=total, y=rapport, label = rownames(c)))+geom_point()+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Distance parcourue en avion pour les conférences 
+       et pour le recueil des données par discipline", 
+       x="Risque de gener l'accès aux données : c'est probable et c'est un problème",
+       y="Rapport entre la distance parcourue pour les conférences et la distance parcourue pour les données") +
+  geom_hline(yintercept=1, colour = "red", linetype="dashed") +
+  # geom_vline(xintercept=mean(climat$climat_recherche, na.rm=TRUE), colour = "red", linetype="dashed")+ 
+  # annotate('text', x=3300, y=2900, label="Moyenne (ensemble)", colour = "red")+ 
+  # annotate('text', x=6000, y=1, label="terrain=confs", colour = "red")+
+  scale_y_log10()
+
+
+ggplot(c, aes(x=total, y=total2, label = rownames(c)))+geom_point()+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Distance totale parcourue en avion 
+       et risque  gener l'accès aux données", 
+       x="Risque de gener l'accès aux données : c'est probable et c'est un problème",
+       y="Distance totale parcourue en avion") 
+
+
+
+ggplot(c, aes(x=total, y=a, label = rownames(c)))+geom_point()+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Distance parcourue en avion pour le terrain 
+       et risque pour la qualité des travaux par discipline", 
+       x="Risque de  gener l'accès aux données : c'est probable et c'est un problème",
+       y="Distance totale parcourue en avion pour le terrain") 
+
+ggplot(c, aes(x=total, y=b, label = rownames(c)))+geom_point()+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Distance parcourue en avion pour les conférences 
+       et risque pour la qualité des travaux par discipline", 
+       x="Risque de  gener l'accès aux données : c'est probable et c'est un problème",
+       y="Distance totale parcourue en avion pour les conférences") 
+
+
+
+
+
+
+a <- tapply(climat_recherche$volsdist_totterrain, 
+            substr(climat_recherche$discipline,1,2), mean, na.rm=T)
+b <- tapply(climat_recherche$volsdist_totconf, 
+            substr(climat_recherche$discipline,1,2), mean, na.rm=T)
+total <- cprop(table(climat_recherche$solrisqreducavion.donnees, 
+                     substr(climat_recherche$discipline,1,2)), drop = F)[1,-71]
+total2 <- tapply(climat_recherche$volsdist_tot, 
+                 climat_recherche$discipline_agr4, mean, na.rm=T)
+c <- cbind(a,b,total, total2)
+c <- as.data.frame(c)
+c$discipline <- rownames(c)
+c$rapport <- c$b/c$a
+library(ggrepel)
+ggplot(c, aes(x=total, y=rapport, label = rownames(c)))+geom_point()+ 
+  geom_label_repel(box.padding   = 0.35, 
+                   point.padding = 0.5,
+                   segment.color = 'grey50')+
+  labs(title="Distance parcourue en avion pour les conférences 
+       et pour le recueil des données par discipline", 
+       x="Risque de gener l'accès aux données : c'est probable et c'est un problème",
+       y="Rapport entre la distance parcourue pour les conférences et la distance parcourue pour les données") +
+  geom_hline(yintercept=1, colour = "red", linetype="dashed") +
+  # geom_vline(xintercept=mean(climat$climat_recherche, na.rm=TRUE), colour = "red", linetype="dashed")+ 
+  # annotate('text', x=3300, y=2900, label="Moyenne (ensemble)", colour = "red")+ 
+  # annotate('text', x=6000, y=1, label="terrain=confs", colour = "red")+
+  scale_y_log10()
 
 
 # traitements par discipline ----
@@ -1043,6 +1485,41 @@ colnames(risques_matos) <- c("Risques_matos : qualité des travaux",
 
 copie(risques_matos)
 
+
+
+solutions_instits <- cbind(
+  lprop(table(climat$discipline_agr4, climat$solinstit.compensation), drop = F)[,3],
+  lprop(table(climat$discipline_agr4, climat$solinstit.train), drop = F)[,3],
+  lprop(table(climat$discipline_agr4, climat$solinstit.bilanges), drop = F)[,3],
+  lprop(table(climat$discipline_agr4, climat$solinstit.limitevols), drop = F)[,3],
+  lprop(table(climat$discipline_agr4, climat$solinstit.selection), drop = F)[,3],
+  lprop(table(climat$discipline_agr4, climat$solinstit.conf), drop = F)[,3],
+  lprop(table(climat$discipline_agr4, climat$solinstit.vols6h), drop = F)[,3],
+  lprop(table(climat$discipline_agr4, climat$solinstit.info), drop = F)[,3],
+  lprop(table(climat$discipline_agr4, climat$solinstit.equip), drop = F)[,3],
+  lprop(table(climat$discipline_agr4, climat$solinstit.vege), drop = F)[,3]
+)
+
+
+
+colnames(solutions_instits) <- c("Solutions instit. : compensation", 
+                                 "Solutions instit. : train mm plus cher",
+                                 "Solutions instit. : bilans ges",
+                                 "Solutions instit. : limiter les vols",
+                                 "Solutions instit. : critères de selection",
+                                 "Solutions instit. : conf dans evaluations", 
+                                 "Solutions instit. : pas de vols si moins 6h train",
+                                 "Solutions instit. : pas renouveler matos info de -5ans",
+                                 "Solutions instit. : equipements moins énergivores",
+                                 "Solutions instit. : menus végés ou locaux")
+
+copie(solutions_instits)
+
+
+
+
+
+
 # traitements par statuts ----
 
 
@@ -1161,5 +1638,336 @@ colnames(risques_matos) <- c("Risques_matos : qualité des travaux",
                              "Risques_matos : faire prendre du retard",
                              "Risques_matos : réduire publis")
 
-freq(climat$materiel.aucun)
 copie(risques_matos)
+
+
+
+
+solutions_instits <- cbind(
+  lprop(table(climat$sitpro, climat$solinstit.compensation), drop = F)[,3],
+  lprop(table(climat$sitpro, climat$solinstit.train), drop = F)[,3],
+  lprop(table(climat$sitpro, climat$solinstit.bilanges), drop = F)[,3],
+  lprop(table(climat$sitpro, climat$solinstit.limitevols), drop = F)[,3],
+  lprop(table(climat$sitpro, climat$solinstit.selection), drop = F)[,3],
+  lprop(table(climat$sitpro, climat$solinstit.conf), drop = F)[,3],
+  lprop(table(climat$sitpro, climat$solinstit.vols6h), drop = F)[,3],
+  lprop(table(climat$sitpro, climat$solinstit.info), drop = F)[,3],
+  lprop(table(climat$sitpro, climat$solinstit.equip), drop = F)[,3],
+  lprop(table(climat$sitpro, climat$solinstit.vege), drop = F)[,3]
+)
+
+
+
+colnames(solutions_instits) <- c("Solutions instit. : compensation", 
+                             "Solutions instit. : train mm plus cher",
+                             "Solutions instit. : bilans ges",
+                             "Solutions instit. : limiter les vols",
+                             "Solutions instit. : critères de selection",
+                             "Solutions instit. : conf dans evaluations", 
+                             "Solutions instit. : pas de vols si moins 6h train",
+                             "Solutions instit. : pas renouveler matos info de -5ans",
+                             "Solutions instit. : equipements moins énergivores",
+                             "Solutions instit. : menus végés ou locaux")
+
+copie(solutions_instits)
+
+
+
+# part des motifs par statut ----
+
+
+
+## Recodage de climat$sitpro en climat$sitpro_reduite
+climat_recherche$sitpro_reduite <- NULL
+climat_recherche$sitpro_reduite <- fct_recode(climat_recherche$sitpro,
+  "Doctorant·e contractuel·le" = "Doctorant·e CIFRE"
+)
+
+a <- tapply(climat_recherche$volsdist_totterrain, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+b <- tapply(climat_recherche$volsdist_totsejrech, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+c <- tapply(climat_recherche$volsdist_totworkshop, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+d <- tapply(climat_recherche$volsdist_totcours, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+e <- tapply(climat_recherche$volsdist_totjury, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+f <- tapply(climat_recherche$volsdist_totfinanc, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+g <- tapply(climat_recherche$volsdist_toteval, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+h <- tapply(climat_recherche$volsdist_totautre, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+j <- tapply(climat_recherche$volsdist_totconf, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+total <- tapply(climat_recherche$volsdist_tot, 
+                climat_recherche$sitpro_reduite, mean, na.rm=T)
+
+table <- cbind(a,b,c,d,e,f,g,h,j, total)
+lprop(table[1:8,-10])
+100*table/colSums(table, na.rm=T)
+
+colnames(table) <- c("Terrain et données",
+                     "Séjour de recherche",
+                     "Workshop",
+                     "Cours et formations",
+                     "jury",
+                     "financ",
+                     "eval",
+                     "autre",
+                     "Conférences", 
+                     "total")
+
+copie(round(100*table[,1:9]/table[,10],1))
+
+table <- as.data.frame(as.table(table))
+# niveaux <- names(sort(tapply(climat_recherche$volsdist_tot, 
+                             # climat_recherche$sitpro, mean, na.rm=T)))
+
+
+# table$Var1 <- fct_relevel(table$Var1, niveaux)
+table$Var2 <- fct_recode(table$Var2,
+                         "Autres" = "jury",
+                         "Autres" = "eval",
+                         "Autres" = "financ",
+                         "Autres"="autre")
+
+table$Var2 <- fct_relevel(table$Var2,
+                          c("Terrain et données",
+                            "Séjour de recherche",
+                            "Cours et formations",
+                            "Autres",
+                            "Workshop",
+                            "Conférences", 
+                            "total")
+)
+
+#ordonnes par poids dans le total des distances parcourues
+table$Var2 <- fct_relevel(table$Var2,
+                          c("Autres","Cours et formations",
+                            "Terrain et données",
+                            "Workshop",
+                            "Séjour de recherche",
+                            "Conférences", 
+                            "total"))
+
+
+
+table$Var1 <- fct_relevel(table$Var1,
+                          c("Directeur·rice de recherche",
+                            "Professeur·e des universités",
+                            "Chargé·e de recherche",
+                            "Maître·sse de conférences",
+                            "Ingénieur·e de recherche",
+                            "Post-doctorant·e",
+                            "ATER",
+                            "Doctorant·e contractuel·le",
+                            "Ingénieur·e d'études",
+                            "Assistant ingénieur·e",
+                            "Technicien·ne",
+                            "Chargé·e d'études/de mission",
+                            "Adjoint·e technique",
+                            "Autre")
+)
+
+# install.packages("paletteer")
+library(paletteer)
+
+# cols <- brewer.pal(n=6, "Set2")
+
+ggplot(table[table$Var2!="total"&
+               table$Var1%in%c(levels(table$Var1)[1:8]),]) + 
+  geom_bar(aes(x=fct_rev(Var1), y=Freq, fill=Var2), stat="identity")+
+  coord_flip()+
+  # scale_fill_manual(values=rev(as.vector(cols[1:6])))+
+  scale_fill_paletteer_d("ggthemes::excel_Celestial")
+
+
+
+#moyenne sdans l'ensemble
+
+a <- mean(climat_recherche$volsdist_totterrain, na.rm=T)
+b <- mean(climat_recherche$volsdist_totsejrech, na.rm=T)
+c <- mean(climat_recherche$volsdist_totworkshop, na.rm=T)
+d <- mean(climat_recherche$volsdist_totcours, na.rm=T)
+e <- mean(climat_recherche$volsdist_totjury, na.rm=T)
+f <- mean(climat_recherche$volsdist_totfinanc, na.rm=T)
+g <- mean(climat_recherche$volsdist_toteval, na.rm=T)
+h <- mean(climat_recherche$volsdist_totautre, na.rm=T)
+j <- mean(climat_recherche$volsdist_totconf, na.rm=T)
+total <- mean(climat_recherche$volsdist_tot, na.rm=T)
+
+
+table <- cbind(a,b,c,d,e,f,g,h,j)
+
+colnames(table) <- c("terrain",
+                     "sejrech",
+                     "workshop",
+                     "cours",
+                     "jury",
+                     "financ",
+                     "eval",
+                     "autre",
+                     "conf")
+table
+100*table/total
+
+
+
+a <- sum(climat_recherche$volsdist_totterrain, na.rm=T)
+b <- sum(climat_recherche$volsdist_totsejrech, na.rm=T)
+c <- sum(climat_recherche$volsdist_totworkshop, na.rm=T)
+d <- sum(climat_recherche$volsdist_totcours, na.rm=T)
+e <- sum(climat_recherche$volsdist_totjury, na.rm=T)
+f <- sum(climat_recherche$volsdist_totfinanc, na.rm=T)
+g <- sum(climat_recherche$volsdist_toteval, na.rm=T)
+h <- sum(climat_recherche$volsdist_totautre, na.rm=T)
+j <- sum(climat_recherche$volsdist_totconf, na.rm=T)
+total <- sum(climat_recherche$volsdist_tot, na.rm=T)
+
+
+table <- cbind(a,b,c,d,e,f,g,h,j)
+
+colnames(table) <- c("terrain",
+                     "sejrech",
+                     "workshop",
+                     "cours",
+                     "jury",
+                     "financ",
+                     "eval",
+                     "autre",
+                     "conf")
+str(as.data.frame(table))
+100*table/total
+niveaux_tries <- names(sort(as.data.frame(table)))
+
+# nombre de vols et moyenne
+
+summary(climat_recherche$volshnum[
+  climat_recherche$vols_dicho != "N'a pas volé en 2019"])
+freq(climat_recherche$vols_dicho)
+summary(climat_recherche$volsdist_tot[
+  climat_recherche$vols_dicho != "N'a pas volé en 2019"])
+
+a <- climat_recherche[climat_recherche$volsdist_tot >80000
+                               & !is.na(climat_recherche$volsdist_tot),]
+
+b <- cbind(a[,c("volsdist_tot","volshnum")], 
+      a$volsdist_tot/a$volshnum)
+colnames(b) <- c("distance", "temps", "vitesse de l'avion")
+
+climat_recherche$vitesse_avion[climat_recherche$vols_dicho == "A volé en 2019"
+                               & !is.na(climat_recherche$vols_dicho)] <- 
+  climat_recherche$volsdist_tot[
+    climat_recherche$vols_dicho == "A volé en 2019"
+    & !is.na(climat_recherche$vols_dicho)]/
+  climat_recherche$volshnum[
+    climat_recherche$vols_dicho == "A volé en 2019"
+    & !is.na(climat_recherche$vols_dicho)]
+
+summary(climat_recherche$vitesse_avion)
+
+ggplot(climat_recherche) + geom_point(
+  aes(y=volshnum, x=volsdist_tot)
+)
+
+# jour de réponse et % préoccupé
+
+summary(climat$NumVague)
+
+irec(climat$NumVague)
+## Recodage de climat$NumVague en climat$reponse_avant_v1
+climat$reponse_avant_r1 <- fct_recode(climat$NumVague,
+  "oui" = "Après premier message",
+  "non" = "Après première relance",
+  "non" = "Après deuxième relance",
+  "non" = "Après troisième relance",
+  "non" = "Après quatrième relance"
+)
+climat$reponse_avant_r2 <- fct_recode(climat$NumVague,
+                                      "oui" = "Après premier message",
+                                      "oui" = "Après première relance",
+                                      "non" = "Après deuxième relance",
+                                      "non" = "Après troisième relance",
+                                      "non" = "Après quatrième relance"
+)
+climat$reponse_avant_r3 <- fct_recode(climat$NumVague,
+                                      "oui" = "Après premier message",
+                                      "oui" = "Après première relance",
+                                      "oui" = "Après deuxième relance",
+                                      "non" = "Après troisième relance",
+                                      "non" = "Après quatrième relance"
+)
+climat$reponse_avant_r4 <- fct_recode(climat$NumVague,
+                                      "oui" = "Après premier message",
+                                      "oui" = "Après première relance",
+                                      "oui" = "Après deuxième relance",
+                                      "oui" = "Après troisième relance",
+                                      "non" = "Après quatrième relance"
+)
+climat$reponse_apres_r4 <- fct_recode(climat$NumVague,
+                                      "oui" = "Après premier message",
+                                      "oui" = "Après première relance",
+                                      "oui" = "Après deuxième relance",
+                                      "oui" = "Après troisième relance",
+                                      "oui" = "Après quatrième relance"
+)
+
+cprop(table(climat$preoccupe2, climat$reponse_avant_r1))
+cprop(table(climat$preoccupe2, climat$reponse_avant_r2))
+cprop(table(climat$preoccupe2, climat$reponse_avant_r3))
+cprop(table(climat$preoccupe2, climat$reponse_avant_r4))
+cprop(table(climat$preoccupe2, climat$reponse_apres_r4))
+
+
+cprop(table(climat$preoccupe2, climat$reponse_avant_r))
+cprop(table(climat$preoccupe2, climat$reponse_avant_r3))
+cprop(table(climat$preoccupe2, climat$reponse_avant_r4))
+cprop(table(climat$preoccupe2, climat$reponse_apres_r4))
+
+a <- cprop(table(climat$preoccupe2, climat$NumVague))
+a <- as.data.frame(a[1:6,])
+## Réordonnancement de a$Var1
+a$Var1 <- factor(a$Var1,
+  levels = c(
+    "Pas du tout préoccupé·e", "Un peu préoccupé·e", "Sans opinion",
+    "Assez préoccupé·e", "Très préoccupé·e", "Extrêmement préoccupé·e"
+  )
+)
+ggplot(a) + geom_bar(aes(x=Var2, y=Freq, fill=Var1), stat="identity")+
+  scale_fill_manual(
+    values=c(
+      "#74add1", "#fee090","light grey", "#fdae61", "#f46d43", "#d73027"))+
+  theme(axis.text.x = element_text(angle = 90))  
+
+
+  
+# 
+# pal <- RColorBrewer::brewer.pal(9, "RdYlBu")
+# ggplot(drop_na(climat, preoccupe),
+#        aes(y=fct_relevel(preoccupe, "Sans opinion"), x=..prop.., group=1)) +
+#   geom_bar(fill=c("light grey", "#74add1", "#fee090", "#fdae61", "#f46d43", "#d73027")) +
+#   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+#   coord_cartesian(xlim=c(0, 0.42)) +
+#   geom_text(aes(label=scales::percent(..prop.., accuracy=0.1, decimal.mark=",")),
+#             stat="count", position=position_dodge(.9),
+#             hjust=-0.2, size=3) +
+#   labs(x="Proportion des répondant·es", y="",
+#        title="Dans quelle mesure êtes-vous préoccupé·e par le changement climatique ?") +
+#   source_champ(nrow(drop_na(climat, preoccupe)),
+#                "Lecture : 31,7% des répondant·es sont extrêmement préoccupé·es par le changement climatique")
+
+
+# durée du séjour ----
+
+
+# nb de répondants par vols (module vols) ----
+
+freq(climat_recherche$volsmotif1)
+
+rowSums(
+table(climat_recherche$discipline_agr4,
+      climat_recherche$volsmotif1)
+)
+
