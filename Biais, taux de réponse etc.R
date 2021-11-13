@@ -86,7 +86,27 @@ ggplot(a) + geom_bar(aes(x=Var2, y=Freq, fill=Var1), stat="identity")+
   theme(axis.text.x = element_text(angle = 90))
 
 
+a <- cprop(table(climat$opinionecolo.contraintes, climat$NumVague))
+a <- as.data.frame(a[1:6,])
+a <- cprop(table(climat$opinionecolo.proteger, climat$NumVague))
+a <- as.data.frame(a[1:6,])
 
+a <- cprop(table(climat$opinionecolo.efforts, climat$NumVague))
+a <- as.data.frame(a[1:6,])
+
+a <- cprop(table(climat$solreducrech, climat$NumVague))
+a <- as.data.frame(a[1:4,])
+
+a <- cprop(table(climat$solinstit.limitevols, climat$NumVague))
+a <- as.data.frame(a[1:4,])
+
+a <- cprop(table(climat$solinstit.selection, climat$NumVague))
+a <- as.data.frame(a[1:4,])
+
+a <- cprop(table(climat$solinstit.conf, climat$NumVague))
+a <- as.data.frame(a[1:4,])
+
+freq(climat$opinionecolo.techno)
 ################################################
 #Graphique : nombre d'ouverture du questionnaire en fonction de l'heure de la journée
 plot(table(strftime(strptime(climat$startdate, "%Y-%m-%d %H:%M:%S"), "%H")), xlab ="Heure de la journée", ylab="Nb d'ouvertures du questionnaire")
@@ -405,6 +425,7 @@ res.reg1 <- lm(vaguenum ~ dixannees.asso , data=climatRegr )
 res.reg1 <- lm(vaguenum ~ dixannees.bilan , data=climatRegr )
 res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + dixannees.bilan , data=climatRegr )
 
+freq(climat$dixannees.vote)
 res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr3 + dixannees.marche + dixannees.giec + dixannees.vote + dixannees.asso , data=climatRegr )
 
 summary(res.reg1)
