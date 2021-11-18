@@ -1095,7 +1095,9 @@ ggplot(table[table$Var2!="total",]) +
   coord_flip()+
   # scale_fill_manual(values=rev(as.vector(cols[1:6])))+
   scale_fill_paletteer_d("ggthemes::excel_Celestial")+
-  labs(x="", y="Distance parcourue en avion (km)")
+  labs(x="", y="Distance parcourue en avion en 2019 (km)", fill="")+
+  guides(fill=guide_legend(reverse = TRUE))
+
 
 
 
@@ -1781,7 +1783,10 @@ ggplot(table[table$Var2!="total"&
   geom_bar(aes(x=fct_rev(Var1), y=Freq, fill=Var2), stat="identity")+
   coord_flip()+
   # scale_fill_manual(values=rev(as.vector(cols[1:6])))+
-  scale_fill_paletteer_d("ggthemes::excel_Celestial")
+  scale_fill_paletteer_d("ggthemes::excel_Celestial")+
+  labs(x="", y="Distance parcourue en avion en 2019 (km)", fill="")+
+  guides(fill=guide_legend(reverse = TRUE))
+
 
 
 
@@ -1872,7 +1877,7 @@ ggplot(climat_recherche) + geom_point(
   aes(y=volshnum, x=volsdist_tot)
 )
 
-# jour de réponse et % préoccupé
+# jour de réponse et % préoccupé----
 
 summary(climat$NumVague)
 
@@ -1970,4 +1975,9 @@ rowSums(
 table(climat_recherche$discipline_agr4,
       climat_recherche$volsmotif1)
 )
+
+freq(climat_recherche$opinionecolo.cata)
+
+
+
 
