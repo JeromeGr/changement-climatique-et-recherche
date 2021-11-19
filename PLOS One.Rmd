@@ -17,6 +17,8 @@ output:
 library(tidyverse)
 library(ggplot2)
 library(questionr)
+library(paletteer)
+
 
 load("climat.RData")
 source("recodages.R", encoding = "UTF-8")
@@ -278,6 +280,206 @@ knitr::kable(round(lprop(table(climat$sitpro, climat$solreducrech3))))
 # Pratiques
 
 ## Vols en avion
+
+Les traitements de cette section portent seulement sur les chercheurs
+
+```{r}
+# # sous base seulement recherche
+climat_recherche <- subset(climat, ! sitpro %in% c(
+  "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
+  "Chargé·e d'études/de mission","Adjoint·e technique",
+  "Autre"))
+
+```
+
+### Motifs des vols par discipline
+
+
+```{r}
+
+a <- tapply(climat_recherche$volsdist_totterrain, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+b <- tapply(climat_recherche$volsdist_totsejrech, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+c <- tapply(climat_recherche$volsdist_totworkshop, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+d <- tapply(climat_recherche$volsdist_totcours, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+e <- tapply(climat_recherche$volsdist_totjury, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+f <- tapply(climat_recherche$volsdist_totfinanc, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+g <- tapply(climat_recherche$volsdist_toteval, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+h <- tapply(climat_recherche$volsdist_totautre, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+j <- tapply(climat_recherche$volsdist_totconf, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+total <- tapply(climat_recherche$volsdist_tot, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+
+table <- cbind(a,b,c,d,e,f,g,h,j, total)
+colnames(table) <- c("Terrain et données",
+                     "Séjour de recherche",
+                     "Workshop",
+                     "Cours et formations",
+                     "jury",
+                     "financ",
+                     "eval",
+                     "autre",
+                     "Conférences", 
+                     "total")
+
+
+table <- as.data.frame(as.table(table)) # j'ai jamais compris le rôle de cette ligne mais ça fait ce que je veux
+niveaux <- names(sort(tapply(climat_recherche$volsdist_tot, 
+                             climat_recherche$discipline_agr4, mean, na.rm=T)))
+table$Var1 <- fct_relevel(table$Var1, niveaux)
+table$Var2 <- fct_recode(table$Var2,
+                         "Autres" = "jury",
+                         "Autres" = "eval",
+                         "Autres" = "financ",
+                         "Autres"="autre")
+#ordonnes par poids dans le total des distances parcourues
+table$Var2 <- fct_relevel(table$Var2,
+                          c("Autres","Cours et formations",
+                            "Terrain et données",
+                            "Workshop",
+                            "Séjour de recherche",
+                            "Conférences", 
+                            "total"))
+
+# cols <- brewer.pal(n=6, "Set2")
+ggplot(table[table$Var2!="total",]) + 
+  geom_bar(aes(x=Var1, y=Freq, fill=Var2), stat="identity")+
+  coord_flip()+
+  # scale_fill_manual(values=rev(as.vector(cols[1:6])))+
+  scale_fill_paletteer_d("ggthemes::excel_Celestial")+
+  labs(x="", y="Distance parcourue en avion en 2019 (km)", fill="")+
+  guides(fill=guide_legend(reverse = TRUE))
+
+```
+
+
+
+```{r}
+tableau <- table %>% pivot_wider(names_from=Var2, values_from=Freq) 
+knitr::kable(tableau, digits =1)
+# ça aurait été bien que ça marche comme ça mais il a plusieurs valeurs pour "Autres" (parce que j'ai regroupé des trucs ci dessus) alors il fait n'importe quoi...
+
+```
+
+
+```{r}
+ggplot(table[table$Var2=="total",],
+       aes(x=Var1, y=Freq)) +
+  stat_summary(geom="bar", fun=mean, na.rm=TRUE) +
+  stat_summary(
+    geom="errorbar", fun.data=mean_cl_normal, 
+    na.rm=TRUE, width=0.2)+
+  coord_flip()+
+  # scale_fill_manual(values=rev(as.vector(cols[1:6])))+
+  scale_fill_paletteer_d("ggthemes::excel_Celestial")+
+  labs(x="", y="Distance parcourue en avion (km)")
+```
+
+
+
+
+### Motifs des vols par statut
+
+
+```{r}
+## Recodage de climat$sitpro en climat$sitpro_reduite
+climat_recherche$sitpro_reduite <- NULL
+climat_recherche$sitpro_reduite <- fct_recode(climat_recherche$sitpro,
+  "Doctorant·e contractuel·le" = "Doctorant·e CIFRE"
+)
+
+a <- tapply(climat_recherche$volsdist_totterrain, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+b <- tapply(climat_recherche$volsdist_totsejrech, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+c <- tapply(climat_recherche$volsdist_totworkshop, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+d <- tapply(climat_recherche$volsdist_totcours, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+e <- tapply(climat_recherche$volsdist_totjury, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+f <- tapply(climat_recherche$volsdist_totfinanc, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+g <- tapply(climat_recherche$volsdist_toteval, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+h <- tapply(climat_recherche$volsdist_totautre, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+j <- tapply(climat_recherche$volsdist_totconf, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+total <- tapply(climat_recherche$volsdist_tot, 
+                climat_recherche$sitpro_reduite, mean, na.rm=T)
+
+table <- cbind(a,b,c,d,e,f,g,h,j, total)
+colnames(table) <- c("Terrain et données",
+                     "Séjour de recherche",
+                     "Workshop",
+                     "Cours et formations",
+                     "jury",
+                     "financ",
+                     "eval",
+                     "autre",
+                     "Conférences", 
+                     "total")
+table <- as.data.frame(as.table(table))
+table$Var2 <- fct_recode(table$Var2,
+                         "Autres" = "jury",
+                         "Autres" = "eval",
+                         "Autres" = "financ",
+                         "Autres"="autre")
+#ordonnes par poids dans le total des distances parcourues
+table$Var2 <- fct_relevel(table$Var2,
+                          c("Autres","Cours et formations",
+                            "Terrain et données",
+                            "Workshop",
+                            "Séjour de recherche",
+                            "Conférences", 
+                            "total"))
+
+table$Var1 <- fct_relevel(table$Var1,
+                          c("Directeur·rice de recherche",
+                            "Professeur·e des universités",
+                            "Chargé·e de recherche",
+                            "Maître·sse de conférences",
+                            "Ingénieur·e de recherche",
+                            "Post-doctorant·e",
+                            "ATER",
+                            "Doctorant·e contractuel·le",
+                            "Ingénieur·e d'études",
+                            "Assistant ingénieur·e",
+                            "Technicien·ne",
+                            "Chargé·e d'études/de mission",
+                            "Adjoint·e technique",
+                            "Autre")
+)
+
+ggplot(table[table$Var2!="total"&
+               table$Var1%in%c(levels(table$Var1)[1:8]),]) + 
+  geom_bar(aes(x=fct_rev(Var1), y=Freq, fill=Var2), stat="identity")+
+  coord_flip()+
+  # scale_fill_manual(values=rev(as.vector(cols[1:6])))+
+  scale_fill_paletteer_d("ggthemes::excel_Celestial")+
+  labs(x="", y="Distance parcourue en avion en 2019 (km)", fill="")+
+  guides(fill=guide_legend(reverse = TRUE))
+
+```
+
+
+
+```{r}
+tableau <- table %>% pivot_wider(names_from=Var2, values_from=Freq) 
+knitr::kable(tableau, digits =1)
+# ça aurait été bien que ça marche comme ça mais il a plusieurs valeurs pour "Autres" (parce que j'ai regroupé des trucs ci dessus) alors il fait n'importe quoi...
+
+```
+
 
 
 ## Équipements informatiques
