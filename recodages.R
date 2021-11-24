@@ -153,7 +153,7 @@ climat$vols_dicho <- ifelse(climat$volsnb=="0", "N'a pas volé en 2019", "A vol�
 climat$vols_dicho[is.na(climat$volsnb)] <- NA
 
 #Prendre moins l'avion depuis 5 ans pour des confs, réunions, congrès
-climat$Moinsavionconf[climat$solevolges.conf %in% c("Fortement diminué", "Fortement diminué")]<-"Oui"
+climat$Moinsavionconf[climat$solevolges.conf %in% c("Fortement diminué", "Un peu augmenté")]<-"Oui"
 climat$Moinsavionconf[climat$solevolges.conf %in% c("Été à peu près stables", "Un peu augmenté", "Fortement augmenté")]<-"Non"
 climat$Moinsavionconf<-as.factor(climat$Moinsavionconf)
 
@@ -190,10 +190,12 @@ climat$volsh<-factor(ifelse(!is.na(climat$volsnb) & climat$volsnb==0, "0h",
                             as.character(climat$volsh)),
                      levels=c("0h", "De 1h à 10h", "De 11h à 20h", "De 20h à 50h", "Plus de 50h"))
 
-#Dichotomisation extremement preoccupé et réduire les GES
+#Dichotomisation extremement preoccupé, réduire les GES et décroissance
 climat$extrpreoccupe <- ifelse(climat$preoccupe2=="Extrêmement préoccupé·e", "Oui", "Non")
 climat$reducrechexemp <- ifelse(climat$solreducrech=="La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui", "Oui", "Non")
 
+
+climat$tresdecroissance <- ifelse(climat$opinionecolo.decroissance=="Tout à fait d'accord", "Oui", "Non")
 
 #Variables en tranche pour hindex, nbpublis
 climat$hindextranch<-quant.cut(climat$hindex, 6)
@@ -1473,7 +1475,7 @@ climatRegr$solrisqreducavion.insertion <- relevel(climatRegr$solrisqreducavion.i
 climatRegr$solrisqreducavion.isoler <- relevel(climatRegr$solrisqreducavion.isoler, ref = "C'est peu probable")
 climatRegr$solrisqreducavion.bureaucratie <- relevel(climatRegr$solrisqreducavion.bureaucratie, ref = "C'est peu probable")
 
-climatRegr$solevolges.conf <- relevel(climatRegr$solevolges.conf, ref = "Fortement diminué")
+climatRegr$solevolges.conf <- relevel(climatRegr$solevolges.conf, ref = "Été à peu près stables")
 
 
 climatRegr$paie2 <- as.factor(climatRegr$paie)
@@ -1529,10 +1531,11 @@ climatRegr$datedebut<-as.numeric(as.Date(climatRegr$dateDebut))-18438
 climatRegr$extrpreoccupe<-as.factor(climatRegr$extrpreoccupe)
 climatRegr$extrpreoccupe<-fct_relevel(climatRegr$extrpreoccupe, "Non")
 
-
 climatRegr$reducrechexemp<-as.factor(climatRegr$reducrechexemp)
 climatRegr$reducrechexemp<-fct_relevel(climatRegr$reducrechexemp, "Non")
 
+climatRegr$tresdecroissance<-as.factor(climatRegr$tresdecroissance)
+climatRegr$tresdecroissance<-fct_relevel(climatRegr$tresdecroissance, "Non")
 
 ################
 #Recodage pour les ACM

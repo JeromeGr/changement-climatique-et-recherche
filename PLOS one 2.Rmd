@@ -1,0 +1,769 @@
+---
+title: "Article PLOS One"
+output:
+  html_document:
+    fig_width: 7.5
+    fig_height: 4.5
+    dev: svg
+    fontsize: 12pt
+    highlight: haddock
+    number_sections: yes
+    theme: united
+    toc: yes
+    toc_float: yes
+---
+
+```{r preparation, echo=FALSE, message=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(questionr)
+library(paletteer)
+library(texreg)
+
+
+load("climat.RData")
+source("recodages.R", encoding = "UTF-8")
+
+theme_set(theme_minimal() +
+          theme(plot.title=element_text(size=11),
+                  plot.caption=element_text(lineheight=1.1)))
+update_geom_defaults("bar", list(fill="#045a8d"))
+update_geom_defaults("col", list(fill="#045a8d"))
+
+texte_legende <- "Source : enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS"
+source_champ <- function(n=NA, extra=NA) {
+  if(is.na(n))
+    texte <- texte_legende
+  else
+    texte <- paste0(texte_legende, " (n=", n, ")")
+
+  if(is.na(extra))
+    labs(caption=texte)
+  else
+    labs(caption=paste(extra, texte, sep="\n"))
+}
+
+table_multi <- function(dat, levs=levels(dat$valeur)) {
+    dat$valeur <- fct_relevel(dat$valeur, levs)
+    res <- group_by(dat, variable) %>% drop_na() %>% count(valeur) %>% transmute(valeur, pourcent=round(n/sum(n)*100)) %>% pivot_wider(names_from=valeur, values_from=pourcent)
+    mat <- as.matrix(res[,-1])
+    mat <- cbind(mat, Total=100)
+    rownames(mat) <- sub("\n", " ", res[[1]])
+    mat
+}
+```
+
+# Échantillon et biais de non-réponse
+```{r echo=FALSE}
+knitr::kable(round(cprop(table(climat$preoccupe2, climat$NumVague))))
+knitr::kable(round(cprop(table(climat$opinionecolo.cata, climat$NumVague))))
+knitr::kable(round(cprop(table(climat$opinionecolo.contraintes, climat$NumVague))))
+knitr::kable(round(cprop(table(climat$opinionecolo.proteger, climat$NumVague))))
+knitr::kable(round(cprop(table(climatRegr$solreducrech2, climat$NumVague))))
+knitr::kable(round(cprop(table(climat$solinstit.limitevols, climat$NumVague))))
+knitr::kable(round(cprop(table(climat$solinstit.selection, climat$NumVague))))
+knitr::kable(round(cprop(table(climat$solinstit.conf, climat$NumVague))))
+```
+
+```{r echo=FALSE}
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr, data=climatRegr )
+res.reg2 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 , data=climatRegr )
+res.reg3 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + preoccupe2 , data=climatRegr )
+res.reg4 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + solreducrech2, data=climatRegr )
+res.reg5 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + preoccupe2 + opinionecolo.cata+ opinionecolo.contraintes +       opinionecolo.proteger + solreducrech + solinstit.limitevols + solinstit.selection + solinstit.conf, data=climatRegr )
+res.reg6 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr3 + nbpublistranch2 + tpsquotiteNum + carriere + international.naiss, data=climatRegr )
+
+
+htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6), 
+        stars = c(0.001, 0.01, 0.05, 0.1), digits = 2, #single.row = TRUE,
+        custom.coef.map = list("sexeune femme"= "Woman (ref = man)",
+                               "sexeautre"="Sex : other",
+                               "ageAgrMoins de 29 ans"= "less than 29 ans (Ref = 50-54 ans",
+                               "ageAgr30-34 ans"= "30-34 years old",
+                               "ageAgr35-39 ans"= "35-39 years old",
+                               "ageAgr40-44 ans"= "40-44 years old",
+                               "ageAgr45-49 ans"= "45-49 years old",
+                               "ageAgr55-64 ans"= "55-64 years old",
+                               "ageAgr65 ans et plus"= "More than 65 years old",
+                               "sitpro2Directeur·rice de recherche"="Directeur·rice de recherche (Ref = Maître·sse de conférences)",
+                               "sitpro2Professeur·e des universités"= "University professor ",
+                               "sitpro2Chargé·e de recherche"="Researcher",
+                               "sitpro2Maître·sse de conférences"="Lecturer",
+                               "sitpro2Post-doctorant·e"= "Post doctoral student",
+                               "sitpro2ATER"="ATER",
+                               "sitpro2Doctorant·e contractuel·le"="contractual doctoral student",
+                               "sitpro2Doctorant·e CIFRE"= "CIFRE contractual doctoral student",
+                               "sitpro2Ingénieur·e de recherche"="Research engineer",
+                               "sitpro2Ingénieur·e d'études"="Design engineer",
+                               "sitpro2Assistant ingénieur·e"="Assistant engineer",
+                               "sitpro2Technicien·ne"="Technician",
+                               "sitpro2Chargé·e d'études/de mission"= "Research officer",
+                               "sitpro2Adjoint·e technique"="Technical assistant",
+                               "sitpro2Autre"="Other",
+                               "discipline_agr3Droit, économie, gestion"="Droit, économie, gestion (Ref = physique)",
+                               "discipline_agr3Autres lettres et sciences humaines"="Autres lettres et sciences humaines",
+                               "discipline_agr3Archi/arts, anthropo ethno"="Archi/arts, anthropo ethno",
+                               "discipline_agr3Socio, démo"="Socio, démo",
+                               "discipline_agr3Histoire, géo, urba"="Histoire, géo, urba",
+                               "discipline_agr3Mathématiques"="Mathématiques",
+                               "discipline_agr3Informatique"="Informatique",
+                               "discipline_agr3Chimie"="Chimie",
+                               "discipline_agr3Astro, géologie"="Astro, géologie",
+                               "discipline_agr3Météo, océano, physiqu environt"="Météo, océano, physiqu environt",
+                               "discipline_agr3Médecine, pharma, santé"="Médecine, pharma, santé",
+                               "discipline_agr3Génies : méca, info, élec, énergie"="Génies : méca, info, élec, énergie",
+                               "discipline_agr3Biologie"="Biologie",
+                               "discipline_agr3Biologie des populations et écologie"="Biologie des populations et écologie",
+                               "nbpublis"="Number of publications in 2017-mid2020",
+                               "nbpublisang"="Number of publications in english in 2017-mid2020",
+                               "particip_ANR"="Participe à projet(s) financé ANR",
+                               "particip_Fr"="Participe à projet(s) av financt public Fr",
+                               "particip_Europ"="Participe à projet(s) av financt europ",
+                               "particip_Intern"="Participe à projet(s) av financt internation",
+                               "particip_prive"="Participe à projet(s) av financt privé",
+                               "Profin_Mb_RespMembre d'au moins 1 projet financé"="Membre de projet(s) financé(s) (ref = Ni mb ni responsable)",
+                               "Profin_Mb_RespResponsable d'au moins 1 projet financé"="Responsable de projet(s) financé(s)",
+                               "carriereOui"="Cherche à être promu, recrut, titularisé",
+                               "projets.anr_m2Membre projet ANR oui"="Membre projet(s) financt ANR (Ref = Ne participe pas)",
+                               "projets.anr_r2Responsable projet ANR oui"="Responsable projet(s) financt ANR",
+                               "projets.france_m2Membre projet France oui"="Membre projet(s) financt France (Ref = Ne participe pas)",
+                               "projets.france_r2Responsable projet France oui"="Responsable projet(s) financt France",
+                               "projets.europe_m2Membre projet européen oui"="Membre projet(s) financt européen (Ref = Ne participe pas)",
+                               "projets.europe_r2Responsable projet européen oui"="Responsable projet(s) financt européen",
+                               "projets.inter_m2Membre projet international oui"="Membre projet(s) financt international (Ref = Ne participe pas)",
+                               "projets.inter_r2Responsable projet international oui"="Responsable projet(s) financt international",
+                               "projets.prive_m2Membre projet privé oui"="Membre projet(s) financt privé (Ref = Ne participe pas)",
+                               "projets.prive_r2Responsable projet privé oui"="Responsable projet(s) financt privé",
+                               "revenuTete"="Revenu par individu du foyer",
+                               "enfantsnb"= "nombre d'enfants",
+                               "coupleNon"="ne vit pas en couple"),
+        symbol = "+",
+        caption = "Tableau 2 : Régressions linéaires multiples sur le nombre d'heures de vol en 2019", caption.above=TRUE, 
+        single.row = TRUE)
+```
+
+
+# Opinions
+
+## Activités humaines et changement climatique
+```{r echo=FALSE}
+climat$acthum3 <- fct_collapse(climat$acthum2,
+                               "Oui, elles jouent un grand rôle\nou en sont l'unique cause"=c("Oui, elles en sont l'unique cause", 
+                                 "Oui, elles jouent un grand rôle"))
+pal <- RColorBrewer::brewer.pal(6, "RdYlGn")
+ggplot(drop_na(climat, acthum3),
+       aes(y=fct_rev(acthum3), x=..prop.., group=1)) +
+  geom_bar(fill=c("light grey", pal[c(1, 2, 4, 6)])) +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  coord_cartesian(xlim=c(0, 1)) +
+  geom_text(aes(label=scales::percent(..prop.., accuracy=0.1, decimal.mark=",")),
+            stat="count", position=position_dodge(.9),
+            hjust=-0.2, size=3) +
+  labs(x="Proportion des répondant·es", y="",
+       title="Les activités humaines sont-elles la cause du changement climatique\n(hausse des températures depuis une centaine d'années) ?") +
+  source_champ(nrow(drop_na(climat, acthum3)),
+               "Lecture : pour 95,1% des répondant·es, les activités humaines jouent un grand rôle ou sont l'unique cause du changement climatique")
+```
+
+```{r echo=FALSE}
+climat$acthum3 <- fct_collapse(climat$acthum2,
+                               "Oui, elles jouent un grand rôle ou en sont l'unique cause"=c("Oui, elles en sont l'unique cause", 
+                                 "Oui, elles jouent un grand rôle"))
+knitr::kable(freq(climat$acthum2))
+knitr::kable(round(lprop(table(climat$discipline_agr4, climat$acthum3))))
+knitr::kable(round(lprop(table(climat$sitpro, climat$acthum3))))
+```
+
+## Préoccupation par rapport au changement climatique
+```{r echo=FALSE}
+pal <- RColorBrewer::brewer.pal(9, "RdYlBu")
+ggplot(drop_na(climat, preoccupe),
+       aes(y=fct_relevel(preoccupe, "Sans opinion"), x=..prop.., group=1)) +
+  geom_bar(fill=c("light grey", "#74add1", "#fee090", "#fdae61", "#f46d43", "#d73027")) +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  coord_cartesian(xlim=c(0, 0.42)) +
+  geom_text(aes(label=scales::percent(..prop.., accuracy=0.1, decimal.mark=",")),
+            stat="count", position=position_dodge(.9),
+            hjust=-0.2, size=3) +
+  labs(x="Proportion des répondant·es", y="",
+       title="Dans quelle mesure êtes-vous préoccupé·e par le changement climatique ?") +
+  source_champ(nrow(drop_na(climat, preoccupe)),
+               "Lecture : 31,7% des répondant·es sont extrêmement préoccupé·es par le changement climatique")
+
+```
+
+```{r echo=FALSE}
+knitr::kable(freq(climat$preoccupe2))
+knitr::kable(round(lprop(table(climat$discipline_agr4, climat$preoccupe2))))
+knitr::kable(round(lprop(table(climat$sitpro, climat$preoccupe2))))
+```
+
+
+## Évolution de la préoccupation
+```{r echo=FALSE}
+pal <- RColorBrewer::brewer.pal(9, "RdYlBu")
+ggplot(drop_na(climat, pluspreoccupe),
+       aes(y=fct_relevel(fct_rev(pluspreoccupe), "Sans opinion"), x=..prop.., group=1)) +
+  geom_bar(fill=c("light grey", "#74add1", "#e5f5f9", "#dfc27d", "#f46d43", "#d73027")) +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  coord_cartesian(xlim=c(0, 0.46)) +
+  geom_text(aes(label=scales::percent(..prop.., accuracy=0.1, decimal.mark=",")),
+            stat="count", position=position_dodge(.9),
+            hjust=-0.2, size=3) +
+  theme(plot.title=element_text(size=10), plot.subtitle=element_text(size=8)) +
+  labs(x="Proportion des répondant·es", y="",
+       title="Êtes-vous plus ou moins préoccupé·e par le changement climatique qu'il y a 5 ans ?") +
+  source_champ(nrow(drop_na(climat, pluspreoccupe)),
+               "Lecture : 44,6% des répondant·es sont beaucoup plus préocupé·es par le changement climatique qu'il y a cinq ans")
+```
+
+```{r echo=FALSE}
+knitr::kable(freq(climat$pluspreoccupe))
+knitr::kable(round(lprop(table(climat$discipline_agr4, climat$pluspreoccupe))))
+knitr::kable(round(lprop(table(climat$sitpro, climat$pluspreoccupe))))
+```
+
+## Opinions sur l'écologie en général : catastrophe et effondrement
+```{r echo=FALSE, fig.height=5.5}
+dat <- rbind(data.frame(variable="Il ne sert à rien que je fasse des efforts pour l'environnement\nsi les autres ne font pas de même", valeur=climat$opinionecolo.efforts),
+data.frame(variable="La plupart des problèmes environnementaux peuvent être résolus\npar le développement de technologies plus performantes",
+                        valeur=climat$opinionecolo.techno),
+             data.frame(variable="La décroissance est nécessaire\npour faire face aux enjeux environnementaux", valeur=climat$opinionecolo.decroissance),
+             data.frame(variable="Je suis d’accord pour que des contraintes réglementaires\nsoient mises en place pour protéger l'environnement,\nmême si cela limite mon confort", valeur=climat$opinionecolo.contraintes),
+             data.frame(variable="Protéger l'environnement est plus important\nque protéger la croissance économique", valeur=climat$opinionecolo.proteger),
+             data.frame(variable="Ce type de catastrophe pourrait provoquer\nun effondrement de nos sociétés*", valeur=climat$opinionecolo.effondrement2),
+             data.frame(variable="Si les choses continuent au rythme actuel,\nnous allons bientôt vivre une catastrophe écologique majeure", valeur=climat$opinionecolo.cata)) %>%
+    mutate(variable=factor(variable, levels=unique(variable)),
+           valeur=fct_relevel(valeur, c("Tout à fait d'accord", "Plutôt d'accord", "Sans opinion", "Plutôt pas d'accord", "Pas du tout d'accord")))
+
+drop_na(dat) %>%
+    ggplot(aes(x=variable)) +
+    geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
+    scale_fill_manual(values=c("#d7191c", "#fdae61", "light grey", "#a6d96a", "#1a9641")) +
+    scale_y_continuous(labels=scales::percent_format(),
+                       sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
+    coord_flip() + labs(fill="") +
+    theme(legend.position="bottom") +
+    guides(fill=guide_legend(reverse = TRUE, nrow=3, byrow=TRUE)) +
+    labs(y="Proportion des répondant·es", x="") +
+    source_champ(max(table(drop_na(dat)$variable)),
+                  "* Les personnes ayant répondu négativement à la question précédente sont classées en « Pas du tout d'accord ».
+Lecture : 59% des répondant·es sont tout à fait d'accord avec l'affirmation selon laquelle\nnous allons bientôt vivre une catastrophe écologique majeure")
+```
+
+Si les choses continuent au rythme actuel, nous allons bientôt connaître une catastrophe écologique majeure.
+```{r echo=FALSE}
+knitr::kable(freq(climat$opinionecolo.cata))
+knitr::kable(round(lprop(table(climat$discipline_agr4, climat$opinionecolo.cata))))
+knitr::kable(round(lprop(table(climat$sitpro, climat$opinionecolo.cata))))
+```
+
+Ce type de catastrophe pourrait provoquer un effondrement de nos sociétés : les besoins de base (alimentation, énergie, santé, etc.) ne seront plus assurés pour la majorité de la population.
+```{r echo=FALSE}
+knitr::kable(freq(climat$opinionecolo.effondrement2))
+knitr::kable(round(lprop(table(climat$discipline_agr4, climat$opinionecolo.effondrement2))))
+knitr::kable(round(lprop(table(climat$sitpro, climat$opinionecolo.effondrement2))))
+```
+
+## Changements profonds dans nos métiers
+```{r echo=FALSE}
+pal <- RColorBrewer::brewer.pal(9, "RdYlBu")
+ggplot(drop_na(climat, chgtpratique),
+       aes(y=fct_relevel(fct_rev(chgtpratique), "Sans opinion"), x=..prop.., group=1)) +
+  geom_bar(fill=c("light grey", "#d7191c", "#fdae61", "#a6d96a", "#1a9641")) +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  coord_cartesian(xlim=c(0, 0.60)) +
+  geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
+            stat="count", position=position_dodge(.9),
+            hjust=-0.2, size=3) +
+  theme(plot.title=element_text(size=10),
+        plot.subtitle=element_text(size=8)) +
+  labs(x="Proportion des répondant·es", y="",
+       title="Pensez−vous que l'urgence climatique exige des changements profonds\ndans la pratique de nos métiers ?") +
+  source_champ(nrow(drop_na(climat, chgtpratique)),
+               "Lecture: 47% des répondant·es pensent que l'urgence climatique exige des changements profonds dans la pratique de nos métiers")
+```
+
+```{r echo=FALSE}
+knitr::kable(freq(climat$chgtpratique))
+knitr::kable(round(lprop(table(climat$discipline_agr4, climat$chgtpratique))))
+knitr::kable(round(lprop(table(climat$sitpro, climat$chgtpratique))))
+```
+
+## Réduction des émissions d'un tiers d'ici à 2030
+```{r echo=FALSE}
+climat$solreducrech4 <- fct_recode(climat$solreducrech,
+  "Montrer l'exemple\n(réduire ses émissions de plus d'un tiers)" = "La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui",
+  "Réduire ses émissions d'un tiers environ" = "La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ",
+  "Bénéficier d'un statut dérogatoire\n(réduire ses émissions de moins d'un tiers)" = "En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"
+)
+ggplot(drop_na(climat, solreducrech4),
+       aes(y=fct_rev(solreducrech4), x=..prop.., group=1)) +
+    geom_bar(fill=c("#d7191c", "#a6d96a", "#1a9641")) +
+    scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+    coord_cartesian(xlim=c(0, 0.5)) +
+    geom_text(aes(label=scales::percent(..prop.., accuracy=1, decimal.mark=",")),
+            stat="count", position=position_dodge(.9),
+            hjust=-0.2, size=3) +
+    labs(x="Proportion des répondant·es", y="",
+         title="La France s’est engagée à réduire d’un tiers ses émissions\nde gaz à effet de serre d'ici à 2030.\nDans ce cadre, pensez-vous que la recherche publique doit :") +
+  source_champ(nrow(drop_na(climat, solreducrech4)),
+               "Lecture : 48% des répondant·es pensent que la recherche publique doit réduire ses émissions de plus d'un tiers d'ici à 2030")
+```
+
+```{r echo=FALSE}
+climat$solreducrech3 <- fct_recode(climat$solreducrech,
+  "Plus d'un tiers" = "La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui",
+  "Un tiers environ" = "La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ",
+  "Moins d'un tiers" = "En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"
+)
+knitr::kable(freq(climat$solreducrech3))
+knitr::kable(round(lprop(table(climat$discipline_agr4, climat$solreducrech3))))
+knitr::kable(round(lprop(table(climat$sitpro, climat$solreducrech3))))
+```
+
+# Pratiques
+
+## Vols en avion
+
+Les traitements de cette section portent seulement sur les chercheurs
+
+```{r}
+# # sous base seulement recherche
+climat_recherche <- subset(climat, ! sitpro %in% c(
+  "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
+  "Chargé·e d'études/de mission","Adjoint·e technique",
+  "Autre"))
+
+```
+
+### Motifs des vols par discipline
+
+
+```{r}
+
+a <- tapply(climat_recherche$volsdist_totterrain, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+b <- tapply(climat_recherche$volsdist_totsejrech, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+c <- tapply(climat_recherche$volsdist_totworkshop, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+d <- tapply(climat_recherche$volsdist_totcours, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+e <- tapply(climat_recherche$volsdist_totjury, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+f <- tapply(climat_recherche$volsdist_totfinanc, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+g <- tapply(climat_recherche$volsdist_toteval, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+h <- tapply(climat_recherche$volsdist_totautre, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+j <- tapply(climat_recherche$volsdist_totconf, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+total <- tapply(climat_recherche$volsdist_tot, 
+            climat_recherche$discipline_agr4, mean, na.rm=T)
+
+table <- cbind(a,b,c,d,e,f,g,h,j, total)
+colnames(table) <- c("Terrain et données",
+                     "Séjour de recherche",
+                     "Workshop",
+                     "Cours et formations",
+                     "jury",
+                     "financ",
+                     "eval",
+                     "autre",
+                     "Conférences", 
+                     "total")
+
+
+table <- as.data.frame(as.table(table)) # j'ai jamais compris le rôle de cette ligne mais ça fait ce que je veux
+niveaux <- names(sort(tapply(climat_recherche$volsdist_tot, 
+                             climat_recherche$discipline_agr4, mean, na.rm=T)))
+table$Var1 <- fct_relevel(table$Var1, niveaux)
+table$Var2 <- fct_recode(table$Var2,
+                         "Autres" = "jury",
+                         "Autres" = "eval",
+                         "Autres" = "financ",
+                         "Autres"="autre")
+#ordonnes par poids dans le total des distances parcourues
+table$Var2 <- fct_relevel(table$Var2,
+                          c("Autres","Cours et formations",
+                            "Terrain et données",
+                            "Workshop",
+                            "Séjour de recherche",
+                            "Conférences", 
+                            "total"))
+
+# cols <- brewer.pal(n=6, "Set2")
+ggplot(table[table$Var2!="total",]) + 
+  geom_bar(aes(x=Var1, y=Freq, fill=Var2), stat="identity")+
+  coord_flip()+
+  # scale_fill_manual(values=rev(as.vector(cols[1:6])))+
+  scale_fill_paletteer_d("ggthemes::excel_Celestial")+
+  labs(x="", y="Distance parcourue en avion en 2019 (km)", fill="")+
+  guides(fill=guide_legend(reverse = TRUE))
+
+```
+
+
+
+```{r}
+tableau <- table %>% pivot_wider(names_from=Var2, values_from=Freq) 
+knitr::kable(tableau, digits =1)
+# ça aurait été bien que ça marche comme ça mais il a plusieurs valeurs pour "Autres" (parce que j'ai regroupé des trucs ci dessus) alors il fait n'importe quoi...
+
+```
+
+
+```{r}
+ggplot(table[table$Var2=="total",],
+       aes(x=Var1, y=Freq)) +
+  stat_summary(geom="bar", fun=mean, na.rm=TRUE) +
+  stat_summary(
+    geom="errorbar", fun.data=mean_cl_normal, 
+    na.rm=TRUE, width=0.2)+
+  coord_flip()+
+  # scale_fill_manual(values=rev(as.vector(cols[1:6])))+
+  scale_fill_paletteer_d("ggthemes::excel_Celestial")+
+  labs(x="", y="Distance parcourue en avion (km)")
+```
+
+
+
+
+### Motifs des vols par statut
+
+
+```{r}
+## Recodage de climat$sitpro en climat$sitpro_reduite
+climat_recherche$sitpro_reduite <- NULL
+climat_recherche$sitpro_reduite <- fct_recode(climat_recherche$sitpro,
+  "Doctorant·e contractuel·le" = "Doctorant·e CIFRE"
+)
+
+a <- tapply(climat_recherche$volsdist_totterrain, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+b <- tapply(climat_recherche$volsdist_totsejrech, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+c <- tapply(climat_recherche$volsdist_totworkshop, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+d <- tapply(climat_recherche$volsdist_totcours, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+e <- tapply(climat_recherche$volsdist_totjury, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+f <- tapply(climat_recherche$volsdist_totfinanc, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+g <- tapply(climat_recherche$volsdist_toteval, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+h <- tapply(climat_recherche$volsdist_totautre, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+j <- tapply(climat_recherche$volsdist_totconf, 
+            climat_recherche$sitpro_reduite, mean, na.rm=T)
+total <- tapply(climat_recherche$volsdist_tot, 
+                climat_recherche$sitpro_reduite, mean, na.rm=T)
+
+table <- cbind(a,b,c,d,e,f,g,h,j, total)
+colnames(table) <- c("Terrain et données",
+                     "Séjour de recherche",
+                     "Workshop",
+                     "Cours et formations",
+                     "jury",
+                     "financ",
+                     "eval",
+                     "autre",
+                     "Conférences", 
+                     "total")
+table <- as.data.frame(as.table(table))
+table$Var2 <- fct_recode(table$Var2,
+                         "Autres" = "jury",
+                         "Autres" = "eval",
+                         "Autres" = "financ",
+                         "Autres"="autre")
+#ordonnes par poids dans le total des distances parcourues
+table$Var2 <- fct_relevel(table$Var2,
+                          c("Autres","Cours et formations",
+                            "Terrain et données",
+                            "Workshop",
+                            "Séjour de recherche",
+                            "Conférences", 
+                            "total"))
+
+table$Var1 <- fct_relevel(table$Var1,
+                          c("Directeur·rice de recherche",
+                            "Professeur·e des universités",
+                            "Chargé·e de recherche",
+                            "Maître·sse de conférences",
+                            "Ingénieur·e de recherche",
+                            "Post-doctorant·e",
+                            "ATER",
+                            "Doctorant·e contractuel·le",
+                            "Ingénieur·e d'études",
+                            "Assistant ingénieur·e",
+                            "Technicien·ne",
+                            "Chargé·e d'études/de mission",
+                            "Adjoint·e technique",
+                            "Autre")
+)
+
+ggplot(table[table$Var2!="total"&
+               table$Var1%in%c(levels(table$Var1)[1:8]),]) + 
+  geom_bar(aes(x=fct_rev(Var1), y=Freq, fill=Var2), stat="identity")+
+  coord_flip()+
+  # scale_fill_manual(values=rev(as.vector(cols[1:6])))+
+  scale_fill_paletteer_d("ggthemes::excel_Celestial")+
+  labs(x="", y="Distance parcourue en avion en 2019 (km)", fill="")+
+  guides(fill=guide_legend(reverse = TRUE))
+
+```
+
+
+
+```{r}
+tableau <- table %>% pivot_wider(names_from=Var2, values_from=Freq) 
+knitr::kable(tableau, digits =1)
+# ça aurait été bien que ça marche comme ça mais il a plusieurs valeurs pour "Autres" (parce que j'ai regroupé des trucs ci dessus) alors il fait n'importe quoi...
+
+```
+
+
+
+## Équipements informatiques
+```{r echo=FALSE}
+climat$ordis.5anstotalproplus0 <- ifelse(climat$ordis.5anstotalpro > 0, "Au moins un équipement de moins de 5 ans", "Aucun équipement de moins de 5 ans")
+climat$ordis.nbtotalproplus1 <- ifelse(climat$ordis.nbtotalpro > 1, "Plusieurs équipements", "Aucun ou un seul équipement")
+climat$ordis.tousindisp <- ifelse(climat$ordis.nbtotalpro > climat$ordis.indisptotalpro, "Tous les équipements jugés indispensables", "Certains équipements jugés non indispensables")
+
+knitr::kable(freq(climat$ordis.5anstotalproplus0))
+knitr::kable(freq(climat$ordis.nbtotalproplus1))
+knitr::kable(round(lprop(table(climat$ordis.nbtotalproplus1, climat$ordis.tousindisp))))
+
+knitr::kable(round(lprop(table(climat$discipline_agr4, climat$ordis.5anstotalproplus0))))
+knitr::kable(round(lprop(table(climat$discipline_agr4, climat$ordis.nbtotalproplus1))))
+knitr::kable(round(lprop(table(climat$discipline_agr4, climat$ordis.tousindisp))))
+
+knitr::kable(round(lprop(table(climat$sitpro, climat$ordis.5anstotalproplus0))))
+knitr::kable(round(lprop(table(climat$sitpro, climat$ordis.nbtotalproplus1))))
+```
+
+## Reliquat de budget
+
+```{r echo=FALSE}
+knitr::kable(freq(ifelse(climat$reliquat.avion != "Je n'ai pas eu à utiliser de reliquat de budget" | climat$reliquat.ordi != "Je n'ai pas eu à utiliser de reliquat de budget", "A eu un reliquat de budget à dépenser", "N'a pas eu de reliquat à dépenser")))
+```
+
+Avoir utilisé un reliquat de budget pour payer du matériel informatique non indispensable :
+```{r echo=FALSE}
+knitr::kable(freq(climat$reliquat.ordi))
+knitr::kable(freq(fct_recode(climat$reliquat.ordi, NULL="Je n'ai pas eu à utiliser de reliquat de budget")))
+knitr::kable(round(lprop(table(climat$discipline_agr4, climat$reliquat.ordi))))
+knitr::kable(round(lprop(table(climat$sitpro, climat$reliquat.ordi))))
+```
+
+Avoir utilisé un reliquat de budget pour payer des déplacements en avion non indispensables :
+```{r echo=FALSE}
+knitr::kable(freq(climat$reliquat.avion))
+knitr::kable(freq(fct_recode(climat$reliquat.avion, NULL="Je n'ai pas eu à utiliser de reliquat de budget")))
+knitr::kable(round(lprop(table(climat$discipline_agr4, climat$reliquat.avion))))
+knitr::kable(round(lprop(table(climat$sitpro, climat$reliquat.avion))))
+```
+
+# Solutions
+
+## Réductions individuelles des émissions de GES dans le cadre professionnel d'ici à 2030
+
+Êtes-vous prêt·e à réduire vos émissions de gaz à effet de serre d’ici à 2030 dans les domaines suivants ?
+
+```{r echo=FALSE}
+dat <- rbind(data.frame(variable="Les expériences et observations\nscientifiques", valeur=climat$solreducperso.exp),
+             data.frame(variable="Les déplacements pour missions de terrain,\nd'observation ou de collecte de données", valeur=climat$solreducperso.donnees),
+             data.frame(variable="Les déplacements domicile-travail\nen voiture, moto, scooter ou avion", valeur=climat$solreducperso.domicile),
+             data.frame(variable="L'équipement en postes informatiques\net sa fréquence de renouvellement", valeur=climat$solreducperso.info),
+             data.frame(variable="Les vols en avion\npour les conférences, réunions, congrès", valeur=climat$solreducperso.conf)) %>%
+  mutate(variable=factor(variable, levels=unique(variable)),
+         valeur=fct_relevel(valeur, c("Oui, d'au moins un tiers", "Oui, mais de moins d'un tiers", "Non, car elles sont déjà très basses", "Sans opinion", "Non")))
+
+knitr::kable(table_multi(dat))
+# 
+# res <- group_by(dat, variable) %>% drop_na() %>% filter(valeur != "Non concerné·e") %>% count(valeur=valeur == "Non") %>% transmute(valeur, pourcent=round(n/sum(n)*100)) %>% pivot_wider(names_from=valeur, values_from=pourcent) %>% select(`TRUE`)
+# mat <- as.matrix(res[,-1])
+# mat <- cbind(mat, Total=100)
+# rownames(mat) <- sub("\n", " ", res[[1]])
+# mat
+
+
+```
+
+Proportion de réponses « Non », en excluant les non concernés :
+```{r echo=FALSE, results='asis', fig.height=6}
+knitr::kable(round(
+cbind("Les expériences et observations scientifiques"=lprop(table(climat$discipline_agr4, climat$solreducperso.exp)[, levels(climat$solreducperso.exp) != "Non concerné·e"], drop = F)[,"Non"],
+      "Les déplacements pour missions de terrain, d'observation ou de collecte de données"=lprop(table(climat$discipline_agr4, climat$solreducperso.donnees)[, levels(climat$solreducperso.donnees) != "Non concerné·e"], drop = F)[,"Non"],
+      "Les déplacements domicile-travail en voiture, moto, scooter ou avion"=lprop(table(climat$discipline_agr4, climat$solreducperso.domicile)[, levels(climat$solreducperso.domicile) != "Non concerné·e"], drop = F)[,"Non"], 
+      "L'équipement en postes informatiques et sa fréquence de renouvellement"=lprop(table(climat$discipline_agr4, climat$solreducperso.info)[, levels(climat$solreducperso.info) != "Non concerné·e"], drop = F)[,"Non"], 
+      "Les vols en avion pour les conférences, réunions, congrès"=lprop(table(climat$discipline_agr4, climat$solreducperso.conf)[, levels(climat$solreducperso.conf) != "Non concerné·e"], drop = F)[,"Non"]
+)))
+
+knitr::kable(round(
+cbind("Les expériences et observations scientifiques"=lprop(table(climat$sitpro, climat$solreducperso.exp)[, levels(climat$solreducperso.exp) != "Non concerné·e"], drop = F)[,"Non"],
+      "Les déplacements pour missions de terrain, d'observation ou de collecte de données"=lprop(table(climat$sitpro, climat$solreducperso.donnees)[, levels(climat$solreducperso.donnees) != "Non concerné·e"], drop = F)[,"Non"],
+      "Les déplacements domicile-travail en voiture, moto, scooter ou avion"=lprop(table(climat$sitpro, climat$solreducperso.domicile)[, levels(climat$solreducperso.domicile) != "Non concerné·e"], drop = F)[,"Non"], 
+      "L'équipement en postes informatiques et sa fréquence de renouvellement"=lprop(table(climat$sitpro, climat$solreducperso.info)[, levels(climat$solreducperso.info) != "Non concerné·e"], drop = F)[,"Non"], 
+      "Les vols en avion pour les conférences, réunions, congrès"=lprop(table(climat$sitpro, climat$solreducperso.conf)[, levels(climat$solreducperso.conf) != "Non concerné·e"], drop = F)[,"Non"]
+))[c("Directeur·rice de recherche", "Professeur·e des universités", "Chargé·e de recherche", "Maître·sse de conférences", 
+"Ingénieur·e de recherche", "Ingénieur·e d'études", "Assistant ingénieur·e", 
+"Technicien·ne", "Chargé·e d'études/de mission", "Adjoint·e technique", 
+"Autre"),])
+
+drop_na(dat) %>%
+  filter(valeur != "Non concerné·e") %>%
+  ggplot(aes(x=variable)) +
+  geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
+  scale_fill_manual(values=c("#d7191c", "light grey", "#3690c0", "#66bd63", "#1a9641")) +
+  scale_y_continuous(labels=scales::percent_format(),
+                     sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
+  coord_flip() + labs(fill="") +
+  theme(legend.position="bottom") +
+  guides(fill=guide_legend(reverse = TRUE, nrow=3, byrow=TRUE)) +
+  labs(y="Proportion des répondant·es", x="",
+       title="Êtes-vous prêt·e à réduire vos émissions de gaz à effet de serre\nd’ici à 2030 dans les domaines suivants ?") +
+  source_champ(max(table(filter(drop_na(dat), valeur != "Non concerné·e")$variable)),
+               "Note : la proportion de personnes concernées varie selon la question
+               Lecture : 32% des répondant·es déclarent ne pas pouvoir réduire leurs émissions liées aux vols pour les conférences\ncar elles sont déjà très basses")
+```
+
+## Risques liés à la réduction des vols
+
+Quels seraient les risques liés à la mise en place d'une politique de réduction des vols professionnels en avion dans la recherche ?
+
+```{r echo=FALSE, results='asis', fig.height=6, fig.width=7.5}
+dat <- rbind(data.frame(variable="Réduire certains avantages\nque vous apporte votre métier", valeur=climat$solrisqreducavion.avantages),
+             data.frame(variable="Réduire votre accès aux financements", valeur=climat$solrisqreducavion.fin),
+             data.frame(variable="Diminuer la qualité de vos travaux", valeur=climat$solrisqreducavion.qual),
+             data.frame(variable="Diminuer la diffusion de vos travaux", valeur=climat$solrisqreducavion.diffusion),
+             data.frame(variable="Isoler la recherche française\ndu reste du monde", valeur=climat$solrisqreducavion.isoler),
+             data.frame(variable="Accroître la bureaucratie", valeur=climat$solrisqreducavion.bureaucratie),
+             data.frame(variable="Vous gêner pour l’accès à certains terrains\nou la collecte/production de certaines données", valeur=climat$solrisqreducavion.donnees),
+             data.frame(variable="Gêner l’insertion des jeunes chercheurs", valeur=climat$solrisqreducavion.insertion)) %>%
+    mutate(variable=factor(variable, levels=unique(variable)),
+           valeur=fct_relevel(valeur, c("C'est peu probable", "C'est probable mais ce n'est pas un problème", "Sans opinion", "C'est probable et c'est un problème")))
+
+knitr::kable(table_multi(dat))
+
+drop_na(dat) %>%
+    filter(valeur != "Non concerné·e") %>%
+    ggplot(aes(x=variable)) +
+    geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
+    scale_fill_manual(values=c("#d7191c", "light grey", "#a6d96a", "#1a9641")) +
+    scale_y_continuous(labels=scales::percent_format(),
+                       sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
+    coord_flip() + labs(fill="") +
+    theme(legend.position="bottom") +
+    guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
+    labs(y="Proportion des répondant·es", x="",
+         title="Quels seraient les risques liés à la mise en place d'une politique\nde réduction des vols professionnels en avion dans la recherche ?") +
+    source_champ(max(table(filter(drop_na(dat), valeur != "Non concerné·e")$variable)),
+                 "Note : la proportion de personnes concernées varie selon la question
+Lecture : 54% des répondant·es pensent qu'il est probable qu'une réduction du nombre des vols\nnuise à l'insertion des jeunes chercheurs et que c'est un problème")
+```
+
+
+## Réductions individuelles des émissions de GES des dispositifs expérimentaux d'ici à 2030
+
+Êtes-vous prêt·e à réduire d'ici à 2030 les émissions de gaz à effet de serre liées à la fabrication et au fonctionnement du matériel destiné à vos expériences et observations scientifiques, par les moyens suivants ?
+
+```{r echo=FALSE, fig.height=6}
+dat <- rbind(data.frame(variable="En utilisant moins d'équipements\ndans les dispositifs expérimentaux", valeur=climat$solreducmateriel.moins),
+             data.frame(variable="En l'utilisant moins fréquemment\nou moins intensivement", valeur=climat$solreducmateriel.util),
+             data.frame(variable="En utilisant ou en développant\ndes dispositifs plus simples (low tech)", valeur=climat$solreducmateriel.lowtech),
+             data.frame(variable="En renouvelant le matériel\nmoins fréquemment", valeur=climat$solreducmateriel.renouv)) %>%
+    mutate(variable=factor(variable, levels=unique(variable)),
+           valeur=fct_relevel(valeur, c("Oui, d'au moins un tiers", "Oui, mais de moins d'un tiers", "Non, car elles sont déjà très basses", "Sans opinion", "Non")))
+
+knitr::kable(table_multi(dat, c("Oui, d'au moins un tiers", "Oui, mais de moins d'un tiers", "Non, car elles sont déjà très basses", "Non",  "Sans opinion")))
+
+drop_na(dat) %>%
+    filter(valeur != "Non concerné·e") %>%
+    ggplot(aes(x=variable)) +
+    geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
+    scale_fill_manual(values=c("#d7191c", "light grey", "#3690c0", "#66bd63", "#1a9641")) +
+    scale_y_continuous(labels=scales::percent_format(),
+                       sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
+    coord_flip() + labs(fill="") +
+    theme(legend.position="bottom") +
+    guides(fill=guide_legend(reverse = TRUE, nrow=3, byrow=TRUE)) +
+    labs(y="Proportion parmi les répondant·es utilisant un dispositif expérimental", x="",
+         title="Êtes-vous prêt·e à réduire d'ici à 2030 les émissions de gaz à effet de serre\nliées à la fabrication et au fonctionnement du matériel destiné\nà vos expériences et observations scientifiques, par les moyens suivants ?",
+         caption=sprintf("Note : la proportion de personnes concernées varie selon la question
+Lecture : 34%% des répondant·es déclarent ne pas pouvoir réduire leurs émissions en renouvelant\nle matériel moins fréquemment car elles sont déjà très basses.
+Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020
+Champ : personnels permanents affiliés à une unité du CNRS, utilisant un dispositif expérimental (n=%i)", max(table(filter(drop_na(dat), valeur != "Non concerné·e")$variable))))
+```
+
+
+## Risques liés à la réduction des émissions de GES des dispositifs expérimentaux
+
+Quels seraient les risques liés à une politique de réduction des émissions de gaz à effet de serre liées à la fabrication et au fonctionnement du matériel destiné aux expériences et aux observations scientifiques ?
+
+```{r echo=FALSE, fig.height=6, fig.width=7.5}
+dat <- rbind(data.frame(variable="Diminuer la qualité de vos travaux", valeur=climat$solrisqreducmateriel.qual),
+             data.frame(variable="Vous faire prendre du retard\npar rapport aux équipes concurrentes", valeur=climat$solrisqreducmateriel.retard),
+             data.frame(variable="Réduire votre accès aux financements", valeur=climat$solrisqreducmateriel.fin),
+             data.frame(variable="Réduire votre nombre de publications", valeur=climat$solrisqreducmateriel.publi),
+             data.frame(variable="Vous imposer un changement\nde thèmes de recherche", valeur=climat$solrisqreducmateriel.themes)) %>%
+    mutate(variable=factor(variable, levels=rev(unique(variable))),
+           valeur=fct_relevel(valeur, c("C'est probable et c'est un problème", "Sans opinion", "C'est probable mais ce n'est pas un problème", "C'est peu probable")))
+
+knitr::kable(table_multi(dat, rev(levels(dat$valeur))))
+
+drop_na(dat) %>%
+    filter(valeur != "Non concerné·e") %>%
+    ggplot(aes(x=variable)) +
+    geom_bar(aes(fill=valeur), position="fill") +
+    scale_fill_manual(values=c("#d7191c", "light grey", "#a6d96a", "#1a9641")) +
+    scale_y_continuous(labels=scales::percent_format(),
+                       sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
+    coord_flip() + labs(fill="") +
+    theme(legend.position="bottom") +
+    guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
+    labs(y="Proportion parmi les répondant·es utilisant un dispositif expérimental", x="",
+         title="Quels seraient les risques liés à une politique de réduction des émissions\nde gaz à effet de serre liées à la fabrication et au fonctionnement\ndu matériel destiné aux expériences et aux observations scientifiques ?",
+         caption=sprintf("Note : la proportion de personnes concernées varie selon la question
+Lecture : 48%% des répondant·es pensent qu'il est probable qu'une politique de réduction des émissions\nliées aux expériences et observations diminue la qualité de leurs travaux, et que c'est un problème
+Source : Enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020
+Champ : personnels affiliés à une unité du CNRS, utilisant un dispositif expérimental (n=%i)", max(table(filter(drop_na(dat), valeur != "Non concerné·e")$variable))))
+```
+
+## Solutions institutionnelles
+
+Quelles actions les institutions et laboratoires de recherche devraient-ils mettre en œuvre pour réduire leurs émissions de gaz à effet de serre ?
+
+```{r echo=FALSE, fig.height=7, fig.width=7.5}
+dat <- rbind(data.frame(variable="Ajouter les émissions carbone parmi les principaux\ncritères de sélection des projets à financer", valeur=climat$solinstit.selection),
+             data.frame(variable="Imposer une limite au nombre de vols\nen avion par personne", valeur=climat$solinstit.limitevols),
+             data.frame(variable="Financer des initiatives de compensation carbone", valeur=climat$solinstit.compensation),
+             data.frame(variable="Diminuer le poids des conférences et présentations\nà l’étranger dans les évaluations de carrière", valeur=climat$solinstit.conf),
+             data.frame(variable="Dresser et diffuser régulièrement\ndes bilans carbone détaillés", valeur=climat$solinstit.bilanges),
+             data.frame(variable="Proscrire les vols en avion lorsque\nle trajet en train prend moins de 6 heures", valeur=climat$solinstit.vols6h),
+             data.frame(variable="Ne pas renouveler le matériel informatique qui fonctionne\navant un minimum de 5 ans d’ancienneté", valeur=climat$solinstit.info),
+             data.frame(variable="Financer le train même lorsque c'est plus cher\nou allonge la durée de la mission", valeur=climat$solinstit.train),
+             data.frame(variable="Lors de l'organisation d’événements, favoriser les prestataires\nproposant des menus locaux ou végétariens", valeur=climat$solinstit.vege),
+             data.frame(variable="Lors du renouvellement des équipements, privilégier ceux\nqui consomment moins d'énergie même s'ils sont plus coûteux", valeur=climat$solinstit.equip)) %>%
+    mutate(variable=factor(variable, levels=unique(variable)),
+           valeur=fct_relevel(valeur, c("C'est prioritaire", "C'est secondaire", "Sans opinion", "Il ne faut pas le mettre en œuvre")))
+
+knitr::kable(table_multi(dat))
+
+drop_na(dat) %>%
+    ggplot(aes(x=variable)) +
+    geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
+    scale_fill_manual(values=c("#d7191c", "light grey", "#a6d96a", "#1a9641")) +
+    scale_y_continuous(labels=scales::percent_format(),
+                       sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
+    coord_flip() + labs(fill="") +
+    theme(legend.position="bottom") +
+    guides(fill=guide_legend(reverse = TRUE, nrow=2, byrow=TRUE)) +
+    labs(y="Proportion des répondant·es", x="",
+         title="Quelles actions les institutions et laboratoires\nde recherche devraient-ils mettre en œuvre\npour réduire leurs émissions de gaz à effet de serre ?") +
+  source_champ(max(table(drop_na(dat)$variable)),
+               "Lecture : pour 75% des répondant·es, il est prioritaire de privilégier les équipements qui consomment moins d'énergie")
+```
