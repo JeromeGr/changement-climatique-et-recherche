@@ -70,14 +70,14 @@ res.reg1 <- lm(vaguenum ~ sexe + ageAgr, data=climatRegr )
 res.reg2 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 , data=climatRegr )
 res.reg3 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + preoccupe2 , data=climatRegr )
 res.reg4 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + solreducrech2, data=climatRegr )
-res.reg5 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + preoccupe2 + opinionecolo.cata+ opinionecolo.contraintes +       opinionecolo.proteger + solreducrech + solinstit.limitevols + solinstit.selection + solinstit.conf, data=climatRegr )
-res.reg6 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr3 + nbpublistranch2 + tpsquotiteNum + carriere + international.naiss, data=climatRegr )
-
-
+res.reg5 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + preoccupe2 + opinionecolo.cata+ opinionecolo.contraintes +       opinionecolo.proteger + solreducrech2 + solinstit.limitevols + solinstit.selection + solinstit.conf, data=climatRegr )
+res.reg6 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + nbpublistranch2 + tpsquotiteNum + carriere + malpaye + international.naiss, data=climatRegr )
+```
+```{r echo=FALSE, results='asis'}
 htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6), 
         stars = c(0.001, 0.01, 0.05, 0.1), digits = 2, #single.row = TRUE,
-        custom.coef.map = list("sexeune femme"= "Woman (ref = man)",
-                               "sexeautre"="Sex : other",
+        custom.coef.map = list("sexeFemme"= "Woman (ref = man)",
+                               "sexeAutre"="Sex : other",
                                "ageAgrMoins de 29 ans"= "less than 29 ans (Ref = 50-54 ans",
                                "ageAgr30-34 ans"= "30-34 years old",
                                "ageAgr35-39 ans"= "35-39 years old",
@@ -100,45 +100,70 @@ htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6),
                                "sitpro2Chargé·e d'études/de mission"= "Research officer",
                                "sitpro2Adjoint·e technique"="Technical assistant",
                                "sitpro2Autre"="Other",
-                               "discipline_agr3Droit, économie, gestion"="Droit, économie, gestion (Ref = physique)",
-                               "discipline_agr3Autres lettres et sciences humaines"="Autres lettres et sciences humaines",
-                               "discipline_agr3Archi/arts, anthropo ethno"="Archi/arts, anthropo ethno",
-                               "discipline_agr3Socio, démo"="Socio, démo",
-                               "discipline_agr3Histoire, géo, urba"="Histoire, géo, urba",
-                               "discipline_agr3Mathématiques"="Mathématiques",
-                               "discipline_agr3Informatique"="Informatique",
-                               "discipline_agr3Chimie"="Chimie",
-                               "discipline_agr3Astro, géologie"="Astro, géologie",
-                               "discipline_agr3Météo, océano, physiqu environt"="Météo, océano, physiqu environt",
-                               "discipline_agr3Médecine, pharma, santé"="Médecine, pharma, santé",
-                               "discipline_agr3Génies : méca, info, élec, énergie"="Génies : méca, info, élec, énergie",
-                               "discipline_agr3Biologie"="Biologie",
-                               "discipline_agr3Biologie des populations et écologie"="Biologie des populations et écologie",
-                               "nbpublis"="Number of publications in 2017-mid2020",
-                               "nbpublisang"="Number of publications in english in 2017-mid2020",
-                               "particip_ANR"="Participe à projet(s) financé ANR",
-                               "particip_Fr"="Participe à projet(s) av financt public Fr",
-                               "particip_Europ"="Participe à projet(s) av financt europ",
-                               "particip_Intern"="Participe à projet(s) av financt internation",
-                               "particip_prive"="Participe à projet(s) av financt privé",
-                               "Profin_Mb_RespMembre d'au moins 1 projet financé"="Membre de projet(s) financé(s) (ref = Ni mb ni responsable)",
-                               "Profin_Mb_RespResponsable d'au moins 1 projet financé"="Responsable de projet(s) financé(s)",
-                               "carriereOui"="Cherche à être promu, recrut, titularisé",
-                               "projets.anr_m2Membre projet ANR oui"="Membre projet(s) financt ANR (Ref = Ne participe pas)",
-                               "projets.anr_r2Responsable projet ANR oui"="Responsable projet(s) financt ANR",
-                               "projets.france_m2Membre projet France oui"="Membre projet(s) financt France (Ref = Ne participe pas)",
-                               "projets.france_r2Responsable projet France oui"="Responsable projet(s) financt France",
-                               "projets.europe_m2Membre projet européen oui"="Membre projet(s) financt européen (Ref = Ne participe pas)",
-                               "projets.europe_r2Responsable projet européen oui"="Responsable projet(s) financt européen",
-                               "projets.inter_m2Membre projet international oui"="Membre projet(s) financt international (Ref = Ne participe pas)",
-                               "projets.inter_r2Responsable projet international oui"="Responsable projet(s) financt international",
-                               "projets.prive_m2Membre projet privé oui"="Membre projet(s) financt privé (Ref = Ne participe pas)",
-                               "projets.prive_r2Responsable projet privé oui"="Responsable projet(s) financt privé",
-                               "revenuTete"="Revenu par individu du foyer",
-                               "enfantsnb"= "nombre d'enfants",
-                               "coupleNon"="ne vit pas en couple"),
+                               "discipline_agr4Droit, économie, gestion"="Droit, économie, gestion (Ref = physique)",
+                               "discipline_agr4Autres lettres et sciences humaines"="Autres lettres et sciences humaines",
+                               "discipline_agr4Histoire, géo, urba, anthropo"="Histoire, géo, urba, anthropo",
+                               "discipline_agr4Mathématiques"="Mathématiques",
+                               "discipline_agr4Informatique"="Informatique",
+                               "discipline_agr4Chimie"="Chimie",
+                               "discipline_agr4Astronomie"="Astronomie",
+                               "discipline_agr4Géologie"="Géologie",
+                               "discipline_agr4Météo, océano, physique environt"="Météo, océano, physique environt",
+                               "discipline_agr4Santé et recherche médicale"="Santé et recherche médicale",
+                               "discipline_agr4Ingénierie"="Ingénierie",
+                               "discipline_agr4Biologie"="Biologie",
+                               
+                               
+                               "solreducrech2"="Recherche doit réduire émissions de GES de 1/3 environ (Ref = Recherche doit montrer l'exemple, réduire de plus d'1/3)",
+                               "solreducrech2Recherche peut bénéficier d'un statut dérogatoire"="Recherche peut bénéficier d'un statut dérogatoire",
+                              
+                               "preoccupe2Extrêmement préoccupé·e"="Extrêmement préoccupé·e par le changement climatique (Ref = Très préoccupé·e)",
+                               "preoccupe2Assez préoccupé·e"="Assez préoccupé·e par le changement climatique",
+                               "preoccupe2Un peu préoccupé·e"="Un peu préoccupé·e par le changement climatique",
+                               "preoccupe2Pas du tout préoccupé·e"="Pas du tout préoccupé·e par le changement climatique",
+                               "preoccupe2Sans opinion"="Sans opinion quant à l'inquiétude sur le changement climatique",
+                               
+                               "opinionecolo.cataPlutôt d'accord"="Plutôt d'accord qu'on va bientôt vivre une catastrophe écologique majeure (Ref = Tout à fait d'accord)",
+                               "opinionecolo.cataPlutôt pas d'accord"="Plutôt pas d'accord qu'on va bientôt vivre une catastrophe écologique majeure",
+                               "opinionecolo.cataPas du tout d'accord"="Pas du tout d'accord qu'on va bientôt vivre une catastrophe écologique majeure",
+                               "opinionecolo.cataSans opinion"="Sans opinion sur la catastrophe écologique",
+                               
+                               "opinionecolo.contraintesPlutôt d'accord"="Plutôt d'accord que des contraintes réglementaires soient mises en place pour l'environnement même si ça limite le confort (Ref = Tout à fait d'accord)",
+                               "opinionecolo.contraintesPlutôt pas d'accord"="Plutôt pas d'accord que des contraintes réglementaires soient mises en place pour l'environnement même si ça limite le confort",
+                               "opinionecolo.contraintesPas du tout d'accord"="Pas du tout d'accord que des contraintes réglementaires soient mises en place pour l'environnement même si ça limite le confort",
+                               "opinionecolo.contraintesSans opinion"="Sans opinion sur les contraintes réglementaires",
+                               
+                               "opinionecolo.protegerPlutôt d'accord"="Plutôt d'accord qu'il est plus important de protéger l'environnement plutôt que la croissance (Ref = Tout à fait d'accord)",
+                               "opinionecolo.protegerPlutôt pas d'accord"="Plutôt pas d'accord qu'il est plus important de protéger l'environnement plutôt que la croissance",
+                               "opinionecolo.protegerPas du tout d'accord"="Pas du tout d'accord qu'il est plus important de protéger l'environnement plutôt que la croissance",
+                               "opinionecolo.protegerSans opinion"="Sans opinion sur l'arbitrage environnement/croissance",
+                               
+                               "solinstit.limitevolsC'est secondaire"="C'est secondaire d'imposer une limite de vols en avion par personne (Ref =C'est prioritaire)",
+                               "solinstit.limitevolsIl ne faut pas le mettre en œuvre"="imposer une limite de vols en avion par personne",
+                               "solinstit.limitevolsSans opinion"="Sans opinion sur la limite de vols en avion par personne",
+                               
+                               "solinstit.selectionC'est secondaire"="C'est secondaire d'ajouter les GES parmis les critères de sélection des projets à financer (Ref =C'est prioritaire)",
+                               "solinstit.selectionIl ne faut pas le mettre en œuvre"="Il ne faut pas ajouter les GES parmis les critères de sélection des projets à financer",
+                               "solinstit.selectionSans opinion"="Sans opinion sur la prise en compte des émissions de GES pour sélection les projets à financer",
+        
+                               "solinstit.confC'est secondaire"="C'est secondaire de diminuer le poids des conférences à l'étranger dans l'évaluation des carrières (Ref =C'est prioritaire)",
+                               "solinstit.confIl ne faut pas le mettre en œuvre"="Il ne faut pas diminuer le poids des conférences à l'étranger dans l'évaluation des carrières ",
+                               "solinstit.confSans opinion"="Sans opinion sur la diminution du poids des conférences à l'étranger dans l'évaluation des carrières",
+        
+                               "nbpublistranch2(0.5,2]"="Une à deux publications depuis 2017 (Ref = Aucune publication )",
+                               "nbpublistranch2(2,4]"="2 à 4 publications",
+                               "nbpublistranch2(4,7]"="5 à 7 publications",
+                               "nbpublistranch2(7,12]"="8 à 12 publications",
+                               "nbpublistranch2(12,20]"="13 à 20 publications",
+                               "nbpublistranch2(20,40]"="21 à 40 publications",
+                               "nbpublistranch2(40,180]"="40 à 180 publications",
+                               
+                               "tpsquotiteNum"="Quotité de temps partiel",
+                               "carriereOui"="Etre à un moment de la carrière où on cherche à être promu, recruté, titularisé",
+                               "international.naissNon"="Né.e à l'étranger",
+                               "malpayeOui"="S'estime mal payé"),
         symbol = "+",
-        caption = "Tableau 2 : Régressions linéaires multiples sur le nombre d'heures de vol en 2019", caption.above=TRUE, 
+        caption = "Tableau 2 : Régressions linéaires multiples sur le nombre de messages envoyés aux répondants avant qu'ils répondent", caption.above=TRUE, 
         single.row = TRUE)
 ```
 
