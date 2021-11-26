@@ -139,7 +139,7 @@ htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6),
                                "opinionecolo.protegerSans opinion"="Sans opinion sur l'arbitrage environnement/croissance",
                                
                                "solinstit.limitevolsC'est secondaire"="C'est secondaire d'imposer une limite de vols en avion par personne (Ref =C'est prioritaire)",
-                               "solinstit.limitevolsIl ne faut pas le mettre en œuvre"="imposer une limite de vols en avion par personne",
+                               "solinstit.limitevolsIl ne faut pas le mettre en œuvre"="Il ne faut pas imposer une limite de vols en avion par personne",
                                "solinstit.limitevolsSans opinion"="Sans opinion sur la limite de vols en avion par personne",
                                
                                "solinstit.selectionC'est secondaire"="C'est secondaire d'ajouter les GES parmis les critères de sélection des projets à financer (Ref =C'est prioritaire)",
