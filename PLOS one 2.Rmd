@@ -19,6 +19,7 @@ library(ggplot2)
 library(questionr)
 library(paletteer)
 library(texreg)
+library(gtsummary)
 
 
 load("climat.RData")
@@ -51,29 +52,134 @@ table_multi <- function(dat, levs=levels(dat$valeur)) {
     rownames(mat) <- sub("\n", " ", res[[1]])
     mat
 }
+
+climatRegr$sexe <- fct_recode(factor(climatRegr$sexe), "Man"= "Homme", "Woman"="Femme", "Other"= "Autre") 
+
+climatRegr$ageAgr <- fct_recode(factor(climatRegr$ageAgr), "Under 29 years old"= "Moins de 29 ans", "30-34 years old"= "30-34 ans","35-39 years old"="35-39 ans", "40-44 years old"= "40-44 ans", "45-49 years old"="45-49 ans", "50-54 years old"= "50-54 ans", "55-64 years old"="55-64 ans", "65 years and older"= "65 ans et plus")
+
+climatRegr$sitpro2 <- fct_recode(factor(climatRegr$sitpro2), "Senior researcher"="Directeur·rice de recherche", "Full professor"="Professeur·e des universités", "Tenured researcher"="Chargé·e de recherche","Associate Professor"="Maître·sse de conférences", "Postdoc"="Post-doctorant·e", "Adjunct lecturer"= "ATER", "Doctoral contract"="Doctorant·e contractuel·le", "Research associate"= "Ingénieur·e de recherche","Research support officer"="Ingénieur·e d'études", "Research support assistant"= "Assistant ingénieur·e","Technician"= "Technicien·ne", "Project Manager" ="Chargé·e d'études/de mission", "Technical assistant"="Adjoint·e technique", "Other personnel"="Autre")
+
+climatRegr$discipline_agr4 <- fct_recode(factor(climatRegr$discipline_agr4),"Physics"="Physique", "Law, economics, management"="Droit, économie, gestion", "Other literature and human sciences"= "Autres lettres et sciences humaines", "History, geography, urbanism, anthropology"= "Histoire, géo, urba, anthropo","Mathematics"="Mathématiques", "Computer science"="Informatique", "Chemistry"="Chimie","Astronomy"="Astronomie","Geology"="Géologie", "Meteorology, oceanology, environmental physics"= "Météo, océano, physique environt", "Health and medical research"="Santé et recherche médicale", "Engineering"= "Ingénierie","Biology"="Biologie","Population biology and ecology"="Biologie des populations et écologie")
+
+climatRegr$preoccupe2 <- fct_recode(factor(climatRegr$preoccupe2), "Not at all concerned"="Pas du tout préoccupé·e","Slightly concerned"="Un peu préoccupé·e","Somewhat concerned"="Assez préoccupé·e", "Very concerned"="Très préoccupé·e", "Extremely concerned"="Extrêmement préoccupé·e","No opinion"="Sans opinion")
+
+climatRegr$solreducrech2 <- fct_recode(factor(climatRegr$solreducrech2), "Set an example (reduce emissions by more than one-third)"= "Recherche doit montrer l'exemple, réduire de plus d'1/3","Reduce emissions by around one-third"="Recherche doit réduire émissions de GES de 1/3 environ", "Benefit from an exemption (reduce emissions by less than one-third)"= "Recherche peut bénéficier d'un statut dérogatoire")
+
+climatRegr$opinionecolo.cata <- fct_recode(factor(climatRegr$opinionecolo.cata), "Completely agree"="Tout à fait d'accord", "Somewhat agree"="Plutôt d'accord", "Somewhat disagree"="Plutôt pas d'accord", "Completely disagree"="Pas du tout d'accord", "No opinion"="Sans opinion")
+
+climatRegr$opinionecolo.contraintes <- fct_recode(factor(climatRegr$opinionecolo.contraintes), "Completely agree"="Tout à fait d'accord", "Somewhat agree"="Plutôt d'accord", "Somewhat disagree"="Plutôt pas d'accord", "Completely disagree"="Pas du tout d'accord", "No opinion"="Sans opinion")
+
+climatRegr$opinionecolo.proteger<- fct_recode(factor(climatRegr$opinionecolo.proteger), "Completely agree"="Tout à fait d'accord", "Somewhat agree"="Plutôt d'accord", "Somewhat disagree"="Plutôt pas d'accord", "Completely disagree"="Pas du tout d'accord", "No opinion"="Sans opinion")
+
+climatRegr$solinstit.limitevols<- fct_recode(factor(climatRegr$solinstit.limitevols), "It is a priority"="C'est prioritaire", "It is secondary"="C'est secondaire","It should not be implemented"= "Il ne faut pas le mettre en œuvre", "No opinion"="Sans opinion")
+
+climatRegr$solinstit.selection<- fct_recode(factor(climatRegr$solinstit.selection), "It is a priority"="C'est prioritaire", "It is secondary"="C'est secondaire","It should not be implemented"= "Il ne faut pas le mettre en œuvre", "No opinion"="Sans opinion")
+
+climatRegr$solinstit.conf<- fct_recode(factor(climatRegr$solinstit.conf), "It is a priority"="C'est prioritaire", "It is secondary"="C'est secondaire","It should not be implemented"= "Il ne faut pas le mettre en œuvre", "No opinion"="Sans opinion")
+
+climatRegr$carriere<- fct_recode(factor(climatRegr$carriere), "Yes"="Oui", "No"="Non")
+
+climatRegr$malpaye<- fct_recode(factor(climatRegr$malpaye), "Yes"="Oui", "No"="Non")
+
+climatRegr$international.naiss<- fct_recode(factor(climatRegr$international.naiss), "Yes"="Oui", "No"="Non")
 ```
 
 # Échantillon et biais de non-réponse
+Dans quelle mesure êtes-vous preoccupé.e par le changement climatique ?
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$preoccupe2, climat$NumVague))))
+```
+
+Si les choses continuent au rythme actuel, nous allons bientôt vivre une catastrophe écologique majeure
+```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$opinionecolo.cata, climat$NumVague))))
+```
+
+Je suis d’accord pour que des contraintes réglementaires (quotas, interdictions) soient mises en place pour protéger l’environnement, même si cela limite mon confort
+```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$opinionecolo.contraintes, climat$NumVague))))
+```
+
+Protéger l’environnement est plus important que protéger la croissance économique
+```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$opinionecolo.proteger, climat$NumVague))))
+```
+
+La France s’est engagée à réduire d’un tiers ses émissions de gaz à effet de serre d’ici à 2030. Dans ce cadre, pensez-vous que :
+```{r echo=FALSE}
 knitr::kable(round(cprop(table(climatRegr$solreducrech2, climat$NumVague))))
+```
+
+Quelles actions les institutions et laboratoires de recherche devraient-ils mettre en œuvre pour réduire leurs émissions de gaz à effet de serre ? 
+
+- Imposer une limite au nombre de vols en avion par personne
+```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$solinstit.limitevols, climat$NumVague))))
+```
+
+- Ajouter les émissions de gaz à effet de serre parmi les principaux critères de sélection des projets à financer
+```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$solinstit.selection, climat$NumVague))))
+```
+- Diminuer le poids des conférences et présentations à l’étranger dans les évaluations de carrière
+```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$solinstit.conf, climat$NumVague))))
 ```
 
 ```{r echo=FALSE}
+model_1 <- lm(vaguenum ~ sexe + ageAgr, data=climatRegr )
+model_2 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 , data=climatRegr )
+model_3 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + preoccupe2 , data=climatRegr )
+model_4 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + solreducrech2, data=climatRegr )
+model_5 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + preoccupe2 + opinionecolo.cata+ opinionecolo.contraintes +       opinionecolo.proteger + solreducrech2 + solinstit.limitevols + solinstit.selection + solinstit.conf, data=climatRegr )
+model_6 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + carriere + malpaye + international.naiss, data=climatRegr )
+
+table_1 <- 
+  tbl_regression(model_1, label=list(sexe ~ "Sex", ageAgr ~ "Age")) %>% 
+  add_significance_stars() %>%
+  add_glance_table(include = nobs)
+
+table_2 <- 
+  tbl_regression(model_2, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro2  ~ "Status", discipline_agr4~"Discipline")) %>% 
+  add_significance_stars() %>%
+  add_glance_table(include = nobs)
+
+table_3 <- 
+  tbl_regression(model_3, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro2  ~ "Status", discipline_agr4~"Discipline", preoccupe2 ~ "Degree of concern about climate change")) %>% 
+  add_significance_stars() %>%
+  add_glance_table(include = nobs)
+
+table_4 <- 
+  tbl_regression(model_4, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro2  ~ "Status", discipline_agr4~"Discipline", solreducrech2 ~ "Desirable GHG emission reduction target for public research by 2030")) %>% 
+  add_significance_stars() %>%
+  add_glance_table(include = nobs)
+
+table_5 <- 
+  tbl_regression(model_5, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro2  ~ "Status", discipline_agr4~"Discipline", preoccupe2 ~ "Degree of concern about climate change", opinionecolo.cata ~ "A major ecological catastrophe is going to occur", opinionecolo.contraintes ~ "A major ecological catastrophe is going to occur", opinionecolo.proteger ~ "Protecting the environment is more important than protecting economic growth", solreducrech2 ~ "Desirable GHG emission reduction target for public research by 2030", solinstit.limitevols ~ "Impose a cap on the number of flights per person", solinstit.selection ~ "Add carbon emissions to the main selection criteria for project funding",solinstit.conf ~ "Reduce the importance of conferences and presentations abroad in career assessments")) %>% 
+  add_significance_stars() %>%
+  add_glance_table(include = nobs)
+
+table_6 <- 
+  tbl_regression(model_6, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro2  ~ "Status", discipline_agr4~"Discipline", carriere ~ "Being in a moment in one's career in which one is seeking to be promoted, recruited or tenured", malpaye~ "Feeling underpaid", international.naiss ~ "Born abroad")) %>% 
+  add_significance_stars() %>%
+  add_glance_table(include = nobs)
+
+
+tbl_merge(list(table_1, table_2, table_3, table_4, table_5, table_6)) %>%
+  # ensure the glance statistics are at the bottom of table
+  modify_table_body(~.x %>% dplyr::arrange(row_type == "glance_statistic"))
+```
+
+```{r echo=FALSE, results='asis'}
 res.reg1 <- lm(vaguenum ~ sexe + ageAgr, data=climatRegr )
 res.reg2 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 , data=climatRegr )
 res.reg3 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + preoccupe2 , data=climatRegr )
 res.reg4 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + solreducrech2, data=climatRegr )
 res.reg5 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + preoccupe2 + opinionecolo.cata+ opinionecolo.contraintes +       opinionecolo.proteger + solreducrech2 + solinstit.limitevols + solinstit.selection + solinstit.conf, data=climatRegr )
-res.reg6 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + nbpublistranch2 + tpsquotiteNum + carriere + malpaye + international.naiss, data=climatRegr )
-```
-```{r echo=FALSE, results='asis'}
+res.reg6 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + carriere + malpaye + international.naiss, data=climatRegr )
+#res.reg7 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + nbpublistranch2 + tpsquotiteNum + carriere + malpaye + international.naiss, data=climatRegr )
+
+
 htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6), 
         stars = c(0.001, 0.01, 0.05, 0.1), digits = 2, #single.row = TRUE,
         custom.coef.map = list("sexeFemme"= "Woman (ref = man)",
@@ -167,6 +273,18 @@ htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6),
         single.row = TRUE)
 ```
 
+```{r echo=FALSE, results='asis'}
+tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=TRUE,
+               label=list(institut2 ~ "Institut",
+                          delegation ~ "Délégation régionale",
+                          type2 ~ "Statut",
+                          sexe.x ~ "Sexe")) %>%
+    modify_header(list(label ~ "**Variable**",
+                       estimate ~ "**Odds ratio**",
+                       ci ~ "**IC à 95%**",
+                       p.value ~ "**p-value**")) %>%
+    modify_footnote(everything() ~ NA, abbreviation = TRUE)
+```
 
 # Opinions
 
