@@ -18,6 +18,7 @@ library(tidyverse)
 library(ggplot2)
 library(questionr)
 library(paletteer)
+library(texreg)
 
 
 load("climat.RData")
@@ -52,53 +53,97 @@ table_multi <- function(dat, levs=levels(dat$valeur)) {
 }
 ```
 
-# Opinions
-
-## Synthèse
-
-```{r echo=FALSE, results='asis'}
-climat$solreducrech3 <- fct_recode(climat$solreducrech,
-  "Plus d'un tiers" = "La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui",
-  "Un tiers environ" = "La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ",
-  "Moins d'un tiers" = "En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"
-)
-
-dat <- select(climat, changclim, preoccupe2, pluspreoccupe, acthum, chgtpratique, opinionecolo.cata, opinionecolo.effondrement2, solreducrech3)
-summarytools::freq(dat, cumul=F, report.nas=F, style="rmarkdown", round.digits=0, display.type=F)
-
-knitr::kable(round(
-cbind("Le climat est certainement en train de changer"=lprop(table(climat$discipline_agr4, climat$changclim), drop = F)[,"Oui, certainement"],
-      "Très ou extrêmement préoccupé"=lprop(table(climat$discipline_agr4, climat$preoccupe2), drop = F)[,"Très préoccupé·e"] +
-lprop(table(climat$discipline_agr4, climat$preoccupe2), drop = F)[,"Extrêmement préoccupé·e"],
-      "Beaucoup plus préoccupé qu'il y a 5 ans"=lprop(table(climat$discipline_agr4, climat$pluspreoccupe), drop = F)[,"Beaucoup plus"],
-      "Les activités humaines causent le changement climatique"=lprop(table(climat$discipline_agr4, climat$acthum), drop = F)[,"Oui, elles jouent un grand rôle"]+
-       lprop(table(climat$discipline_agr4, climat$acthum), drop = F)[,"Oui, elles en sont l'unique cause"],
-      "Exige des changements profonds dans nos métiers"=lprop(table(climat$discipline_agr4, climat$chgtpratique), drop = F)[,"Oui, tout à fait d'accord"] +
-  lprop(table(climat$discipline_agr4, climat$chgtpratique), drop = F)[,"Oui, plutôt d'accord"],
-      "Nous allons bientôt connaître une catastrophe écologique"=lprop(table(climat$discipline_agr4, climat$opinionecolo.cata), drop = F)[,"Tout à fait d'accord"]+
-  lprop(table(climat$discipline_agr4, climat$opinionecolo.cata), drop = F)[,"Plutôt d'accord"],
-      "Elle pourrait provoquer un effondrement de nos sociétés"=lprop(table(climat$discipline_agr4, climat$opinionecolo.effondrement2), drop = F)[,"Tout à fait d'accord"]+
-  lprop(table(climat$discipline_agr4, climat$opinionecolo.effondrement2), drop = F)[,"Plutôt d'accord"],
-  "La recherche doit réduire ses émissions de plus d'un tiers"=
-    lprop(table(climat$discipline_agr4, climat$solreducrech3), drop = F)[,"Plus d'un tiers"])))
-
-
-knitr::kable(round(
-cbind("Très ou extrêmement préoccupé"=lprop(table(climat$sitpro, climat$preoccupe2), drop = F)[,"Très préoccupé·e"] +
-lprop(table(climat$sitpro, climat$preoccupe2), drop = F)[,"Extrêmement préoccupé·e"],
-      "Beaucoup plus préoccupé qu'il y a 5 ans"=lprop(table(climat$sitpro, climat$pluspreoccupe), drop = F)[,"Beaucoup plus"],
-      "Le climat est certainement en train de changer"=lprop(table(climat$sitpro, climat$changclim), drop = F)[,"Oui, certainement"],
-      "Les activités humaines causent le changement climatique"=lprop(table(climat$sitpro, climat$acthum), drop = F)[,"Oui, elles jouent un grand rôle"]+
-       lprop(table(climat$sitpro, climat$acthum), drop = F)[,"Oui, elles en sont l'unique cause"],
-      "Exige des changements profonds dans nos métiers"=lprop(table(climat$sitpro, climat$chgtpratique), drop = F)[,"Oui, tout à fait d'accord"] +
-  lprop(table(climat$sitpro, climat$chgtpratique), drop = F)[,"Oui, plutôt d'accord"],
-      "Nous allons bientôt connaître une catastrophe écologique"=lprop(table(climat$sitpro, climat$opinionecolo.cata), drop = F)[,"Tout à fait d'accord"]+
-  lprop(table(climat$sitpro, climat$opinionecolo.cata), drop = F)[,"Plutôt d'accord"],
-      "Elle pourrait provoquer un effondrement de nos sociétés"=lprop(table(climat$sitpro, climat$opinionecolo.effondrement2), drop = F)[,"Tout à fait d'accord"]+
-  lprop(table(climat$sitpro, climat$opinionecolo.effondrement2), drop = F)[,"Plutôt d'accord"],
-  "La recherche doit réduire ses émissions de plus d'un tiers"=
-    lprop(table(climat$sitpro, climat$solreducrech3), drop = F)[,"Plus d'un tiers"])))
+# Échantillon et biais de non-réponse
+```{r echo=FALSE}
+knitr::kable(round(cprop(table(climat$preoccupe2, climat$NumVague))))
+knitr::kable(round(cprop(table(climat$opinionecolo.cata, climat$NumVague))))
+knitr::kable(round(cprop(table(climat$opinionecolo.contraintes, climat$NumVague))))
+knitr::kable(round(cprop(table(climat$opinionecolo.proteger, climat$NumVague))))
+knitr::kable(round(cprop(table(climatRegr$solreducrech2, climat$NumVague))))
+knitr::kable(round(cprop(table(climat$solinstit.limitevols, climat$NumVague))))
+knitr::kable(round(cprop(table(climat$solinstit.selection, climat$NumVague))))
+knitr::kable(round(cprop(table(climat$solinstit.conf, climat$NumVague))))
 ```
+
+```{r echo=FALSE}
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr, data=climatRegr )
+res.reg2 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 , data=climatRegr )
+res.reg3 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + preoccupe2 , data=climatRegr )
+res.reg4 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + solreducrech2, data=climatRegr )
+res.reg5 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + preoccupe2 + opinionecolo.cata+ opinionecolo.contraintes +       opinionecolo.proteger + solreducrech + solinstit.limitevols + solinstit.selection + solinstit.conf, data=climatRegr )
+res.reg6 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr3 + nbpublistranch2 + tpsquotiteNum + carriere + international.naiss, data=climatRegr )
+
+
+htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6), 
+        stars = c(0.001, 0.01, 0.05, 0.1), digits = 2, #single.row = TRUE,
+        custom.coef.map = list("sexeune femme"= "Woman (ref = man)",
+                               "sexeautre"="Sex : other",
+                               "ageAgrMoins de 29 ans"= "less than 29 ans (Ref = 50-54 ans",
+                               "ageAgr30-34 ans"= "30-34 years old",
+                               "ageAgr35-39 ans"= "35-39 years old",
+                               "ageAgr40-44 ans"= "40-44 years old",
+                               "ageAgr45-49 ans"= "45-49 years old",
+                               "ageAgr55-64 ans"= "55-64 years old",
+                               "ageAgr65 ans et plus"= "More than 65 years old",
+                               "sitpro2Directeur·rice de recherche"="Directeur·rice de recherche (Ref = Maître·sse de conférences)",
+                               "sitpro2Professeur·e des universités"= "University professor ",
+                               "sitpro2Chargé·e de recherche"="Researcher",
+                               "sitpro2Maître·sse de conférences"="Lecturer",
+                               "sitpro2Post-doctorant·e"= "Post doctoral student",
+                               "sitpro2ATER"="ATER",
+                               "sitpro2Doctorant·e contractuel·le"="contractual doctoral student",
+                               "sitpro2Doctorant·e CIFRE"= "CIFRE contractual doctoral student",
+                               "sitpro2Ingénieur·e de recherche"="Research engineer",
+                               "sitpro2Ingénieur·e d'études"="Design engineer",
+                               "sitpro2Assistant ingénieur·e"="Assistant engineer",
+                               "sitpro2Technicien·ne"="Technician",
+                               "sitpro2Chargé·e d'études/de mission"= "Research officer",
+                               "sitpro2Adjoint·e technique"="Technical assistant",
+                               "sitpro2Autre"="Other",
+                               "discipline_agr3Droit, économie, gestion"="Droit, économie, gestion (Ref = physique)",
+                               "discipline_agr3Autres lettres et sciences humaines"="Autres lettres et sciences humaines",
+                               "discipline_agr3Archi/arts, anthropo ethno"="Archi/arts, anthropo ethno",
+                               "discipline_agr3Socio, démo"="Socio, démo",
+                               "discipline_agr3Histoire, géo, urba"="Histoire, géo, urba",
+                               "discipline_agr3Mathématiques"="Mathématiques",
+                               "discipline_agr3Informatique"="Informatique",
+                               "discipline_agr3Chimie"="Chimie",
+                               "discipline_agr3Astro, géologie"="Astro, géologie",
+                               "discipline_agr3Météo, océano, physiqu environt"="Météo, océano, physiqu environt",
+                               "discipline_agr3Médecine, pharma, santé"="Médecine, pharma, santé",
+                               "discipline_agr3Génies : méca, info, élec, énergie"="Génies : méca, info, élec, énergie",
+                               "discipline_agr3Biologie"="Biologie",
+                               "discipline_agr3Biologie des populations et écologie"="Biologie des populations et écologie",
+                               "nbpublis"="Number of publications in 2017-mid2020",
+                               "nbpublisang"="Number of publications in english in 2017-mid2020",
+                               "particip_ANR"="Participe à projet(s) financé ANR",
+                               "particip_Fr"="Participe à projet(s) av financt public Fr",
+                               "particip_Europ"="Participe à projet(s) av financt europ",
+                               "particip_Intern"="Participe à projet(s) av financt internation",
+                               "particip_prive"="Participe à projet(s) av financt privé",
+                               "Profin_Mb_RespMembre d'au moins 1 projet financé"="Membre de projet(s) financé(s) (ref = Ni mb ni responsable)",
+                               "Profin_Mb_RespResponsable d'au moins 1 projet financé"="Responsable de projet(s) financé(s)",
+                               "carriereOui"="Cherche à être promu, recrut, titularisé",
+                               "projets.anr_m2Membre projet ANR oui"="Membre projet(s) financt ANR (Ref = Ne participe pas)",
+                               "projets.anr_r2Responsable projet ANR oui"="Responsable projet(s) financt ANR",
+                               "projets.france_m2Membre projet France oui"="Membre projet(s) financt France (Ref = Ne participe pas)",
+                               "projets.france_r2Responsable projet France oui"="Responsable projet(s) financt France",
+                               "projets.europe_m2Membre projet européen oui"="Membre projet(s) financt européen (Ref = Ne participe pas)",
+                               "projets.europe_r2Responsable projet européen oui"="Responsable projet(s) financt européen",
+                               "projets.inter_m2Membre projet international oui"="Membre projet(s) financt international (Ref = Ne participe pas)",
+                               "projets.inter_r2Responsable projet international oui"="Responsable projet(s) financt international",
+                               "projets.prive_m2Membre projet privé oui"="Membre projet(s) financt privé (Ref = Ne participe pas)",
+                               "projets.prive_r2Responsable projet privé oui"="Responsable projet(s) financt privé",
+                               "revenuTete"="Revenu par individu du foyer",
+                               "enfantsnb"= "nombre d'enfants",
+                               "coupleNon"="ne vit pas en couple"),
+        symbol = "+",
+        caption = "Tableau 2 : Régressions linéaires multiples sur le nombre d'heures de vol en 2019", caption.above=TRUE, 
+        single.row = TRUE)
+```
+
+
+# Opinions
 
 ## Activités humaines et changement climatique
 ```{r echo=FALSE}
