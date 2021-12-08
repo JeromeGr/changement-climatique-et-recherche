@@ -51,13 +51,17 @@ table_multi <- function(dat, levs=levels(dat$valeur)) {
     rownames(mat) <- sub("\n", " ", res[[1]])
     mat
 }
+
+climat$sitpro_reduite <- fct_recode(climat$sitpro,
+  "Doctorant·e contractuel·le" = "Doctorant·e CIFRE"
+)
 ```
 
 # Échantillon et biais de non-réponse
 
 ## Taux de réponse par statut et discipline
 ```{r echo=FALSE}
-repstatut <- c(`Directeur·rice de recherche` = 0.298029556650246, Professeur = 0.187197618161518, `Chargé·e de recherche` = 0.357738646895273, `Maître·sse de conférences` = 0.242277140335393, `Ingénieur·e de recherche` = 0.335389360061681, `Post-doctorant·e` = 0.175438596491228, `Doctorant·e` = 0.170106132075472, `Ingénieur·e d'études` = 0.298368298368298, `Assistant·e ingénieur·e` = 0.247533632286996, `Technicien·ne` = 0.15253386853989, `Temporaire sur CDD` = 0.212272727272727, `Autre personnel` = 0.171935235158057)
+repstatut <- c(`Directeur·rice de recherche` = 0.298029556650246, Professeur = 0.187197618161518, `Chargé·e de recherche` = 0.357738646895273, `Maître·sse de conférences` = 0.242277140335393, `Post-doctorant·e` = 0.175438596491228, `Doctorant·e` = 0.170106132075472, `Ingénieur·e de recherche` = 0.335389360061681, `Ingénieur·e d'études` = 0.298368298368298, `Assistant·e ingénieur·e` = 0.247533632286996, `Technicien·ne` = 0.15253386853989, `Temporaire sur CDD` = 0.212272727272727, `Autre personnel` = 0.171935235158057)
 
 data.frame(statut=factor(names(repstatut), levels=rev(names(repstatut))), taux=repstatut) %>%
   ggplot(aes(y=statut, x=taux)) +
@@ -346,20 +350,20 @@ lprop(table(climat$discipline_agr4, climat$preoccupe2), drop = F)[,"Extrêmement
 
 
 knitr::kable(round(
-cbind("Très ou extrêmement préoccupé"=lprop(table(climat$sitpro, climat$preoccupe2), drop = F)[,"Très préoccupé·e"] +
-lprop(table(climat$sitpro, climat$preoccupe2), drop = F)[,"Extrêmement préoccupé·e"],
-      "Beaucoup plus préoccupé qu'il y a 5 ans"=lprop(table(climat$sitpro, climat$pluspreoccupe), drop = F)[,"Beaucoup plus"],
-      "Le climat est certainement en train de changer"=lprop(table(climat$sitpro, climat$changclim), drop = F)[,"Oui, certainement"],
-      "Les activités humaines causent le changement climatique"=lprop(table(climat$sitpro, climat$acthum), drop = F)[,"Oui, elles jouent un grand rôle"]+
-       lprop(table(climat$sitpro, climat$acthum), drop = F)[,"Oui, elles en sont l'unique cause"],
-      "Exige des changements profonds dans nos métiers"=lprop(table(climat$sitpro, climat$chgtpratique), drop = F)[,"Oui, tout à fait d'accord"] +
-  lprop(table(climat$sitpro, climat$chgtpratique), drop = F)[,"Oui, plutôt d'accord"],
-      "Nous allons bientôt connaître une catastrophe écologique"=lprop(table(climat$sitpro, climat$opinionecolo.cata), drop = F)[,"Tout à fait d'accord"]+
-  lprop(table(climat$sitpro, climat$opinionecolo.cata), drop = F)[,"Plutôt d'accord"],
-      "Elle pourrait provoquer un effondrement de nos sociétés"=lprop(table(climat$sitpro, climat$opinionecolo.effondrement2), drop = F)[,"Tout à fait d'accord"]+
-  lprop(table(climat$sitpro, climat$opinionecolo.effondrement2), drop = F)[,"Plutôt d'accord"],
+cbind("Très ou extrêmement préoccupé"=lprop(table(climat$sitpro_reduite, climat$preoccupe2), drop = F)[,"Très préoccupé·e"] +
+lprop(table(climat$sitpro_reduite, climat$preoccupe2), drop = F)[,"Extrêmement préoccupé·e"],
+      "Beaucoup plus préoccupé qu'il y a 5 ans"=lprop(table(climat$sitpro_reduite, climat$pluspreoccupe), drop = F)[,"Beaucoup plus"],
+      "Le climat est certainement en train de changer"=lprop(table(climat$sitpro_reduite, climat$changclim), drop = F)[,"Oui, certainement"],
+      "Les activités humaines causent le changement climatique"=lprop(table(climat$sitpro_reduite, climat$acthum), drop = F)[,"Oui, elles jouent un grand rôle"]+
+       lprop(table(climat$sitpro_reduite, climat$acthum), drop = F)[,"Oui, elles en sont l'unique cause"],
+      "Exige des changements profonds dans nos métiers"=lprop(table(climat$sitpro_reduite, climat$chgtpratique), drop = F)[,"Oui, tout à fait d'accord"] +
+  lprop(table(climat$sitpro_reduite, climat$chgtpratique), drop = F)[,"Oui, plutôt d'accord"],
+      "Nous allons bientôt connaître une catastrophe écologique"=lprop(table(climat$sitpro_reduite, climat$opinionecolo.cata), drop = F)[,"Tout à fait d'accord"]+
+  lprop(table(climat$sitpro_reduite, climat$opinionecolo.cata), drop = F)[,"Plutôt d'accord"],
+      "Elle pourrait provoquer un effondrement de nos sociétés"=lprop(table(climat$sitpro_reduite, climat$opinionecolo.effondrement2), drop = F)[,"Tout à fait d'accord"]+
+  lprop(table(climat$sitpro_reduite, climat$opinionecolo.effondrement2), drop = F)[,"Plutôt d'accord"],
   "La recherche doit réduire ses émissions de plus d'un tiers"=
-    lprop(table(climat$sitpro, climat$solreducrech3), drop = F)[,"Plus d'un tiers"])))
+    lprop(table(climat$sitpro_reduite, climat$solreducrech3), drop = F)[,"Plus d'un tiers"])))
 ```
 
 ## Activités humaines et changement climatique
@@ -388,7 +392,7 @@ climat$acthum3 <- fct_collapse(climat$acthum2,
                                  "Oui, elles jouent un grand rôle"))
 knitr::kable(freq(climat$acthum2))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$acthum3))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$acthum3))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$acthum3))))
 ```
 
 ## Préoccupation par rapport au changement climatique
@@ -412,7 +416,7 @@ ggplot(drop_na(climat, preoccupe),
 ```{r echo=FALSE}
 knitr::kable(freq(climat$preoccupe2))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$preoccupe2))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$preoccupe2))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$preoccupe2))))
 ```
 
 
@@ -437,7 +441,7 @@ ggplot(drop_na(climat, pluspreoccupe),
 ```{r echo=FALSE}
 knitr::kable(freq(climat$pluspreoccupe))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$pluspreoccupe))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$pluspreoccupe))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$pluspreoccupe))))
 ```
 
 ## Opinions sur l'écologie en général : catastrophe et effondrement
@@ -472,14 +476,14 @@ Si les choses continuent au rythme actuel, nous allons bientôt connaître une c
 ```{r echo=FALSE}
 knitr::kable(freq(climat$opinionecolo.cata))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$opinionecolo.cata))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$opinionecolo.cata))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$opinionecolo.cata))))
 ```
 
 Ce type de catastrophe pourrait provoquer un effondrement de nos sociétés : les besoins de base (alimentation, énergie, santé, etc.) ne seront plus assurés pour la majorité de la population.
 ```{r echo=FALSE}
 knitr::kable(freq(climat$opinionecolo.effondrement2))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$opinionecolo.effondrement2))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$opinionecolo.effondrement2))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$opinionecolo.effondrement2))))
 ```
 
 ## Changements profonds dans nos métiers
@@ -504,7 +508,7 @@ ggplot(drop_na(climat, chgtpratique),
 ```{r echo=FALSE}
 knitr::kable(freq(climat$chgtpratique))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$chgtpratique))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$chgtpratique))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$chgtpratique))))
 ```
 
 ## Réduction des émissions d'un tiers d'ici à 2030
@@ -536,7 +540,7 @@ climat$solreducrech3 <- fct_recode(climat$solreducrech,
 )
 knitr::kable(freq(climat$solreducrech3))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$solreducrech3))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$solreducrech3))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$solreducrech3))))
 ```
 
 # Pratiques
@@ -547,7 +551,7 @@ Les traitements de cette section portent seulement sur les chercheurs
 
 ```{r}
 # # sous base seulement recherche
-climat_recherche <- subset(climat, ! sitpro %in% c(
+climat_recherche <- subset(climat, ! sitpro_reduite %in% c(
   "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
   "Chargé·e d'études/de mission","Adjoint·e technique",
   "Autre"))
@@ -652,12 +656,6 @@ ggplot(table[table$Var2=="total",],
 
 
 ```{r}
-## Recodage de climat$sitpro en climat$sitpro_reduite
-climat_recherche$sitpro_reduite <- NULL
-climat_recherche$sitpro_reduite <- fct_recode(climat_recherche$sitpro,
-  "Doctorant·e contractuel·le" = "Doctorant·e CIFRE"
-)
-
 a <- tapply(climat_recherche$volsdist_totterrain, 
             climat_recherche$sitpro_reduite, mean, na.rm=T)
 b <- tapply(climat_recherche$volsdist_totsejrech, 
@@ -758,8 +756,8 @@ knitr::kable(round(lprop(table(climat$discipline_agr4, climat$ordis.5anstotalpro
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$ordis.nbtotalproplus1))))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$ordis.tousindisp))))
 
-knitr::kable(round(lprop(table(climat$sitpro, climat$ordis.5anstotalproplus0))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$ordis.nbtotalproplus1))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$ordis.5anstotalproplus0))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$ordis.nbtotalproplus1))))
 ```
 
 ## Reliquat de budget
@@ -773,7 +771,7 @@ Avoir utilisé un reliquat de budget pour payer du matériel informatique non in
 knitr::kable(freq(climat$reliquat.ordi))
 knitr::kable(freq(fct_recode(climat$reliquat.ordi, NULL="Je n'ai pas eu à utiliser de reliquat de budget")))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$reliquat.ordi))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$reliquat.ordi))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$reliquat.ordi))))
 ```
 
 Avoir utilisé un reliquat de budget pour payer des déplacements en avion non indispensables :
@@ -781,7 +779,7 @@ Avoir utilisé un reliquat de budget pour payer des déplacements en avion non i
 knitr::kable(freq(climat$reliquat.avion))
 knitr::kable(freq(fct_recode(climat$reliquat.avion, NULL="Je n'ai pas eu à utiliser de reliquat de budget")))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$reliquat.avion))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$reliquat.avion))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$reliquat.avion))))
 ```
 
 # Solutions
@@ -821,11 +819,11 @@ cbind("Les expériences et observations scientifiques"=lprop(table(climat$discip
 )))
 
 knitr::kable(round(
-cbind("Les expériences et observations scientifiques"=lprop(table(climat$sitpro, climat$solreducperso.exp)[, levels(climat$solreducperso.exp) != "Non concerné·e"], drop = F)[,"Non"],
-      "Les déplacements pour missions de terrain, d'observation ou de collecte de données"=lprop(table(climat$sitpro, climat$solreducperso.donnees)[, levels(climat$solreducperso.donnees) != "Non concerné·e"], drop = F)[,"Non"],
-      "Les déplacements domicile-travail en voiture, moto, scooter ou avion"=lprop(table(climat$sitpro, climat$solreducperso.domicile)[, levels(climat$solreducperso.domicile) != "Non concerné·e"], drop = F)[,"Non"], 
-      "L'équipement en postes informatiques et sa fréquence de renouvellement"=lprop(table(climat$sitpro, climat$solreducperso.info)[, levels(climat$solreducperso.info) != "Non concerné·e"], drop = F)[,"Non"], 
-      "Les vols en avion pour les conférences, réunions, congrès"=lprop(table(climat$sitpro, climat$solreducperso.conf)[, levels(climat$solreducperso.conf) != "Non concerné·e"], drop = F)[,"Non"]
+cbind("Les expériences et observations scientifiques"=lprop(table(climat$sitpro_reduite, climat$solreducperso.exp)[, levels(climat$solreducperso.exp) != "Non concerné·e"], drop = F)[,"Non"],
+      "Les déplacements pour missions de terrain, d'observation ou de collecte de données"=lprop(table(climat$sitpro_reduite, climat$solreducperso.donnees)[, levels(climat$solreducperso.donnees) != "Non concerné·e"], drop = F)[,"Non"],
+      "Les déplacements domicile-travail en voiture, moto, scooter ou avion"=lprop(table(climat$sitpro_reduite, climat$solreducperso.domicile)[, levels(climat$solreducperso.domicile) != "Non concerné·e"], drop = F)[,"Non"], 
+      "L'équipement en postes informatiques et sa fréquence de renouvellement"=lprop(table(climat$sitpro_reduite, climat$solreducperso.info)[, levels(climat$solreducperso.info) != "Non concerné·e"], drop = F)[,"Non"], 
+      "Les vols en avion pour les conférences, réunions, congrès"=lprop(table(climat$sitpro_reduite, climat$solreducperso.conf)[, levels(climat$solreducperso.conf) != "Non concerné·e"], drop = F)[,"Non"]
 ))[c("Directeur·rice de recherche", "Professeur·e des universités", "Chargé·e de recherche", "Maître·sse de conférences", 
 "Ingénieur·e de recherche", "Ingénieur·e d'études", "Assistant ingénieur·e", 
 "Technicien·ne", "Chargé·e d'études/de mission", "Adjoint·e technique", 
