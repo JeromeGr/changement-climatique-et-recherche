@@ -57,7 +57,7 @@ table_multi <- function(dat, levs=levels(dat$valeur)) {
 
 ## Taux de réponse par statut et discipline
 ```{r echo=FALSE}
-repstatut <- c(`Directeur·rice de recherche` = 0.298029556650246, Professeur = 0.187197618161518, `Chargé·e de recherche` = 0.357738646895273, `Maître·sse de conférences` = 0.242277140335393, `Post-doctorant·e` = 0.175438596491228, `Doctorant·e` = 0.170106132075472, `Ingénieur·e de recherche` = 0.335389360061681, `Ingénieur·e d'études` = 0.298368298368298, `Assistant·e ingénieur·e` = 0.247533632286996, `Technicien·ne` = 0.15253386853989, `Temporaire sur CDD` = 0.212272727272727, `Autre personnel` = 0.171935235158057)
+repstatut <- c(`Directeur·rice de recherche` = 0.298029556650246, Professeur = 0.187197618161518, `Chargé·e de recherche` = 0.357738646895273, `Maître·sse de conférences` = 0.242277140335393, `Ingénieur·e de recherche` = 0.335389360061681, `Post-doctorant·e` = 0.175438596491228, `Doctorant·e` = 0.170106132075472, `Ingénieur·e d'études` = 0.298368298368298, `Assistant·e ingénieur·e` = 0.247533632286996, `Technicien·ne` = 0.15253386853989, `Temporaire sur CDD` = 0.212272727272727, `Autre personnel` = 0.171935235158057)
 
 data.frame(statut=factor(names(repstatut), levels=rev(names(repstatut))), taux=repstatut) %>%
   ggplot(aes(y=statut, x=taux)) +

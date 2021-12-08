@@ -41,6 +41,9 @@ ech$institut2 <- sapply(ech$institut,
                         function(x) strsplit(x, ",", fixed=TRUE)[[1]][[1]])
 ech$institut2[substr(ech$institut2, 1, 3) == "DGD"] <- "Présidence et Direction générale"
 ech$institut2[substr(ech$institut2, 1, 3) == "PDT"] <- "Présidence et Direction générale"
+ech$institut2 <- fct_reorder(factor(ech$institut2),
+                             !(!is.na(ech$lastpage) & ech$lastpage >= 1),
+                             .fun=mean)
 
 lprop(table(ech$institut2,
             !is.na(ech$lastpage) & ech$lastpage >= 1))
@@ -56,10 +59,6 @@ lprop(table(ech$sexe.x,
 
 ech$type <- relevel(factor(ech$type), "Chercheur")
 ech$sexe.x <- relevel(factor(ech$sexe.x), "Homme")
-
-m <- glm(!is.na(lastpage) & lastpage >= 1 ~ institut2 + delegation + type + sexe.x,
-         data=ech, family=binomial)
-stargazer::stargazer(m, type="html", out="~/tmp/out.html", apply.coef=exp, ci=TRUE)
 
 ech$type2 <- fct_recode(ech$type, "Autre personnel"="Chercheur",
                         "Autre personnel"="Enseignant-chercheur",
@@ -140,3 +139,20 @@ ech$type2[ech$categorie == "AI, Ass. ingénieur"] <- "Assistant ingénieur"
 
 lprop(table(ech$type2,
             !is.na(ech$lastpage) & ech$lastpage >= 1))
+
+
+m <- glm(!is.na(lastpage) & lastpage >= 1 ~ institut2 + delegation + type2 + sexe.x,
+         data=ech, family=binomial)
+#stargazer::stargazer(m, type="html", out="~/tmp/out.html", apply.coef=exp, ci=TRUE)
+library(gtsummary)
+tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=TRUE,
+               label=list(institut2 ~ "Institut",
+                          delegation ~ "Délégation régionale",
+                          type2 ~ "Statut",
+                          sexe.x ~ "Sexe")) %>%
+    modify_header(list(label ~ "**Variable**",
+                       estimate ~ "**Odds ratio**",
+                       ci ~ "**IC à 95%**",
+                       p.value ~ "**p-value**")) %>%
+    modify_footnote(everything() ~ NA, abbreviation = TRUE) %>%
+    add_significance_stars(hide_ci=FALSE, hide_se=TRUE)
