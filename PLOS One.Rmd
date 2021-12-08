@@ -318,7 +318,7 @@ htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6),
         single.row = TRUE)
 ```
 
-# Échantillon et biais de non-réponse
+## Numéro de vague
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$preoccupe2, climat$NumVague))))
 knitr::kable(round(cprop(table(climat$opinionecolo.cata, climat$NumVague))))
@@ -408,9 +408,29 @@ htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6),
 ```
 
 
-<<<<<<< HEAD
 # Opinions
-=======
+
+## Synthèse
+```{r eval=FALSE, include=FALSE}
+dat <- select(climat, changclim, preoccupe2, pluspreoccupe, acthum, chgtpratique, opinionecolo.cata, opinionecolo.effondrement2, solreducrech3)
+summarytools::freq(dat, cumul=F, report.nas=F, style="rmarkdown", round.digits=0, display.type=F)
+
+knitr::kable(round(
+cbind("Le climat est certainement en train de changer"=lprop(table(climat$discipline_agr4, climat$changclim), drop = F)[,"Oui, certainement"],
+      "Très ou extrêmement préoccupé"=lprop(table(climat$discipline_agr4, climat$preoccupe2), drop = F)[,"Très préoccupé·e"] +
+lprop(table(climat$discipline_agr4, climat$preoccupe2), drop = F)[,"Extrêmement préoccupé·e"],
+      "Beaucoup plus préoccupé qu'il y a 5 ans"=lprop(table(climat$discipline_agr4, climat$pluspreoccupe), drop = F)[,"Beaucoup plus"],
+      "Les activités humaines causent le changement climatique"=lprop(table(climat$discipline_agr4, climat$acthum), drop = F)[,"Oui, elles jouent un grand rôle"]+
+       lprop(table(climat$discipline_agr4, climat$acthum), drop = F)[,"Oui, elles en sont l'unique cause"],
+      "Exige des changements profonds dans nos métiers"=lprop(table(climat$discipline_agr4, climat$chgtpratique), drop = F)[,"Oui, tout à fait d'accord"] +
+  lprop(table(climat$discipline_agr4, climat$chgtpratique), drop = F)[,"Oui, plutôt d'accord"],
+      "Nous allons bientôt connaître une catastrophe écologique"=lprop(table(climat$discipline_agr4, climat$opinionecolo.cata), drop = F)[,"Tout à fait d'accord"]+
+  lprop(table(climat$discipline_agr4, climat$opinionecolo.cata), drop = F)[,"Plutôt d'accord"],
+      "Elle pourrait provoquer un effondrement de nos sociétés"=lprop(table(climat$discipline_agr4, climat$opinionecolo.effondrement2), drop = F)[,"Tout à fait d'accord"]+
+  lprop(table(climat$discipline_agr4, climat$opinionecolo.effondrement2), drop = F)[,"Plutôt d'accord"],
+  "La recherche doit réduire ses émissions de plus d'un tiers"=
+    lprop(table(climat$discipline_agr4, climat$solreducrech3), drop = F)[,"Plus d'un tiers"])))
+
 knitr::kable(round(
 cbind("Très ou extrêmement préoccupé"=lprop(table(climat$sitpro_reduite, climat$preoccupe2), drop = F)[,"Très préoccupé·e"] +
 lprop(table(climat$sitpro_reduite, climat$preoccupe2), drop = F)[,"Extrêmement préoccupé·e"],
@@ -427,7 +447,6 @@ lprop(table(climat$sitpro_reduite, climat$preoccupe2), drop = F)[,"Extrêmement 
   "La recherche doit réduire ses émissions de plus d'un tiers"=
     lprop(table(climat$sitpro_reduite, climat$solreducrech3), drop = F)[,"Plus d'un tiers"])))
 ```
->>>>>>> abad699fca9bdac31476fd8d49339d31e0c600f2
 
 ## Activités humaines et changement climatique
 ```{r echo=FALSE}
