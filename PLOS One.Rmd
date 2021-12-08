@@ -688,13 +688,13 @@ ggplot(table[table$Var2!="Total",]) +
 
 ```{r}
 tableau <- table %>% pivot_wider(names_from=Var2, values_from=Freq) 
-knitr::kable(tableau, digits =1)
+knitr::kable(tableau, digits =0)
 
 tableau <- as.data.frame(tableau)
 tableaupct = 100*tableau[,2:7]/tableau[,8]
 tableaupct = cbind(tableau[,1], tableaupct)
 colnames(tableaupct)[1] = "Discipline"
-knitr::kable(tableaupct, digits =1)
+knitr::kable(tableaupct, digits =0)
 
 # ça aurait été bien que ça marche comme ça mais il a plusieurs valeurs pour "Autres" (parce que j'ai regroupé des trucs ci dessus) alors il fait n'importe quoi...
 
@@ -794,13 +794,13 @@ ggplot(table[table$Var2!="Total"&
 
 ```{r}
 tableau <- table %>% pivot_wider(names_from=Var2, values_from=Freq) 
-knitr::kable(tableau[1:8,], digits =1)
+knitr::kable(tableau[1:8,], digits =0)
 
 tableau <- as.data.frame(tableau)
 tableaupct = 100*tableau[,2:7]/tableau[,8]
 tableaupct = cbind(tableau[,1], tableaupct)
 colnames(tableaupct)[1] = "Statut"
-knitr::kable(tableaupct[1:8,], digits =1)
+knitr::kable(tableaupct[1:8,], digits =0)
 ```
 
 
