@@ -51,6 +51,271 @@ table_multi <- function(dat, levs=levels(dat$valeur)) {
     rownames(mat) <- sub("\n", " ", res[[1]])
     mat
 }
+
+climat$sitpro_reduite <- fct_recode(climat$sitpro,
+  "Doctorant·e contractuel·le" = "Doctorant·e CIFRE"
+)
+```
+
+# Échantillon et biais de non-réponse
+
+## Taux de réponse par statut et discipline
+```{r echo=FALSE}
+repstatut <- c(`Directeur·rice de recherche` = 0.298029556650246, Professeur = 0.187197618161518, `Chargé·e de recherche` = 0.357738646895273, `Maître·sse de conférences` = 0.242277140335393, `Post-doctorant·e` = 0.175438596491228, `Doctorant·e` = 0.170106132075472, `Ingénieur·e de recherche` = 0.335389360061681, `Ingénieur·e d'études` = 0.298368298368298, `Assistant·e ingénieur·e` = 0.247533632286996, `Technicien·ne` = 0.15253386853989, `Temporaire sur CDD` = 0.212272727272727, `Autre personnel` = 0.171935235158057)
+
+data.frame(statut=factor(names(repstatut), levels=rev(names(repstatut))), taux=repstatut) %>%
+  ggplot(aes(y=statut, x=taux)) +
+  geom_col() +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  coord_cartesian(xlim=c(0, 0.37)) +
+  geom_text(aes(label=scales::percent(repstatut, accuracy=1, decimal.mark=",")),
+            stat="identity", position=position_dodge(.9),
+            hjust=-0.2, size=3) +
+  labs(x="Proportion des invitations envoyées", y="")
+```
+```{r echo=FALSE}
+repinstitut <- c(`IN2P3 (physique nucléaire et des particules)` = 25.8351893095768, 
+`INC (chimie)` = 20.4927884615385, `INEE (écologie et environnement)` = 27.920910724985, 
+`INP (physique)` = 26.5788028555739, `INS2I (sciences de l'information)` = 20.7792207792208, 
+`INSB (sciences biologiques)` = 20.6474983020149, 
+`INSHS (sciences humaines et sociales)` = 20.4694511563687, 
+`INSIS (sciences de l'ingénierie et des systèmes)` = 21.0496929089894, 
+`INSMI (sciences mathématiques)` = 22.4460431654676, 
+`INSU (sciences de l'univers)` = 31.2090790048014, 
+`Présidence et Direction générale` = 24.4859813084112)/100
+
+data.frame(statut=factor(names(repinstitut)), taux=repinstitut) %>%
+  mutate(statut=fct_reorder(statut, taux)) %>%
+  ggplot(aes(y=statut, x=taux)) +
+  geom_col() +
+  scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
+  coord_cartesian(xlim=c(0, 0.32)) +
+  geom_text(aes(label=scales::percent(repinstitut, accuracy=1, decimal.mark=",")),
+            stat="identity", position=position_dodge(.9),
+            hjust=-0.2, size=3) +
+  labs(x="Proportion des invitations envoyées", y="")
+```
+
+Régression logistique expliquant la probabilité de répondre
+```{r echo=FALSE, results="asis"}
+cat('<table style="text-align:center"><tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"></td><td>Odds ratio</td></tr>
+<tr><td></td><td colspan="1" style="border-bottom: 1px solid black"></td></tr>
+<tr><td style="text-align:left"></td><td>(95% CI)</td></tr>
+<tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">institut2INC (Institut de chimie)</td><td>0.871<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.692, 1.049)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">institut2INEE (Institut d\'écologie et environnement)</td><td>1.268<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(1.075, 1.462)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">institut2INP (Institut de physique)</td><td>1.173<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.985, 1.360)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">institut2INS2I (Institut des sciences de l\'information et de leurs interactions)</td><td>0.949<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.759, 1.139)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">institut2INSB (Institut des sciences biologiques)</td><td>0.812<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.638, 0.986)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">institut2INSHS (Institut des sciences humaines et sociales)</td><td>0.937<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.763, 1.111)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">institut2INSIS (Institut des sciences de l\'ingénierie et des systèmes)</td><td>0.938<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.760, 1.116)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">institut2INSMI (Institut national des sciences mathématiques et de leurs interactions)</td><td>1.059<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.855, 1.264)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">institut2INSU (Institut national des sciences de l\'univers)</td><td>1.446<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(1.265, 1.627)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">institut2Présidence et Direction générale</td><td>0.914<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.697, 1.130)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">delegation02, Paris-Centre</td><td>1.063<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.917, 1.209)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">delegation04, Ile-de-France Gif-sur-Yvette</td><td>1.203<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(1.051, 1.355)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">delegation05, Ile-de-France Meudon</td><td>1.158<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.984, 1.332)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">delegation06, Centre-Est</td><td>1.214<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(1.040, 1.387)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">delegation07, Rhône Auvergne</td><td>1.255<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(1.106, 1.404)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">delegation08, Centre-Limousin-Poitou-Charentes</td><td>1.370<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(1.181, 1.560)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">delegation10, Alsace</td><td>1.133<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.948, 1.319)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">delegation11, Alpes</td><td>1.701<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(1.541, 1.861)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">delegation12, Provence et Corse</td><td>1.289<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(1.127, 1.451)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">delegation13, Occitanie Est</td><td>1.132<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.960, 1.303)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">delegation14, Occitanie Ouest</td><td>1.181<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(1.025, 1.338)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">delegation15, Aquitaine</td><td>1.262<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(1.084, 1.440)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">delegation16, Paris Michel-Ange</td><td>1.102<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.854, 1.350)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">delegation17, Bretagne et Pays de la Loire</td><td>1.249<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(1.090, 1.407)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">delegation18, Hauts-de-France</td><td>0.996<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.806, 1.185)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">delegation19, Normandie</td><td>1.537<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(1.307, 1.767)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">delegation20, Côte d\'Azur</td><td>0.929<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.709, 1.149)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">type2Professeur</td><td>0.550<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.411, 0.689)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">type2Chargé de recherche</td><td>1.268<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(1.137, 1.399)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">type2Maître de conférences</td><td>0.726<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.605, 0.846)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">type2Post-doctorant</td><td>0.493<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.273, 0.714)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">type2Doctorant</td><td>0.468<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.350, 0.586)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">type2Ingénieur de recherche</td><td>1.122<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.970, 1.274)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">type2Ingénieur d\'études</td><td>0.935<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.792, 1.078)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">type2Assistant ingénieur</td><td>0.701<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.532, 0.871)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">type2Technicien</td><td>0.382<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.224, 0.540)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">type2Temporaire sur CDD</td><td>0.589<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.447, 0.730)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">type2Autre personnel</td><td>0.468<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.293, 0.643)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">sexe.xFemme</td><td>1.309<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(1.250, 1.369)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td style="text-align:left">Constant</td><td>0.334<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.122, 0.546)</td></tr>
+<tr><td style="text-align:left"></td><td></td></tr>
+<tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Observations</td><td>28,484</td></tr>
+<tr><td style="text-align:left">Log Likelihood</td><td>-14,791.120</td></tr>
+<tr><td style="text-align:left">Akaike Inf. Crit.</td><td>29,662.240</td></tr>
+<tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"><em>Note:</em></td><td style="text-align:right"><sup>*</sup>p<0.1; <sup>**</sup>p<0.05; <sup>***</sup>p<0.01</td></tr>
+</table>')
+```
+
+## Différences entre répondants précoces et tardifs
+
+```{r echo=FALSE}
+knitr::kable(round(cprop(table(climat$preoccupe2, climat$NumVague))))
+knitr::kable(round(cprop(table(climat$opinionecolo.cata, climat$NumVague))))
+knitr::kable(round(cprop(table(climat$opinionecolo.contraintes, climat$NumVague))))
+knitr::kable(round(cprop(table(climat$opinionecolo.proteger, climat$NumVague))))
+knitr::kable(round(cprop(table(climat$solreducrech2, climat$NumVague))))
+knitr::kable(round(cprop(table(climat$solinstit.limitevols, climat$NumVague))))
+knitr::kable(round(cprop(table(climat$solinstit.selection, climat$NumVague))))
+knitr::kable(round(cprop(table(climat$solinstit.conf, climat$NumVague))))
+```
+
+Régressions linéaires expliquant le nombre de relances avant la réponse :
+```{r echo=FALSE, results='asis'}
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr, data=climatRegr )
+res.reg2 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 , data=climatRegr )
+res.reg3 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + preoccupe2 , data=climatRegr )
+res.reg4 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + solreducrech2, data=climatRegr )
+res.reg5 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + preoccupe2 + opinionecolo.cata+ opinionecolo.contraintes +       opinionecolo.proteger + solreducrech + solinstit.limitevols + solinstit.selection + solinstit.conf, data=climatRegr )
+res.reg6 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr3 + nbpublistranch2 + tpsquotiteNum + carriere + international.naiss, data=climatRegr )
+
+
+htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6), 
+        stars = c(0.001, 0.01, 0.05, 0.1), digits = 2,
+        custom.coef.map = list("sexeune femme"= "Woman (ref = man)",
+                               "sexeautre"="Sex : other",
+                               "ageAgrMoins de 29 ans"= "less than 29 years (Ref = 50-54 years)",
+                               "ageAgr30-34 ans"= "30-34 years old",
+                               "ageAgr35-39 ans"= "35-39 years old",
+                               "ageAgr40-44 ans"= "40-44 years old",
+                               "ageAgr45-49 ans"= "45-49 years old",
+                               "ageAgr55-64 ans"= "55-64 years old",
+                               "ageAgr65 ans et plus"= "More than 65 years old",
+                               "sitpro2Directeur·rice de recherche"="Directeur·rice de recherche (Ref = Maître·sse de conférences)",
+                               "sitpro2Professeur·e des universités"= "University professor ",
+                               "sitpro2Chargé·e de recherche"="Researcher",
+                               "sitpro2Maître·sse de conférences"="Lecturer",
+                               "sitpro2Post-doctorant·e"= "Post doctoral student",
+                               "sitpro2ATER"="ATER",
+                               "sitpro2Doctorant·e contractuel·le"="contractual doctoral student",
+                               "sitpro2Doctorant·e CIFRE"= "CIFRE contractual doctoral student",
+                               "sitpro2Ingénieur·e de recherche"="Research engineer",
+                               "sitpro2Ingénieur·e d'études"="Design engineer",
+                               "sitpro2Assistant ingénieur·e"="Assistant engineer",
+                               "sitpro2Technicien·ne"="Technician",
+                               "sitpro2Chargé·e d'études/de mission"= "Research officer",
+                               "sitpro2Adjoint·e technique"="Technical assistant",
+                               "sitpro2Autre"="Other",
+                               "discipline_agr4Droit, économie, gestion"="Droit, économie, gestion (Ref = Physique)",
+                               "discipline_agr4Autres lettres et sciences humaines"="Autres lettres et sciences humaines",
+                               "discipline_agr4Histoire, géo, urba, anthropo"="Histoire, géo, urba, anthropo",
+                               "discipline_agr4Mathématiques"="Mathématiques",
+                               "discipline_agr4Informatique"="Informatique",
+                               "discipline_agr4Physique"="Physique",
+                               "discipline_agr4Chimie"="Chimie",
+                               "discipline_agr4Astronomie"="Astronomie",
+                               "discipline_agr4Géologie"="Géologie",
+                               "discipline_agr4Météo, océano, physique environt"="Météo, océano, physique environt",
+                               "discipline_agr4Santé et recherche médicale"="Santé et recherche médicale",
+                               "discipline_agr4Ingénierie"="Ingénierie",
+                               "discipline_agr4Biologie"="Biologie",
+                               "discipline_agr4Biologie des populations et écologie"="Biologie des populations et écologie",
+                               "nbpublis"="Number of publications in 2017-mid2020",
+                               "nbpublisang"="Number of publications in english in 2017-mid2020",
+                               "particip_ANR"="Participe à projet(s) financé ANR",
+                               "particip_Fr"="Participe à projet(s) av financt public Fr",
+                               "particip_Europ"="Participe à projet(s) av financt europ",
+                               "particip_Intern"="Participe à projet(s) av financt internation",
+                               "particip_prive"="Participe à projet(s) av financt privé",
+                               "Profin_Mb_RespMembre d'au moins 1 projet financé"="Membre de projet(s) financé(s) (ref = Ni mb ni responsable)",
+                               "Profin_Mb_RespResponsable d'au moins 1 projet financé"="Responsable de projet(s) financé(s)",
+                               "carriereOui"="Cherche à être promu, recruté, titularisé",
+                               "projets.anr_m2Membre projet ANR oui"="Membre projet(s) financt ANR (Ref = Ne participe pas)",
+                               "projets.anr_r2Responsable projet ANR oui"="Responsable projet(s) financt ANR",
+                               "projets.france_m2Membre projet France oui"="Membre projet(s) financt France (Ref = Ne participe pas)",
+                               "projets.france_r2Responsable projet France oui"="Responsable projet(s) financt France",
+                               "projets.europe_m2Membre projet européen oui"="Membre projet(s) financt européen (Ref = Ne participe pas)",
+                               "projets.europe_r2Responsable projet européen oui"="Responsable projet(s) financt européen",
+                               "projets.inter_m2Membre projet international oui"="Membre projet(s) financt international (Ref = Ne participe pas)",
+                               "projets.inter_r2Responsable projet international oui"="Responsable projet(s) financt international",
+                               "projets.prive_m2Membre projet privé oui"="Membre projet(s) financt privé (Ref = Ne participe pas)",
+                               "projets.prive_r2Responsable projet privé oui"="Responsable projet(s) financt privé",
+                               "revenuTete"="Revenu par individu du foyer",
+                               "enfantsnb"= "nombre d'enfants",
+                               "coupleNon"="ne vit pas en couple"),
+        symbol = "+",
+        single.row = TRUE)
 ```
 
 # Échantillon et biais de non-réponse
@@ -143,7 +408,26 @@ htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6),
 ```
 
 
+<<<<<<< HEAD
 # Opinions
+=======
+knitr::kable(round(
+cbind("Très ou extrêmement préoccupé"=lprop(table(climat$sitpro_reduite, climat$preoccupe2), drop = F)[,"Très préoccupé·e"] +
+lprop(table(climat$sitpro_reduite, climat$preoccupe2), drop = F)[,"Extrêmement préoccupé·e"],
+      "Beaucoup plus préoccupé qu'il y a 5 ans"=lprop(table(climat$sitpro_reduite, climat$pluspreoccupe), drop = F)[,"Beaucoup plus"],
+      "Le climat est certainement en train de changer"=lprop(table(climat$sitpro_reduite, climat$changclim), drop = F)[,"Oui, certainement"],
+      "Les activités humaines causent le changement climatique"=lprop(table(climat$sitpro_reduite, climat$acthum), drop = F)[,"Oui, elles jouent un grand rôle"]+
+       lprop(table(climat$sitpro_reduite, climat$acthum), drop = F)[,"Oui, elles en sont l'unique cause"],
+      "Exige des changements profonds dans nos métiers"=lprop(table(climat$sitpro_reduite, climat$chgtpratique), drop = F)[,"Oui, tout à fait d'accord"] +
+  lprop(table(climat$sitpro_reduite, climat$chgtpratique), drop = F)[,"Oui, plutôt d'accord"],
+      "Nous allons bientôt connaître une catastrophe écologique"=lprop(table(climat$sitpro_reduite, climat$opinionecolo.cata), drop = F)[,"Tout à fait d'accord"]+
+  lprop(table(climat$sitpro_reduite, climat$opinionecolo.cata), drop = F)[,"Plutôt d'accord"],
+      "Elle pourrait provoquer un effondrement de nos sociétés"=lprop(table(climat$sitpro_reduite, climat$opinionecolo.effondrement2), drop = F)[,"Tout à fait d'accord"]+
+  lprop(table(climat$sitpro_reduite, climat$opinionecolo.effondrement2), drop = F)[,"Plutôt d'accord"],
+  "La recherche doit réduire ses émissions de plus d'un tiers"=
+    lprop(table(climat$sitpro_reduite, climat$solreducrech3), drop = F)[,"Plus d'un tiers"])))
+```
+>>>>>>> abad699fca9bdac31476fd8d49339d31e0c600f2
 
 ## Activités humaines et changement climatique
 ```{r echo=FALSE}
@@ -171,7 +455,7 @@ climat$acthum3 <- fct_collapse(climat$acthum2,
                                  "Oui, elles jouent un grand rôle"))
 knitr::kable(freq(climat$acthum2))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$acthum3))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$acthum3))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$acthum3))))
 ```
 
 ## Préoccupation par rapport au changement climatique
@@ -195,7 +479,7 @@ ggplot(drop_na(climat, preoccupe),
 ```{r echo=FALSE}
 knitr::kable(freq(climat$preoccupe2))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$preoccupe2))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$preoccupe2))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$preoccupe2))))
 ```
 
 
@@ -220,7 +504,7 @@ ggplot(drop_na(climat, pluspreoccupe),
 ```{r echo=FALSE}
 knitr::kable(freq(climat$pluspreoccupe))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$pluspreoccupe))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$pluspreoccupe))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$pluspreoccupe))))
 ```
 
 ## Opinions sur l'écologie en général : catastrophe et effondrement
@@ -255,14 +539,14 @@ Si les choses continuent au rythme actuel, nous allons bientôt connaître une c
 ```{r echo=FALSE}
 knitr::kable(freq(climat$opinionecolo.cata))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$opinionecolo.cata))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$opinionecolo.cata))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$opinionecolo.cata))))
 ```
 
 Ce type de catastrophe pourrait provoquer un effondrement de nos sociétés : les besoins de base (alimentation, énergie, santé, etc.) ne seront plus assurés pour la majorité de la population.
 ```{r echo=FALSE}
 knitr::kable(freq(climat$opinionecolo.effondrement2))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$opinionecolo.effondrement2))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$opinionecolo.effondrement2))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$opinionecolo.effondrement2))))
 ```
 
 ## Changements profonds dans nos métiers
@@ -287,7 +571,7 @@ ggplot(drop_na(climat, chgtpratique),
 ```{r echo=FALSE}
 knitr::kable(freq(climat$chgtpratique))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$chgtpratique))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$chgtpratique))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$chgtpratique))))
 ```
 
 ## Réduction des émissions d'un tiers d'ici à 2030
@@ -319,7 +603,7 @@ climat$solreducrech3 <- fct_recode(climat$solreducrech,
 )
 knitr::kable(freq(climat$solreducrech3))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$solreducrech3))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$solreducrech3))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$solreducrech3))))
 ```
 
 # Pratiques
@@ -330,7 +614,7 @@ Les traitements de cette section portent seulement sur les chercheurs
 
 ```{r}
 # # sous base seulement recherche
-climat_recherche <- subset(climat, ! sitpro %in% c(
+climat_recherche <- subset(climat, ! sitpro_reduite %in% c(
   "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
   "Chargé·e d'études/de mission","Adjoint·e technique",
   "Autre"))
@@ -435,12 +719,6 @@ ggplot(table[table$Var2=="total",],
 
 
 ```{r}
-## Recodage de climat$sitpro en climat$sitpro_reduite
-climat_recherche$sitpro_reduite <- NULL
-climat_recherche$sitpro_reduite <- fct_recode(climat_recherche$sitpro,
-  "Doctorant·e contractuel·le" = "Doctorant·e CIFRE"
-)
-
 a <- tapply(climat_recherche$volsdist_totterrain, 
             climat_recherche$sitpro_reduite, mean, na.rm=T)
 b <- tapply(climat_recherche$volsdist_totsejrech, 
@@ -541,8 +819,8 @@ knitr::kable(round(lprop(table(climat$discipline_agr4, climat$ordis.5anstotalpro
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$ordis.nbtotalproplus1))))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$ordis.tousindisp))))
 
-knitr::kable(round(lprop(table(climat$sitpro, climat$ordis.5anstotalproplus0))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$ordis.nbtotalproplus1))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$ordis.5anstotalproplus0))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$ordis.nbtotalproplus1))))
 ```
 
 ## Reliquat de budget
@@ -556,7 +834,7 @@ Avoir utilisé un reliquat de budget pour payer du matériel informatique non in
 knitr::kable(freq(climat$reliquat.ordi))
 knitr::kable(freq(fct_recode(climat$reliquat.ordi, NULL="Je n'ai pas eu à utiliser de reliquat de budget")))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$reliquat.ordi))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$reliquat.ordi))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$reliquat.ordi))))
 ```
 
 Avoir utilisé un reliquat de budget pour payer des déplacements en avion non indispensables :
@@ -564,7 +842,7 @@ Avoir utilisé un reliquat de budget pour payer des déplacements en avion non i
 knitr::kable(freq(climat$reliquat.avion))
 knitr::kable(freq(fct_recode(climat$reliquat.avion, NULL="Je n'ai pas eu à utiliser de reliquat de budget")))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$reliquat.avion))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$reliquat.avion))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$reliquat.avion))))
 ```
 
 # Solutions
@@ -604,11 +882,11 @@ cbind("Les expériences et observations scientifiques"=lprop(table(climat$discip
 )))
 
 knitr::kable(round(
-cbind("Les expériences et observations scientifiques"=lprop(table(climat$sitpro, climat$solreducperso.exp)[, levels(climat$solreducperso.exp) != "Non concerné·e"], drop = F)[,"Non"],
-      "Les déplacements pour missions de terrain, d'observation ou de collecte de données"=lprop(table(climat$sitpro, climat$solreducperso.donnees)[, levels(climat$solreducperso.donnees) != "Non concerné·e"], drop = F)[,"Non"],
-      "Les déplacements domicile-travail en voiture, moto, scooter ou avion"=lprop(table(climat$sitpro, climat$solreducperso.domicile)[, levels(climat$solreducperso.domicile) != "Non concerné·e"], drop = F)[,"Non"], 
-      "L'équipement en postes informatiques et sa fréquence de renouvellement"=lprop(table(climat$sitpro, climat$solreducperso.info)[, levels(climat$solreducperso.info) != "Non concerné·e"], drop = F)[,"Non"], 
-      "Les vols en avion pour les conférences, réunions, congrès"=lprop(table(climat$sitpro, climat$solreducperso.conf)[, levels(climat$solreducperso.conf) != "Non concerné·e"], drop = F)[,"Non"]
+cbind("Les expériences et observations scientifiques"=lprop(table(climat$sitpro_reduite, climat$solreducperso.exp)[, levels(climat$solreducperso.exp) != "Non concerné·e"], drop = F)[,"Non"],
+      "Les déplacements pour missions de terrain, d'observation ou de collecte de données"=lprop(table(climat$sitpro_reduite, climat$solreducperso.donnees)[, levels(climat$solreducperso.donnees) != "Non concerné·e"], drop = F)[,"Non"],
+      "Les déplacements domicile-travail en voiture, moto, scooter ou avion"=lprop(table(climat$sitpro_reduite, climat$solreducperso.domicile)[, levels(climat$solreducperso.domicile) != "Non concerné·e"], drop = F)[,"Non"], 
+      "L'équipement en postes informatiques et sa fréquence de renouvellement"=lprop(table(climat$sitpro_reduite, climat$solreducperso.info)[, levels(climat$solreducperso.info) != "Non concerné·e"], drop = F)[,"Non"], 
+      "Les vols en avion pour les conférences, réunions, congrès"=lprop(table(climat$sitpro_reduite, climat$solreducperso.conf)[, levels(climat$solreducperso.conf) != "Non concerné·e"], drop = F)[,"Non"]
 ))[c("Directeur·rice de recherche", "Professeur·e des universités", "Chargé·e de recherche", "Maître·sse de conférences", 
 "Ingénieur·e de recherche", "Ingénieur·e d'études", "Assistant ingénieur·e", 
 "Technicien·ne", "Chargé·e d'études/de mission", "Adjoint·e technique", 
