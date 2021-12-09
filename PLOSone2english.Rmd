@@ -84,7 +84,7 @@ climat$malpaye<- fct_recode(factor(climat$malpaye), "Yes"="Oui", "No"="Non")
 climat$international.naiss<- fct_recode(factor(climat$international.naiss), "Yes"="Oui", "No"="Non")
 
 
-
+#Juste pour la régression (base climatRegr)
 climatRegr$sexe <- fct_recode(factor(climatRegr$sexe), "Man"= "Homme", "Woman"="Femme", "Other"= "Autre") 
 
 climatRegr$ageAgr <- fct_recode(factor(climatRegr$ageAgr), "Under 29 years old"= "Moins de 29 ans", "30-34 years old"= "30-34 ans","35-39 years old"="35-39 ans", "40-44 years old"= "40-44 ans", "45-49 years old"="45-49 ans", "50-54 years old"= "50-54 ans", "55-64 years old"="55-64 ans", "65 years and older"= "65 ans et plus")
@@ -137,27 +137,28 @@ Protecting the environment is more important than protecting economic growth
 knitr::kable(round(cprop(table(climat$opinionecolo.proteger, climat$NumVague))))
 ```
 
-La France s’est engagée à réduire d’un tiers ses émissions de gaz à effet de serre d’ici à 2030. Dans ce cadre, pensez-vous que :
+France has committed to reducing its GHG emissions by one-third by 2030. In this respect, do you think that public research should:
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climatRegr$solreducrech2, climat$NumVague))))
 ```
 
-Quelles actions les institutions et laboratoires de recherche devraient-ils mettre en œuvre pour réduire leurs émissions de gaz à effet de serre ? 
+What actions should research institutions and laboratories take to reduce their greenhouse gas emissions? 
 
-- Imposer une limite au nombre de vols en avion par personne
+- Impose a cap on the number of flights per person
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$solinstit.limitevols, climat$NumVague))))
 ```
 
-- Ajouter les émissions de gaz à effet de serre parmi les principaux critères de sélection des projets à financer
+- Add carbon emissions to the main selection criteria for project funding
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$solinstit.selection, climat$NumVague))))
 ```
-- Diminuer le poids des conférences et présentations à l’étranger dans les évaluations de carrière
+- Reduce the importance of conferences and presentations abroad in career assessments
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$solinstit.conf, climat$NumVague))))
 ```
 
+Multiple linear regressions on the number of messages sent to respondents before they respond
 ```{r echo=FALSE}
 model_1 <- lm(vaguenum ~ sexe + ageAgr, data=climatRegr )
 model_2 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 , data=climatRegr )
