@@ -31,7 +31,7 @@ theme_set(theme_minimal() +
 update_geom_defaults("bar", list(fill="#045a8d"))
 update_geom_defaults("col", list(fill="#045a8d"))
 
-texte_legende <- "Source : enquête « Les personnels de la recherche face au changement climatique », Labos 1point5, 2020\nChamp : personnels affiliés à une unité du CNRS"
+texte_legende <- "Source: ‘Research personnel and climate change’ survey, Labos 1point5, 2020.\nCoverage: personnel affiliated with a CNRS unit"
 source_champ <- function(n=NA, extra=NA) {
   if(is.na(n))
     texte <- texte_legende
@@ -63,11 +63,13 @@ climat$sitpro <- fct_recode(factor(climat$sitpro), "Senior researcher"="Directeu
 
 climat$discipline_agr4 <- fct_recode(factor(climat$discipline_agr4),"Physics"="Physique", "Law, economics, management"="Droit, économie, gestion", "Other literature and human sciences"= "Autres lettres et sciences humaines", "History, geography, urbanism, anthropology"= "Histoire, géo, urba, anthropo","Mathematics"="Mathématiques", "Computer science"="Informatique", "Chemistry"="Chimie","Astronomy"="Astronomie","Geology"="Géologie", "Meteorology, oceanology, environmental physics"= "Météo, océano, physique environt", "Health and medical research"="Santé et recherche médicale", "Engineering"= "Ingénierie","Biology"="Biologie","Population biology and ecology"="Biologie des populations et écologie")
 
-climat$preoccupe <- fct_recode(factor(climat$preoccupe), "Not at all concerned"="Pas du tout préoccupé·e","Slightly concerned"="Un peu préoccupé·e","Somewhat concerned"="Assez préoccupé·e", "Very concerned"="Très préoccupé·e", "Extremely concerned"="Extrêmement préoccupé·e","No opinion"="Sans opinion")
-
 climat$acthum2 <- fct_recode(factor(climat$acthum2), "Yes, they are the only cause"="Oui, elles en sont l'unique cause","Yes, they play a large role"="Oui, elles jouent un grand rôle","Yes, they play a small role"="Oui, elles jouent un petit rôle", "No, they play no role"="Non, elles ne jouent aucun rôle", "There is no climate change"="Il n'y a pas de changement climatique","No opinion"="Sans opinion")
 
+climat$preoccupe <- fct_recode(factor(climat$preoccupe), "Not at all concerned"="Pas du tout préoccupé·e","Slightly concerned"="Un peu préoccupé·e","Somewhat concerned"="Assez préoccupé·e", "Very concerned"="Très préoccupé·e", "Extremely concerned"="Extrêmement préoccupé·e","No opinion"="Sans opinion")
+
 climat$preoccupe2 <- fct_recode(factor(climat$preoccupe2), "Not at all concerned"="Pas du tout préoccupé·e","Slightly concerned"="Un peu préoccupé·e","Somewhat concerned"="Assez préoccupé·e", "Very concerned"="Très préoccupé·e", "Extremely concerned"="Extrêmement préoccupé·e","No opinion"="Sans opinion")
+
+climat$pluspreoccupe <- fct_recode(factor(climat$pluspreoccupe), "Much more"="Beaucoup plus","A little more"="Un peu plus","Neither more nor less"="Ni plus ni moins", "A little less"="Un peu moins", "Much less"="Beaucoup moins","No opinion"="Sans opinion")
 
 climat$solreducrech <- fct_recode(factor(climat$solreducrech), "Set an example (reduce emissions by more than one-third)"= "La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui","Reduce emissions by around one-third"="La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ", "Benefit from an exemption (reduce emissions by less than one-third)"= "En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m")
 
@@ -188,31 +190,43 @@ model_6 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + carriere +
 table_1 <- 
   tbl_regression(model_1, label=list(sexe ~ "Sex", ageAgr ~ "Age")) %>% 
   add_significance_stars() %>%
+  bold_labels() %>%
+  italicize_labels()%>%
   add_glance_table(include = nobs)
 
 table_2 <- 
   tbl_regression(model_2, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro2  ~ "Status", discipline_agr4~"Discipline")) %>% 
   add_significance_stars() %>%
+  bold_labels() %>%
+  italicize_labels()%>%
   add_glance_table(include = nobs)
 
 table_3 <- 
   tbl_regression(model_3, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro2  ~ "Status", discipline_agr4~"Discipline", preoccupe2 ~ "Degree of concern about climate change")) %>% 
   add_significance_stars() %>%
+  bold_labels() %>%
+  italicize_labels()%>%
   add_glance_table(include = nobs)
 
 table_4 <- 
   tbl_regression(model_4, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro2  ~ "Status", discipline_agr4~"Discipline", solreducrech2 ~ "Desirable GHGs emission reduction target for public research by 2030")) %>% 
   add_significance_stars() %>%
+  bold_labels() %>%
+  italicize_labels()%>%
   add_glance_table(include = nobs)
 
 table_5 <- 
   tbl_regression(model_5, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro2  ~ "Status", discipline_agr4~"Discipline", preoccupe2 ~ "Degree of concern about climate change", opinionecolo.cata ~ "A major ecological catastrophe is going to occur", opinionecolo.contraintes ~ "A major ecological catastrophe is going to occur", opinionecolo.proteger ~ "Protecting the environment is more important than protecting economic growth", solreducrech2 ~ "Desirable GHG emission reduction target for public research by 2030", solinstit.limitevols ~ "Impose a cap on the number of flights per person", solinstit.selection ~ "Add carbon emissions to the main selection criteria for project funding",solinstit.conf ~ "Reduce the importance of conferences and presentations abroad in career assessments")) %>% 
   add_significance_stars() %>%
+  bold_labels() %>%
+  italicize_labels()%>%
   add_glance_table(include = nobs)
 
 table_6 <- 
   tbl_regression(model_6, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro2  ~ "Status", discipline_agr4~"Discipline", carriere ~ "Being in a moment in one's career in which one is seeking to be promoted, recruited or tenured", malpaye~ "Feeling underpaid", international.naiss ~ "Born abroad")) %>% 
   add_significance_stars() %>%
+  bold_labels() %>%
+  italicize_labels()%>%
   add_glance_table(include = nobs)
 
 
