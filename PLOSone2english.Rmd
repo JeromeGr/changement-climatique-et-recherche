@@ -53,7 +53,9 @@ table_multi <- function(dat, levs=levels(dat$valeur)) {
     mat
 }
 
-climat$sexe <- fct_recode(factor(climat$sexe), "Man"= "Homme", "Woman"="Femme", "Other"= "Autre") 
+climat$NumVague <- fct_recode(factor(climat$NumVague), "After initial message and before first reminder"= "Après premier message", "Between first and second reminders"="Après première relance", "Between second and third reminders"= "Après deuxième relance", "Between third and fourth reminders"= "Après troisième relance", "After fourth reminder"= "Après quatrième relance")
+
+climat$sexe <- fct_recode(factor(climat$sexe), "Man"= "Homme", "Woman"="Femme", "Other"= "Autre")
 
 climat$ageAgr <- fct_recode(factor(climat$ageAgr), "Under 29 years old"= "Moins de 29 ans", "30-34 years old"= "30-34 ans","35-39 years old"="35-39 ans", "40-44 years old"= "40-44 ans", "45-49 years old"="45-49 ans", "50-54 years old"= "50-54 ans", "55-64 years old"="55-64 ans", "65 years and older"= "65 ans et plus")
 
@@ -61,15 +63,31 @@ climat$sitpro <- fct_recode(factor(climat$sitpro), "Senior researcher"="Directeu
 
 climat$discipline_agr4 <- fct_recode(factor(climat$discipline_agr4),"Physics"="Physique", "Law, economics, management"="Droit, économie, gestion", "Other literature and human sciences"= "Autres lettres et sciences humaines", "History, geography, urbanism, anthropology"= "Histoire, géo, urba, anthropo","Mathematics"="Mathématiques", "Computer science"="Informatique", "Chemistry"="Chimie","Astronomy"="Astronomie","Geology"="Géologie", "Meteorology, oceanology, environmental physics"= "Météo, océano, physique environt", "Health and medical research"="Santé et recherche médicale", "Engineering"= "Ingénierie","Biology"="Biologie","Population biology and ecology"="Biologie des populations et écologie")
 
+climat$preoccupe <- fct_recode(factor(climat$preoccupe), "Not at all concerned"="Pas du tout préoccupé·e","Slightly concerned"="Un peu préoccupé·e","Somewhat concerned"="Assez préoccupé·e", "Very concerned"="Très préoccupé·e", "Extremely concerned"="Extrêmement préoccupé·e","No opinion"="Sans opinion")
+
+climat$acthum2 <- fct_recode(factor(climat$acthum2), "Yes, they are the only cause"="Oui, elles en sont l'unique cause","Yes, they play a large role"="Oui, elles jouent un grand rôle","Yes, they play a small role"="Oui, elles jouent un petit rôle", "No, they play no role"="Non, elles ne jouent aucun rôle", "There is no climate change"="Il n'y a pas de changement climatique","No opinion"="Sans opinion")
+
 climat$preoccupe2 <- fct_recode(factor(climat$preoccupe2), "Not at all concerned"="Pas du tout préoccupé·e","Slightly concerned"="Un peu préoccupé·e","Somewhat concerned"="Assez préoccupé·e", "Very concerned"="Très préoccupé·e", "Extremely concerned"="Extrêmement préoccupé·e","No opinion"="Sans opinion")
 
 climat$solreducrech <- fct_recode(factor(climat$solreducrech), "Set an example (reduce emissions by more than one-third)"= "La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui","Reduce emissions by around one-third"="La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ", "Benefit from an exemption (reduce emissions by less than one-third)"= "En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m")
+
+climat$opinionecolo.techno <- fct_recode(factor(climat$opinionecolo.techno), "Completely agree"="Tout à fait d'accord", "Somewhat agree"="Plutôt d'accord", "Somewhat disagree"="Plutôt pas d'accord", "Completely disagree"="Pas du tout d'accord", "No opinion"="Sans opinion")
 
 climat$opinionecolo.cata <- fct_recode(factor(climat$opinionecolo.cata), "Completely agree"="Tout à fait d'accord", "Somewhat agree"="Plutôt d'accord", "Somewhat disagree"="Plutôt pas d'accord", "Completely disagree"="Pas du tout d'accord", "No opinion"="Sans opinion")
 
 climat$opinionecolo.contraintes <- fct_recode(factor(climat$opinionecolo.contraintes), "Completely agree"="Tout à fait d'accord", "Somewhat agree"="Plutôt d'accord", "Somewhat disagree"="Plutôt pas d'accord", "Completely disagree"="Pas du tout d'accord", "No opinion"="Sans opinion")
 
 climat$opinionecolo.proteger<- fct_recode(factor(climat$opinionecolo.proteger), "Completely agree"="Tout à fait d'accord", "Somewhat agree"="Plutôt d'accord", "Somewhat disagree"="Plutôt pas d'accord", "Completely disagree"="Pas du tout d'accord", "No opinion"="Sans opinion")
+
+climat$opinionecolo.efforts<- fct_recode(factor(climat$opinionecolo.efforts), "Completely agree"="Tout à fait d'accord", "Somewhat agree"="Plutôt d'accord", "Somewhat disagree"="Plutôt pas d'accord", "Completely disagree"="Pas du tout d'accord", "No opinion"="Sans opinion")
+
+climat$opinionecolo.decroissance<- fct_recode(factor(climat$opinionecolo.decroissance), "Completely agree"="Tout à fait d'accord", "Somewhat agree"="Plutôt d'accord", "Somewhat disagree"="Plutôt pas d'accord", "Completely disagree"="Pas du tout d'accord", "No opinion"="Sans opinion")
+
+climat$opinionecolo.effondrement <- fct_recode(factor(climat$opinionecolo.effondrement), "Completely agree"="Tout à fait d'accord", "Somewhat agree"="Plutôt d'accord", "Somewhat disagree"="Plutôt pas d'accord", "Completely disagree"="Pas du tout d'accord", "No opinion"="Sans opinion")
+
+climat$opinionecolo.effondrement2 <- fct_recode(factor(climat$opinionecolo.effondrement2), "Completely agree"="Tout à fait d'accord", "Somewhat agree"="Plutôt d'accord", "Somewhat disagree"="Plutôt pas d'accord", "Completely disagree"="Pas du tout d'accord", "No opinion"="Sans opinion")
+
+climat$chgtpratique <- fct_recode(factor(climat$chgtpratique), "Completely agree"="Tout à fait d'accord", "Somewhat agree"="Plutôt d'accord", "Somewhat disagree"="Plutôt pas d'accord", "Completely disagree"="Pas du tout d'accord", "No opinion"="Sans opinion")
 
 climat$solinstit.limitevols<- fct_recode(factor(climat$solinstit.limitevols), "It is a priority"="C'est prioritaire", "It is secondary"="C'est secondaire","It should not be implemented"= "Il ne faut pas le mettre en œuvre", "No opinion"="Sans opinion")
 
@@ -122,7 +140,7 @@ To what degree are you concerned about climate change?
 knitr::kable(round(cprop(table(climat$preoccupe2, climat$NumVague))))
 ```
 
-If things continue at the current pace, we will soon experience a major ecological catastrophe
+If things continue on their present course, we will soon experience a major ecological catastrophe
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$opinionecolo.cata, climat$NumVague))))
 ```
@@ -205,11 +223,10 @@ tbl_merge(list(table_1, table_2, table_3, table_4, table_5, table_6)) %>%
 
 # Opinions
 
-## Activités humaines et changement climatique
+## Human activities and climage change
 ```{r echo=FALSE}
 climat$acthum3 <- fct_collapse(climat$acthum2,
-                               "Oui, elles jouent un grand rôle\nou en sont l'unique cause"=c("Oui, elles en sont l'unique cause", 
-                                 "Oui, elles jouent un grand rôle"))
+                               "Yes, they play a large role\n or are the only cause"=c("Yes, they are the only cause",                                  "Yes, they play a large role"))
 pal <- RColorBrewer::brewer.pal(6, "RdYlGn")
 ggplot(drop_na(climat, acthum3),
        aes(y=fct_rev(acthum3), x=..prop.., group=1)) +
@@ -219,36 +236,35 @@ ggplot(drop_na(climat, acthum3),
   geom_text(aes(label=scales::percent(..prop.., accuracy=0.1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="Proportion des répondant·es", y="",
-       title="Les activités humaines sont-elles la cause du changement climatique\n(hausse des températures depuis une centaine d'années) ?") +
+  labs(x="Proportion of respondents", y="",
+       title="Are human activities the cause of climate change \n(rise in temperatures in the last century)?") +
   source_champ(nrow(drop_na(climat, acthum3)),
-               "Lecture : pour 95,1% des répondant·es, les activités humaines jouent un grand rôle ou sont l'unique cause du changement climatique")
+               "Interpretation: For 95.1% of respondents, human activities play a major role or is the only cause of climate change.")
 ```
 
 ```{r echo=FALSE}
 climat$acthum3 <- fct_collapse(climat$acthum2,
-                               "Oui, elles jouent un grand rôle ou en sont l'unique cause"=c("Oui, elles en sont l'unique cause", 
-                                 "Oui, elles jouent un grand rôle"))
+                               "Yes, they play a large role or are the only cause"=c("Yes, they are the only cause",                                  "Yes, they play a large role"))
 knitr::kable(freq(climat$acthum2))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$acthum3))))
 knitr::kable(round(lprop(table(climat$sitpro, climat$acthum3))))
 ```
 
-## Préoccupation par rapport au changement climatique
+## Concern about climate change
 ```{r echo=FALSE}
 pal <- RColorBrewer::brewer.pal(9, "RdYlBu")
 ggplot(drop_na(climat, preoccupe),
-       aes(y=fct_relevel(preoccupe, "Sans opinion"), x=..prop.., group=1)) +
+       aes(y=fct_relevel(preoccupe, "No opinion"), x=..prop.., group=1)) +
   geom_bar(fill=c("light grey", "#74add1", "#fee090", "#fdae61", "#f46d43", "#d73027")) +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
   coord_cartesian(xlim=c(0, 0.42)) +
   geom_text(aes(label=scales::percent(..prop.., accuracy=0.1, decimal.mark=",")),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="Proportion des répondant·es", y="",
-       title="Dans quelle mesure êtes-vous préoccupé·e par le changement climatique ?") +
+  labs(x="Proportion of respondents", y="",
+       title="To what degree are you concerned about climate change?") +
   source_champ(nrow(drop_na(climat, preoccupe)),
-               "Lecture : 31,7% des répondant·es sont extrêmement préoccupé·es par le changement climatique")
+               "Interpretation: 31.7% of respondents are extremely concerned about climate change.")
 
 ```
 
@@ -259,7 +275,7 @@ knitr::kable(round(lprop(table(climat$sitpro, climat$preoccupe2))))
 ```
 
 
-## Évolution de la préoccupation
+## Evolution of the concern
 ```{r echo=FALSE}
 pal <- RColorBrewer::brewer.pal(9, "RdYlBu")
 ggplot(drop_na(climat, pluspreoccupe),
@@ -271,10 +287,10 @@ ggplot(drop_na(climat, pluspreoccupe),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
   theme(plot.title=element_text(size=10), plot.subtitle=element_text(size=8)) +
-  labs(x="Proportion des répondant·es", y="",
-       title="Êtes-vous plus ou moins préoccupé·e par le changement climatique qu'il y a 5 ans ?") +
+  labs(x="Proportion of respondents", y="",
+       title="Are you more or less concerned about climate change than five years ago?") +
   source_champ(nrow(drop_na(climat, pluspreoccupe)),
-               "Lecture : 44,6% des répondant·es sont beaucoup plus préocupé·es par le changement climatique qu'il y a cinq ans")
+               "Interpretation: 44.6% of respondents are much more concerned about climate change than five years ago.")
 ```
 
 ```{r echo=FALSE}
@@ -283,18 +299,18 @@ knitr::kable(round(lprop(table(climat$discipline_agr4, climat$pluspreoccupe))))
 knitr::kable(round(lprop(table(climat$sitpro, climat$pluspreoccupe))))
 ```
 
-## Opinions sur l'écologie en général : catastrophe et effondrement
+## Personal position on ecology in general: catastrophe and collapse
 ```{r echo=FALSE, fig.height=5.5}
-dat <- rbind(data.frame(variable="Il ne sert à rien que je fasse des efforts pour l'environnement\nsi les autres ne font pas de même", valeur=climat$opinionecolo.efforts),
-data.frame(variable="La plupart des problèmes environnementaux peuvent être résolus\npar le développement de technologies plus performantes",
+dat <- rbind(data.frame(variable="There is no point in me making an effort for the environment\n if others do not do the same", valeur=climat$opinionecolo.efforts),
+data.frame(variable="Most environmental problems can be solved\n by applying more and better technology",
                         valeur=climat$opinionecolo.techno),
-             data.frame(variable="La décroissance est nécessaire\npour faire face aux enjeux environnementaux", valeur=climat$opinionecolo.decroissance),
-             data.frame(variable="Je suis d’accord pour que des contraintes réglementaires\nsoient mises en place pour protéger l'environnement,\nmême si cela limite mon confort", valeur=climat$opinionecolo.contraintes),
-             data.frame(variable="Protéger l'environnement est plus important\nque protéger la croissance économique", valeur=climat$opinionecolo.proteger),
-             data.frame(variable="Ce type de catastrophe pourrait provoquer\nun effondrement de nos sociétés*", valeur=climat$opinionecolo.effondrement2),
-             data.frame(variable="Si les choses continuent au rythme actuel,\nnous allons bientôt vivre une catastrophe écologique majeure", valeur=climat$opinionecolo.cata)) %>%
+             data.frame(variable="Degrowth is necessary\n to face environmental challenges", valeur=climat$opinionecolo.decroissance),
+             data.frame(variable="I agree that regulatory constraints (quotas, bans)\n should be put in place to protect the environment,\n even if it limits my comfort", valeur=climat$opinionecolo.contraintes),
+             data.frame(variable="Protecting the environment is more important\n than protecting economic growth", valeur=climat$opinionecolo.proteger),
+             data.frame(variable="This type of disaster could cause\n a collapse of our societies*", valeur=climat$opinionecolo.effondrement2),
+             data.frame(variable="If things continue on their present course,\n we will soon experience a major ecological catastrophe", valeur=climat$opinionecolo.cata)) %>%
     mutate(variable=factor(variable, levels=unique(variable)),
-           valeur=fct_relevel(valeur, c("Tout à fait d'accord", "Plutôt d'accord", "Sans opinion", "Plutôt pas d'accord", "Pas du tout d'accord")))
+           valeur=fct_relevel(valeur, c("Strongly agree", "Somewhat agree", "No opinion", "Somewhat disagree", "Strongly disagree")))
 
 drop_na(dat) %>%
     ggplot(aes(x=variable)) +
@@ -305,27 +321,27 @@ drop_na(dat) %>%
     coord_flip() + labs(fill="") +
     theme(legend.position="bottom") +
     guides(fill=guide_legend(reverse = TRUE, nrow=3, byrow=TRUE)) +
-    labs(y="Proportion des répondant·es", x="") +
+    labs(y="Proportion of respondents", x="") +
     source_champ(max(table(drop_na(dat)$variable)),
-                  "* Les personnes ayant répondu négativement à la question précédente sont classées en « Pas du tout d'accord ».
-Lecture : 59% des répondant·es sont tout à fait d'accord avec l'affirmation selon laquelle\nnous allons bientôt vivre une catastrophe écologique majeure")
+                  "* Those who responded negatively to the previous question are classified as « Strongly desagree ».
+Lecture : 59% of respondents strongly agree with the statement\n that we will soon experience a major ecological catastrophe")
 ```
 
-Si les choses continuent au rythme actuel, nous allons bientôt connaître une catastrophe écologique majeure.
+If things continue on their present course, we will soon experience a major ecological catastrophe.
 ```{r echo=FALSE}
 knitr::kable(freq(climat$opinionecolo.cata))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$opinionecolo.cata))))
 knitr::kable(round(lprop(table(climat$sitpro, climat$opinionecolo.cata))))
 ```
 
-Ce type de catastrophe pourrait provoquer un effondrement de nos sociétés : les besoins de base (alimentation, énergie, santé, etc.) ne seront plus assurés pour la majorité de la population.
+This type of disaster could cause a collapse of our societies: the basic needs (food, energy, health, etc.) will no longer be assured for the majority of the population.
 ```{r echo=FALSE}
 knitr::kable(freq(climat$opinionecolo.effondrement2))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$opinionecolo.effondrement2))))
 knitr::kable(round(lprop(table(climat$sitpro, climat$opinionecolo.effondrement2))))
 ```
 
-## Changements profonds dans nos métiers
+## Profound changes in the practice of our professions
 ```{r echo=FALSE}
 pal <- RColorBrewer::brewer.pal(9, "RdYlBu")
 ggplot(drop_na(climat, chgtpratique),
@@ -338,10 +354,10 @@ ggplot(drop_na(climat, chgtpratique),
             hjust=-0.2, size=3) +
   theme(plot.title=element_text(size=10),
         plot.subtitle=element_text(size=8)) +
-  labs(x="Proportion des répondant·es", y="",
-       title="Pensez−vous que l'urgence climatique exige des changements profonds\ndans la pratique de nos métiers ?") +
+  labs(x="Proportion of respondents", y="",
+       title="Do you think that climate urgency calls for profound changes in the practice of our professions?") +
   source_champ(nrow(drop_na(climat, chgtpratique)),
-               "Lecture: 47% des répondant·es pensent que l'urgence climatique exige des changements profonds dans la pratique de nos métiers")
+               "Interpretation: 47% of respondents think that climate urgency calls for profound changes in the practice of our professions.")
 ```
 
 ```{r echo=FALSE}
@@ -350,15 +366,11 @@ knitr::kable(round(lprop(table(climat$discipline_agr4, climat$chgtpratique))))
 knitr::kable(round(lprop(table(climat$sitpro, climat$chgtpratique))))
 ```
 
-## Réduction des émissions d'un tiers d'ici à 2030
+## Reducing GHG emissions by one-third by 2030
 ```{r echo=FALSE}
-climat$solreducrech4 <- fct_recode(climat$solreducrech,
-  "Montrer l'exemple\n(réduire ses émissions de plus d'un tiers)" = "La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui",
-  "Réduire ses émissions d'un tiers environ" = "La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ",
-  "Bénéficier d'un statut dérogatoire\n(réduire ses émissions de moins d'un tiers)" = "En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"
-)
-ggplot(drop_na(climat, solreducrech4),
-       aes(y=fct_rev(solreducrech4), x=..prop.., group=1)) +
+
+ggplot(drop_na(climat, solreducrech),
+       aes(y=fct_rev(solreducrech), x=..prop.., group=1)) +
     geom_bar(fill=c("#d7191c", "#a6d96a", "#1a9641")) +
     scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
     coord_cartesian(xlim=c(0, 0.5)) +
@@ -366,36 +378,38 @@ ggplot(drop_na(climat, solreducrech4),
             stat="count", position=position_dodge(.9),
             hjust=-0.2, size=3) +
     labs(x="Proportion des répondant·es", y="",
-         title="La France s’est engagée à réduire d’un tiers ses émissions\nde gaz à effet de serre d'ici à 2030.\nDans ce cadre, pensez-vous que la recherche publique doit :") +
-  source_champ(nrow(drop_na(climat, solreducrech4)),
-               "Lecture : 48% des répondant·es pensent que la recherche publique doit réduire ses émissions de plus d'un tiers d'ici à 2030")
+         title="France has committed to reducing its GHG emissions by one-third by 2030.\n In this respect, do you think that public research should:") +
+  source_champ(nrow(drop_na(climat, solreducrech)),
+               "Interpretation: 48% of respondents think that public research should reduce its emissions by more than one-third by 2030.")
 ```
 
 ```{r echo=FALSE}
 climat$solreducrech3 <- fct_recode(climat$solreducrech,
-  "Plus d'un tiers" = "La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui",
-  "Un tiers environ" = "La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ",
-  "Moins d'un tiers" = "En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"
+  "More than a third" = "Set an example (reduce emissions by more than one-third)",
+  "Around one-third" = "Reduce emissions by around one-third",
+  "Less than one-third" = "Benefit from an exemption (reduce emissions by less than one-third)"
 )
+
 knitr::kable(freq(climat$solreducrech3))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$solreducrech3))))
 knitr::kable(round(lprop(table(climat$sitpro, climat$solreducrech3))))
 ```
 
-# Pratiques
+# Practices
 
-## Vols en avion
+## Flights by plane
 
-Les traitements de cette section portent seulement sur les chercheurs
+The analysis in this section are limited to PhD-level positions (including doctoral contracts)
 
 ```{r}
 # # sous base seulement recherche
 climat_recherche <- subset(climat, ! sitpro %in% c(
-  "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
-  "Chargé·e d'études/de mission","Adjoint·e technique",
-  "Autre"))
+  "Research support officer", "Research support assistant", "Technician",
+  "Project Manager","Technical assistant",
+  "Other personnel"))
 
 ```
+
 
 ### Motifs des vols par discipline
 
