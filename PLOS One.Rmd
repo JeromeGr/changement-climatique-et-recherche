@@ -55,6 +55,12 @@ table_multi <- function(dat, levs=levels(dat$valeur)) {
 climat$sitpro_reduite <- fct_recode(climat$sitpro,
   "Doctorant·e contractuel·le" = "Doctorant·e CIFRE"
 )
+
+climat$solreducrech3 <- fct_recode(climat$solreducrech,
+  "Plus d'un tiers" = "La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui",
+  "Un tiers environ" = "La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ",
+  "Moins d'un tiers" = "En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"
+)
 ```
 
 # Échantillon et biais de non-réponse
@@ -415,6 +421,9 @@ htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6),
 dat <- select(climat, changclim, preoccupe2, pluspreoccupe, acthum, chgtpratique, opinionecolo.cata, opinionecolo.effondrement2, solreducrech3)
 summarytools::freq(dat, cumul=F, report.nas=F, style="rmarkdown", round.digits=0, display.type=F)
 
+```
+
+```{r}
 knitr::kable(round(
 cbind("Le climat est certainement en train de changer"=lprop(table(climat$discipline_agr4, climat$changclim), drop = F)[,"Oui, certainement"],
       "Très ou extrêmement préoccupé"=lprop(table(climat$discipline_agr4, climat$preoccupe2), drop = F)[,"Très préoccupé·e"] +
@@ -615,11 +624,6 @@ ggplot(drop_na(climat, solreducrech4),
 ```
 
 ```{r echo=FALSE}
-climat$solreducrech3 <- fct_recode(climat$solreducrech,
-  "Plus d'un tiers" = "La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui",
-  "Un tiers environ" = "La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ",
-  "Moins d'un tiers" = "En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"
-)
 knitr::kable(freq(climat$solreducrech3))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$solreducrech3))))
 knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$solreducrech3))))
