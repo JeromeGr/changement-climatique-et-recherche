@@ -298,36 +298,42 @@ table_1 <-
   tbl_regression(model_1, label=list(sexe ~ "Sex", ageAgr ~ "Age"),
                  intercept=TRUE) %>% 
   add_significance_stars() %>%
+  bold_labels() %>%
   add_glance_table(include = c(nobs, r.squared, adj.r.squared))
 
 table_2 <- 
   tbl_regression(model_2, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro_reduite2  ~ "Status", discipline_agr4~"Discipline"),
                  intercept=TRUE) %>% 
   add_significance_stars() %>%
+  bold_labels() %>%
   add_glance_table(include = c(nobs, r.squared, adj.r.squared))
 
 table_3 <- 
   tbl_regression(model_3, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro_reduite2  ~ "Status", discipline_agr4~"Discipline", preoccupe2 ~ "Degree of concern about climate change"),
                  intercept=TRUE) %>% 
   add_significance_stars() %>%
+  bold_labels() %>%
   add_glance_table(include = c(nobs, r.squared, adj.r.squared))
 
 table_4 <- 
   tbl_regression(model_4, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro_reduite2  ~ "Status", discipline_agr4~"Discipline", solreducrech2 ~ "Desirable GHGs emission reduction target for public research by 2030"),
                  intercept=TRUE) %>% 
   add_significance_stars() %>%
+  bold_labels() %>%
   add_glance_table(include = c(nobs, r.squared, adj.r.squared))
 
 table_5 <- 
   tbl_regression(model_5, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro_reduite2  ~ "Status", discipline_agr4~"Discipline", preoccupe2 ~ "Degree of concern about climate change", opinionecolo.cata ~ "A major ecological catastrophe is going to occur", opinionecolo.contraintes ~ "A major ecological catastrophe is going to occur", opinionecolo.proteger ~ "Protecting the environment is more important than protecting economic growth", solreducrech2 ~ "Desirable GHG emission reduction target for public research by 2030", solinstit.limitevols ~ "Impose a cap on the number of flights per person", solinstit.selection ~ "Add carbon emissions to the main selection criteria for project funding",solinstit.conf ~ "Reduce the importance of conferences and presentations abroad in career assessments"),
                  intercept=TRUE) %>% 
   add_significance_stars() %>%
+  bold_labels() %>%
   add_glance_table(include = c(nobs, r.squared, adj.r.squared))
 
 table_6 <- 
   tbl_regression(model_6, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro_reduite2  ~ "Status", discipline_agr4~"Discipline", carriere ~ "Being in a moment in one's career in which one is seeking to be promoted, recruited or tenured", malpaye~ "Feeling underpaid", international.naiss ~ "Born abroad"),
                  intercept=TRUE) %>% 
   add_significance_stars() %>%
+  bold_labels() %>%
   add_glance_table(include = c(nobs, r.squared, adj.r.squared))
 
 
@@ -557,9 +563,9 @@ knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$solreducrech3))))
 
 ## Vols en avion
 
-Les traitements de cette section portent seulement sur les chercheurs
+Les traitements de cette section portent seulement sur les statuts exigeant un doctorat ou d'en préparer un (chercheurs au sens large, ingénieurs de recherche et doctorants contractuels).
 
-```{r}
+```{r echo=FALSE}
 # # sous base seulement recherche
 climat_recherche <- subset(climat, ! sitpro %in% c(
   "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
@@ -571,7 +577,7 @@ climat_recherche <- subset(climat, ! sitpro %in% c(
 ### Motifs des vols par discipline
 
 
-```{r}
+```{r echo=FALSE}
 
 a <- tapply(climat_recherche$volsdist_totterrain, 
             climat_recherche$discipline_agr4, mean, na.rm=T)
@@ -632,20 +638,24 @@ ggplot(table[table$Var2!="Total",]) +
 ```
 
 
-
-```{r}
+Distance parcourue en avion en 2019 (km) :
+```{r echo=FALSE}
 tableau <- table %>% pivot_wider(names_from=Var2, values_from=Freq) 
+colnames(tableau)[1] = "Discipline"
 knitr::kable(tableau, digits =0)
+```
 
+Distance parcourue en avion en 2019 (% en ligne) :
+```{r echo=FALSE}
 tableau <- as.data.frame(tableau)
-tableaupct = 100*tableau[,2:7]/tableau[,8]
+tableaupct = 100*tableau[,2:8]/tableau[,8]
 tableaupct = cbind(tableau[,1], tableaupct)
 colnames(tableaupct)[1] = "Discipline"
 knitr::kable(tableaupct, digits =0)
 ```
 
 
-```{r}
+```{r echo=FALSE}
 ggplot(table[table$Var2=="Total",],
        aes(x=Var1, y=Freq)) +
   stat_summary(geom="bar", fun=mean, na.rm=TRUE) +
@@ -655,7 +665,7 @@ ggplot(table[table$Var2=="Total",],
   coord_flip()+
   # scale_fill_manual(values=rev(as.vector(cols[1:6])))+
   scale_fill_paletteer_d("ggthemes::excel_Celestial")+
-  labs(x="", y="Distance parcourue en avion (km)")
+  labs(x="", y="Distance parcourue en avion en 2019 (km)")
 ```
 
 
@@ -664,7 +674,7 @@ ggplot(table[table$Var2=="Total",],
 ### Motifs des vols par statut
 
 
-```{r}
+```{r echo=FALSE}
 a <- tapply(climat_recherche$volsdist_totterrain, 
             climat_recherche$sitpro_reduite, mean, na.rm=T)
 b <- tapply(climat_recherche$volsdist_totsejrech, 
@@ -735,13 +745,17 @@ ggplot(table[table$Var2!="Total"&
 ```
 
 
-
-```{r}
-tableau <- table %>% pivot_wider(names_from=Var2, values_from=Freq) 
+Distance parcourue en avion en 2019 (km) :
+```{r echo=FALSE}
+tableau <- table %>% pivot_wider(names_from=Var2, values_from=Freq)
+colnames(tableau)[1] = "Statut"
 knitr::kable(tableau[1:8,], digits =0)
+```
 
+Distance parcourue en avion en 2019 (% en ligne) :
+```{r echo=FALSE}
 tableau <- as.data.frame(tableau)
-tableaupct = 100*tableau[,2:7]/tableau[,8]
+tableaupct = 100*tableau[,2:8]/tableau[,8]
 tableaupct = cbind(tableau[,1], tableaupct)
 colnames(tableaupct)[1] = "Statut"
 knitr::kable(tableaupct[1:8,], digits =0)
