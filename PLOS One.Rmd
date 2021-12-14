@@ -969,15 +969,15 @@ Lecture : 54% des répondant·es pensent qu'il est probable qu'une réduction du
 
 Proportion de réponses « C'est probable et c'est un problème », en excluant les non concernés :
 
-```{r echo=FALSE, results='asis'}
+```{r echo=FALSE}
 
 knitr::kable(round(
   cbind("Diminuer la qualité de vos travaux"=lprop(table(climat$discipline_agr4, climat$solrisqreducavion.qual)[, levels(climat$solrisqreducavion.qual) != "Non concerné·e"], drop = F)[,"C'est probable et c'est un problème"],
-        "Vous gêner pour l’accès à certains terrains\nou la collecte/production de certaines données"=lprop(table(climat$discipline_agr4, climat$solrisqreducavion.donnees)[, levels(climat$solrisqreducavion.donnees) != "Non concerné·e"], drop = F)[,"C'est probable et c'est un problème"]
+        "Vous gêner pour l’accès à certains terrains ou la collecte/production de certaines données"=lprop(table(climat$discipline_agr4, climat$solrisqreducavion.donnees)[, levels(climat$solrisqreducavion.donnees) != "Non concerné·e"], drop = F)[,"C'est probable et c'est un problème"]
   )))
 
 knitr::kable(round(
-  cbind("Isoler la recherche française\ndu reste du monde"=lprop(table(climat$sitpro_reduite, climat$solrisqreducavion.isoler)[, levels(climat$solrisqreducavion.isoler) != "Non concerné·e"], drop = F)[,"C'est probable et c'est un problème"],
+  cbind("Isoler la recherche française du reste du monde"=lprop(table(climat$sitpro_reduite, climat$solrisqreducavion.isoler)[, levels(climat$solrisqreducavion.isoler) != "Non concerné·e"], drop = F)[,"C'est probable et c'est un problème"],
         "Gêner l’insertion des jeunes chercheurs"=lprop(table(climat$sitpro_reduite, climat$solrisqreducavion.insertion)[, levels(climat$solrisqreducavion.insertion) != "Non concerné·e"], drop = F)[,"C'est probable et c'est un problème"],
         "Diminuer la diffusion de vos travaux"=lprop(table(climat$sitpro_reduite, climat$solrisqreducavion.diffusion)[, levels(climat$solrisqreducavion.diffusion) != "Non concerné·e"], drop = F)[,"C'est probable et c'est un problème"]
   ))[c("Directeur·rice de recherche", "Professeur·e des universités", "Chargé·e de recherche", "Maître·sse de conférences", 
