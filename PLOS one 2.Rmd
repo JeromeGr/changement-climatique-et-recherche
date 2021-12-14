@@ -53,11 +53,16 @@ table_multi <- function(dat, levs=levels(dat$valeur)) {
     mat
 }
 
+climat$sitpro_reduite <- fct_recode(climat$sitpro,
+  "Doctorant·e contractuel·le" = "Doctorant·e CIFRE")
+climatRegr$sitpro_reduite <- fct_recode(climatRegr$sitpro,
+  "Doctorant·e contractuel·le" = "Doctorant·e CIFRE")
+
 climat$sexe <- fct_recode(factor(climat$sexe), "Man"= "Homme", "Woman"="Femme", "Other"= "Autre") 
 
 climat$ageAgr <- fct_recode(factor(climat$ageAgr), "Under 29 years old"= "Moins de 29 ans", "30-34 years old"= "30-34 ans","35-39 years old"="35-39 ans", "40-44 years old"= "40-44 ans", "45-49 years old"="45-49 ans", "50-54 years old"= "50-54 ans", "55-64 years old"="55-64 ans", "65 years and older"= "65 ans et plus")
 
-climat$sitpro <- fct_recode(factor(climat$sitpro), "Senior researcher"="Directeur·rice de recherche", "Full professor"="Professeur·e des universités", "Tenured researcher"="Chargé·e de recherche","Associate Professor"="Maître·sse de conférences", "Postdoc"="Post-doctorant·e", "Adjunct lecturer"= "ATER", "Doctoral contract"="Doctorant·e contractuel·le", "Research associate"= "Ingénieur·e de recherche","Research support officer"="Ingénieur·e d'études", "Research support assistant"= "Assistant ingénieur·e","Technician"= "Technicien·ne", "Project Manager" ="Chargé·e d'études/de mission", "Technical assistant"="Adjoint·e technique", "Other personnel"="Autre")
+climat$sitpro_reduite <- fct_recode(climat$sitpro_reduite, "Senior researcher"="Directeur·rice de recherche", "Full professor"="Professeur·e des universités", "Tenured researcher"="Chargé·e de recherche","Associate Professor"="Maître·sse de conférences", "Postdoc"="Post-doctorant·e", "Adjunct lecturer"= "ATER", "Doctoral contract"="Doctorant·e contractuel·le", "Research associate"= "Ingénieur·e de recherche","Research support officer"="Ingénieur·e d'études", "Research support assistant"= "Assistant ingénieur·e","Technician"= "Technicien·ne", "Project Manager" ="Chargé·e d'études/de mission", "Technical assistant"="Adjoint·e technique", "Other personnel"="Autre")
 
 climat$discipline_agr4 <- fct_recode(factor(climat$discipline_agr4),"Physics"="Physique", "Law, economics, management"="Droit, économie, gestion", "Other literature and human sciences"= "Autres lettres et sciences humaines", "History, geography, urbanism, anthropology"= "Histoire, géo, urba, anthropo","Mathematics"="Mathématiques", "Computer science"="Informatique", "Chemistry"="Chimie","Astronomy"="Astronomie","Geology"="Géologie", "Meteorology, oceanology, environmental physics"= "Météo, océano, physique environt", "Health and medical research"="Santé et recherche médicale", "Engineering"= "Ingénierie","Biology"="Biologie","Population biology and ecology"="Biologie des populations et écologie")
 
@@ -89,7 +94,7 @@ climatRegr$sexe <- fct_recode(factor(climatRegr$sexe), "Man"= "Homme", "Woman"="
 
 climatRegr$ageAgr <- fct_recode(factor(climatRegr$ageAgr), "Under 29 years old"= "Moins de 29 ans", "30-34 years old"= "30-34 ans","35-39 years old"="35-39 ans", "40-44 years old"= "40-44 ans", "45-49 years old"="45-49 ans", "50-54 years old"= "50-54 ans", "55-64 years old"="55-64 ans", "65 years and older"= "65 ans et plus")
 
-climatRegr$sitpro2 <- fct_recode(factor(climatRegr$sitpro2), "Senior researcher"="Directeur·rice de recherche", "Full professor"="Professeur·e des universités", "Tenured researcher"="Chargé·e de recherche","Associate Professor"="Maître·sse de conférences", "Postdoc"="Post-doctorant·e", "Adjunct lecturer"= "ATER", "Doctoral contract"="Doctorant·e contractuel·le", "Research associate"= "Ingénieur·e de recherche","Research support officer"="Ingénieur·e d'études", "Research support assistant"= "Assistant ingénieur·e","Technician"= "Technicien·ne", "Project Manager" ="Chargé·e d'études/de mission", "Technical assistant"="Adjoint·e technique", "Other personnel"="Autre")
+climatRegr$sitpro_reduite <- fct_recode(factor(climatRegr$sitpro_reduite), "Senior researcher"="Directeur·rice de recherche", "Full professor"="Professeur·e des universités", "Tenured researcher"="Chargé·e de recherche","Associate Professor"="Maître·sse de conférences", "Postdoc"="Post-doctorant·e", "Adjunct lecturer"= "ATER", "Doctoral contract"="Doctorant·e contractuel·le", "Research associate"= "Ingénieur·e de recherche","Research support officer"="Ingénieur·e d'études", "Research support assistant"= "Assistant ingénieur·e","Technician"= "Technicien·ne", "Project Manager" ="Chargé·e d'études/de mission", "Technical assistant"="Adjoint·e technique", "Other personnel"="Autre")
 
 climatRegr$discipline_agr4 <- fct_recode(factor(climatRegr$discipline_agr4),"Physics"="Physique", "Law, economics, management"="Droit, économie, gestion", "Other literature and human sciences"= "Autres lettres et sciences humaines", "History, geography, urbanism, anthropology"= "Histoire, géo, urba, anthropo","Mathematics"="Mathématiques", "Computer science"="Informatique", "Chemistry"="Chimie","Astronomy"="Astronomie","Geology"="Géologie", "Meteorology, oceanology, environmental physics"= "Météo, océano, physique environt", "Health and medical research"="Santé et recherche médicale", "Engineering"= "Ingénierie","Biology"="Biologie","Population biology and ecology"="Biologie des populations et écologie")
 
@@ -160,11 +165,11 @@ knitr::kable(round(cprop(table(climat$solinstit.conf, climat$NumVague))))
 
 ```{r echo=FALSE}
 model_1 <- lm(vaguenum ~ sexe + ageAgr, data=climatRegr )
-model_2 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 , data=climatRegr )
-model_3 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + preoccupe2 , data=climatRegr )
-model_4 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + solreducrech2, data=climatRegr )
-model_5 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + preoccupe2 + opinionecolo.cata+ opinionecolo.contraintes +       opinionecolo.proteger + solreducrech2 + solinstit.limitevols + solinstit.selection + solinstit.conf, data=climatRegr )
-model_6 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + carriere + malpaye + international.naiss, data=climatRegr )
+model_2 <- lm(vaguenum ~ sexe + ageAgr + sitpro_reduite  + discipline_agr4 , data=climatRegr )
+model_3 <- lm(vaguenum ~ sexe + ageAgr + sitpro_reduite  + discipline_agr4 + preoccupe2 , data=climatRegr )
+model_4 <- lm(vaguenum ~ sexe + ageAgr + sitpro_reduite  + discipline_agr4 + solreducrech2, data=climatRegr )
+model_5 <- lm(vaguenum ~ sexe + ageAgr + sitpro_reduite  + discipline_agr4 + preoccupe2 + opinionecolo.cata+ opinionecolo.contraintes +       opinionecolo.proteger + solreducrech2 + solinstit.limitevols + solinstit.selection + solinstit.conf, data=climatRegr )
+model_6 <- lm(vaguenum ~ sexe + ageAgr + sitpro_reduite  + discipline_agr4 + carriere + malpaye + international.naiss, data=climatRegr )
 
 table_1 <- 
   tbl_regression(model_1, label=list(sexe ~ "Sex", ageAgr ~ "Age")) %>% 
@@ -172,27 +177,27 @@ table_1 <-
   add_glance_table(include = nobs)
 
 table_2 <- 
-  tbl_regression(model_2, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro2  ~ "Status", discipline_agr4~"Discipline")) %>% 
+  tbl_regression(model_2, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro_reduite  ~ "Status", discipline_agr4~"Discipline")) %>% 
   add_significance_stars() %>%
   add_glance_table(include = nobs)
 
 table_3 <- 
-  tbl_regression(model_3, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro2  ~ "Status", discipline_agr4~"Discipline", preoccupe2 ~ "Degree of concern about climate change")) %>% 
+  tbl_regression(model_3, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro_reduite  ~ "Status", discipline_agr4~"Discipline", preoccupe2 ~ "Degree of concern about climate change")) %>% 
   add_significance_stars() %>%
   add_glance_table(include = nobs)
 
 table_4 <- 
-  tbl_regression(model_4, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro2  ~ "Status", discipline_agr4~"Discipline", solreducrech2 ~ "Desirable GHGs emission reduction target for public research by 2030")) %>% 
+  tbl_regression(model_4, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro_reduite  ~ "Status", discipline_agr4~"Discipline", solreducrech2 ~ "Desirable GHGs emission reduction target for public research by 2030")) %>% 
   add_significance_stars() %>%
   add_glance_table(include = nobs)
 
 table_5 <- 
-  tbl_regression(model_5, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro2  ~ "Status", discipline_agr4~"Discipline", preoccupe2 ~ "Degree of concern about climate change", opinionecolo.cata ~ "A major ecological catastrophe is going to occur", opinionecolo.contraintes ~ "A major ecological catastrophe is going to occur", opinionecolo.proteger ~ "Protecting the environment is more important than protecting economic growth", solreducrech2 ~ "Desirable GHG emission reduction target for public research by 2030", solinstit.limitevols ~ "Impose a cap on the number of flights per person", solinstit.selection ~ "Add carbon emissions to the main selection criteria for project funding",solinstit.conf ~ "Reduce the importance of conferences and presentations abroad in career assessments")) %>% 
+  tbl_regression(model_5, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro_reduite  ~ "Status", discipline_agr4~"Discipline", preoccupe2 ~ "Degree of concern about climate change", opinionecolo.cata ~ "A major ecological catastrophe is going to occur", opinionecolo.contraintes ~ "A major ecological catastrophe is going to occur", opinionecolo.proteger ~ "Protecting the environment is more important than protecting economic growth", solreducrech2 ~ "Desirable GHG emission reduction target for public research by 2030", solinstit.limitevols ~ "Impose a cap on the number of flights per person", solinstit.selection ~ "Add carbon emissions to the main selection criteria for project funding",solinstit.conf ~ "Reduce the importance of conferences and presentations abroad in career assessments")) %>% 
   add_significance_stars() %>%
   add_glance_table(include = nobs)
 
 table_6 <- 
-  tbl_regression(model_6, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro2  ~ "Status", discipline_agr4~"Discipline", carriere ~ "Being in a moment in one's career in which one is seeking to be promoted, recruited or tenured", malpaye~ "Feeling underpaid", international.naiss ~ "Born abroad")) %>% 
+  tbl_regression(model_6, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro_reduite  ~ "Status", discipline_agr4~"Discipline", carriere ~ "Being in a moment in one's career in which one is seeking to be promoted, recruited or tenured", malpaye~ "Feeling underpaid", international.naiss ~ "Born abroad")) %>% 
   add_significance_stars() %>%
   add_glance_table(include = nobs)
 
@@ -230,7 +235,7 @@ climat$acthum3 <- fct_collapse(climat$acthum2,
                                  "Oui, elles jouent un grand rôle"))
 knitr::kable(freq(climat$acthum2))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$acthum3))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$acthum3))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$acthum3))))
 ```
 
 ## Préoccupation par rapport au changement climatique
@@ -254,7 +259,7 @@ ggplot(drop_na(climat, preoccupe),
 ```{r echo=FALSE}
 knitr::kable(freq(climat$preoccupe2))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$preoccupe2))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$preoccupe2))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$preoccupe2))))
 ```
 
 
@@ -279,7 +284,7 @@ ggplot(drop_na(climat, pluspreoccupe),
 ```{r echo=FALSE}
 knitr::kable(freq(climat$pluspreoccupe))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$pluspreoccupe))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$pluspreoccupe))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$pluspreoccupe))))
 ```
 
 ## Opinions sur l'écologie en général : catastrophe et effondrement
@@ -314,14 +319,14 @@ Si les choses continuent au rythme actuel, nous allons bientôt connaître une c
 ```{r echo=FALSE}
 knitr::kable(freq(climat$opinionecolo.cata))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$opinionecolo.cata))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$opinionecolo.cata))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$opinionecolo.cata))))
 ```
 
 Ce type de catastrophe pourrait provoquer un effondrement de nos sociétés : les besoins de base (alimentation, énergie, santé, etc.) ne seront plus assurés pour la majorité de la population.
 ```{r echo=FALSE}
 knitr::kable(freq(climat$opinionecolo.effondrement2))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$opinionecolo.effondrement2))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$opinionecolo.effondrement2))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$opinionecolo.effondrement2))))
 ```
 
 ## Changements profonds dans nos métiers
@@ -346,7 +351,7 @@ ggplot(drop_na(climat, chgtpratique),
 ```{r echo=FALSE}
 knitr::kable(freq(climat$chgtpratique))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$chgtpratique))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$chgtpratique))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$chgtpratique))))
 ```
 
 ## Réduction des émissions d'un tiers d'ici à 2030
@@ -378,7 +383,7 @@ climat$solreducrech3 <- fct_recode(climat$solreducrech,
 )
 knitr::kable(freq(climat$solreducrech3))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$solreducrech3))))
-knitr::kable(round(lprop(table(climat$sitpro, climat$solreducrech3))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$solreducrech3))))
 ```
 
 # Pratiques
@@ -389,7 +394,7 @@ Les traitements de cette section portent seulement sur les chercheurs
 
 ```{r}
 # # sous base seulement recherche
-climat_recherche <- subset(climat, ! sitpro %in% c(
+climat_recherche <- subset(climat, ! sitpro_reduite %in% c(
   "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
   "Chargé·e d'études/de mission","Adjoint·e technique",
   "Autre"))
@@ -494,12 +499,6 @@ ggplot(table[table$Var2=="total",],
 
 
 ```{r}
-## Recodage de climat$sitpro en climat$sitpro_reduite
-climat_recherche$sitpro_reduite <- NULL
-climat_recherche$sitpro_reduite <- fct_recode(climat_recherche$sitpro,
-  "Doctorant·e contractuel·le" = "Doctorant·e CIFRE"
-)
-
 a <- tapply(climat_recherche$volsdist_totterrain, 
             climat_recherche$sitpro_reduite, mean, na.rm=T)
 b <- tapply(climat_recherche$volsdist_totsejrech, 
