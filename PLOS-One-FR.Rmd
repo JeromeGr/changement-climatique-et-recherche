@@ -18,7 +18,7 @@ library(tidyverse)
 library(ggplot2)
 library(questionr)
 library(paletteer)
-library(texreg)
+library(gtsummary)
 
 
 load("climat.RData")
@@ -53,8 +53,10 @@ table_multi <- function(dat, levs=levels(dat$valeur)) {
 }
 
 climat$sitpro_reduite <- fct_recode(climat$sitpro,
-  "Doctorant·e contractuel·le" = "Doctorant·e CIFRE"
-)
+  "Doctorant·e contractuel·le" = "Doctorant·e CIFRE")
+climatRegr$sitpro_reduite <- fct_recode(climatRegr$sitpro,
+  "Doctorant·e contractuel·le" = "Doctorant·e CIFRE")
+climatRegr$sitpro_reduite2 <- relevel(climatRegr$sitpro_reduite, ref = "Maître·sse de conférences")
 
 climat$solreducrech3 <- fct_recode(climat$solreducrech,
   "Plus d'un tiers" = "La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui",
@@ -103,318 +105,160 @@ data.frame(statut=factor(names(repinstitut)), taux=repinstitut) %>%
 ```
 
 Régression logistique expliquant la probabilité de répondre
-```{r echo=FALSE, results="asis"}
-cat('<table style="text-align:center"><tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"></td><td>Odds ratio</td></tr>
-<tr><td></td><td colspan="1" style="border-bottom: 1px solid black"></td></tr>
-<tr><td style="text-align:left"></td><td>(95% CI)</td></tr>
-<tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">institut2INC (Institut de chimie)</td><td>0.871<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.692, 1.049)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">institut2INEE (Institut d\'écologie et environnement)</td><td>1.268<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(1.075, 1.462)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">institut2INP (Institut de physique)</td><td>1.173<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.985, 1.360)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">institut2INS2I (Institut des sciences de l\'information et de leurs interactions)</td><td>0.949<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.759, 1.139)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">institut2INSB (Institut des sciences biologiques)</td><td>0.812<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.638, 0.986)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">institut2INSHS (Institut des sciences humaines et sociales)</td><td>0.937<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.763, 1.111)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">institut2INSIS (Institut des sciences de l\'ingénierie et des systèmes)</td><td>0.938<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.760, 1.116)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">institut2INSMI (Institut national des sciences mathématiques et de leurs interactions)</td><td>1.059<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.855, 1.264)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">institut2INSU (Institut national des sciences de l\'univers)</td><td>1.446<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(1.265, 1.627)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">institut2Présidence et Direction générale</td><td>0.914<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.697, 1.130)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">delegation02, Paris-Centre</td><td>1.063<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.917, 1.209)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">delegation04, Ile-de-France Gif-sur-Yvette</td><td>1.203<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(1.051, 1.355)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">delegation05, Ile-de-France Meudon</td><td>1.158<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.984, 1.332)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">delegation06, Centre-Est</td><td>1.214<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(1.040, 1.387)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">delegation07, Rhône Auvergne</td><td>1.255<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(1.106, 1.404)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">delegation08, Centre-Limousin-Poitou-Charentes</td><td>1.370<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(1.181, 1.560)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">delegation10, Alsace</td><td>1.133<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.948, 1.319)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">delegation11, Alpes</td><td>1.701<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(1.541, 1.861)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">delegation12, Provence et Corse</td><td>1.289<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(1.127, 1.451)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">delegation13, Occitanie Est</td><td>1.132<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.960, 1.303)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">delegation14, Occitanie Ouest</td><td>1.181<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(1.025, 1.338)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">delegation15, Aquitaine</td><td>1.262<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(1.084, 1.440)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">delegation16, Paris Michel-Ange</td><td>1.102<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.854, 1.350)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">delegation17, Bretagne et Pays de la Loire</td><td>1.249<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(1.090, 1.407)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">delegation18, Hauts-de-France</td><td>0.996<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.806, 1.185)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">delegation19, Normandie</td><td>1.537<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(1.307, 1.767)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">delegation20, Côte d\'Azur</td><td>0.929<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.709, 1.149)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">type2Professeur</td><td>0.550<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.411, 0.689)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">type2Chargé de recherche</td><td>1.268<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(1.137, 1.399)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">type2Maître de conférences</td><td>0.726<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.605, 0.846)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">type2Post-doctorant</td><td>0.493<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.273, 0.714)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">type2Doctorant</td><td>0.468<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.350, 0.586)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">type2Ingénieur de recherche</td><td>1.122<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.970, 1.274)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">type2Ingénieur d\'études</td><td>0.935<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.792, 1.078)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">type2Assistant ingénieur</td><td>0.701<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.532, 0.871)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">type2Technicien</td><td>0.382<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.224, 0.540)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">type2Temporaire sur CDD</td><td>0.589<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.447, 0.730)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">type2Autre personnel</td><td>0.468<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.293, 0.643)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">sexe.xFemme</td><td>1.309<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(1.250, 1.369)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td style="text-align:left">Constant</td><td>0.334<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.122, 0.546)</td></tr>
-<tr><td style="text-align:left"></td><td></td></tr>
-<tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Observations</td><td>28,484</td></tr>
-<tr><td style="text-align:left">Log Likelihood</td><td>-14,791.120</td></tr>
-<tr><td style="text-align:left">Akaike Inf. Crit.</td><td>29,662.240</td></tr>
-<tr><td colspan="2" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"><em>Note:</em></td><td style="text-align:right"><sup>*</sup>p<0.1; <sup>**</sup>p<0.05; <sup>***</sup>p<0.01</td></tr>
-</table>')
-```
+
+|**Variable**                                                                  |**Odds ratio** |**IC à 95%** |
+|:-----------------------------------------------------------------------------|:--------------|:------------|
+|**Institut**                                                                  |               |             |
+|INSU (Institut national des sciences de l'univers)                            |—              |             |
+|INEE (Institut d'écologie et environnement)                                   |0.88           |0.76, 1.01   |
+|INP (Institut de physique)                                                    |0.81**         |0.70, 0.93   |
+|IN2P3 (Institut national de physique nucléaire et de physique des particules) |0.69***        |0.58, 0.83   |
+|Présidence et Direction générale                                              |0.63***        |0.53, 0.75   |
+|INSMI (Institut national des sciences mathématiques et de leurs interactions) |0.73***        |0.62, 0.86   |
+|INSIS (Institut des sciences de l'ingénierie et des systèmes)                 |0.65***        |0.57, 0.74   |
+|INS2I (Institut des sciences de l'information et de leurs interactions)       |0.66***        |0.57, 0.76   |
+|INSB (Institut des sciences biologiques)                                      |0.56***        |0.50, 0.63   |
+|INC (Institut de chimie)                                                      |0.60***        |0.53, 0.68   |
+|INSHS (Institut des sciences humaines et sociales)                            |0.65***        |0.58, 0.73   |
+|**Délégation régionale**                                                      |               |             |
+|01, Ile-de-France Villejuif                                                   |—              |             |
+|02, Paris-Centre                                                              |1.06           |0.92, 1.23   |
+|04, Ile-de-France Gif-sur-Yvette                                              |1.20*          |1.03, 1.40   |
+|05, Ile-de-France Meudon                                                      |1.16           |0.97, 1.38   |
+|06, Centre-Est                                                                |1.21*          |1.02, 1.44   |
+|07, Rhône Auvergne                                                            |1.25**         |1.08, 1.46   |
+|08, Centre-Limousin-Poitou-Charentes                                          |1.37**         |1.13, 1.66   |
+|10, Alsace                                                                    |1.13           |0.94, 1.36   |
+|11, Alpes                                                                     |1.70***        |1.45, 2.00   |
+|12, Provence et Corse                                                         |1.29**         |1.10, 1.52   |
+|13, Occitanie Est                                                             |1.13           |0.95, 1.34   |
+|14, Occitanie Ouest                                                           |1.18*          |1.01, 1.38   |
+|15, Aquitaine                                                                 |1.26*          |1.06, 1.51   |
+|16, Paris Michel-Ange                                                         |1.10           |0.86, 1.41   |
+|17, Bretagne et Pays de la Loire                                              |1.25**         |1.07, 1.46   |
+|18, Hauts-de-France                                                           |1.00           |0.82, 1.20   |
+|19, Normandie                                                                 |1.54***        |1.22, 1.93   |
+|20, Côte d'Azur                                                               |0.93           |0.74, 1.16   |
+|**Statut**                                                                    |               |             |
+|Directeur de recherche                                                        |—              |             |
+|Professeur                                                                    |0.55***        |0.48, 0.63   |
+|Chargé de recherche                                                           |1.27***        |1.11, 1.45   |
+|Maître de conférences                                                         |0.73***        |0.64, 0.82   |
+|Post-doctorant                                                                |0.49***        |0.39, 0.61   |
+|Doctorant                                                                     |0.47***        |0.42, 0.53   |
+|Ingénieur de recherche                                                        |1.12           |0.96, 1.31   |
+|Ingénieur d'études                                                            |0.93           |0.81, 1.08   |
+|Assistant ingénieur                                                           |0.70***        |0.59, 0.83   |
+|Technicien                                                                    |0.38***        |0.33, 0.45   |
+|Temporaire sur CDD                                                            |0.59***        |0.51, 0.68   |
+|Autre personnel                                                               |0.47***        |0.39, 0.56   |
+|**Sexe**                                                                      |               |             |
+|Homme                                                                         |—              |             |
+|Femme                                                                         |1.31***        |1.23, 1.39   |
 
 ## Différences entre répondants précoces et tardifs
 
+Dans quelle mesure êtes-vous preoccupé.e par le changement climatique ?
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$preoccupe2, climat$NumVague))))
+```
+
+Si les choses continuent au rythme actuel, nous allons bientôt vivre une catastrophe écologique majeure
+```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$opinionecolo.cata, climat$NumVague))))
+```
+
+Je suis d’accord pour que des contraintes réglementaires (quotas, interdictions) soient mises en place pour protéger l’environnement, même si cela limite mon confort
+```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$opinionecolo.contraintes, climat$NumVague))))
+```
+
+Protéger l’environnement est plus important que protéger la croissance économique
+```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$opinionecolo.proteger, climat$NumVague))))
-knitr::kable(round(cprop(table(climat$solreducrech2, climat$NumVague))))
+```
+
+La France s’est engagée à réduire d’un tiers ses émissions de gaz à effet de serre d’ici à 2030. Dans ce cadre, pensez-vous que la recherche publique doit :
+```{r echo=FALSE}
+knitr::kable(round(cprop(table(climatRegr$solreducrech2, climat$NumVague))))
+```
+
+Quelles actions les institutions et laboratoires de recherche devraient-ils mettre en œuvre pour réduire leurs émissions de gaz à effet de serre ? 
+
+- Imposer une limite au nombre de vols en avion par personne
+```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$solinstit.limitevols, climat$NumVague))))
+```
+
+- Ajouter les émissions de gaz à effet de serre parmi les principaux critères de sélection des projets à financer
+```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$solinstit.selection, climat$NumVague))))
+```
+- Diminuer le poids des conférences et présentations à l’étranger dans les évaluations de carrière
+```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$solinstit.conf, climat$NumVague))))
 ```
 
 Régressions linéaires expliquant le nombre de relances avant la réponse :
-```{r echo=FALSE, results='asis'}
-res.reg1 <- lm(vaguenum ~ sexe + ageAgr, data=climatRegr )
-res.reg2 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 , data=climatRegr )
-res.reg3 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + preoccupe2 , data=climatRegr )
-res.reg4 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + solreducrech2, data=climatRegr )
-res.reg5 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + preoccupe2 + opinionecolo.cata+ opinionecolo.contraintes +       opinionecolo.proteger + solreducrech + solinstit.limitevols + solinstit.selection + solinstit.conf, data=climatRegr )
-res.reg6 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr3 + nbpublistranch2 + tpsquotiteNum + carriere + international.naiss, data=climatRegr )
-
-
-htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6), 
-        stars = c(0.001, 0.01, 0.05, 0.1), digits = 2,
-        custom.coef.map = list("sexeune femme"= "Woman (ref = man)",
-                               "sexeautre"="Sex : other",
-                               "ageAgrMoins de 29 ans"= "less than 29 years (Ref = 50-54 years)",
-                               "ageAgr30-34 ans"= "30-34 years old",
-                               "ageAgr35-39 ans"= "35-39 years old",
-                               "ageAgr40-44 ans"= "40-44 years old",
-                               "ageAgr45-49 ans"= "45-49 years old",
-                               "ageAgr55-64 ans"= "55-64 years old",
-                               "ageAgr65 ans et plus"= "More than 65 years old",
-                               "sitpro2Directeur·rice de recherche"="Directeur·rice de recherche (Ref = Maître·sse de conférences)",
-                               "sitpro2Professeur·e des universités"= "University professor ",
-                               "sitpro2Chargé·e de recherche"="Researcher",
-                               "sitpro2Maître·sse de conférences"="Lecturer",
-                               "sitpro2Post-doctorant·e"= "Post doctoral student",
-                               "sitpro2ATER"="ATER",
-                               "sitpro2Doctorant·e contractuel·le"="contractual doctoral student",
-                               "sitpro2Doctorant·e CIFRE"= "CIFRE contractual doctoral student",
-                               "sitpro2Ingénieur·e de recherche"="Research engineer",
-                               "sitpro2Ingénieur·e d'études"="Design engineer",
-                               "sitpro2Assistant ingénieur·e"="Assistant engineer",
-                               "sitpro2Technicien·ne"="Technician",
-                               "sitpro2Chargé·e d'études/de mission"= "Research officer",
-                               "sitpro2Adjoint·e technique"="Technical assistant",
-                               "sitpro2Autre"="Other",
-                               "discipline_agr4Droit, économie, gestion"="Droit, économie, gestion (Ref = Physique)",
-                               "discipline_agr4Autres lettres et sciences humaines"="Autres lettres et sciences humaines",
-                               "discipline_agr4Histoire, géo, urba, anthropo"="Histoire, géo, urba, anthropo",
-                               "discipline_agr4Mathématiques"="Mathématiques",
-                               "discipline_agr4Informatique"="Informatique",
-                               "discipline_agr4Physique"="Physique",
-                               "discipline_agr4Chimie"="Chimie",
-                               "discipline_agr4Astronomie"="Astronomie",
-                               "discipline_agr4Géologie"="Géologie",
-                               "discipline_agr4Météo, océano, physique environt"="Météo, océano, physique environt",
-                               "discipline_agr4Santé et recherche médicale"="Santé et recherche médicale",
-                               "discipline_agr4Ingénierie"="Ingénierie",
-                               "discipline_agr4Biologie"="Biologie",
-                               "discipline_agr4Biologie des populations et écologie"="Biologie des populations et écologie",
-                               "nbpublis"="Number of publications in 2017-mid2020",
-                               "nbpublisang"="Number of publications in english in 2017-mid2020",
-                               "particip_ANR"="Participe à projet(s) financé ANR",
-                               "particip_Fr"="Participe à projet(s) av financt public Fr",
-                               "particip_Europ"="Participe à projet(s) av financt europ",
-                               "particip_Intern"="Participe à projet(s) av financt internation",
-                               "particip_prive"="Participe à projet(s) av financt privé",
-                               "Profin_Mb_RespMembre d'au moins 1 projet financé"="Membre de projet(s) financé(s) (ref = Ni mb ni responsable)",
-                               "Profin_Mb_RespResponsable d'au moins 1 projet financé"="Responsable de projet(s) financé(s)",
-                               "carriereOui"="Cherche à être promu, recruté, titularisé",
-                               "projets.anr_m2Membre projet ANR oui"="Membre projet(s) financt ANR (Ref = Ne participe pas)",
-                               "projets.anr_r2Responsable projet ANR oui"="Responsable projet(s) financt ANR",
-                               "projets.france_m2Membre projet France oui"="Membre projet(s) financt France (Ref = Ne participe pas)",
-                               "projets.france_r2Responsable projet France oui"="Responsable projet(s) financt France",
-                               "projets.europe_m2Membre projet européen oui"="Membre projet(s) financt européen (Ref = Ne participe pas)",
-                               "projets.europe_r2Responsable projet européen oui"="Responsable projet(s) financt européen",
-                               "projets.inter_m2Membre projet international oui"="Membre projet(s) financt international (Ref = Ne participe pas)",
-                               "projets.inter_r2Responsable projet international oui"="Responsable projet(s) financt international",
-                               "projets.prive_m2Membre projet privé oui"="Membre projet(s) financt privé (Ref = Ne participe pas)",
-                               "projets.prive_r2Responsable projet privé oui"="Responsable projet(s) financt privé",
-                               "revenuTete"="Revenu par individu du foyer",
-                               "enfantsnb"= "nombre d'enfants",
-                               "coupleNon"="ne vit pas en couple"),
-        symbol = "+",
-        single.row = TRUE)
-```
-
-## Numéro de vague
 ```{r echo=FALSE}
-knitr::kable(round(cprop(table(climat$preoccupe2, climat$NumVague))))
-knitr::kable(round(cprop(table(climat$opinionecolo.cata, climat$NumVague))))
-knitr::kable(round(cprop(table(climat$opinionecolo.contraintes, climat$NumVague))))
-knitr::kable(round(cprop(table(climat$opinionecolo.proteger, climat$NumVague))))
-knitr::kable(round(cprop(table(climatRegr$solreducrech2, climat$NumVague))))
-knitr::kable(round(cprop(table(climat$solinstit.limitevols, climat$NumVague))))
-knitr::kable(round(cprop(table(climat$solinstit.selection, climat$NumVague))))
-knitr::kable(round(cprop(table(climat$solinstit.conf, climat$NumVague))))
+model_1 <- lm(vaguenum ~ sexe + ageAgr, data=climatRegr )
+model_2 <- lm(vaguenum ~ sexe + ageAgr + sitpro_reduite2  + discipline_agr4 , data=climatRegr )
+model_3 <- lm(vaguenum ~ sexe + ageAgr + sitpro_reduite2  + discipline_agr4 + preoccupe2 , data=climatRegr )
+model_4 <- lm(vaguenum ~ sexe + ageAgr + sitpro_reduite2  + discipline_agr4 + solreducrech2, data=climatRegr )
+model_5 <- lm(vaguenum ~ sexe + ageAgr + sitpro_reduite2  + discipline_agr4 + preoccupe2 + opinionecolo.cata+ opinionecolo.contraintes +       opinionecolo.proteger + solreducrech2 + solinstit.limitevols + solinstit.selection + solinstit.conf, data=climatRegr )
+model_6 <- lm(vaguenum ~ sexe + ageAgr + sitpro_reduite2  + discipline_agr4 + carriere + malpaye + international.naiss, data=climatRegr )
+
+table_1 <- 
+  tbl_regression(model_1, label=list(sexe ~ "Sex", ageAgr ~ "Age"),
+                 intercept=TRUE) %>% 
+  add_significance_stars() %>%
+  bold_labels() %>%
+  add_glance_table(include = c(nobs, r.squared, adj.r.squared))
+
+table_2 <- 
+  tbl_regression(model_2, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro_reduite2  ~ "Status", discipline_agr4~"Discipline"),
+                 intercept=TRUE) %>% 
+  add_significance_stars() %>%
+  bold_labels() %>%
+  add_glance_table(include = c(nobs, r.squared, adj.r.squared))
+
+table_3 <- 
+  tbl_regression(model_3, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro_reduite2  ~ "Status", discipline_agr4~"Discipline", preoccupe2 ~ "Degree of concern about climate change"),
+                 intercept=TRUE) %>% 
+  add_significance_stars() %>%
+  bold_labels() %>%
+  add_glance_table(include = c(nobs, r.squared, adj.r.squared))
+
+table_4 <- 
+  tbl_regression(model_4, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro_reduite2  ~ "Status", discipline_agr4~"Discipline", solreducrech2 ~ "Desirable GHGs emission reduction target for public research by 2030"),
+                 intercept=TRUE) %>% 
+  add_significance_stars() %>%
+  bold_labels() %>%
+  add_glance_table(include = c(nobs, r.squared, adj.r.squared))
+
+table_5 <- 
+  tbl_regression(model_5, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro_reduite2  ~ "Status", discipline_agr4~"Discipline", preoccupe2 ~ "Degree of concern about climate change", opinionecolo.cata ~ "A major ecological catastrophe is going to occur", opinionecolo.contraintes ~ "A major ecological catastrophe is going to occur", opinionecolo.proteger ~ "Protecting the environment is more important than protecting economic growth", solreducrech2 ~ "Desirable GHG emission reduction target for public research by 2030", solinstit.limitevols ~ "Impose a cap on the number of flights per person", solinstit.selection ~ "Add carbon emissions to the main selection criteria for project funding",solinstit.conf ~ "Reduce the importance of conferences and presentations abroad in career assessments"),
+                 intercept=TRUE) %>% 
+  add_significance_stars() %>%
+  bold_labels() %>%
+  add_glance_table(include = c(nobs, r.squared, adj.r.squared))
+
+table_6 <- 
+  tbl_regression(model_6, label=list(sexe ~ "Sex", ageAgr ~ "Age", sitpro_reduite2  ~ "Status", discipline_agr4~"Discipline", carriere ~ "Being in a moment in one's career in which one is seeking to be promoted, recruited or tenured", malpaye~ "Feeling underpaid", international.naiss ~ "Born abroad"),
+                 intercept=TRUE) %>% 
+  add_significance_stars() %>%
+  bold_labels() %>%
+  add_glance_table(include = c(nobs, r.squared, adj.r.squared))
+
+
+tbl_merge(list(table_1, table_2, table_3, table_4, table_5, table_6),
+          paste("Model", 1:6)) %>%
+  # ensure the glance statistics are at the bottom of table
+  modify_table_body(~.x %>% dplyr::arrange(row_type == "glance_statistic"))
 ```
-
-```{r echo=FALSE}
-res.reg1 <- lm(vaguenum ~ sexe + ageAgr, data=climatRegr )
-res.reg2 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 , data=climatRegr )
-res.reg3 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + preoccupe2 , data=climatRegr )
-res.reg4 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + solreducrech2, data=climatRegr )
-res.reg5 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + preoccupe2 + opinionecolo.cata+ opinionecolo.contraintes +       opinionecolo.proteger + solreducrech + solinstit.limitevols + solinstit.selection + solinstit.conf, data=climatRegr )
-res.reg6 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr3 + nbpublistranch2 + tpsquotiteNum + carriere + international.naiss, data=climatRegr )
-
-
-htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6), 
-        stars = c(0.001, 0.01, 0.05, 0.1), digits = 2, #single.row = TRUE,
-        custom.coef.map = list("sexeune femme"= "Woman (ref = man)",
-                               "sexeautre"="Sex : other",
-                               "ageAgrMoins de 29 ans"= "less than 29 ans (Ref = 50-54 ans",
-                               "ageAgr30-34 ans"= "30-34 years old",
-                               "ageAgr35-39 ans"= "35-39 years old",
-                               "ageAgr40-44 ans"= "40-44 years old",
-                               "ageAgr45-49 ans"= "45-49 years old",
-                               "ageAgr55-64 ans"= "55-64 years old",
-                               "ageAgr65 ans et plus"= "More than 65 years old",
-                               "sitpro2Directeur·rice de recherche"="Directeur·rice de recherche (Ref = Maître·sse de conférences)",
-                               "sitpro2Professeur·e des universités"= "University professor ",
-                               "sitpro2Chargé·e de recherche"="Researcher",
-                               "sitpro2Maître·sse de conférences"="Lecturer",
-                               "sitpro2Post-doctorant·e"= "Post doctoral student",
-                               "sitpro2ATER"="ATER",
-                               "sitpro2Doctorant·e contractuel·le"="contractual doctoral student",
-                               "sitpro2Doctorant·e CIFRE"= "CIFRE contractual doctoral student",
-                               "sitpro2Ingénieur·e de recherche"="Research engineer",
-                               "sitpro2Ingénieur·e d'études"="Design engineer",
-                               "sitpro2Assistant ingénieur·e"="Assistant engineer",
-                               "sitpro2Technicien·ne"="Technician",
-                               "sitpro2Chargé·e d'études/de mission"= "Research officer",
-                               "sitpro2Adjoint·e technique"="Technical assistant",
-                               "sitpro2Autre"="Other",
-                               "discipline_agr3Droit, économie, gestion"="Droit, économie, gestion (Ref = physique)",
-                               "discipline_agr3Autres lettres et sciences humaines"="Autres lettres et sciences humaines",
-                               "discipline_agr3Archi/arts, anthropo ethno"="Archi/arts, anthropo ethno",
-                               "discipline_agr3Socio, démo"="Socio, démo",
-                               "discipline_agr3Histoire, géo, urba"="Histoire, géo, urba",
-                               "discipline_agr3Mathématiques"="Mathématiques",
-                               "discipline_agr3Informatique"="Informatique",
-                               "discipline_agr3Chimie"="Chimie",
-                               "discipline_agr3Astro, géologie"="Astro, géologie",
-                               "discipline_agr3Météo, océano, physiqu environt"="Météo, océano, physiqu environt",
-                               "discipline_agr3Médecine, pharma, santé"="Médecine, pharma, santé",
-                               "discipline_agr3Génies : méca, info, élec, énergie"="Génies : méca, info, élec, énergie",
-                               "discipline_agr3Biologie"="Biologie",
-                               "discipline_agr3Biologie des populations et écologie"="Biologie des populations et écologie",
-                               "nbpublis"="Number of publications in 2017-mid2020",
-                               "nbpublisang"="Number of publications in english in 2017-mid2020",
-                               "particip_ANR"="Participe à projet(s) financé ANR",
-                               "particip_Fr"="Participe à projet(s) av financt public Fr",
-                               "particip_Europ"="Participe à projet(s) av financt europ",
-                               "particip_Intern"="Participe à projet(s) av financt internation",
-                               "particip_prive"="Participe à projet(s) av financt privé",
-                               "Profin_Mb_RespMembre d'au moins 1 projet financé"="Membre de projet(s) financé(s) (ref = Ni mb ni responsable)",
-                               "Profin_Mb_RespResponsable d'au moins 1 projet financé"="Responsable de projet(s) financé(s)",
-                               "carriereOui"="Cherche à être promu, recrut, titularisé",
-                               "projets.anr_m2Membre projet ANR oui"="Membre projet(s) financt ANR (Ref = Ne participe pas)",
-                               "projets.anr_r2Responsable projet ANR oui"="Responsable projet(s) financt ANR",
-                               "projets.france_m2Membre projet France oui"="Membre projet(s) financt France (Ref = Ne participe pas)",
-                               "projets.france_r2Responsable projet France oui"="Responsable projet(s) financt France",
-                               "projets.europe_m2Membre projet européen oui"="Membre projet(s) financt européen (Ref = Ne participe pas)",
-                               "projets.europe_r2Responsable projet européen oui"="Responsable projet(s) financt européen",
-                               "projets.inter_m2Membre projet international oui"="Membre projet(s) financt international (Ref = Ne participe pas)",
-                               "projets.inter_r2Responsable projet international oui"="Responsable projet(s) financt international",
-                               "projets.prive_m2Membre projet privé oui"="Membre projet(s) financt privé (Ref = Ne participe pas)",
-                               "projets.prive_r2Responsable projet privé oui"="Responsable projet(s) financt privé",
-                               "revenuTete"="Revenu par individu du foyer",
-                               "enfantsnb"= "nombre d'enfants",
-                               "coupleNon"="ne vit pas en couple"),
-        symbol = "+",
-        caption = "Tableau 2 : Régressions linéaires multiples sur le nombre d'heures de vol en 2019", caption.above=TRUE, 
-        single.row = TRUE)
-```
-
 
 # Opinions
+
 
 ## Synthèse
 ```{r eval=FALSE, include=FALSE}
@@ -423,7 +267,7 @@ summarytools::freq(dat, cumul=F, report.nas=F, style="rmarkdown", round.digits=0
 
 ```
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 knitr::kable(round(
 cbind("Le climat est certainement en train de changer"=lprop(table(climat$discipline_agr4, climat$changclim), drop = F)[,"Oui, certainement"],
       "Très ou extrêmement préoccupé"=lprop(table(climat$discipline_agr4, climat$preoccupe2), drop = F)[,"Très préoccupé·e"] +
@@ -633,11 +477,11 @@ knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$solreducrech3))))
 
 ## Vols en avion
 
-Les traitements de cette section portent seulement sur les chercheurs
+Les traitements de cette section portent seulement sur les statuts exigeant un doctorat ou d'en préparer un (chercheurs au sens large, ingénieurs de recherche et doctorants contractuels).
 
-```{r}
+```{r echo=FALSE}
 # # sous base seulement recherche
-climat_recherche <- subset(climat, ! sitpro_reduite %in% c(
+climat_recherche <- subset(climat, ! sitpro %in% c(
   "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
   "Chargé·e d'études/de mission","Adjoint·e technique",
   "Autre"))
@@ -647,7 +491,7 @@ climat_recherche <- subset(climat, ! sitpro_reduite %in% c(
 ### Motifs des vols par discipline
 
 
-```{r}
+```{r echo=FALSE}
 
 a <- tapply(climat_recherche$volsdist_totterrain, 
             climat_recherche$discipline_agr4, mean, na.rm=T)
@@ -708,20 +552,24 @@ ggplot(table[table$Var2!="Total",]) +
 ```
 
 
-
-```{r}
+Distance parcourue en avion en 2019 (km) :
+```{r echo=FALSE}
 tableau <- table %>% pivot_wider(names_from=Var2, values_from=Freq) 
+colnames(tableau)[1] = "Discipline"
 knitr::kable(tableau, digits =0)
+```
 
+Distance parcourue en avion en 2019 (% en ligne) :
+```{r echo=FALSE}
 tableau <- as.data.frame(tableau)
-tableaupct = 100*tableau[,2:7]/tableau[,8]
+tableaupct = 100*tableau[,2:8]/tableau[,8]
 tableaupct = cbind(tableau[,1], tableaupct)
 colnames(tableaupct)[1] = "Discipline"
 knitr::kable(tableaupct, digits =0)
 ```
 
 
-```{r}
+```{r echo=FALSE}
 ggplot(table[table$Var2=="Total",],
        aes(x=Var1, y=Freq)) +
   stat_summary(geom="bar", fun=mean, na.rm=TRUE) +
@@ -731,7 +579,7 @@ ggplot(table[table$Var2=="Total",],
   coord_flip()+
   # scale_fill_manual(values=rev(as.vector(cols[1:6])))+
   scale_fill_paletteer_d("ggthemes::excel_Celestial")+
-  labs(x="", y="Distance parcourue en avion (km)")
+  labs(x="", y="Distance parcourue en avion en 2019 (km)")
 ```
 
 
@@ -740,7 +588,7 @@ ggplot(table[table$Var2=="Total",],
 ### Motifs des vols par statut
 
 
-```{r}
+```{r echo=FALSE}
 a <- tapply(climat_recherche$volsdist_totterrain, 
             climat_recherche$sitpro_reduite, mean, na.rm=T)
 b <- tapply(climat_recherche$volsdist_totsejrech, 
@@ -811,13 +659,17 @@ ggplot(table[table$Var2!="Total"&
 ```
 
 
-
-```{r}
-tableau <- table %>% pivot_wider(names_from=Var2, values_from=Freq) 
+Distance parcourue en avion en 2019 (km) :
+```{r echo=FALSE}
+tableau <- table %>% pivot_wider(names_from=Var2, values_from=Freq)
+colnames(tableau)[1] = "Statut"
 knitr::kable(tableau[1:8,], digits =0)
+```
 
+Distance parcourue en avion en 2019 (% en ligne) :
+```{r echo=FALSE}
 tableau <- as.data.frame(tableau)
-tableaupct = 100*tableau[,2:7]/tableau[,8]
+tableaupct = 100*tableau[,2:8]/tableau[,8]
 tableaupct = cbind(tableau[,1], tableaupct)
 colnames(tableaupct)[1] = "Statut"
 knitr::kable(tableaupct[1:8,], digits =0)
@@ -978,7 +830,6 @@ knitr::kable(round(
 )
 
 ```
-
 
 ## Réductions individuelles des émissions de GES des dispositifs expérimentaux d'ici à 2030
 
