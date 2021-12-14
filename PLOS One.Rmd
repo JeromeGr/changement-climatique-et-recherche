@@ -659,12 +659,12 @@ d <- tapply(climat_recherche$volsdist_totcours,
             climat_recherche$discipline_agr4, mean, na.rm=T)
 e <- tapply(climat_recherche$volsdist_totjury, 
             climat_recherche$discipline_agr4, mean, na.rm=T)+
-            tapply(climat_recherche$volsdist_totfinanc, 
-            climat_recherche$discipline_agr4, mean, na.rm=T)+
-            tapply(climat_recherche$volsdist_toteval, 
-            climat_recherche$discipline_agr4, mean, na.rm=T)+
-            tapply(climat_recherche$volsdist_totautre, 
-            climat_recherche$discipline_agr4, mean, na.rm=T)
+    tapply(climat_recherche$volsdist_totfinanc, 
+           climat_recherche$discipline_agr4, mean, na.rm=T)+
+    tapply(climat_recherche$volsdist_toteval, 
+           climat_recherche$discipline_agr4, mean, na.rm=T)+
+    tapply(climat_recherche$volsdist_totautre, 
+           climat_recherche$discipline_agr4, mean, na.rm=T)
 j <- tapply(climat_recherche$volsdist_totconf, 
             climat_recherche$discipline_agr4, mean, na.rm=T)
 total <- tapply(climat_recherche$volsdist_tot, 
@@ -689,7 +689,7 @@ table$Var1 <- fct_relevel(table$Var1, niveaux)
 #ordonnes par poids dans le total des distances parcourues
 table$Var2 <- fct_relevel(table$Var2,
                           c("Autres",
-                          "Enseignement, formation",
+                            "Enseignement, formation",
                             "Terrain et données",
                             "Réunion, workshop",
                             "Séjour de recherche",
@@ -718,9 +718,6 @@ tableaupct = 100*tableau[,2:7]/tableau[,8]
 tableaupct = cbind(tableau[,1], tableaupct)
 colnames(tableaupct)[1] = "Discipline"
 knitr::kable(tableaupct, digits =0)
-
-# ça aurait été bien que ça marche comme ça mais il a plusieurs valeurs pour "Autres" (parce que j'ai regroupé des trucs ci dessus) alors il fait n'importe quoi...
-
 ```
 
 
@@ -754,12 +751,12 @@ d <- tapply(climat_recherche$volsdist_totcours,
             climat_recherche$sitpro_reduite, mean, na.rm=T)
 e <- tapply(climat_recherche$volsdist_totjury, 
             climat_recherche$sitpro_reduite, mean, na.rm=T)+
-            tapply(climat_recherche$volsdist_totfinanc, 
-            climat_recherche$sitpro_reduite, mean, na.rm=T)+
-            tapply(climat_recherche$volsdist_toteval, 
-            climat_recherche$sitpro_reduite, mean, na.rm=T)+
-            tapply(climat_recherche$volsdist_totautre, 
-            climat_recherche$sitpro_reduite, mean, na.rm=T)
+    tapply(climat_recherche$volsdist_totfinanc, 
+           climat_recherche$sitpro_reduite, mean, na.rm=T)+
+    tapply(climat_recherche$volsdist_toteval, 
+           climat_recherche$sitpro_reduite, mean, na.rm=T)+
+    tapply(climat_recherche$volsdist_totautre, 
+           climat_recherche$sitpro_reduite, mean, na.rm=T)
 j <- tapply(climat_recherche$volsdist_totconf, 
             climat_recherche$sitpro_reduite, mean, na.rm=T)
 total <- tapply(climat_recherche$volsdist_tot, 
@@ -778,7 +775,7 @@ table <- as.data.frame(as.table(table))
 #ordonnes par poids dans le total des distances parcourues
 table$Var2 <- fct_relevel(table$Var2,
                           c("Autres",
-                          "Enseignement, formation",
+                            "Enseignement, formation",
                             "Terrain et données",
                             "Réunion, workshop",
                             "Séjour de recherche",
@@ -910,10 +907,7 @@ cbind("Les expériences et observations scientifiques"=lprop(table(climat$sitpro
       "Les déplacements domicile-travail en voiture, moto, scooter ou avion"=lprop(table(climat$sitpro_reduite, climat$solreducperso.domicile)[, levels(climat$solreducperso.domicile) != "Non concerné·e"], drop = F)[,"Non"], 
       "L'équipement en postes informatiques et sa fréquence de renouvellement"=lprop(table(climat$sitpro_reduite, climat$solreducperso.info)[, levels(climat$solreducperso.info) != "Non concerné·e"], drop = F)[,"Non"], 
       "Les vols en avion pour les conférences, réunions, congrès"=lprop(table(climat$sitpro_reduite, climat$solreducperso.conf)[, levels(climat$solreducperso.conf) != "Non concerné·e"], drop = F)[,"Non"]
-))[c("Directeur·rice de recherche", "Professeur·e des universités", "Chargé·e de recherche", "Maître·sse de conférences", 
-"Ingénieur·e de recherche", "Ingénieur·e d'études", "Assistant ingénieur·e", 
-"Technicien·ne", "Chargé·e d'études/de mission", "Adjoint·e technique", 
-"Autre"),])
+)))
 
 drop_na(dat) %>%
   filter(valeur != "Non concerné·e") %>%
@@ -980,10 +974,7 @@ knitr::kable(round(
   cbind("Isoler la recherche française du reste du monde"=lprop(table(climat$sitpro_reduite, climat$solrisqreducavion.isoler)[, levels(climat$solrisqreducavion.isoler) != "Non concerné·e"], drop = F)[,"C'est probable et c'est un problème"],
         "Gêner l’insertion des jeunes chercheurs"=lprop(table(climat$sitpro_reduite, climat$solrisqreducavion.insertion)[, levels(climat$solrisqreducavion.insertion) != "Non concerné·e"], drop = F)[,"C'est probable et c'est un problème"],
         "Diminuer la diffusion de vos travaux"=lprop(table(climat$sitpro_reduite, climat$solrisqreducavion.diffusion)[, levels(climat$solrisqreducavion.diffusion) != "Non concerné·e"], drop = F)[,"C'est probable et c'est un problème"]
-  ))[c("Directeur·rice de recherche", "Professeur·e des universités", "Chargé·e de recherche", "Maître·sse de conférences", 
-       "Ingénieur·e de recherche", "Ingénieur·e d'études", "Assistant ingénieur·e", 
-       "Technicien·ne", "Chargé·e d'études/de mission", "Adjoint·e technique", 
-       "Autre"),]
+  ))
 )
 
 ```
