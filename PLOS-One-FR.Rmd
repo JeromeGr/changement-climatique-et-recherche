@@ -267,7 +267,7 @@ summarytools::freq(dat, cumul=F, report.nas=F, style="rmarkdown", round.digits=0
 
 ```
 
-```{r eval=FALSE, include=FALSE}
+```{r echo=FALSE}
 knitr::kable(round(
 cbind("Le climat est certainement en train de changer"=lprop(table(climat$discipline_agr4, climat$changclim), drop = F)[,"Oui, certainement"],
       "Très ou extrêmement préoccupé"=lprop(table(climat$discipline_agr4, climat$preoccupe2), drop = F)[,"Très préoccupé·e"] +
