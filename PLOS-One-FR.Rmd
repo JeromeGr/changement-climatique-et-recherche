@@ -73,7 +73,7 @@ climat$acthum3 <- fct_collapse(climat$acthum2,
 
 ## Taux de réponse par statut et discipline
 ```{r echo=FALSE}
-repstatut <- c(`Directeur·rice de recherche` = 0.298029556650246, Professeur = 0.187197618161518, `Chargé·e de recherche` = 0.357738646895273, `Maître·sse de conférences` = 0.242277140335393, `Post-doctorant·e` = 0.175438596491228, `Doctorant·e` = 0.170106132075472, `Ingénieur·e de recherche` = 0.335389360061681, `Ingénieur·e d'études` = 0.298368298368298, `Assistant·e ingénieur·e` = 0.247533632286996, `Technicien·ne` = 0.15253386853989, `Temporaire sur CDD` = 0.212272727272727, `Autre personnel` = 0.171935235158057)
+repstatut <- c(`Directeur·rice de recherche` = 0.298029556650246, Professeur = 0.187197618161518, `Chargé·e de recherche` = 0.357738646895273, `Maître·sse de conférences` = 0.242277140335393,  `Ingénieur·e de recherche` = 0.335389360061681, `Post-doctorant·e` = 0.175438596491228, `Doctorant·e` = 0.170106132075472,`Ingénieur·e d'études` = 0.298368298368298, `Assistant·e ingénieur·e` = 0.247533632286996, `Technicien·ne` = 0.15253386853989, `Temporaire sur CDD` = 0.212272727272727, `Autre personnel` = 0.171935235158057)
 
 data.frame(statut=factor(names(repstatut), levels=rev(names(repstatut))), taux=repstatut) %>%
   ggplot(aes(y=statut, x=taux)) +
@@ -93,7 +93,7 @@ repinstitut <- c(`IN2P3 (physique nucléaire et des particules)` = 25.8351893095
 `INSHS (sciences humaines et sociales)` = 20.4694511563687, 
 `INSIS (sciences de l'ingénierie et des systèmes)` = 21.0496929089894, 
 `INSMI (sciences mathématiques)` = 22.4460431654676, 
-`INSU (sciences de l'univers)` = 31.2090790048014, 
+`INSU (sciences de la Terre et de l'univers)` = 31.2090790048014, 
 `Présidence et Direction générale` = 24.4859813084112)/100
 
 data.frame(statut=factor(names(repinstitut)), taux=repinstitut) %>%
@@ -148,9 +148,9 @@ Régression logistique expliquant la probabilité de répondre
 |Professeur                                                                    |0.55***        |0.48, 0.63   |
 |Chargé de recherche                                                           |1.27***        |1.11, 1.45   |
 |Maître de conférences                                                         |0.73***        |0.64, 0.82   |
+|Ingénieur de recherche                                                        |1.12           |0.96, 1.31   |
 |Post-doctorant                                                                |0.49***        |0.39, 0.61   |
 |Doctorant                                                                     |0.47***        |0.42, 0.53   |
-|Ingénieur de recherche                                                        |1.12           |0.96, 1.31   |
 |Ingénieur d'études                                                            |0.93           |0.81, 1.08   |
 |Assistant ingénieur                                                           |0.70***        |0.59, 0.83   |
 |Technicien                                                                    |0.38***        |0.33, 0.45   |
@@ -632,23 +632,6 @@ table$Var2 <- fct_relevel(table$Var2,
                             "Séjour de recherche",
                             "Conférence, présentation", 
                             "Total"))
-
-table$Var1 <- fct_relevel(table$Var1,
-                          c("Directeur·rice de recherche",
-                            "Professeur·e des universités",
-                            "Chargé·e de recherche",
-                            "Maître·sse de conférences",
-                            "Ingénieur·e de recherche",
-                            "Post-doctorant·e",
-                            "ATER",
-                            "Doctorant·e contractuel·le",
-                            "Ingénieur·e d'études",
-                            "Assistant ingénieur·e",
-                            "Technicien·ne",
-                            "Chargé·e d'études/de mission",
-                            "Adjoint·e technique",
-                            "Autre")
-)
 
 ggplot(table[table$Var2!="Total"&
                table$Var1%in%c(levels(table$Var1)[1:8]),]) + 

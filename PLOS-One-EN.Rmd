@@ -63,13 +63,16 @@ climat$solreducrech3 <- fct_recode(climat$solreducrech,
   "Moins d'un tiers" = "En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"
 )
 
+Sys.setlocale("LC_ALL", "en_US")
+Sys.setlocale("LC_MESSAGES", "en_US")
+
 climat$sexe <- fct_recode(factor(climat$sexe), "Man"= "Homme", "Woman"="Femme", "Other"= "Autre") 
 
 climat$ageAgr <- fct_recode(factor(climat$ageAgr), "Under 29 years old"= "Moins de 29 ans", "30-34 years old"= "30-34 ans","35-39 years old"="35-39 ans", "40-44 years old"= "40-44 ans", "45-49 years old"="45-49 ans", "50-54 years old"= "50-54 ans", "55-64 years old"="55-64 ans", "65 years and older"= "65 ans et plus")
 
-climat$sitpro_reduite <- fct_recode(climat$sitpro_reduite, "Senior researcher"="Directeur·rice de recherche", "Full professor"="Professeur·e des universités", "Tenured researcher"="Chargé·e de recherche","Associate Professor"="Maître·sse de conférences", "Postdoc"="Post-doctorant·e", "Adjunct lecturer"= "ATER", "Doctoral contract"="Doctorant·e contractuel·le", "Research associate"= "Ingénieur·e de recherche","Research support officer"="Ingénieur·e d'études", "Research support assistant"= "Assistant ingénieur·e","Technician"= "Technicien·ne", "Project Manager" ="Chargé·e d'études/de mission", "Technical assistant"="Adjoint·e technique", "Other personnel"="Autre")
+climat$sitpro_reduite <- fct_recode(climat$sitpro_reduite, "Senior researcher"="Directeur·rice de recherche", "Full professor"="Professeur·e des universités", "Tenured researcher"="Chargé·e de recherche", "Associate professor"="Maître·sse de conférences", "Postdoctoral researcher"="Post-doctorant·e", "Adjunct lecturer"="ATER", "Fully funded PhD student"="Doctorant·e contractuel·le", "Research engineer"="Ingénieur·e de recherche", "Research support engineer"="Ingénieur·e d'études", "Engineer assistant"="Assistant ingénieur·e", "Technician"="Technicien·ne", "Research assistant/Project manager"="Chargé·e d'études/de mission", "Technical assistant"="Adjoint·e technique", "Other personnel"="Autre")
 
-climat$discipline_agr4 <- fct_recode(factor(climat$discipline_agr4),"Physics"="Physique", "Law, economics, management"="Droit, économie, gestion", "Other literature and human sciences"= "Autres lettres et sciences humaines", "History, geography, urbanism, anthropology"= "Histoire, géo, urba, anthropo","Mathematics"="Mathématiques", "Computer science"="Informatique", "Chemistry"="Chimie","Astronomy"="Astronomie","Geology"="Géologie", "Meteorology, oceanology, environmental physics"= "Météo, océano, physique environt", "Health and medical research"="Santé et recherche médicale", "Engineering"= "Ingénierie","Biology"="Biologie","Population biology and ecology"="Biologie des populations et écologie")
+climat$discipline_agr4 <- fct_recode(factor(climat$discipline_agr4),"Physics"="Physique", "Law, economics, management"="Droit, économie, gestion", "Other humanities and social sciences"= "Autres lettres et sciences humaines", "History, geography, urbanism, anthropology"= "Histoire, géo, urba, anthropo","Mathematics"="Mathématiques", "Computer science"="Informatique", "Chemistry"="Chimie","Astronomy"="Astronomie","Geology"="Géologie", "Meteorology, oceanology, environmental physics"= "Météo, océano, physique environt", "Health and medical research"="Santé et recherche médicale", "Engineering"= "Ingénierie","Biology"="Biologie","Population biology and ecology"="Biologie des populations et écologie")
 
 
 climat$changclim <- fct_recode(factor(climat$changclim), "Yes, definitely"="Oui, certainement", "Yes, probably"="Oui, probablement", "No, probably not"="Non, probablement pas", "No, definitely not"="Non, certainement pas", "No opinion"="Sans opinion")
@@ -188,11 +191,11 @@ climatRegr$sexe <- fct_recode(factor(climatRegr$sexe), "Man"= "Homme", "Woman"="
 
 climatRegr$ageAgr <- fct_recode(factor(climatRegr$ageAgr), "Under 29 years old"= "Moins de 29 ans", "30-34 years old"= "30-34 ans","35-39 years old"="35-39 ans", "40-44 years old"= "40-44 ans", "45-49 years old"="45-49 ans", "50-54 years old"= "50-54 ans", "55-64 years old"="55-64 ans", "65 years and older"= "65 ans et plus")
 
-climatRegr$sitpro_reduite <- fct_recode(factor(climatRegr$sitpro_reduite), "Senior researcher"="Directeur·rice de recherche", "Full professor"="Professeur·e des universités", "Tenured researcher"="Chargé·e de recherche","Associate Professor"="Maître·sse de conférences", "Postdoc"="Post-doctorant·e", "Adjunct lecturer"= "ATER", "Doctoral contract"="Doctorant·e contractuel·le", "Research associate"= "Ingénieur·e de recherche","Research support officer"="Ingénieur·e d'études", "Research support assistant"= "Assistant ingénieur·e","Technician"= "Technicien·ne", "Project Manager" ="Chargé·e d'études/de mission", "Technical assistant"="Adjoint·e technique", "Other personnel"="Autre")
+climatRegr$sitpro_reduite <- fct_recode(factor(climatRegr$sitpro_reduite), "Senior researcher"="Directeur·rice de recherche", "Full professor"="Professeur·e des universités", "Tenured researcher"="Chargé·e de recherche", "Associate Professor"="Maître·sse de conférences", "Postdoctoral researcher"="Post-doctorant·e", "Adjunct lecturer"= "ATER", "Fully funded PhD student"="Doctorant·e contractuel·le", "Research engineer"="Ingénieur·e de recherche", "Research support engineer"="Ingénieur·e d'études", "Engineer assistant"="Assistant ingénieur·e", "Technician"="Technicien·ne", "Research assistant/Project manager"="Chargé·e d'études/de mission", "Technical assistant"="Adjoint·e technique", "Other personnel"="Autre")
 climatRegr$sitpro_reduite2 <- relevel(climatRegr$sitpro_reduite, ref = "Associate Professor")
 
 
-climatRegr$discipline_agr4 <- fct_recode(factor(climatRegr$discipline_agr4),"Physics"="Physique", "Law, economics, management"="Droit, économie, gestion", "Other literature and human sciences"= "Autres lettres et sciences humaines", "History, geography, urbanism, anthropology"= "Histoire, géo, urba, anthropo","Mathematics"="Mathématiques", "Computer science"="Informatique", "Chemistry"="Chimie","Astronomy"="Astronomie","Geology"="Géologie", "Meteorology, oceanology, environmental physics"= "Météo, océano, physique environt", "Health and medical research"="Santé et recherche médicale", "Engineering"= "Ingénierie","Biology"="Biologie","Population biology and ecology"="Biologie des populations et écologie")
+climatRegr$discipline_agr4 <- fct_recode(factor(climatRegr$discipline_agr4),"Physics"="Physique", "Law, economics, management"="Droit, économie, gestion", "Other humanities and social sciences"= "Autres lettres et sciences humaines", "History, geography, urbanism, anthropology"= "Histoire, géo, urba, anthropo","Mathematics"="Mathématiques", "Computer science"="Informatique", "Chemistry"="Chimie","Astronomy"="Astronomie","Geology"="Géologie", "Meteorology, oceanology, environmental physics"= "Météo, océano, physique environt", "Health and medical research"="Santé et recherche médicale", "Engineering"= "Ingénierie","Biology"="Biologie","Population biology and ecology"="Biologie des populations et écologie")
 
 climatRegr$preoccupe2 <- fct_recode(factor(climatRegr$preoccupe2), "Not at all concerned"="Pas du tout préoccupé·e","Slightly concerned"="Un peu préoccupé·e","Somewhat concerned"="Assez préoccupé·e", "Very concerned"="Très préoccupé·e", "Extremely concerned"="Extrêmement préoccupé·e","No opinion"="Sans opinion")
 
@@ -217,11 +220,11 @@ climatRegr$malpaye<- fct_recode(factor(climatRegr$malpaye), "Yes"="Oui", "No"="N
 climatRegr$international.naiss<- fct_recode(factor(climatRegr$international.naiss), "Yes"="Oui", "No"="Non")
 ```
 
-# Échantillon et biais de non-réponse
+# Sample and non-response bias
 
-## Taux de réponse par statut et discipline
+## Response rate by status and discipline
 ```{r echo=FALSE}
-repstatut <- c(`Directeur·rice de recherche` = 0.298029556650246, Professeur = 0.187197618161518, `Chargé·e de recherche` = 0.357738646895273, `Maître·sse de conférences` = 0.242277140335393, `Post-doctorant·e` = 0.175438596491228, `Doctorant·e` = 0.170106132075472, `Ingénieur·e de recherche` = 0.335389360061681, `Ingénieur·e d'études` = 0.298368298368298, `Assistant·e ingénieur·e` = 0.247533632286996, `Technicien·ne` = 0.15253386853989, `Temporaire sur CDD` = 0.212272727272727, `Autre personnel` = 0.171935235158057)
+repstatut <- c(`Senior researcher` = 0.298029556650246, `Full professor` = 0.187197618161518, `Tenured researcher` = 0.357738646895273, `Associate professor` = 0.242277140335393, `Research engineer` = 0.335389360061681, `Postdoctoral researcher` = 0.175438596491228, `Fully funded PhD student` = 0.170106132075472, `Research support engineer` = 0.298368298368298, `Engineer assistant` = 0.247533632286996, `Technician` = 0.15253386853989, `Temp on fixed-term contract` = 0.212272727272727, `Other personnel` = 0.171935235158057)
 
 data.frame(statut=factor(names(repstatut), levels=rev(names(repstatut))), taux=repstatut) %>%
   ggplot(aes(y=statut, x=taux)) +
@@ -231,18 +234,18 @@ data.frame(statut=factor(names(repstatut), levels=rev(names(repstatut))), taux=r
   geom_text(aes(label=scales::percent(repstatut, accuracy=1)),
             stat="identity", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="Proportion des invitations envoyées", y="")
+  labs(x="Proportion of sent invitations", y="")
 ```
 ```{r echo=FALSE}
-repinstitut <- c(`IN2P3 (physique nucléaire et des particules)` = 25.8351893095768, 
-`INC (chimie)` = 20.4927884615385, `INEE (écologie et environnement)` = 27.920910724985, 
-`INP (physique)` = 26.5788028555739, `INS2I (sciences de l'information)` = 20.7792207792208, 
-`INSB (sciences biologiques)` = 20.6474983020149, 
-`INSHS (sciences humaines et sociales)` = 20.4694511563687, 
-`INSIS (sciences de l'ingénierie et des systèmes)` = 21.0496929089894, 
-`INSMI (sciences mathématiques)` = 22.4460431654676, 
-`INSU (sciences de l'univers)` = 31.2090790048014, 
-`Présidence et Direction générale` = 24.4859813084112)/100
+repinstitut <- c(`IN2P3 (nuclear and particle physics)` = 25.8351893095768, 
+`INC (chemistry)` = 20.4927884615385, `INEE (ecology and environment)` = 27.920910724985, 
+`INP (physics)` = 26.5788028555739, `IN2I (information sciences)` = 20.7792207792208, 
+`INSB (biological sciences)` = 20.6474983020149, 
+`INSHS (human and social sciences)` = 20.4694511563687, 
+`INSIS (engineering and systems sciences)` = 21.0496929089894, 
+`INSMI (mathematical sciences)` = 22.4460431654676, 
+`INSU (earth and universe sciences)` = 31.2090790048014, 
+`Chairmanship and general management` = 24.4859813084112)/100
 
 data.frame(statut=factor(names(repinstitut)), taux=repinstitut) %>%
   mutate(statut=fct_reorder(statut, taux)) %>%
@@ -253,26 +256,26 @@ data.frame(statut=factor(names(repinstitut)), taux=repinstitut) %>%
   geom_text(aes(label=scales::percent(repinstitut, accuracy=1)),
             stat="identity", position=position_dodge(.9),
             hjust=-0.2, size=3) +
-  labs(x="Proportion des invitations envoyées", y="")
+  labs(x="Proportion of sent invitations", y="")
 ```
 
-Régression logistique expliquant la probabilité de répondre
+Logistic regression on the probability of response:
 
-|**Variable**                                                                  |**Odds ratio** |**IC à 95%** |
+|**Variable**                                                                  |**Odds ratio** |**95% CI** |
 |:-----------------------------------------------------------------------------|:--------------|:------------|
-|**Institut**                                                                  |               |             |
-|INSU (Institut national des sciences de l'univers)                            |—              |             |
-|INEE (Institut d'écologie et environnement)                                   |0.88           |0.76, 1.01   |
-|INP (Institut de physique)                                                    |0.81**         |0.70, 0.93   |
-|IN2P3 (Institut national de physique nucléaire et de physique des particules) |0.69***        |0.58, 0.83   |
-|Présidence et Direction générale                                              |0.63***        |0.53, 0.75   |
-|INSMI (Institut national des sciences mathématiques et de leurs interactions) |0.73***        |0.62, 0.86   |
-|INSIS (Institut des sciences de l'ingénierie et des systèmes)                 |0.65***        |0.57, 0.74   |
-|INS2I (Institut des sciences de l'information et de leurs interactions)       |0.66***        |0.57, 0.76   |
-|INSB (Institut des sciences biologiques)                                      |0.56***        |0.50, 0.63   |
-|INC (Institut de chimie)                                                      |0.60***        |0.53, 0.68   |
-|INSHS (Institut des sciences humaines et sociales)                            |0.65***        |0.58, 0.73   |
-|**Délégation régionale**                                                      |               |             |
+|**Institute**                                                                 |               |             |
+|INSU (earth and universe sciences)                                            |—              |             |
+|INEE (ecology and environment)                                                |0.88           |0.76, 1.01   |
+|INP (physics)                                                                 |0.81**         |0.70, 0.93   |
+|IN2P3 (nuclear and particle physics)                                          |0.69***        |0.58, 0.83   |
+|Chairmanship and general management                                           |0.63***        |0.53, 0.75   |
+|INSMI (mathematical sciences)                                                 |0.73***        |0.62, 0.86   |
+|INSIS (engineering and systems sciences)                                      |0.65***        |0.57, 0.74   |
+|IN2I (information sciences)                                                   |0.66***        |0.57, 0.76   |
+|INSB (biological sciences)                                                    |0.56***        |0.50, 0.63   |
+|INC (chemistry)                                                               |0.60***        |0.53, 0.68   |
+|INSHS (human and social sciences)                                             |0.65***        |0.58, 0.73   |
+|**Region**                                                                    |               |             |
 |01, Ile-de-France Villejuif                                                   |—              |             |
 |02, Paris-Centre                                                              |1.06           |0.92, 1.23   |
 |04, Ile-de-France Gif-sur-Yvette                                              |1.20*          |1.03, 1.40   |
@@ -291,67 +294,67 @@ Régression logistique expliquant la probabilité de répondre
 |18, Hauts-de-France                                                           |1.00           |0.82, 1.20   |
 |19, Normandie                                                                 |1.54***        |1.22, 1.93   |
 |20, Côte d'Azur                                                               |0.93           |0.74, 1.16   |
-|**Statut**                                                                    |               |             |
-|Directeur de recherche                                                        |—              |             |
-|Professeur                                                                    |0.55***        |0.48, 0.63   |
-|Chargé de recherche                                                           |1.27***        |1.11, 1.45   |
-|Maître de conférences                                                         |0.73***        |0.64, 0.82   |
-|Post-doctorant                                                                |0.49***        |0.39, 0.61   |
-|Doctorant                                                                     |0.47***        |0.42, 0.53   |
-|Ingénieur de recherche                                                        |1.12           |0.96, 1.31   |
-|Ingénieur d'études                                                            |0.93           |0.81, 1.08   |
-|Assistant ingénieur                                                           |0.70***        |0.59, 0.83   |
-|Technicien                                                                    |0.38***        |0.33, 0.45   |
-|Temporaire sur CDD                                                            |0.59***        |0.51, 0.68   |
-|Autre personnel                                                               |0.47***        |0.39, 0.56   |
-|**Sexe**                                                                      |               |             |
-|Homme                                                                         |—              |             |
-|Femme                                                                         |1.31***        |1.23, 1.39   |
+|**Status**                                                                    |               |             |
+|Senior researcher                                                             |—              |             |
+|Full professor                                                                |0.55***        |0.48, 0.63   |
+|Tenured researcher                                                            |1.27***        |1.11, 1.45   |
+|Associate professor                                                           |0.73***        |0.64, 0.82   |
+|Research engineer                                                             |1.12           |0.96, 1.31   |
+|Postdoctoral researcher                                                       |0.49***        |0.39, 0.61   |
+|Fully funded PhD student                                                      |0.47***        |0.42, 0.53   |
+|Research support engineer                                                     |0.93           |0.81, 1.08   |
+|Engineer assistant                                                            |0.70***        |0.59, 0.83   |
+|Technician                                                                    |0.38***        |0.33, 0.45   |
+|Temp on fixed-term contract                                                   |0.59***        |0.51, 0.68   |
+|Other personnel                                                               |0.47***        |0.39, 0.56   |
+|**Sex**                                                                       |               |             |
+|Man                                                                           |—              |             |
+|Woman                                                                         |1.31***        |1.23, 1.39   |
 
-## Différences entre répondants précoces et tardifs
+## Differences between early and late respondents 
 
-Dans quelle mesure êtes-vous preoccupé.e par le changement climatique ?
+To what degree are you concerned about climate change?
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$preoccupe2, climat$NumVague))))
 ```
 
-Si les choses continuent au rythme actuel, nous allons bientôt vivre une catastrophe écologique majeure
+If things continue on their present course, we will soon experience a major ecological catastrophe
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$opinionecolo.cata, climat$NumVague))))
 ```
 
-Je suis d’accord pour que des contraintes réglementaires (quotas, interdictions) soient mises en place pour protéger l’environnement, même si cela limite mon confort
+I agree with having regulatory constraints (quotas, bans) put in place to protect the environment, even if it limits my comfort
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$opinionecolo.contraintes, climat$NumVague))))
 ```
 
-Protéger l’environnement est plus important que protéger la croissance économique
+Protecting the environment is more important than protecting economic growth
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$opinionecolo.proteger, climat$NumVague))))
 ```
 
-La France s’est engagée à réduire d’un tiers ses émissions de gaz à effet de serre d’ici à 2030. Dans ce cadre, pensez-vous que la recherche publique doit :
+France has committed to reducing its greenhouse gas emissions by one-third by 2030. In this respect, do you think that public research should:
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climatRegr$solreducrech2, climat$NumVague))))
 ```
 
-Quelles actions les institutions et laboratoires de recherche devraient-ils mettre en œuvre pour réduire leurs émissions de gaz à effet de serre ? 
+What actions should research institutions and laboratories take to reduce their greenhouse gas emissions?
 
-- Imposer une limite au nombre de vols en avion par personne
+- Impose a cap on the number of flights per person
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$solinstit.limitevols, climat$NumVague))))
 ```
 
-- Ajouter les émissions de gaz à effet de serre parmi les principaux critères de sélection des projets à financer
+- Add carbon emissions to the main selection criteria for project funding
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$solinstit.selection, climat$NumVague))))
 ```
-- Diminuer le poids des conférences et présentations à l’étranger dans les évaluations de carrière
+- Reduce the importance of conferences and presentations abroad in career assessments
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$solinstit.conf, climat$NumVague))))
 ```
 
-Régressions linéaires expliquant le nombre de relances avant la réponse :
+Linear regressions on the number of reminders sent before the questionnaire was completed:
 ```{r echo=FALSE}
 model_1 <- lm(vaguenum ~ sexe + ageAgr, data=climatRegr )
 model_2 <- lm(vaguenum ~ sexe + ageAgr + sitpro_reduite2  + discipline_agr4 , data=climatRegr )
@@ -641,26 +644,28 @@ climat_recherche <- subset(climat, ! sitpro %in% c(
 
 ```{r echo=FALSE}
 
+climat_recherche$discipline_agr4b <- fct_recode(factor(climat_recherche$discipline_agr4), "History, geogr., urbanism, anthropol."="History, geography, urbanism, anthropology", "Meteo., oceano., environmental physics"="Meteorology, oceanology, environmental physics")
+
 a <- tapply(climat_recherche$volsdist_totterrain, 
-            climat_recherche$discipline_agr4, mean, na.rm=T)
+            climat_recherche$discipline_agr4b, mean, na.rm=T)
 b <- tapply(climat_recherche$volsdist_totsejrech, 
-            climat_recherche$discipline_agr4, mean, na.rm=T)
+            climat_recherche$discipline_agr4b, mean, na.rm=T)
 c <- tapply(climat_recherche$volsdist_totworkshop, 
-            climat_recherche$discipline_agr4, mean, na.rm=T)
+            climat_recherche$discipline_agr4b, mean, na.rm=T)
 d <- tapply(climat_recherche$volsdist_totcours, 
-            climat_recherche$discipline_agr4, mean, na.rm=T)
+            climat_recherche$discipline_agr4b, mean, na.rm=T)
 e <- tapply(climat_recherche$volsdist_totjury, 
-            climat_recherche$discipline_agr4, mean, na.rm=T)+
+            climat_recherche$discipline_agr4b, mean, na.rm=T)+
     tapply(climat_recherche$volsdist_totfinanc, 
-           climat_recherche$discipline_agr4, mean, na.rm=T)+
+           climat_recherche$discipline_agr4b, mean, na.rm=T)+
     tapply(climat_recherche$volsdist_toteval, 
-           climat_recherche$discipline_agr4, mean, na.rm=T)+
+           climat_recherche$discipline_agr4b, mean, na.rm=T)+
     tapply(climat_recherche$volsdist_totautre, 
-           climat_recherche$discipline_agr4, mean, na.rm=T)
+           climat_recherche$discipline_agr4b, mean, na.rm=T)
 j <- tapply(climat_recherche$volsdist_totconf, 
-            climat_recherche$discipline_agr4, mean, na.rm=T)
+            climat_recherche$discipline_agr4b, mean, na.rm=T)
 total <- tapply(climat_recherche$volsdist_tot, 
-            climat_recherche$discipline_agr4, mean, na.rm=T)
+            climat_recherche$discipline_agr4b, mean, na.rm=T)
 
 
 table <- cbind(a,b,c,d,e,j, total)
@@ -675,7 +680,7 @@ colnames(table) <- c("Fieldwork, data",
 table <- as.data.frame(as.table(table))
 
 niveaux <- names(sort(tapply(climat_recherche$volsdist_tot, 
-                             climat_recherche$discipline_agr4, mean, na.rm=T)))
+                             climat_recherche$discipline_agr4b, mean, na.rm=T)))
 table$Var1 <- fct_relevel(table$Var1, niveaux)
 
 #ordonnes par poids dans le total des distances parcourues
@@ -691,7 +696,7 @@ table$Var2 <- fct_relevel(table$Var2,
 # cols <- brewer.pal(n=6, "Set2")
 ggplot(table[table$Var2!="Total",]) + 
   geom_bar(aes(x=Var1, y=Freq, fill=Var2), stat="identity")+
-  coord_flip()+
+  coord_flip(ylim=c(0, 15000)) +
   # scale_fill_manual(values=rev(as.vector(cols[1:6])))+
   scale_fill_paletteer_d("ggthemes::excel_Celestial")+
   labs(x="", y="Distance travelled by plane in 2019 (km)", fill="")+
@@ -724,7 +729,7 @@ ggplot(table[table$Var2=="Total",],
   stat_summary(
     geom="errorbar", fun.data=mean_cl_normal, 
     na.rm=TRUE, width=0.2)+
-  coord_flip()+
+  coord_flip(ylim=c(0, 15000)) +
   # scale_fill_manual(values=rev(as.vector(cols[1:6])))+
   scale_fill_paletteer_d("ggthemes::excel_Celestial")+
   labs(x="", y="Distance travelled by plane in 2019 (km)")
@@ -778,27 +783,10 @@ table$Var2 <- fct_relevel(table$Var2,
                             "Conference, presentation", 
                             "Total"))
 
-table$Var1 <- fct_relevel(table$Var1,
-                          c("Directeur·rice de recherche",
-                            "Professeur·e des universités",
-                            "Chargé·e de recherche",
-                            "Maître·sse de conférences",
-                            "Ingénieur·e de recherche",
-                            "Post-doctorant·e",
-                            "ATER",
-                            "Doctorant·e contractuel·le",
-                            "Ingénieur·e d'études",
-                            "Assistant ingénieur·e",
-                            "Technicien·ne",
-                            "Chargé·e d'études/de mission",
-                            "Adjoint·e technique",
-                            "Autre")
-)
-
 ggplot(table[table$Var2!="Total"&
                table$Var1%in%c(levels(table$Var1)[1:8]),]) + 
   geom_bar(aes(x=fct_rev(Var1), y=Freq, fill=Var2), stat="identity")+
-  coord_flip()+
+  coord_flip(ylim=c(0, 15000)) +
   # scale_fill_manual(values=rev(as.vector(cols[1:6])))+
   scale_fill_paletteer_d("ggthemes::excel_Celestial")+
   labs(x="", y="Distance travelled by plane in 2019 (km)", fill="")+
