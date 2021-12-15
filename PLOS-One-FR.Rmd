@@ -1,5 +1,5 @@
 ---
-title: "Article PLOS One"
+title: "Annexe S1 : tables et figures supplémentaires"
 output:
   html_document:
     fig_width: 7.5

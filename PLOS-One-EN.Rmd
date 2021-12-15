@@ -1,5 +1,5 @@
 ---
-title: "Article PLOS One"
+title: "S1 Appendix. Additional tables and plots"
 output:
   html_document:
     fig_width: 7.5
@@ -13,7 +13,7 @@ output:
     toc_float: yes
 ---
 
-```{r preparation, echo=FALSE, message=FALSE}
+```{r preparation, message=FALSE, include=FALSE}
 library(tidyverse)
 library(ggplot2)
 library(questionr)
@@ -63,8 +63,8 @@ climat$solreducrech3 <- fct_recode(climat$solreducrech,
   "Moins d'un tiers" = "En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"
 )
 
-Sys.setlocale("LC_ALL", "en_US")
-Sys.setlocale("LC_MESSAGES", "en_US")
+Sys.setlocale("LC_ALL", "en_US.UTF-8")
+Sys.setlocale("LC_MESSAGES", "en_US.UTF-8")
 
 climat$sexe <- fct_recode(factor(climat$sexe), "Man"= "Homme", "Woman"="Femme", "Other"= "Autre") 
 
@@ -137,9 +137,9 @@ climat$malpaye<- fct_recode(factor(climat$malpaye), "Yes"="Oui", "No"="Non")
 
 climat$international.naiss<- fct_recode(factor(climat$international.naiss), "Yes"="Oui", "No"="Non")
 
-climat$reliquat.ordi <- fct_recode(factor(climat$reliquat.ordi), "I have not had leftover budget money to spend"="Je n'ai pas eu à utiliser de reliquat de budget")
+climat$reliquat.ordi <- fct_recode(factor(climat$reliquat.ordi), "Yes"="Oui", "No"="Non", "I have not had leftover budget money to spend"="Je n'ai pas eu à utiliser de reliquat de budget")
 
-climat$reliquat.avion <- fct_recode(factor(climat$reliquat.avion), "I have not had leftover budget money to spend"="Je n'ai pas eu à utiliser de reliquat de budget")
+climat$reliquat.avion <- fct_recode(factor(climat$reliquat.avion), "Yes"="Oui", "No"="Non", "I have not had leftover budget money to spend"="Je n'ai pas eu à utiliser de reliquat de budget")
 
 climat$solreducperso.conf <- fct_recode(factor(climat$solreducperso.conf), "Yes, by at least one-third"="Oui, d'au moins un tiers", "Yes, but by less than one-third"="Oui, mais de moins d'un tiers", "No, as they are already very low"="Non, car elles sont déjà très basses", "No"="Non", "Not concerned"="Non concerné·e", "No opinion"="Sans opinion")
 
@@ -184,6 +184,8 @@ climat$solrisqreducmateriel.fin <- fct_recode(factor(climat$solrisqreducmateriel
 climat$solrisqreducmateriel.retard <- fct_recode(factor(climat$solrisqreducmateriel.retard), "It is likely and it is a problem"="C'est probable et c'est un problème", "It is likely but it is not a problem"="C'est probable mais ce n'est pas un problème", "It is unlikely"="C'est peu probable", "No opinion"="Sans opinion", "Not concerned"="Non concerné·e")
 
 climat$solrisqreducmateriel.publi <- fct_recode(factor(climat$solrisqreducmateriel.publi), "It is likely and it is a problem"="C'est probable et c'est un problème", "It is likely but it is not a problem"="C'est probable mais ce n'est pas un problème", "It is unlikely"="C'est peu probable", "No opinion"="Sans opinion", "Not concerned"="Non concerné·e")
+
+climat$NumVague <- fct_recode(factor(climat$NumVague), "After the first message"="Après premier message", "After the first reminder"="Après première relance", "After the second reminder"="Après deuxième relance", "After the third reminder"="Après troisième relance", "After the fourth reminder"="Après quatrième relance")
 
 
 
@@ -540,7 +542,7 @@ data.frame(variable="Most environmental problems can be solved\nby applying more
              data.frame(variable="Degrowth is necessary to face environmental challenges", valeur=climat$opinionecolo.decroissance),
              data.frame(variable="I agree with having regulatory constraints\nput in place to protect the environment,\neven if it limits my comfort", valeur=climat$opinionecolo.contraintes),
              data.frame(variable="Protecting the environment is more important\nthan protecting economic growth", valeur=climat$opinionecolo.proteger),
-             data.frame(variable="This type of disaster could cause a collapse\nof our societies*", valeur=climat$opinionecolo.effondrement2),
+             data.frame(variable="This type of catastrophe could cause a collapse\nof our societies*", valeur=climat$opinionecolo.effondrement2),
              data.frame(variable="If things continue on their present course,\nwe will soon experience a major ecological catastrophe", valeur=climat$opinionecolo.cata)) %>%
     mutate(variable=factor(variable, levels=unique(variable)),
            valeur=fct_relevel(valeur, c("Completely agree", "Somewhat agree", "No opinion", "Somewhat disagree", "Completely disagree")))
@@ -567,7 +569,7 @@ knitr::kable(round(lprop(table(climat$discipline_agr4, climat$opinionecolo.cata)
 knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$opinionecolo.cata))))
 ```
 
-This type of disaster could cause a collapse of our societies: the basic needs (food, energy, health, etc.) will no longer be assured for the majority of the population
+This type of catastrophe could cause a collapse of our societies: the basic needs (food, energy, health, etc.) will no longer be assured for the majority of the population
 ```{r echo=FALSE}
 knitr::kable(freq(climat$opinionecolo.effondrement2))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$opinionecolo.effondrement2))))
@@ -834,13 +836,13 @@ knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$ordis.nbtotalproplu
 ## Leftover budget money
 
 ```{r echo=FALSE}
-    knitr::kable(freq(ifelse(climat$reliquat.avion != "I have not had leftover budget money to spend" | climat$reliquat.ordi != "I have not had leftover budget money to spent", "Has had leftover budget money to spend", "Has not had leftover budget money to spend")))
+    knitr::kable(freq(ifelse(climat$reliquat.avion != "I have not had leftover budget money to spend" | climat$reliquat.ordi != "I have not had leftover budget money to spend", "Has had leftover budget money to spend", "Has not had leftover budget money to spend")))
 ```
 
 Having used leftover budget money to buy IT equipment considered as non-essential:
 ```{r echo=FALSE}
 knitr::kable(freq(climat$reliquat.ordi))
-knitr::kable(freq(fct_recode(climat$reliquat.ordi, NULL="Je n'ai pas eu à utiliser de reliquat de budget")))
+knitr::kable(freq(fct_recode(climat$reliquat.ordi, NULL="I have not had leftover budget money to spend")))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$reliquat.ordi))))
 knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$reliquat.ordi))))
 ```
@@ -848,7 +850,7 @@ knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$reliquat.ordi))))
 Having used leftover budget money to buy plane tickets considered as non-essential:
 ```{r echo=FALSE}
 knitr::kable(freq(climat$reliquat.avion))
-knitr::kable(freq(fct_recode(climat$reliquat.avion, NULL="Je n'ai pas eu à utiliser de reliquat de budget")))
+knitr::kable(freq(fct_recode(climat$reliquat.avion, NULL="I have not had leftover budget money to spend")))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$reliquat.avion))))
 knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$reliquat.avion))))
 ```
