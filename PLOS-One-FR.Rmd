@@ -63,6 +63,10 @@ climat$solreducrech3 <- fct_recode(climat$solreducrech,
   "Un tiers environ" = "La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ",
   "Moins d'un tiers" = "En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"
 )
+
+climat$acthum3 <- fct_collapse(climat$acthum2,
+                               "Oui, elles jouent un grand rôle\nou en sont l'unique cause"=c("Oui, elles en sont l'unique cause", 
+                                 "Oui, elles jouent un grand rôle"))
 ```
 
 # Échantillon et biais de non-réponse
@@ -261,6 +265,9 @@ tbl_merge(list(table_1, table_2, table_3, table_4, table_5, table_6),
 
 
 ## Synthèse
+
+Opinion des répondants sur une sélection de questions par discipline et statut (%) :
+
 ```{r eval=FALSE, include=FALSE}
 dat <- select(climat, changclim, preoccupe2, pluspreoccupe, acthum, chgtpratique, opinionecolo.cata, opinionecolo.effondrement2, solreducrech3)
 summarytools::freq(dat, cumul=F, report.nas=F, style="rmarkdown", round.digits=0, display.type=F)
@@ -303,9 +310,6 @@ lprop(table(climat$sitpro_reduite, climat$preoccupe2), drop = F)[,"Extrêmement 
 
 ## Activités humaines et changement climatique
 ```{r echo=FALSE}
-climat$acthum3 <- fct_collapse(climat$acthum2,
-                               "Oui, elles jouent un grand rôle\nou en sont l'unique cause"=c("Oui, elles en sont l'unique cause", 
-                                 "Oui, elles jouent un grand rôle"))
 pal <- RColorBrewer::brewer.pal(6, "RdYlGn")
 ggplot(drop_na(climat, acthum3),
        aes(y=fct_rev(acthum3), x=..prop.., group=1)) +
@@ -322,12 +326,11 @@ ggplot(drop_na(climat, acthum3),
 ```
 
 ```{r echo=FALSE}
-climat$acthum3 <- fct_collapse(climat$acthum2,
-                               "Oui, elles jouent un grand rôle ou en sont l'unique cause"=c("Oui, elles en sont l'unique cause", 
-                                 "Oui, elles jouent un grand rôle"))
+climat$acthum4 <- climat$acthum3
+levels(climat$acthum4) <- gsub("\n", " ", levels(climat$acthum3))
 knitr::kable(freq(climat$acthum2))
-knitr::kable(round(lprop(table(climat$discipline_agr4, climat$acthum3))))
-knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$acthum3))))
+knitr::kable(round(lprop(table(climat$discipline_agr4, climat$acthum4))))
+knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$acthum4))))
 ```
 
 ## Préoccupation par rapport au changement climatique
@@ -516,7 +519,7 @@ total <- tapply(climat_recherche$volsdist_tot,
 
 
 table <- cbind(a,b,c,d,e,j, total)
-colnames(table) <- c("Terrain et données",
+colnames(table) <- c("Terrain, données",
                      "Séjour de recherche",
                      "Réunion, workshop",
                      "Enseignement, formation",
@@ -534,7 +537,7 @@ table$Var1 <- fct_relevel(table$Var1, niveaux)
 table$Var2 <- fct_relevel(table$Var2,
                           c("Autres",
                             "Enseignement, formation",
-                            "Terrain et données",
+                            "Terrain, données",
                             "Réunion, workshop",
                             "Séjour de recherche",
                             "Conférence, présentation", 
@@ -611,7 +614,7 @@ total <- tapply(climat_recherche$volsdist_tot,
                 climat_recherche$sitpro_reduite, mean, na.rm=T)
 
 table <- cbind(a,b,c,d,e,j, total)
-colnames(table) <- c("Terrain et données",
+colnames(table) <- c("Terrain, données",
                      "Séjour de recherche",
                      "Réunion, workshop",
                      "Enseignement, formation",
@@ -624,7 +627,7 @@ table <- as.data.frame(as.table(table))
 table$Var2 <- fct_relevel(table$Var2,
                           c("Autres",
                             "Enseignement, formation",
-                            "Terrain et données",
+                            "Terrain, données",
                             "Réunion, workshop",
                             "Séjour de recherche",
                             "Conférence, présentation", 
@@ -733,14 +736,6 @@ dat <- rbind(data.frame(variable="Les expériences et observations\nscientifique
          valeur=fct_relevel(valeur, c("Oui, d'au moins un tiers", "Oui, mais de moins d'un tiers", "Non, car elles sont déjà très basses", "Sans opinion", "Non")))
 
 knitr::kable(table_multi(dat))
-# 
-# res <- group_by(dat, variable) %>% drop_na() %>% filter(valeur != "Non concerné·e") %>% count(valeur=valeur == "Non") %>% transmute(valeur, pourcent=round(n/sum(n)*100)) %>% pivot_wider(names_from=valeur, values_from=pourcent) %>% select(`TRUE`)
-# mat <- as.matrix(res[,-1])
-# mat <- cbind(mat, Total=100)
-# rownames(mat) <- sub("\n", " ", res[[1]])
-# mat
-
-
 ```
 
 Proportion de réponses « Non », en excluant les non concernés :
