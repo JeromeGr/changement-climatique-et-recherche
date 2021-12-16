@@ -161,6 +161,13 @@ Régression logistique expliquant la probabilité de répondre
 |Homme                                                                         |—              |             |
 |Femme                                                                         |1.31***        |1.23, 1.39   |
 
+## Distribution de l'échantillon par discipline et statut
+
+```{r echo=FALSE}
+knitr::kable(freq(climat$discipline_agr4))
+knitr::kable(freq(climat$sitpro_reduite))
+```
+
 ## Différences entre répondants précoces et tardifs
 
 Dans quelle mesure êtes-vous preoccupé.e par le changement climatique ?
