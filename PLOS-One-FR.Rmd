@@ -49,7 +49,8 @@ table_multi <- function(dat, levs=levels(dat$valeur)) {
     mat <- as.matrix(res[,-1])
     mat <- cbind(mat, Total=100)
     rownames(mat) <- sub("\n", " ", res[[1]])
-    mat
+    # Inverser l'ordre des lignes par cohérence avec ggplot
+    mat[nrow(mat):1,]
 }
 
 climat$sitpro_reduite <- fct_recode(climat$sitpro,
@@ -382,7 +383,7 @@ knitr::kable(round(lprop(table(climat$discipline_agr4, climat$pluspreoccupe))))
 knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$pluspreoccupe))))
 ```
 
-## Opinions sur l'écologie en général : catastrophe et effondrement
+## Opinions sur l'écologie en général
 ```{r echo=FALSE, fig.height=5.5}
 dat <- rbind(data.frame(variable="Il ne sert à rien que je fasse des efforts pour l'environnement\nsi les autres ne font pas de même", valeur=climat$opinionecolo.efforts),
 data.frame(variable="La plupart des problèmes environnementaux peuvent être résolus\npar le développement de technologies plus performantes",
@@ -394,6 +395,8 @@ data.frame(variable="La plupart des problèmes environnementaux peuvent être r�
              data.frame(variable="Si les choses continuent au rythme actuel,\nnous allons bientôt vivre une catastrophe écologique majeure", valeur=climat$opinionecolo.cata)) %>%
     mutate(variable=factor(variable, levels=unique(variable)),
            valeur=fct_relevel(valeur, c("Tout à fait d'accord", "Plutôt d'accord", "Sans opinion", "Plutôt pas d'accord", "Pas du tout d'accord")))
+
+knitr::kable(table_multi(dat))
 
 drop_na(dat) %>%
     ggplot(aes(x=variable)) +
@@ -855,7 +858,7 @@ dat <- rbind(data.frame(variable="Diminuer la qualité de vos travaux", valeur=c
     mutate(variable=factor(variable, levels=rev(unique(variable))),
            valeur=fct_relevel(valeur, c("C'est probable et c'est un problème", "Sans opinion", "C'est probable mais ce n'est pas un problème", "C'est peu probable")))
 
-knitr::kable(table_multi(dat, rev(levels(dat$valeur))))
+knitr::kable(table_multi(dat))
 
 drop_na(dat) %>%
     filter(valeur != "Non concerné·e") %>%

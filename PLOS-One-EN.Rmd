@@ -49,7 +49,8 @@ table_multi <- function(dat, levs=levels(dat$valeur)) {
     mat <- as.matrix(res[,-1])
     mat <- cbind(mat, Total=100)
     rownames(mat) <- sub("\n", " ", res[[1]])
-    mat
+    # Inverser l'ordre des lignes par cohérence avec ggplot
+    mat[nrow(mat):1,]
 }
 
 climat$sitpro_reduite <- fct_recode(climat$sitpro,
@@ -534,7 +535,7 @@ knitr::kable(round(lprop(table(climat$discipline_agr4, climat$pluspreoccupe))))
 knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$pluspreoccupe))))
 ```
 
-## Opinions on ecology in general: catastrophe and collapse
+## Opinions on ecology in general
 ```{r echo=FALSE, fig.height=5.5}
 dat <- rbind(data.frame(variable="There is no point in me making an effort for the environment\nif others do not do the same", valeur=climat$opinionecolo.efforts),
 data.frame(variable="Most environmental problems can be solved\nby applying more and better technology",
@@ -546,6 +547,8 @@ data.frame(variable="Most environmental problems can be solved\nby applying more
              data.frame(variable="If things continue on their present course,\nwe will soon experience a major ecological catastrophe", valeur=climat$opinionecolo.cata)) %>%
     mutate(variable=factor(variable, levels=unique(variable)),
            valeur=fct_relevel(valeur, c("Completely agree", "Somewhat agree", "No opinion", "Somewhat disagree", "Completely disagree")))
+
+knitr::kable(table_multi(dat))
 
 drop_na(dat) %>%
     ggplot(aes(x=variable)) +
@@ -946,7 +949,7 @@ drop_na(dat) %>%
 Interpretation: 54% of respondents think it likely that a reduction in the number of flights would negatively impact\nthe integration of young researchers and that it is a problem")
 ```
 
-Proportion of “It is likely and it is a problem” anwsers, excluding those not concerned:
+Proportion of “It is likely and it is a problem” answers, excluding those not concerned:
 
 ```{r echo=FALSE}
 
@@ -957,8 +960,8 @@ knitr::kable(round(
 
 knitr::kable(round(
   cbind("Isolate French research from the rest of the world"=lprop(table(climat$sitpro_reduite, climat$solrisqreducavion.isoler)[, levels(climat$solrisqreducavion.isoler) != "Not concerned"], drop = F)[,"It is likely and it is a problem"],
-        "Reduce the dissemination of your work"=lprop(table(climat$sitpro_reduite, climat$solrisqreducavion.insertion)[, levels(climat$solrisqreducavion.insertion) != "Not concerned"], drop = F)[,"It is likely and it is a problem"],
-        "Diminuer la diffusion de vos travaux"=lprop(table(climat$sitpro_reduite, climat$solrisqreducavion.diffusion)[, levels(climat$solrisqreducavion.diffusion) != "Not concerned"], drop = F)[,"It is likely and it is a problem"]
+        "Hinder the integration of young researchers"=lprop(table(climat$sitpro_reduite, climat$solrisqreducavion.insertion)[, levels(climat$solrisqreducavion.insertion) != "Not concerned"], drop = F)[,"It is likely and it is a problem"],
+        "Reduce the dissemination of your work"=lprop(table(climat$sitpro_reduite, climat$solrisqreducavion.diffusion)[, levels(climat$solrisqreducavion.diffusion) != "Not concerned"], drop = F)[,"It is likely and it is a problem"]
   ))
 )
 
@@ -1010,7 +1013,7 @@ dat <- rbind(data.frame(variable="Reduce the quality of your work", valeur=clima
     mutate(variable=factor(variable, levels=rev(unique(variable))),
            valeur=fct_relevel(valeur, c("It is likely and it is a problem", "It is likely but it is not a problem", "No opinion", "It is unlikely")))
 
-knitr::kable(table_multi(dat, rev(levels(dat$valeur))))
+knitr::kable(table_multi(dat))
 
 drop_na(dat) %>%
     filter(valeur != "Not concerned") %>%
