@@ -48,7 +48,7 @@ table_multi <- function(dat, levs=levels(dat$valeur)) {
     res <- group_by(dat, variable) %>% drop_na() %>% count(valeur) %>% transmute(valeur, pourcent=round(n/sum(n)*100)) %>% pivot_wider(names_from=valeur, values_from=pourcent)
     mat <- as.matrix(res[,-1])
     mat <- cbind(mat, Total=100)
-    rownames(mat) <- sub("\n", " ", res[[1]])
+    rownames(mat) <- gsub("\n", " ", res[[1]])
     # Inverser l'ordre des lignes par cohérence avec ggplot
     mat[nrow(mat):1,]
 }
@@ -543,7 +543,7 @@ knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$pluspreoccupe))))
 ```
 
 ## Opinions on ecology in general
-```{r echo=FALSE, fig.height=5.5}
+```{r echo=FALSE}
 dat <- rbind(data.frame(variable="There is no point in me making an effort for the environment\nif others do not do the same", valeur=climat$opinionecolo.efforts),
 data.frame(variable="Most environmental problems can be solved\nby applying more and better technology",
                         valeur=climat$opinionecolo.techno),
@@ -556,7 +556,10 @@ data.frame(variable="Most environmental problems can be solved\nby applying more
            valeur=fct_relevel(valeur, c("Completely agree", "Somewhat agree", "No opinion", "Somewhat disagree", "Completely disagree")))
 
 knitr::kable(table_multi(dat))
+```
+\* Respondents disagreeing with previous question are classified as “Strongly disagree”.
 
+```{r echo=FALSE, fig.height=5.5}
 drop_na(dat) %>%
     ggplot(aes(x=variable)) +
     geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
@@ -654,7 +657,7 @@ climat_recherche <- subset(climat, ! sitpro %in% c(
 ### Reasons for flying by discipline
 
 
-```{r echo=FALSE}
+```{r echo=FALSE, fig.width=10}
 
 climat_recherche$discipline_agr4b <- fct_recode(factor(climat_recherche$discipline_agr4), "History, geogr., urbanism, anthropol."="History, geography, urbanism, anthropology", "Meteo., oceano., environmental physics"="Meteorology, oceanology, environmental physics")
 
@@ -733,27 +736,10 @@ colnames(tableaupct)[1] = "Discipline"
 knitr::kable(tableaupct, digits =0)
 ```
 
-
-```{r echo=FALSE}
-ggplot(table[table$Var2=="Total",],
-       aes(x=Var1, y=Freq)) +
-  stat_summary(geom="bar", fun=mean, na.rm=TRUE) +
-  stat_summary(
-    geom="errorbar", fun.data=mean_cl_normal, 
-    na.rm=TRUE, width=0.2)+
-  coord_flip(ylim=c(0, 15000)) +
-  # scale_fill_manual(values=rev(as.vector(cols[1:6])))+
-  scale_fill_paletteer_d("ggthemes::excel_Celestial")+
-  labs(x="", y="Distance travelled by plane in 2019 (km)")
-```
-
-
-
-
 ### Reasons for flying by status
 
 
-```{r echo=FALSE}
+```{r echo=FALSE, fig.width=10}
 a <- tapply(climat_recherche$volsdist_totterrain, 
             climat_recherche$sitpro_reduite, mean, na.rm=T)
 b <- tapply(climat_recherche$volsdist_totsejrech, 
@@ -935,7 +921,7 @@ dat <- rbind(data.frame(variable="Reduce some of the advantages offered to you\n
              data.frame(variable="Hinder your access to some field sites\nor the collection/production of certain data", valeur=climat$solrisqreducavion.donnees),
              data.frame(variable="Hinder the integration of young researchers", valeur=climat$solrisqreducavion.insertion)) %>%
     mutate(variable=factor(variable, levels=unique(variable)),
-           valeur=fct_relevel(valeur, c("It is likely and it is a problem", "It is likely but it is not a problem", "No opinion", "It is unlikely")))
+           valeur=fct_relevel(valeur, c("It is unlikely", "It is likely but it is not a problem", "No opinion", "It is likely and it is a problem")))
 
 knitr::kable(table_multi(dat))
 
@@ -1017,15 +1003,15 @@ dat <- rbind(data.frame(variable="Reduce the quality of your work", valeur=clima
              data.frame(variable="Reduce your access to funding", valeur=climat$solrisqreducmateriel.fin),
              data.frame(variable="Reduce your number of publications", valeur=climat$solrisqreducmateriel.publi),
              data.frame(variable="Require you to change research themes", valeur=climat$solrisqreducmateriel.themes)) %>%
-    mutate(variable=factor(variable, levels=rev(unique(variable))),
-           valeur=fct_relevel(valeur, c("It is likely and it is a problem", "It is likely but it is not a problem", "No opinion", "It is unlikely")))
+    mutate(variable=factor(variable, levels=unique(variable)),
+           valeur=fct_relevel(valeur, c("It is unlikely", "It is likely but it is not a problem", "No opinion", "It is likely and it is a problem")))
 
 knitr::kable(table_multi(dat))
 
 drop_na(dat) %>%
     filter(valeur != "Not concerned") %>%
-    ggplot(aes(x=variable)) +
-    geom_bar(aes(fill=valeur), position="fill") +
+    ggplot(aes(x=fct_rev(variable))) +
+    geom_bar(aes(fill=fct_rev(valeur)), position="fill") +
     scale_fill_manual(values=c("#d7191c", "light grey", "#a6d96a", "#1a9641")) +
     scale_y_continuous(labels=scales::percent_format(),
                        sec.axis=sec_axis(~ 1-., labels=scales::percent_format())) +
