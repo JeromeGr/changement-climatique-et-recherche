@@ -1,7 +1,8 @@
 library(tidyr)
 library(tidyverse)
+library(gtsummary)
 
-###########
+########### 
 #Taux de réponse complet
 #lastpage = 1 : ça veut dire qu'on a ouvert la page 1 mais qu'on n'est pas allé jusqu'à la page 2
 
@@ -28,7 +29,6 @@ median(climat$TpsRemp_MmJour, na.rm=T)
 test<-climat%>% filter(lastpage==8)
 median(test$TpsRemp_MmJour, na.rm=T)
 mean(test$TpsRemp_MmJour, na.rm=T)
-
 
 #Nombre de personnes ayant répondu avant la première relance
 test<-climat%>% filter(climat$startdate<"2020-07-06")
@@ -392,6 +392,41 @@ res.reg1 <- lm(datedebut ~ sexe + ageAgr   + sitpro2  + discipline +
                , data=climatRegr )
 summary(res.reg1)
 
+
+res.reg6 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4   + carriere + malpaye + international.naiss, data=climatRegr )
+summary(res.reg6)
+
+model_1 <- lm(vaguenum ~ sexe + ageAgr, data=climatRegr )
+model_2 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 , data=climatRegr )
+
+table_1 <- 
+  tbl_regression(model_1) %>% 
+  add_significance_stars() %>%
+  add_glance_table(include = nobs)
+
+table_2 <- 
+  tbl_regression(model_2) %>% 
+  add_significance_stars() %>%
+  add_glance_table(include = nobs)
+
+table_final <- 
+  tbl_merge(list(table_1, table_2)) %>%
+  # ensure the glance statistics are at the bottom of table
+  modify_table_body(~.x %>% dplyr::arrange(row_type == "glance_statistic"))
+
+
+tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=TRUE,
+               label=list(institut2 ~ "Institut",
+                          delegation ~ "Délégation régionale",
+                          type2 ~ "Statut",
+                          sexe.x ~ "Sexe")) %>%
+  modify_header(list(label ~ "**Variable**",
+                     estimate ~ "**Odds ratio**",
+                     ci ~ "**IC à 95%**",
+                     p.value ~ "**p-value**")) %>%
+  modify_footnote(everything() ~ NA, abbreviation = TRUE)
+
+
 #Voir si on retrouve les mêmes effets d'âge pour la période post-rentrée
 
 climatRegrsept<-climatRegr%>%filter(datedebut>70)
@@ -560,7 +595,9 @@ res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr4 +
                  projets.inter  +
                  international.scol + international.naiss + international.natio
                , data=climatRegr )
-summary(res.reg1)
+summary(res.reg6)
+
+freq(climatRegr$solreducrech2)
 
 res.reg1 <- lm(vaguenum ~ sexe + ageAgr   + sitpro2  + discipline_agr4 +  
                                   
@@ -657,3 +694,79 @@ climat$datedebut<-as.Date(as.character(climat$startdate), format="%d/%m/%Y")
 
 climat$datedebut<-as.numeric(as.Date(climat$dateDebut))-18438
 freq(climat$datedebut)
+
+#Tableau récapitulatif des régressions, pour Plos One
+
+res.reg1 <- lm(vaguenum ~ sexe + ageAgr, data=climatRegr )
+res.reg2 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 , data=climatRegr )
+res.reg3 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + preoccupe2 , data=climatRegr )
+res.reg4 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + solreducrech2, data=climatRegr )
+res.reg5 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr4 + preoccupe2 + opinionecolo.cata+ opinionecolo.contraintes +       opinionecolo.proteger + solreducrech + solinstit.limitevols + solinstit.selection + solinstit.conf, data=climatRegr )
+res.reg6 <- lm(vaguenum ~ sexe + ageAgr + sitpro2  + discipline_agr3 + nbpublistranch2 + tpsquotiteNum + carriere + international.naiss, data=climatRegr )
+
+htmlreg(list(res.reg1, res.reg2, res.reg3, res.reg4, res.reg5,res.reg6), 
+        stars = c(0.001, 0.01, 0.05, 0.1), digits = 2, #single.row = TRUE,
+        custom.coef.map = list("sexeune femme"= "Woman (ref = man)",
+                               "sexeautre"="Sex : other",
+                               "ageAgrMoins de 29 ans"= "less than 29 ans (Ref = 50-54 ans",
+                               "ageAgr30-34 ans"= "30-34 years old",
+                               "ageAgr35-39 ans"= "35-39 years old",
+                               "ageAgr40-44 ans"= "40-44 years old",
+                               "ageAgr45-49 ans"= "45-49 years old",
+                               "ageAgr55-64 ans"= "55-64 years old",
+                               "ageAgr65 ans et plus"= "More than 65 years old",
+                               "sitpro2Directeur·rice de recherche"="Directeur·rice de recherche (Ref = Maître·sse de conférences)",
+                               "sitpro2Professeur·e des universités"= "University professor ",
+                               "sitpro2Chargé·e de recherche"="Researcher",
+                               "sitpro2Maître·sse de conférences"="Lecturer",
+                               "sitpro2Post-doctorant·e"= "Post doctoral student",
+                               "sitpro2ATER"="ATER",
+                               "sitpro2Doctorant·e contractuel·le"="contractual doctoral student",
+                               "sitpro2Doctorant·e CIFRE"= "CIFRE contractual doctoral student",
+                               "sitpro2Ingénieur·e de recherche"="Research engineer",
+                               "sitpro2Ingénieur·e d'études"="Design engineer",
+                               "sitpro2Assistant ingénieur·e"="Assistant engineer",
+                               "sitpro2Technicien·ne"="Technician",
+                               "sitpro2Chargé·e d'études/de mission"= "Research officer",
+                               "sitpro2Adjoint·e technique"="Technical assistant",
+                               "sitpro2Autre"="Other",
+                               "discipline_agr3Droit, économie, gestion"="Droit, économie, gestion (Ref = physique)",
+                               "discipline_agr3Autres lettres et sciences humaines"="Autres lettres et sciences humaines",
+                               "discipline_agr3Archi/arts, anthropo ethno"="Archi/arts, anthropo ethno",
+                               "discipline_agr3Socio, démo"="Socio, démo",
+                               "discipline_agr3Histoire, géo, urba"="Histoire, géo, urba",
+                               "discipline_agr3Mathématiques"="Mathématiques",
+                               "discipline_agr3Informatique"="Informatique",
+                               "discipline_agr3Chimie"="Chimie",
+                               "discipline_agr3Astro, géologie"="Astro, géologie",
+                               "discipline_agr3Météo, océano, physiqu environt"="Météo, océano, physiqu environt",
+                               "discipline_agr3Médecine, pharma, santé"="Médecine, pharma, santé",
+                               "discipline_agr3Génies : méca, info, élec, énergie"="Génies : méca, info, élec, énergie",
+                               "discipline_agr3Biologie"="Biologie",
+                               "discipline_agr3Biologie des populations et écologie"="Biologie des populations et écologie",
+                               "nbpublis"="Number of publications in 2017-mid2020",
+                               "nbpublisang"="Number of publications in english in 2017-mid2020",
+                               "particip_ANR"="Participe à projet(s) financé ANR",
+                               "particip_Fr"="Participe à projet(s) av financt public Fr",
+                               "particip_Europ"="Participe à projet(s) av financt europ",
+                               "particip_Intern"="Participe à projet(s) av financt internation",
+                               "particip_prive"="Participe à projet(s) av financt privé",
+                               "Profin_Mb_RespMembre d'au moins 1 projet financé"="Membre de projet(s) financé(s) (ref = Ni mb ni responsable)",
+                               "Profin_Mb_RespResponsable d'au moins 1 projet financé"="Responsable de projet(s) financé(s)",
+                               "carriereOui"="Cherche à être promu, recrut, titularisé",
+                               "projets.anr_m2Membre projet ANR oui"="Membre projet(s) financt ANR (Ref = Ne participe pas)",
+                               "projets.anr_r2Responsable projet ANR oui"="Responsable projet(s) financt ANR",
+                               "projets.france_m2Membre projet France oui"="Membre projet(s) financt France (Ref = Ne participe pas)",
+                               "projets.france_r2Responsable projet France oui"="Responsable projet(s) financt France",
+                               "projets.europe_m2Membre projet européen oui"="Membre projet(s) financt européen (Ref = Ne participe pas)",
+                               "projets.europe_r2Responsable projet européen oui"="Responsable projet(s) financt européen",
+                               "projets.inter_m2Membre projet international oui"="Membre projet(s) financt international (Ref = Ne participe pas)",
+                               "projets.inter_r2Responsable projet international oui"="Responsable projet(s) financt international",
+                               "projets.prive_m2Membre projet privé oui"="Membre projet(s) financt privé (Ref = Ne participe pas)",
+                               "projets.prive_r2Responsable projet privé oui"="Responsable projet(s) financt privé",
+                               "revenuTete"="Revenu par individu du foyer",
+                               "enfantsnb"= "nombre d'enfants",
+                               "coupleNon"="ne vit pas en couple"),
+        symbol = "+",
+        caption = "Tableau 2 : Régressions linéaires multiples sur le nombre d'heures de vol en 2019", caption.above=TRUE, 
+        single.row = TRUE )

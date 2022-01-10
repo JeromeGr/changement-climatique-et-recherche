@@ -990,11 +990,6 @@ climat$tpsdomtrav.motoMin<-climat$tpsdomtrav.moto_h*60+climat$tpsdomtrav.moto_m
 climat$tpsdomtrav.veloMin<-climat$tpsdomtrav.velo_h*60+climat$tpsdomtrav.velo_m
 climat$tpsdomtrav.marcheMin<-climat$tpsdomtrav.marche_h*60+climat$tpsdomtrav.marche_m
 
-climat$solreducrech2 <- fct_recode(climat$solreducrech,
-                                   "Recherche doit montrer l'exemple, réduire de plus d'1/3"="La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui",
-                                   "Recherche doit réduire émissions de GES de 1/3 environ"="La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ",
-                                   "Recherche peut bénéficier d'un statut dérogatoire"="En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m")
-
 #Construction d'un "score écolo"
 climat$ScoreEcolo<-0
 climat$ScoreEcolo[climat$dixannees.bilan=="Oui" & !is.na(climat$dixannees.bilan)]<-climat$ScoreEcolo[climat$dixannees.bilan=="Oui" & !is.na(climat$dixannees.bilan)]+1
@@ -1526,6 +1521,11 @@ climatRegr$ageaccad_tranch2<-fct_relevel(climatRegr$ageaccad_tranch2, "[0,2]")
 
 climatRegr$quiz<-fct_relevel(climatRegr$quiz, "Je décline le quiz")
 
+climatRegr$solreducrech<-as.factor(climatRegr$solreducrech)
+climatRegr$solreducrech2[climatRegr$solreducrech=="La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui"]<-"Recherche doit montrer l'exemple, réduire de plus d'1/3"
+climatRegr$solreducrech2[climatRegr$solreducrech=="La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ"]<-"Recherche doit réduire émissions de GES de 1/3 environ"
+climatRegr$solreducrech2[climatRegr$solreducrech=="En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"]<-"Recherche peut bénéficier d'un statut dérogatoire"
+
 climatRegr$datedebut<-as.numeric(as.Date(climatRegr$dateDebut))-18438
 
 climatRegr$extrpreoccupe<-as.factor(climatRegr$extrpreoccupe)
@@ -1549,11 +1549,6 @@ climatACM <- rename.variable(climatACM, "opinionecolo.cata", "cata_ecolo_proche"
 climatACM <- rename.variable(climatACM, "opinionecolo.proteger", "environnt_pas_croissance")
 climatACM <- rename.variable(climatACM, "opinionecolo.contraintes", "contrain_reglo_pas_confort")
 climatACM <- rename.variable(climatACM, "opinionecolo.techno", "meilleur_techno_solution")
-
-
-
-
-
 
 
 
