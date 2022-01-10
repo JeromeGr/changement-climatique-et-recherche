@@ -1398,10 +1398,12 @@ climat$vaguenum["2020-11-16"<=climat$dateDebut]<-5
 climat$sitpro <- factor(climat$sitpro,
                         levels = c(
                           "Directeur·rice de recherche", "Professeur·e des universités",
-                          "Chargé·e de recherche", "Maître·sse de conférences", "Post-doctorant·e",
-                          "ATER", "Doctorant·e contractuel·le", "Doctorant·e CIFRE", "Ingénieur·e de recherche",
-                          "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
-                          "Chargé·e d'études/de mission", "Adjoint·e technique", "Autre"
+                          "Chargé·e de recherche", "Maître·sse de conférences",
+                          "Ingénieur·e de recherche", "Post-doctorant·e",
+                          "ATER", "Doctorant·e contractuel·le", "Doctorant·e CIFRE",
+                          "Ingénieur·e d'études", "Chargé·e d'études/de mission",
+                          "Assistant ingénieur·e", "Technicien·ne",
+                          "Adjoint·e technique", "Autre"
                         ))
 
 

@@ -145,7 +145,7 @@ m <- glm(!is.na(lastpage) & lastpage >= 1 ~ institut2 + delegation + type2 + sex
          data=ech, family=binomial)
 #stargazer::stargazer(m, type="html", out="~/tmp/out.html", apply.coef=exp, ci=TRUE)
 library(gtsummary)
-tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=TRUE,
+tbl_regression(m, exponentiate=TRUE,
                label=list(institut2 ~ "Institut",
                           delegation ~ "Délégation régionale",
                           type2 ~ "Statut",
