@@ -112,6 +112,8 @@ climat$ordis.nbtotal <- rowSums(select(climat, ordis.fixeperso_nb, ordis.fixepro
                                        ordis.portablepro_nb, ordis.portableperso_nb,
                                        ordis.tablettepro_nb, ordis.tabletteperso_nb))
 
+climat$ordis.nbtotaltranch<-quant.cut(climat$ordis.nbtotal, 6)
+
 climat$ordis.nbtotalpro <- rowSums(select(climat, ordis.fixepro_nb, ordis.portablepro_nb, ordis.tablettepro_nb))
 
 #Nombre total d'ordinateurs et tablettes de moins de 5 ans
@@ -631,6 +633,7 @@ climat$discipline_agr4 <- fct_recode(climat$discipline,
 "Santé et recherche médicale"="92 : Sciences infirmières"
 )
 
+
 ## création d'une variable binaire sur le thème de recherche écolo (pour l'instant oui, non, oui dans le passé)
 climat$rechecoB<-0
 climat$rechecoB[climat$recheco %in% c("Oui", "Non, mais je l'ai fait par le passé")]<-"Oui"
@@ -656,6 +659,16 @@ climat$materiel.aucun[!climat$champmateriel] <- "Non concerné·e"
 climat$materiel <- with(climat, materiel.tgir == "Oui" | materiel.info == "Oui" |
                             materiel.extensif == "Oui" | materiel.trescouteux == "Oui" |
                             materiel.couteux == "Oui" | materiel.petit == "Oui")
+
+#Type de matériel en une seule variable
+climat$maxmateriel[climat$materiel==FALSE]<-"Aucun materiel"
+climat$maxmateriel[climat$materiel.petit=="Oui"]<-"Petit materiel"
+climat$maxmateriel[climat$materiel.couteux=="Oui"]<-"Materiel couteux"
+climat$maxmateriel[climat$materiel.trescouteux=="Oui"]<-"Materiel très couteux"
+climat$maxmateriel[climat$materiel.couteux=="Oui"& climat$materiel.trescouteux=="Oui"]<-"Materiel couteux et très couteux"
+climat$maxmateriel[climat$materiel.extensif=="Oui"]<-"Dispositifs extensifs"
+climat$maxmateriel[climat$materiel.tgir=="Oui"]<-"Très grande infrastructure"
+
 
 # Repérer les personnes qui ont rempli le tableau sur les vols,
 # soit parce qu'ils ont déclaré au moins un vol, soit parce qu'ils n'ont pas volé
@@ -1552,6 +1565,45 @@ climatACM <- rename.variable(climatACM, "opinionecolo.proteger", "environnt_pas_
 climatACM <- rename.variable(climatACM, "opinionecolo.contraintes", "contrain_reglo_pas_confort")
 climatACM <- rename.variable(climatACM, "opinionecolo.techno", "meilleur_techno_solution")
 
+
+climatACM <- rename.variable(climatACM, "solreducperso.conf", "avion_conf")
+climatACM <- rename.variable(climatACM, "solreducperso.donnees", "deplact_donnees")
+climatACM <- rename.variable(climatACM, "solreducperso.info", "chgt_inform")
+climatACM <- rename.variable(climatACM, "solreducperso.exp", "exp")
+climatACM <- rename.variable(climatACM, "solreducperso.domicile", "domic_trav")
+climatACM <- rename.variable(climatACM, "solreducrech", "secteur")
+
+freq(climat$solreducperso.conf)
+freq(climat$solreducperso.donnees)
+freq(climat$solreducperso.info)
+freq(climat$solreducperso.exp)
+freq(climat$solreducperso.domicile)
+
+climatACM$avion_conf<-fct_recode(climatACM$avion_conf, 
+                                         ">1/3"="Oui, d'au moins un tiers",
+                                 "<1/3"="Oui, mais de moins d'un tiers",
+                                 "Déjà bas"="Non, car elles sont déjà très basses")
+
+climatACM$chgt_inform<-fct_recode(climatACM$chgt_inform, 
+                                 ">1/3"="Oui, d'au moins un tiers",
+                                 "<1/3"="Oui, mais de moins d'un tiers",
+                                 "Déjà bas"="Non, car elles sont déjà très basses")
+
+climatACM$deplact_donnees<-fct_recode(climatACM$deplact_donnees, 
+                                 ">1/3"="Oui, d'au moins un tiers",
+                                 "<1/3"="Oui, mais de moins d'un tiers",
+                                 "Déjà bas"="Non, car elles sont déjà très basses")
+
+
+climatACM$exp<-fct_recode(climatACM$exp, 
+                                      ">1/3"="Oui, d'au moins un tiers",
+                                      "<1/3"="Oui, mais de moins d'un tiers",
+                                      "Déjà bas"="Non, car elles sont déjà très basses")
+
+climatACM$secteur<-as.character(climatACM$secteur)
+climatACM$secteur[climatACM$secteur=="La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui"]<-"Supp_1/3"
+climatACM$secteur[climatACM$secteur=="La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ"]<-"Egal_1/3"
+climatACM$secteur[climatACM$secteur=="En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"]<-"Statut dérog"
 
 
 ####################################@
