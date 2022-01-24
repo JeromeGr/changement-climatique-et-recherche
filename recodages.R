@@ -4,7 +4,7 @@ library(tidyverse)
 #chargement de la base
 
 load("climat.RData")
-
+ 
 # Élimination des hors-champ
 # is.na(rechpub) peut indiquer à la fois un statut d'office classé en Oui,
 # ou une non réponse : on exclut les non réponses (surtout des personnes qui n'ont repondu à rien)
