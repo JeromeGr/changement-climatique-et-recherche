@@ -1041,7 +1041,7 @@ data[, 224] <- factor(data[, 224], levels=c("A1","A2","A3","A4","A5"),labels=c("
 # LimeSurvey Field type: A
 data[, 225] <- as.character(data[, 225])
 attributes(data)$variable.labels[225] <- "La France s'est engagée à réduire d'un tiers ses émissions de gaz à effet de serre d'ici à 2030. Dans ce cadre, pensez-vous que :"
-data[, 225] <- factor(data[, 225], levels=c("A1","A2","A3"),labels=c("La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui", "La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ", "En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"))
+data[, 225] <- factor(data[, 225], levels=c("A1","A2","A3"),labels=c("La recherche doit montrer l'exemple", "La recherche doit réduire ses émissions d'un tiers", "La recherche peut bénéficier d'un statut dérogatoire"))
 # names(data)[225] <- "solreducrech"
 # LimeSurvey Field type: A
 data[, 226] <- as.character(data[, 226])

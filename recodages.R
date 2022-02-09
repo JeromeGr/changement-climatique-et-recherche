@@ -207,17 +207,24 @@ climat$volsh<-factor(ifelse(!is.na(climat$volsnb) & climat$volsnb==0, "0h",
 
 #Dichotomisation extremement preoccupé, réduire les GES et décroissance
 climat$extrpreoccupe <- ifelse(climat$preoccupe2=="Extrêmement préoccupé·e", "Oui", "Non")
-climat$reducrechexemp <- ifelse(climat$solreducrech=="La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui", "Oui", "Non")
+climat$reducrechexemp <- ifelse(climat$solreducrech=="La recherche doit montrer l'exemple", "Oui", "Non")
 
+# Recodage nécessaire uniquement avec l'ancienne version de la base,
+# qui contient les modalités longues et tronquées
+climat$solreducrech<-as.character(climat$solreducrech)
+climat$solreducrech[climat$solreducrech == "La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui"] <- "La recherche doit montrer l'exemple"
+climat$solreducrech[climat$solreducrech == "La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ"] <- "La recherche doit réduire ses émissions d'un tiers"
+climat$solreducrech[climat$solreducrech == "En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"] <- "La recherche peut bénéficier d'un statut dérogatoire"
 climat$solreducrech<-as.factor(climat$solreducrech)
+
 climat$solreducrech2 <- fct_recode(climat$solreducrech,
-                                   "Recherche doit montrer l'exemple, réduire de plus d'1/3"="La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui",
-                                   "Recherche doit réduire émissions de GES de 1/3 environ"="La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ",
-                                   "Recherche peut bénéficier d'un statut dérogatoire"="En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m")
+                                   "Recherche doit montrer l'exemple, réduire de plus d'1/3"="La recherche doit montrer l'exemple",
+                                   "Recherche doit réduire émissions de GES de 1/3 environ"="La recherche doit réduire ses émissions d'un tiers",
+                                   "Recherche peut bénéficier d'un statut dérogatoire"="La recherche peut bénéficier d'un statut dérogatoire")
 climat$solreducrech3 <- fct_recode(climat$solreducrech,
-                                   "Réduire de plus d'un tiers"="La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui",
-                                   "Réduire d'un tiers"="La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ",
-                                   "Réduire de moins d'un tiers"="En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m")
+                                   "Réduire de plus d'un tiers"="La recherche doit montrer l'exemple",
+                                   "Réduire d'un tiers"="La recherche doit réduire ses émissions d'un tiers",
+                                   "Réduire de moins d'un tiers"="La recherche peut bénéficier d'un statut dérogatoire")
 
 climat$tresdecroissance <- ifelse(climat$opinionecolo.decroissance=="Tout à fait d'accord", "Oui", "Non")
 
@@ -1704,9 +1711,9 @@ climatACM$exp<-fct_recode(climatACM$exp,
                                       "Déjà bas"="Non, car elles sont déjà très basses")
 
 climatACM$secteur<-as.character(climatACM$secteur)
-climatACM$secteur[climatACM$secteur=="La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui"]<-"Supp_1/3"
-climatACM$secteur[climatACM$secteur=="La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ"]<-"Egal_1/3"
-climatACM$secteur[climatACM$secteur=="En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"]<-"Statut dérog"
+climatACM$secteur[climatACM$secteur=="La recherche doit montrer l'exemple"]<-"Supp_1/3"
+climatACM$secteur[climatACM$secteur=="La recherche doit réduire ses émissions d'un tiers"]<-"Egal_1/3"
+climatACM$secteur[climatACM$secteur=="La recherche peut bénéficier d'un statut dérogatoire"]<-"Statut dérog"
 
 
 ####################################@
