@@ -58,12 +58,6 @@ climat$sitpro_reduite <- fct_recode(climat$sitpro,
 climatRegr$sitpro_reduite <- fct_recode(climatRegr$sitpro,
   "Doctorant·e contractuel·le" = "Doctorant·e CIFRE")
 
-climat$solreducrech3 <- fct_recode(climat$solreducrech,
-  "Plus d'un tiers" = "La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui",
-  "Un tiers environ" = "La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ",
-  "Moins d'un tiers" = "En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"
-)
-
 Sys.setlocale("LC_ALL", "en_US.UTF-8")
 Sys.setlocale("LC_MESSAGES", "en_US.UTF-8")
 
@@ -94,7 +88,7 @@ climat$pluspreoccupe <- fct_recode(factor(climat$pluspreoccupe), "Much more"="Be
 
 climat$chgtpratique <- fct_recode(factor(climat$chgtpratique), "Yes, strongly agree"="Oui, tout à fait d'accord", "Yes, somewhat agree"="Oui, plutôt d'accord", "No, somewhat disagree"="Non, plutôt pas d'accord", "No, strongly disagree"="Non, pas du tout d'accord", "No opinion"="Sans opinion")
 
-climat$solreducrech <- fct_recode(factor(climat$solreducrech), "Set an example (reduce emissions by more than one-third)"= "La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui","Reduce emissions by around one-third"="La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ", "Benefit from an exemption (reduce emissions by less than one-third)"= "En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m")
+climat$solreducrech <- fct_recode(factor(climat$solreducrech), "Set an example (reduce emissions by more than one-third)"= "La recherche doit montrer l'exemple", "Reduce emissions by around one-third"="La recherche doit réduire ses émissions d'un tiers", "Benefit from an exemption (reduce emissions by less than one-third)"= "La recherche publique peut bénéficier d'un statut dérogatoire")
 
 climat$solreducrech3 <- fct_recode(factor(climat$solreducrech), "More than one-third"="Set an example (reduce emissions by more than one-third)", "Around one-third"="Reduce emissions by around one-third", "Less than one-third"="Benefit from an exemption (reduce emissions by less than one-third)")
 
@@ -226,20 +220,21 @@ climatRegr$international.naiss<- fct_recode(factor(climatRegr$international.nais
 # Sample and non-response bias
 
 ## Response rate by status and discipline
-```{r echo=FALSE}
+```{r echo=FALSE, fig.height=3}
 repstatut <- c(`Senior researcher` = 0.298029556650246, `Full professor` = 0.187197618161518, `Tenured researcher` = 0.357738646895273, `Associate professor` = 0.242277140335393, `Research engineer` = 0.335389360061681, `Postdoctoral researcher` = 0.175438596491228, `Fully funded PhD student` = 0.170106132075472, `Research support engineer` = 0.298368298368298, `Engineer assistant` = 0.247533632286996, `Technician` = 0.15253386853989, `Temp on fixed-term contract` = 0.212272727272727, `Other personnel` = 0.171935235158057)
 
 data.frame(statut=factor(names(repstatut), levels=rev(names(repstatut))), taux=repstatut) %>%
   ggplot(aes(y=statut, x=taux)) +
   geom_col() +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.37)) +
-  geom_text(aes(label=scales::percent(repstatut, accuracy=1)),
-            stat="identity", position=position_dodge(.9),
-            hjust=-0.2, size=3) +
+  coord_cartesian(xlim=c(0, NA)) +
+  geom_vline(xintercept=0.227, linetype="dashed") +
+  # geom_text(aes(label=scales::percent(repstatut, accuracy=1)),
+  #           stat="identity", position=position_dodge(.9),
+  #           hjust=-0.2, size=3) +
   labs(x="Proportion of sent invitations", y="")
 ```
-```{r echo=FALSE}
+```{r echo=FALSE, fig.height=3}
 repinstitut <- c(`IN2P3 (nuclear and particle physics)` = 25.8351893095768, 
 `INC (chemistry)` = 20.4927884615385, `INEE (ecology and environment)` = 27.920910724985, 
 `INP (physics)` = 26.5788028555739, `IN2I (information sciences)` = 20.7792207792208, 
@@ -254,11 +249,12 @@ data.frame(statut=factor(names(repinstitut)), taux=repinstitut) %>%
   mutate(statut=fct_reorder(statut, taux)) %>%
   ggplot(aes(y=statut, x=taux)) +
   geom_col() +
+  geom_vline(xintercept=0.227, linetype="dashed") +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.32)) +
-  geom_text(aes(label=scales::percent(repinstitut, accuracy=1)),
-            stat="identity", position=position_dodge(.9),
-            hjust=-0.2, size=3) +
+  coord_cartesian(xlim=c(0, NA)) +
+  # geom_text(aes(label=scales::percent(repinstitut, accuracy=1)),
+  #           stat="identity", position=position_dodge(.9),
+  #           hjust=-0.2, size=3) +
   labs(x="Proportion of sent invitations", y="")
 ```
 
@@ -708,12 +704,10 @@ table$Var2 <- fct_relevel(table$Var2,
                             "Conference, presentation", 
                             "Total"))
 
-# cols <- brewer.pal(n=6, "Set2")
 ggplot(table[table$Var2!="Total",]) + 
   geom_bar(aes(x=Var1, y=Freq, fill=Var2), stat="identity")+
   coord_flip(ylim=c(0, 15000)) +
-  # scale_fill_manual(values=rev(as.vector(cols[1:6])))+
-  scale_fill_paletteer_d("ggthemes::excel_Celestial")+
+  scale_fill_manual(values=paletteer_d("ggthemes::excel_Celestial")[c(1, 2, 4, 5, 3, 6)])+
   labs(x="", y="Distance travelled by plane in 2019 (km)", fill="")+
   guides(fill=guide_legend(reverse = TRUE))
 
@@ -785,8 +779,7 @@ ggplot(table[table$Var2!="Total"&
                table$Var1%in%c(levels(table$Var1)[1:8]),]) + 
   geom_bar(aes(x=fct_rev(Var1), y=Freq, fill=Var2), stat="identity")+
   coord_flip(ylim=c(0, 15000)) +
-  # scale_fill_manual(values=rev(as.vector(cols[1:6])))+
-  scale_fill_paletteer_d("ggthemes::excel_Celestial")+
+  scale_fill_manual(values=paletteer_d("ggthemes::excel_Celestial")[c(1, 2, 4, 5, 3, 6)])+
   labs(x="", y="Distance travelled by plane in 2019 (km)", fill="")+
   guides(fill=guide_legend(reverse = TRUE))
 

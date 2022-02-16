@@ -64,18 +64,17 @@ table_multi <- function(dat, levs=levels(dat$valeur)) {
     # Inverser l'ordre des lignes par cohérence avec ggplot
     mat[nrow(mat):1,]
 }
+ 
+climat$solreducrech3 <- fct_recode(climat$solreducrech,
+                                   "Plus d'un tiers" = "La recherche doit montrer l'exemple",
+                                   "Un tiers environ" = "La recherche doit réduire ses émissions d'un tiers",
+                                   "Moins d'un tiers" = "La recherche peut bénéficier d'un statut dérogatoire")
 
 climat$sitpro_reduite <- fct_recode(climat$sitpro,
   "Doctorant·e contractuel·le" = "Doctorant·e CIFRE")
 climatRegr$sitpro_reduite <- fct_recode(climatRegr$sitpro,
   "Doctorant·e contractuel·le" = "Doctorant·e CIFRE")
 climatRegr$sitpro_reduite2 <- relevel(climatRegr$sitpro_reduite, ref = "Maître·sse de conférences")
-
-climat$solreducrech3 <- fct_recode(climat$solreducrech,
-  "Plus d'un tiers" = "La recherche publique doit montrer l'exemple en matière de diminution des émissions de gaz à effet de serre en les rédui",
-  "Un tiers environ" = "La recherche publique doit réduire ses émissions de gaz à effet de serre d'un tiers environ",
-  "Moins d'un tiers" = "En raison de son rôle, la recherche publique peut bénéficier d'un statut dérogatoire, c'est-à-dire fournir des efforts m"
-)
 
 climat$acthum3 <- fct_collapse(climat$acthum2,
                                "Oui, elles jouent un grand rôle\nou en sont l'unique cause"=c("Oui, elles en sont l'unique cause", 
@@ -85,20 +84,21 @@ climat$acthum3 <- fct_collapse(climat$acthum2,
 # Échantillon et biais de non-réponse
 
 ## Taux de réponse par statut et discipline
-```{r echo=FALSE}
+```{r echo=FALSE, fig.height=3}
 repstatut <- c(`Directeur·rice de recherche` = 0.298029556650246, Professeur = 0.187197618161518, `Chargé·e de recherche` = 0.357738646895273, `Maître·sse de conférences` = 0.242277140335393,  `Ingénieur·e de recherche` = 0.335389360061681, `Post-doctorant·e` = 0.175438596491228, `Doctorant·e` = 0.170106132075472,`Ingénieur·e d'études` = 0.298368298368298, `Assistant·e ingénieur·e` = 0.247533632286996, `Technicien·ne` = 0.15253386853989, `Temporaire sur CDD` = 0.212272727272727, `Autre personnel` = 0.171935235158057)
 
 data.frame(statut=factor(names(repstatut), levels=rev(names(repstatut))), taux=repstatut) %>%
   ggplot(aes(y=statut, x=taux)) +
   geom_col() +
+  geom_vline(xintercept=0.227, linetype="dashed") +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.37)) +
-  geom_text(aes(label=scales::percent(repstatut, accuracy=1, decimal.mark=",")),
-            stat="identity", position=position_dodge(.9),
-            hjust=-0.2, size=3) +
+  coord_cartesian(xlim=c(0, NA)) +
+  # geom_text(aes(label=scales::percent(repstatut, accuracy=1, decimal.mark=",")),
+  #           stat="identity", position=position_dodge(.9),
+  #           hjust=-0.2, size=3) +
   labs(x="Proportion des invitations envoyées", y="")
 ```
-```{r echo=FALSE}
+```{r echo=FALSE, fig.height=3}
 repinstitut <- c(`IN2P3 (physique nucléaire et des particules)` = 25.8351893095768, 
 `INC (chimie)` = 20.4927884615385, `INEE (écologie et environnement)` = 27.920910724985, 
 `INP (physique)` = 26.5788028555739, `INS2I (sciences de l'information)` = 20.7792207792208, 
@@ -113,11 +113,12 @@ data.frame(statut=factor(names(repinstitut)), taux=repinstitut) %>%
   mutate(statut=fct_reorder(statut, taux)) %>%
   ggplot(aes(y=statut, x=taux)) +
   geom_col() +
+  geom_vline(xintercept=0.227, linetype="dashed") +
   scale_x_continuous(labels=function(x) scales::percent(x, 1)) +
-  coord_cartesian(xlim=c(0, 0.32)) +
-  geom_text(aes(label=scales::percent(repinstitut, accuracy=1, decimal.mark=",")),
-            stat="identity", position=position_dodge(.9),
-            hjust=-0.2, size=3) +
+  coord_cartesian(xlim=c(0, NA)) +
+  # geom_text(aes(label=scales::percent(repinstitut, accuracy=1, decimal.mark=",")),
+  #           stat="identity", position=position_dodge(.9),
+  #           hjust=-0.2, size=3) +
   labs(x="Proportion des invitations envoyées", y="")
 ```
 
@@ -568,12 +569,10 @@ table$Var2 <- fct_relevel(table$Var2,
                             "Conférence, présentation", 
                             "Total"))
 
-# cols <- brewer.pal(n=6, "Set2")
 ggplot(table[table$Var2!="Total",]) + 
   geom_bar(aes(x=Var1, y=Freq, fill=Var2), stat="identity")+
   coord_flip(ylim=c(0, 15000)) +
-  # scale_fill_manual(values=rev(as.vector(cols[1:6])))+
-  scale_fill_paletteer_d("ggthemes::excel_Celestial")+
+  scale_fill_manual(values=paletteer_d("ggthemes::excel_Celestial")[c(1, 2, 4, 5, 3, 6)])+
   labs(x="", y="Distance parcourue en avion en 2019 (km)", fill="")+
   guides(fill=guide_legend(reverse = TRUE))
 
@@ -644,8 +643,7 @@ ggplot(table[table$Var2!="Total"&
                table$Var1%in%c(levels(table$Var1)[1:8]),]) + 
   geom_bar(aes(x=fct_rev(Var1), y=Freq, fill=Var2), stat="identity")+
   coord_flip(ylim=c(0, 15000)) +
-  # scale_fill_manual(values=rev(as.vector(cols[1:6])))+
-  scale_fill_paletteer_d("ggthemes::excel_Celestial")+
+  scale_fill_manual(values=paletteer_d("ggthemes::excel_Celestial")[c(1, 2, 4, 5, 3, 6)])+
   labs(x="", y="Distance parcourue en avion en 2019 (km)", fill="")+
   guides(fill=guide_legend(reverse = TRUE))
 
