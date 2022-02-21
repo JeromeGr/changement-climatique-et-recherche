@@ -9,3 +9,4 @@
 *.html
 *.log
 .DS_Store
+.Rapp.history
