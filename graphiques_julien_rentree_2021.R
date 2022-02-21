@@ -2,7 +2,7 @@
 
 library(tidyverse)
 library(ggplot2)
-load("climat.RData")
+# load("climat.RData")
 source("recodages.R", encoding = "UTF-8")
 theme_set(theme_minimal() +
             theme(plot.title=element_text(size=11),
@@ -1980,4 +1980,26 @@ freq(climat_recherche$opinionecolo.cata)
 
 
 
+
+
+
+
+
+
+freq(climat_recherche$tpsdomtrav.avion_h)
+freq(climat$tpsdomtrav.urbain_m)
+freq(climat_recherche$tpsdomtrav.tgv_h)
+freq(climat_recherche$tpsdomtrav.tgvMin)
+
+freq(climat$solreducperso.conf)
+
+climat$volsdist_totconfreu<-climat$volsdist_totconf+climatRegr$volsdist_totworkshop + climatRegr$volsdist_totjury + climatRegr$volsdist_totfinanc +climatRegr$volsdist_toteval
+climat$volsdist_totconfreu_tranch2<- cut(climat$volsdist_totconfreu,
+                                             include.lowest = TRUE,
+                                             right = TRUE,
+                                             breaks = c(0, 0.1, 1500, 7000, 30000, 100000))
+
+freq(climat$reducrechexemp)
+lprop(table(climat$solevolges.conf, climat$reducrechexemp))
+lprop(table(climat$solevolges.conf, climat$volsdist_totconfreu_tranch2))
 
