@@ -1,8 +1,6 @@
 library(questionr)
 library(tidyverse)
 
-#mblanchou
-
 #chargement de la base
 
 load("climat.RData")
