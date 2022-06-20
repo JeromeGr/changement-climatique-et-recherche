@@ -734,13 +734,6 @@ ggplot(table[table$Var2!="Total",]) +
 library(car)
 summary(lm(volsdist_tot ~ C(discipline_agr4, "contr.Sum"), climat_recherche))
 TukeyHSD(aov(volsdist_tot ~ discipline_agr4, climat_recherche))
-
-boot::norm.ci(boot::boot(climat_recherche,
-                         function(data, inds) mean(data$volsdist_totconf[inds], na.rm=TRUE)/mean(data$volsdist_tot[inds], na.rm=TRUE), 10000))
-boot::norm.ci(boot::boot(climat_recherche,
-                         function(data, inds) mean(data$volsdist_totterrain[inds], na.rm=TRUE)/mean(data$volsdist_tot[inds], na.rm=TRUE), 10000))
-boot::norm.ci(boot::boot(climat_recherche,
-                         function(data, inds) mean(data$volsdist_totsejrech[inds], na.rm=TRUE)/mean(data$volsdist_tot[inds], na.rm=TRUE), 10000))
 ```
 
 
