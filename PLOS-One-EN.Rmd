@@ -1,7 +1,7 @@
 ---
 title: "S1 Appendix. Additional tables and plots"
 output:
-  html_document: 
+  html_document:
     fig_width: 7.5
     fig_height: 4.5
     dev: svg
@@ -19,6 +19,7 @@ library(ggplot2)
 library(questionr)
 library(paletteer)
 library(gtsummary)
+library(car)
 
 
 load("climat.RData")
@@ -733,11 +734,19 @@ ggplot(table[table$Var2!="Total",]) +
   scale_fill_manual(values=paletteer_d("ggthemes::excel_Celestial")[c(1, 2, 4, 5, 3, 6)])+
   labs(x="", y="Distance travelled by plane in 2019 (km)", fill="")+
   guides(fill=guide_legend(reverse = TRUE))
-
-library(car)
-summary(lm(volsdist_tot ~ C(discipline_agr4, "contr.Sum"), climat_recherche))
-TukeyHSD(aov(volsdist_tot ~ discipline_agr4, climat_recherche))
 ```
+
+ANOVA and post-hoc Tukey-Kramer test:
+```{r echo=FALSE}
+lm(volsdist_tot ~ discipline_agr4, climat_recherche, contrasts=list(discipline_agr4="contr.Sum")) %>%
+  tbl_regression(label=list(discipline_agr4 ~ "Discipline",
+                            "(Intercept)" ~ "Intercept (Grand mean)"),
+                 intercept=TRUE) %>% 
+  bold_labels() %>%
+  add_glance_table(include = c(nobs, p.value, r.squared, adj.r.squared))
+knitr::kable(TukeyHSD(aov(volsdist_tot ~ discipline_agr4, climat_recherche))$discipline_agr4)
+```
+
 
 
 Distance travelled by plane in 2019 (km):
@@ -808,10 +817,17 @@ ggplot(table[table$Var2!="Total"&
   scale_fill_manual(values=paletteer_d("ggthemes::excel_Celestial")[c(1, 2, 4, 5, 3, 6)])+
   labs(x="", y="Distance travelled by plane in 2019 (km)", fill="")+
   guides(fill=guide_legend(reverse = TRUE))
+```
 
-library(car)
-summary(lm(volsdist_tot ~ C(sitpro_reduite, "contr.Sum"), climat_recherche))
-TukeyHSD(aov(volsdist_tot ~ sitpro_reduite, climat_recherche))
+ANOVA and post-hoc Tukey-Kramer test:
+```{r echo=FALSE}
+lm(volsdist_tot ~ sitpro_reduite, climat_recherche, contrasts=list(sitpro_reduite="contr.Sum")) %>%
+  tbl_regression(label=list(sitpro_reduite ~ "Discipline",
+                            "(Intercept)" ~ "Intercept (Grand mean)"),
+                 intercept=TRUE) %>% 
+  bold_labels() %>%
+  add_glance_table(include = c(nobs, p.value, r.squared, adj.r.squared))
+knitr::kable(TukeyHSD(aov(volsdist_tot ~ sitpro_reduite, climat_recherche))$sitpro_reduite)
 ```
 
 
