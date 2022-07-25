@@ -526,7 +526,9 @@ knitr::kable(freq(climat$preoccupe2))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$preoccupe2))))
 knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$preoccupe2))))
 chisq.test(table(climat$discipline_agr4, climat$preoccupe2))
+chisq.test(table(climat$discipline_agr4, climat$preoccupe2), simulate.p.value=TRUE, B=10000)
 chisq.test(table(climat$sitpro_reduite, climat$preoccupe2))
+chisq.test(table(climat$sitpro_reduite, climat$preoccupe2), simulate.p.value=TRUE, B=10000)
 ```
 
 
@@ -653,6 +655,7 @@ knitr::kable(round(lprop(table(climat$discipline_agr4, climat$solreducrech3))))
 knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$solreducrech3))))
 chisq.test(table(climat$discipline_agr4, climat$solreducrech3))
 chisq.test(table(climat$sitpro_reduite, climat$solreducrech3))
+chisq.test(table(climat$sitpro_reduite, climat$solreducrech3), simulate.p.value=TRUE, B=10000)
 ```
 
 # Practices
@@ -965,12 +968,19 @@ drop_na(dat) %>%
     source_champ(max(table(filter(drop_na(dat), valeur != "Not concerned")$variable)),
                  "Note: the proportion of people concerned varies according to the question
 Interpretation: 54% of respondents think it likely that a reduction in the number of flights would negatively impact\nthe integration of young researchers and that it is a problem")
+```
 
-chisq.test(table(climat$discipline_agr4, climat$solrisqreducavion.qual)[, levels(climat$solrisqreducavion.qual) != "Not concerned"])
-chisq.test(table(climat$discipline_agr4, climat$solrisqreducavion.donnees)[, levels(climat$solrisqreducavion.donnees) != "Not concerned"])
+```{r}
+chisq.test(table(climat$discipline_agr4, climat$solrisqreducavion.qual, exclude=c(NA, "Not concerned")))
 
-chisq.test(table(climat$sitpro_reduite, climat$solrisqreducavion.diffusion)[, levels(climat$solrisqreducavion.diffusion) != "Not concerned"])
-chisq.test(table(climat$sitpro_reduite, climat$solrisqreducavion.isoler)[, levels(climat$solrisqreducavion.isoler) != "Not concerned"])
+chisq.test(table(climat$discipline_agr4, climat$solrisqreducavion.donnees, exclude=c(NA, "Not concerned")))
+chisq.test(table(climat$discipline_agr4, climat$solrisqreducavion.donnees, exclude=c(NA, "Not concerned")), simulate.p.value=TRUE, B=10000)
+
+chisq.test(table(climat$sitpro_reduite, climat$solrisqreducavion.diffusion, exclude=c(NA, "Not concerned")))
+chisq.test(table(climat$sitpro_reduite, climat$solrisqreducavion.diffusion, exclude=c(NA, "Not concerned")), simulate.p.value=TRUE, B=10000)
+
+chisq.test(table(climat$sitpro_reduite, climat$solrisqreducavion.isoler, exclude=c(NA, "Not concerned")))
+chisq.test(table(climat$sitpro_reduite, climat$solrisqreducavion.isoler, exclude=c(NA, "Not concerned")), simulate.p.value=TRUE, B=10000)
 ```
 
 Proportion of “It is likely and it is a problem” answers, excluding those not concerned:

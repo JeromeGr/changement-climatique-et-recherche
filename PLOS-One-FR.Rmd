@@ -392,7 +392,9 @@ knitr::kable(freq(climat$preoccupe2))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$preoccupe2))))
 knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$preoccupe2))))
 chisq.test(table(climat$discipline_agr4, climat$preoccupe2))
+chisq.test(table(climat$discipline_agr4, climat$preoccupe2), simulate.p.value=TRUE, B=10000)
 chisq.test(table(climat$sitpro_reduite, climat$preoccupe2))
+chisq.test(table(climat$sitpro_reduite, climat$preoccupe2), simulate.p.value=TRUE, B=10000)
 ```
 
 
@@ -521,6 +523,7 @@ knitr::kable(round(lprop(table(climat$discipline_agr4, climat$solreducrech3))))
 knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$solreducrech3))))
 chisq.test(table(climat$discipline_agr4, climat$solreducrech3))
 chisq.test(table(climat$sitpro_reduite, climat$solreducrech3))
+chisq.test(table(climat$sitpro_reduite, climat$solreducrech3), simulate.p.value=TRUE, B=10000)
 ```
 
 # Pratiques
@@ -826,13 +829,20 @@ drop_na(dat) %>%
     source_champ(max(table(filter(drop_na(dat), valeur != "Non concerné·e")$variable)),
                  "Note : la proportion de personnes concernées varie selon la question
 Lecture : 54% des répondant·es pensent qu'il est probable qu'une réduction du nombre des vols\nnuise à l'insertion des jeunes chercheurs et que c'est un problème")
+```
 
+```{r}
+chisq.test(table(climat$discipline_agr4, climat$solrisqreducavion.qual, exclude=c(NA, "Non concerné·e")))
 
-chisq.test(table(climat$discipline_agr4, climat$solrisqreducavion.qual)[, levels(climat$solrisqreducavion.qual) != "Non concerné·e"])
-chisq.test(table(climat$discipline_agr4, climat$solrisqreducavion.donnees)[, levels(climat$solrisqreducavion.donnees) != "Non concerné·e"])
+chisq.test(table(climat$discipline_agr4, climat$solrisqreducavion.donnees, exclude=c(NA, "Non concerné·e")))
+chisq.test(table(climat$discipline_agr4, climat$solrisqreducavion.donnees, exclude=c(NA, "Non concerné·e")), simulate.p.value=TRUE, B=10000)
 
-chisq.test(table(climat$sitpro_reduite, climat$solrisqreducavion.diffusion)[, levels(climat$solrisqreducavion.diffusion) != "Non concerné·e"])
-chisq.test(table(climat$sitpro_reduite, climat$solrisqreducavion.isoler)[, levels(climat$solrisqreducavion.isoler) != "Non concerné·e"])
+chisq.test(table(climat$sitpro_reduite, climat$solrisqreducavion.diffusion, exclude=c(NA, "Non concerné·e")))
+chisq.test(table(climat$sitpro_reduite, climat$solrisqreducavion.diffusion, exclude=c(NA, "Non concerné·e")), simulate.p.value=TRUE, B=10000)
+
+chisq.test(table(climat$sitpro_reduite, climat$solrisqreducavion.isoler, exclude=c(NA, "Non concerné·e")))
+chisq.test(table(climat$sitpro_reduite, climat$solrisqreducavion.isoler, exclude=c(NA, "Non concerné·e")), simulate.p.value=TRUE, B=10000)
+
 ```
 
 Proportion de réponses « C'est probable et c'est un problème », en excluant les non concernés :
