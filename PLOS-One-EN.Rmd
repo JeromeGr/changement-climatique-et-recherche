@@ -1,7 +1,7 @@
 ---
 title: "S1 Appendix. Additional tables and plots"
 output:
-  html_document: 
+  html_document:
     fig_width: 7.5
     fig_height: 4.5
     dev: svg
@@ -19,6 +19,7 @@ library(ggplot2)
 library(questionr)
 library(paletteer)
 library(gtsummary)
+library(car)
 
 
 load("climat.RData")
@@ -322,26 +323,31 @@ knitr::kable(freq(climat$sitpro_reduite))
 To what degree are you concerned about climate change?
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$preoccupe2, climat$NumVague))))
+chisq.test(table(climat$preoccupe2 == "Extremely concerned", climat$NumVague)[, c(1, 5)])
 ```
 
 If things continue on their present course, we will soon experience a major ecological catastrophe
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$opinionecolo.cata, climat$NumVague))))
+chisq.test(table(climat$opinionecolo.cata == "Completely agree", climat$NumVague)[, c(1, 5)])
 ```
 
 I agree with having regulatory constraints (quotas, bans) put in place to protect the environment, even if it limits my comfort
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$opinionecolo.contraintes, climat$NumVague))))
+chisq.test(table(climat$opinionecolo.contraintes == "Completely agree", climat$NumVague)[, c(1, 5)])
 ```
 
 Protecting the environment is more important than protecting economic growth
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$opinionecolo.proteger, climat$NumVague))))
+chisq.test(table(climat$opinionecolo.proteger == "Completely agree", climat$NumVague)[, c(1, 5)])
 ```
 
 France has committed to reducing its greenhouse gas emissions by one-third by 2030. In this respect, do you think that public research should:
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climatRegr$solreducrech2, climat$NumVague))))
+chisq.test(table(climat$solreducrech3 == "More than one-third", climat$NumVague)[, c(1, 5)])
 ```
 
 What actions should research institutions and laboratories take to reduce their greenhouse gas emissions?
@@ -349,15 +355,24 @@ What actions should research institutions and laboratories take to reduce their 
 - Impose a cap on the number of flights per person
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$solinstit.limitevols, climat$NumVague))))
+chisq.test(table(climat$solinstit.limitevols == "It is a priority", climat$NumVague)[, c(1, 5)])
 ```
 
 - Add carbon emissions to the main selection criteria for project funding
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$solinstit.selection, climat$NumVague))))
+chisq.test(table(climat$solinstit.selection == "It is a priority", climat$NumVague)[, c(1, 5)])
 ```
 - Reduce the importance of conferences and presentations abroad in career assessments
 ```{r echo=FALSE}
 knitr::kable(round(cprop(table(climat$solinstit.conf, climat$NumVague))))
+chisq.test(table(climat$solinstit.conf == "It is a priority", climat$NumVague)[, c(1, 5)])
+```
+
+- Finance train tickets even if more expensive or requires longer stay
+```{r echo=FALSE}
+knitr::kable(round(cprop(table(climat$solinstit.train, climat$NumVague))))
+chisq.test(table(climat$solinstit.train == "It is a priority", climat$NumVague)[, c(1, 5)])
 ```
 
 Linear regressions on the number of reminders sent before the questionnaire was completed:
@@ -511,6 +526,10 @@ ggplot(drop_na(climat, preoccupe),
 knitr::kable(freq(climat$preoccupe2))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$preoccupe2))))
 knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$preoccupe2))))
+chisq.test(table(climat$discipline_agr4, climat$preoccupe2))
+chisq.test(table(climat$discipline_agr4, climat$preoccupe2), simulate.p.value=TRUE, B=10000)
+chisq.test(table(climat$sitpro_reduite, climat$preoccupe2))
+chisq.test(table(climat$sitpro_reduite, climat$preoccupe2), simulate.p.value=TRUE, B=10000)
 ```
 
 
@@ -536,6 +555,8 @@ ggplot(drop_na(climat, pluspreoccupe),
 knitr::kable(freq(climat$pluspreoccupe))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$pluspreoccupe))))
 knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$pluspreoccupe))))
+chisq.test(table(climat$discipline_agr4, climat$solreducrech3))
+chisq.test(table(climat$chgtpratique, climat$solreducrech3))
 ```
 
 ## Opinions on ecology in general
@@ -633,6 +654,9 @@ ggplot(drop_na(climat, solreducrech4),
 knitr::kable(freq(climat$solreducrech3))
 knitr::kable(round(lprop(table(climat$discipline_agr4, climat$solreducrech3))))
 knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$solreducrech3))))
+chisq.test(table(climat$discipline_agr4, climat$solreducrech3))
+chisq.test(table(climat$sitpro_reduite, climat$solreducrech3))
+chisq.test(table(climat$sitpro_reduite, climat$solreducrech3), simulate.p.value=TRUE, B=10000)
 ```
 
 # Practices
@@ -647,7 +671,7 @@ climat_recherche <- subset(climat, ! sitpro %in% c(
   "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
   "Chargé·e d'études/de mission","Adjoint·e technique",
   "Autre"))
-
+climat_recherche$sitpro_reduite <- droplevels(climat_recherche$sitpro_reduite)
 ```
 
 ### Reasons for flying by discipline
@@ -710,8 +734,19 @@ ggplot(table[table$Var2!="Total",]) +
   scale_fill_manual(values=paletteer_d("ggthemes::excel_Celestial")[c(1, 2, 4, 5, 3, 6)])+
   labs(x="", y="Distance travelled by plane in 2019 (km)", fill="")+
   guides(fill=guide_legend(reverse = TRUE))
-
 ```
+
+ANOVA and post-hoc Tukey-Kramer test:
+```{r echo=FALSE}
+lm(volsdist_tot ~ discipline_agr4, climat_recherche, contrasts=list(discipline_agr4="contr.Sum")) %>%
+  tbl_regression(label=list(discipline_agr4 ~ "Discipline",
+                            "(Intercept)" ~ "Intercept (Grand mean)"),
+                 intercept=TRUE) %>% 
+  bold_labels() %>%
+  add_glance_table(include = c(nobs, p.value, r.squared, adj.r.squared))
+knitr::kable(TukeyHSD(aov(volsdist_tot ~ discipline_agr4, climat_recherche))$discipline_agr4)
+```
+
 
 
 Distance travelled by plane in 2019 (km):
@@ -782,7 +817,17 @@ ggplot(table[table$Var2!="Total"&
   scale_fill_manual(values=paletteer_d("ggthemes::excel_Celestial")[c(1, 2, 4, 5, 3, 6)])+
   labs(x="", y="Distance travelled by plane in 2019 (km)", fill="")+
   guides(fill=guide_legend(reverse = TRUE))
+```
 
+ANOVA and post-hoc Tukey-Kramer test:
+```{r echo=FALSE}
+lm(volsdist_tot ~ sitpro_reduite, climat_recherche, contrasts=list(sitpro_reduite="contr.Sum")) %>%
+  tbl_regression(label=list(sitpro_reduite ~ "Discipline",
+                            "(Intercept)" ~ "Intercept (Grand mean)"),
+                 intercept=TRUE) %>% 
+  bold_labels() %>%
+  add_glance_table(include = c(nobs, p.value, r.squared, adj.r.squared))
+knitr::kable(TukeyHSD(aov(volsdist_tot ~ sitpro_reduite, climat_recherche))$sitpro_reduite)
 ```
 
 
@@ -820,6 +865,12 @@ knitr::kable(round(lprop(table(climat$discipline_agr4, climat$ordis.tousindisp))
 
 knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$ordis.5anstotalproplus0))))
 knitr::kable(round(lprop(table(climat$sitpro_reduite, climat$ordis.nbtotalproplus1))))
+
+chisq.test(table(climat$discipline_agr4, climat$ordis.5anstotalproplus0))
+chisq.test(table(climat$discipline_agr4, climat$ordis.nbtotalproplus1))
+
+chisq.test(table(climat$discipline_agr4, climat$ordis.tousindisp))
+chisq.test(table(climat$sitpro_reduite, climat$ordis.5anstotalproplus0)[c("Senior researcher", "Adjunct lecturer"),])
 ```
 
 ## Leftover budget money
@@ -933,6 +984,19 @@ drop_na(dat) %>%
     source_champ(max(table(filter(drop_na(dat), valeur != "Not concerned")$variable)),
                  "Note: the proportion of people concerned varies according to the question
 Interpretation: 54% of respondents think it likely that a reduction in the number of flights would negatively impact\nthe integration of young researchers and that it is a problem")
+```
+
+```{r}
+chisq.test(table(climat$discipline_agr4, climat$solrisqreducavion.qual, exclude=c(NA, "Not concerned")))
+
+chisq.test(table(climat$discipline_agr4, climat$solrisqreducavion.donnees, exclude=c(NA, "Not concerned")))
+chisq.test(table(climat$discipline_agr4, climat$solrisqreducavion.donnees, exclude=c(NA, "Not concerned")), simulate.p.value=TRUE, B=10000)
+
+chisq.test(table(climat$sitpro_reduite, climat$solrisqreducavion.diffusion, exclude=c(NA, "Not concerned")))
+chisq.test(table(climat$sitpro_reduite, climat$solrisqreducavion.diffusion, exclude=c(NA, "Not concerned")), simulate.p.value=TRUE, B=10000)
+
+chisq.test(table(climat$sitpro_reduite, climat$solrisqreducavion.isoler, exclude=c(NA, "Not concerned")))
+chisq.test(table(climat$sitpro_reduite, climat$solrisqreducavion.isoler, exclude=c(NA, "Not concerned")), simulate.p.value=TRUE, B=10000)
 ```
 
 Proportion of “It is likely and it is a problem” answers, excluding those not concerned:
