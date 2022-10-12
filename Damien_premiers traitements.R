@@ -1,14 +1,85 @@
 # préambules
-
+library(dplyr)
 library(tidyverse)
 library(ggplot2)
+# tinytex::install_tinytex() 
+library(tinytex)# pour le rmarkdown en PDF (il faut latec)
+library(broom)
+library(broom.helpers)
+library(gtsummary)
+library(GGally)
+
+
+# lancement de la base 
 load("climat.RData")
 source("recodages.R", encoding = "UTF-8")
 # super méthode de Julien pour être sûr de travailler sur les dernières données
 # attention recodage prend du temps 
 
-tinytex::install_tinytex()
-# pour le rmarkdown en PDF (il faut latec)
+
+######### création de la dicho j'ai fortement réduit l'avion 
+str(climatRegr$Evol_GesVol.conf)
+describe(climatRegr$solevolges.conf)
+
+# icut(climatRegr, solevolges.conf)
+
+####### attention je travaille sur la base climatRegr_recherche apparemment adaptée aux régressions et avec que le personnel de recherche 
+
+#construction dicho j'ai fortement diminué l'avion pro O/N 
+climatRegr_recherche$SolevolgesFD <- climatRegr_recherche$solevolges.conf=="Fortement diminué"
+climatRegr_recherche$SolevolgesFD[climatRegr_recherche$SolevolgesFD == TRUE] <- 1
+climatRegr_recherche$SolevolgesFD[climatRegr_recherche$SolevolgesFD == FALSE] <- 0
+climatRegr_recherche$SolevolgesFD[is.na(climatRegr_recherche$SolevolgesFD)] <- 0
+describe(climatRegr_recherche$SolevolgesFD)
+#  je ne sais pas pourquoi describe ne fonctionne plus d'un seul coup ! 
+
+# climatRegr_recherche$SolevolgesFD <- recode_factor(as.character(climatRegr_recherche$solevolges.conf), "Fortement diminué"="Oui", .default="Non", .missing="Non")
+# describe(climatRegr_recherche$SolevolgesFD)
+# str(climatRegr_recherche$SolevolgesFD)
+# autre recodage plus efficace by Milan 
+
+############################# première régression avec les options d'affichage ! ################################
+res.reg01 <- glm(SolevolgesFD ~ sexe + ageAgr  + sitpro_reduite + avionperso +  revenuTete, data=climatRegr_recherche, family = binomial(link = logit))
+summary(res.reg01)
+tidy(res.reg01, conf.int = TRUE, exponentiate = FALSE)
+view(tidy_plus_plus(res.reg01, exponentiate = FALSE))
+# permet de vérifier facilement les effectifs et la référence ; view permet de tout voir 
+
+
+
+# tbl_regression(res.reg01, exponentiate = FALSE, intercept = TRUE)
+# fonctionne mais la version ci-dessous tidyverse est plus jolie avec du gras 
+
+res.reg01 %>%
+  tbl_regression(exponentiate = FALSE) %>%
+  bold_labels() %>%
+  bold_p(t = .1)
+#ceci fait une présentation propre des résultats avec en gras les significatifs 
+
+
+# ggcoef_model(res.reg01,exponentiate = TRUE)
+# la représentation graphique des OR 
+ggcoef_model(res.reg01,exponentiate = FALSE)
+# la même avec les coefficients 
+
+
+
+############################################# des variations du modèle ############################################## 
+
+res.reg01 <- glm(SolevolgesFD ~ sexe + ageAgr  + sitpro2 + avionperso + avionpersochgt + revenuTete, data=climatRegr_recherche, family = binomial(link = logit))
+summary(res.reg01)
+
+res.reg02 <- glm(SolevolgesFD ~ sexe + ageAgr  + sitpro2 + avionperso +  revenuTete + visiousages.reunion15 + visiousages.seminaire + visiousages.conf  +visioprivilegiee.emissions  , data=climatRegr_recherche, family = binomial(link = logit))
+summary(res.reg02)
+confint(res.reg02)
+tidy(res.reg02, conf.int = TRUE, exponentiate = TRUE)
+tidy_plus_plus(res.reg02, exponentiate = TRUE)
+
+
+climatRegr$SolevolgesFD <- recode_factor(climatRegr$solevolges.conf, "Fortement diminué"="Oui", .default="Non", .missing="Non")
+#version diplyr by Milan 
+
+rlang::last_error()
 
 # 
 # tout ça c'est pour réussir à paramétrer le https 
