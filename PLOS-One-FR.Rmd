@@ -1,6 +1,8 @@
 ---
 title: 'Annexe 1 : tables et figures supplémentaires'
 output:
+  pdf_document:
+    toc: yes
   html_document:
     fig_width: 7.5
     fig_height: 4.5
