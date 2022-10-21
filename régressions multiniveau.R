@@ -35,7 +35,8 @@ climatRegr <- mutate(climatRegr,
                                                             "Oui, tout à fait d'accord")) - 1,
                      preoccupe2num=as.numeric(fct_relevel(preoccupe2, "Pas du tout préoccupé·e", "Sans opinion",
                                                           "Un peu préoccupé·e", "Assez préoccupé·e", 
-                                                          "Très préoccupé·e", "Extrêmement préoccupé·e")) - 1)
+                                                          "Très préoccupé·e", "Extrêmement préoccupé·e")) - 1,
+                     solreducrechnum=as.numeric(fct_rev(solreducrech)) - 1)
 
 # Création des variables par labo et par discipline
 climatRegr <- group_by(climatRegr, unite.labintel) %>%
@@ -46,7 +47,8 @@ climatRegr <- group_by(climatRegr, unite.labintel) %>%
            tourisme_labo=mean(tourisme, na.rm=TRUE),
            avionpersonum_labo=mean(avionpersonum, na.rm=TRUE),
            chgtpratiquenum_labo=mean(chgtpratiquenum, na.rm=TRUE),
-           preoccupe2num_labo=mean(preoccupe2num, na.rm=TRUE)) %>%
+           preoccupe2num_labo=mean(preoccupe2num, na.rm=TRUE),
+           solreducrechnum_labo=mean(solreducrechnum, na.rm=TRUE)) %>%
     ungroup()
 
 climatRegr <- group_by(climatRegr, discipline) %>%
@@ -57,7 +59,8 @@ climatRegr <- group_by(climatRegr, discipline) %>%
            tourisme_disc=mean(tourisme, na.rm=TRUE),
            avionpersonum_disc=mean(avionpersonum, na.rm=TRUE),
            chgtpratiquenum_disc=mean(chgtpratiquenum, na.rm=TRUE),
-           preoccupe2num_disc=mean(preoccupe2num, na.rm=TRUE)) %>%
+           preoccupe2num_disc=mean(preoccupe2num, na.rm=TRUE),
+           solreducrechnum_disc=mean(solreducrechnum, na.rm=TRUE)) %>%
     ungroup()
 
 # Création de la variable d'écart au labo et à la discipline
@@ -70,6 +73,7 @@ climatRegr <- mutate(climatRegr,
                      avionpersonum_c=avionpersonum - avionpersonum_labo - avionpersonum_disc + mean(avionpersonum, na.rm=TRUE),
                      chgtpratiquenum_c=chgtpratiquenum - chgtpratiquenum_labo - chgtpratiquenum_disc + mean(chgtpratiquenum, na.rm=TRUE),
                      preoccupe2num_c=preoccupe2num - preoccupe2num_labo - preoccupe2num_disc + mean(preoccupe2num, na.rm=TRUE),
+                     solreducrechnum_c=solreducrechnum - solreducrechnum_labo - solreducrechnum_disc + mean(solreducrechnum, na.rm=TRUE),
 
                      volshnum_clabo=volshnum - volshnum_labo,
                      nbpublis2_clabo=nbpublis2 - nbpublis2_labo,
@@ -78,7 +82,8 @@ climatRegr <- mutate(climatRegr,
                      tourisme_clabo=tourisme - tourisme_labo,
                      avionpersonum_clabo=avionpersonum - avionpersonum_labo,
                      chgtpratiquenum_clabo=chgtpratiquenum - chgtpratiquenum_labo,
-                     preoccupe2num_clabo=preoccupe2num - preoccupe2num_labo)
+                     preoccupe2num_clabo=preoccupe2num - preoccupe2num_labo,
+                     solreducrechnum_c=solreducrechnum - solreducrechnum_labo)
 
 # Régression linéaire avec distribution normale (incorrect)
 reg1 <- lmer(volshnum ~ sexe + ageAgr + sitpro2 +
