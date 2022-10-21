@@ -1,0 +1,530 @@
+library(ggrepel)
+library(paletteer)
+library(GGally)
+library(ggpol)
+library("gridExtra")
+library("cowplot")
+
+source("recodages.R", encoding="UTF-8")
+
+# Recodages en plus pour l'occasion ----
+
+
+climat$enfsexe <- paste(climat$sexe, climat$enfantsnb_rec)
+## Recodage de climat$enfsexe
+climat$enfsexe <- fct_recode(climat$enfsexe,
+                             NULL = "Homme NA",
+                             NULL = "Femme NA",
+                             NULL = "NA 1",
+                             NULL = "NA 0",
+                             NULL = "NA 2 ou plus",
+                             NULL = "NA NA"
+)
+
+climat$enfagesexe <- paste(climat$sexe, climat$enfantsage_rec)
+## Recodage de climat$enfsexe
+# irec(climat$enfagesexe)
+## Recodage de climat$enfagesexe
+climat$enfagesexe <- fct_recode(climat$enfagesexe,
+                                NULL = "Homme NA",
+                                NULL = "Femme NA",
+                                NULL = "NA Entre 5 et 15 ans",
+                                NULL = "NA Sans enfant",
+                                NULL = "NA moins de 5 ans",
+                                NULL = "NA NA",
+                                NULL = "NA Plus de 15 ans"
+)
+
+
+
+#indicateurs de compétition
+
+freq(climat$projets.anr_r2)
+freq(climat$projets.anr_m2)
+freq(climat$projets.europe_r2)
+freq(climat$carriere)
+freq(climat$reliquat.avion)
+freq(climat$reliquat.ordi)
+
+freq(climat$sitpro)
+
+
+
+## Recodage de climat_recherche$nbpublisang en climat_recherche$nbpublisang_tranch
+climat$nbpublisang_tranch <- cut(climat$nbpublisang,
+                                 include.lowest = TRUE,
+                                 right = TRUE,
+                                 breaks = c(0, 1, 3, 5, 8, 13, 1300)
+)
+
+
+
+## Recodage de climat$nbpublis en climat$nbpublis_rec
+climat$nbpublis_tranch3 <- cut(climat$nbpublis,
+                               include.lowest = FALSE,
+                               right = TRUE,
+                               breaks = c(0, 1, 3, 6, 10, 1300)
+)
+
+
+## Recodage de climat$hindex en climat$hindex_rec
+climat$hindex_tranch3 <- cut(climat$hindex,
+                             include.lowest = FALSE,
+                             right = TRUE,
+                             breaks = c(0, 10, 15, 20.6000000000001, 29, 6000)
+)
+
+
+
+# sous base seulement recherche
+climat_recherche <- climat[!climat$sitpro %in% c(
+  "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
+  "Chargé·e d'études/de mission","Adjoint·e technique",
+  "Autre"
+),]
+climat_recherche <- climat_recherche[climat_recherche$sexe!="Autre",]
+
+
+
+
+climat_recherche$chgtpratiquenum=as.numeric(fct_relevel(
+  climat_recherche$chgtpratique, "Non, pas du tout d'accord",
+  "Non, plutôt pas d'accord", "Sans opinion",
+  "Oui, plutôt d'accord",
+  "Oui, tout à fait d'accord")) - 1
+
+
+
+# recodages milan multiniveaux ----
+
+
+
+library(lmerTest)
+
+library(lme4)
+
+
+climatRegr <- subset(climatRegr, !sitpro2 %in% c(
+  
+  "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
+  
+  "Chargé·e d'études/de mission","Adjoint·e technique",
+  
+  "Autre"))
+
+
+climatRegr <- mutate(climatRegr,
+                     
+                     nbpublis2=pmin(nbpublis, 100),
+                     
+                     tourisme=startsWith(as.character(apportconf.tourisme), "Oui"),
+                     
+                     avionpersonum=recode(avionperso,
+                                          
+                                          "Aucun aller-retour"=0,
+                                          
+                                          "1 ou 2 allers-retours"=1.5,
+                                          
+                                          "3 ou 4 allers-retours"=2.5,
+                                          
+                                          "Plus de 5 allers-retours"=6),
+                     
+                     chgtpratiquenum=as.numeric(fct_relevel(chgtpratique, "Non, pas du tout d'accord",
+                                                            
+                                                            "Non, plutôt pas d'accord", "Sans opinion",
+                                                            
+                                                            "Oui, plutôt d'accord",
+                                                            
+                                                            "Oui, tout à fait d'accord")) - 1,
+                     
+                     preoccupe2num=as.numeric(fct_relevel(preoccupe2, "Pas du tout préoccupé·e", "Sans opinion",
+                                                          
+                                                          "Un peu préoccupé·e", "Assez préoccupé·e", 
+                                                          
+                                                          "Très préoccupé·e", "Extrêmement préoccupé·e")) - 1)
+
+
+climatRegr <- group_by(climatRegr, unite.labintel) %>%
+  
+  mutate(volshnum_m=mean(volshnum, na.rm=TRUE),
+         
+         nbpublis2_m=mean(nbpublis2, na.rm=TRUE),
+         
+         ScoreEcolo_m=mean(ScoreEcolo, na.rm=TRUE),
+         
+         tourisme_m=mean(tourisme, na.rm=TRUE),
+         
+         avionpersonum_m=mean(avionpersonum, na.rm=TRUE),
+         
+         chgtpratiquenum_m=mean(chgtpratiquenum, na.rm=TRUE),
+         
+         preoccupe2num_m=mean(preoccupe2num, na.rm=TRUE))
+
+
+climatRegr <- group_by(climatRegr, discipline) %>%
+  
+  mutate(volshnum_md=mean(volshnum, na.rm=TRUE),
+         
+         nbpublis2_md=mean(nbpublis2, na.rm=TRUE),
+         
+         ScoreEcolo_md=mean(ScoreEcolo, na.rm=TRUE),
+         
+         tourisme_md=mean(tourisme, na.rm=TRUE),
+         
+         avionpersonum_md=mean(avionpersonum, na.rm=TRUE),
+         
+         chgtpratiquenum_md=mean(chgtpratiquenum, na.rm=TRUE),
+         
+         preoccupe2num_md=mean(preoccupe2num, na.rm=TRUE))
+
+
+climatRegr <- mutate(climatRegr,
+                     
+                     volshnum_c=volshnum - volshnum_m - volshnum_md,
+                     
+                     nbpublis2_c=nbpublis2 - nbpublis2_m - nbpublis2_md,
+                     
+                     ScoreEcolo_c=ScoreEcolo - ScoreEcolo_m - ScoreEcolo_md,
+                     
+                     tourisme_c=tourisme - tourisme_m - tourisme_md,
+                     
+                     avionpersonum_c=avionpersonum - avionpersonum_m - avionpersonum_md,
+                     
+                     chgtpratiquenum_c=chgtpratiquenum - chgtpratiquenum_m - chgtpratiquenum_md,
+                     
+                     preoccupe2num_c=preoccupe2num - preoccupe2num_m - preoccupe2num_md)
+
+
+
+reg1 <- lmer(volsdist_tot ~ sexe + ageAgr + sitpro2 +
+               
+               nbpublis2_c + nbpublis2_m + nbpublis2_md +
+               
+               chgtpratiquenum_c + chgtpratiquenum_m + chgtpratiquenum_md +
+               
+               chgtpratiquenum_c*nbpublis2_c +
+               
+               (1 | unite.labintel) + (1 | discipline),
+             
+             data=climatRegr)
+
+summary(reg1, correlation=F)
+
+
+
+
+## Recodage de climatRegr$volsnbtranch en climatRegr$volsnb_dicho
+climatRegr$volsnb_dicho <- climatRegr$volsnbtranch %>%
+  fct_recode(
+    "0" = "[0,0.5)",
+    "1" = "[0.5,1)",
+    "1" = "[1,2)",
+    "1" = "[2,3)",
+    "11" = "[3,4)",
+    "1" = "[4,5)",
+    "1" = "[5,7)",
+    "1" = "[7,65]"
+  )
+
+
+
+
+# Recodages avion pro et perso ----
+## Recodage de climatRegr$vols_dicho en climatRegr$vols_dicho_rec
+climatRegr$vols_dicho_rec <- climatRegr$vols_dicho %>%
+  fct_recode(
+    "Pro_Non" = "N'a pas volé en 2019",
+    "Pro_Oui" = "A volé en 2019"
+  )
+## Recodage de climatRegr$avionperso en climatRegr$avionperso_rec
+climatRegr$avionperso_rec <- climatRegr$avionperso %>%
+  fct_recode(
+    "Perso_Non" = "Aucun aller-retour",
+    "Perso_Oui" = "1 ou 2 allers-retours",
+    "Perso_Oui" = "3 ou 4 allers-retours",
+    "Perso_Oui" = "Plus de 5 allers-retours"
+  )
+
+prop(table(climatRegr$avionperso_rec, climatRegr$vols_dicho_rec))
+climatRegr$avion_pro_perso <- paste(climatRegr$avionperso_rec, 
+                                    climatRegr$vols_dicho_rec)
+
+## Recodage de climatRegr$avion_pro_perso
+climatRegr$avion_pro_perso <- climatRegr$avion_pro_perso %>%
+  fct_recode(
+    NULL = "NA NA",
+    NULL = "NA Pro_Non",
+    NULL = "NA Pro_Oui",
+    NULL = "Perso_Non NA",
+    NULL = "Perso_Oui NA"
+  )
+
+
+
+## Recodage de climatRegr$preoccupe2 en climatRegr$preoccupe2_4 (4 modalités)
+climatRegr$preoccupe2_4 <- climatRegr$preoccupe2 %>%
+  fct_recode(
+    "Extrêmement" = "Extrêmement préoccupé·e",
+    "Très" = "Très préoccupé·e",
+    "Assez" = "Assez préoccupé·e",
+    "Un peu ou pas du tout" = "Un peu préoccupé·e",
+    "Un peu ou pas du tout" = "Pas du tout préoccupé·e",
+    NULL = "Sans opinion"
+  )
+
+## Réordonnancement de climatRegr$preoccupe2_4 
+climatRegr$preoccupe2_4 <- climatRegr$preoccupe2_4 %>%
+  fct_relevel(
+    "Un peu ou pas du tout", "Assez", "Très", "Extrêmement"
+  )
+
+
+## Réordonnancement de climatRegr$preoccupe2_4 en climatRegr$preoccupe2_4_rev
+climatRegr$preoccupe2_4_rev <- climatRegr$preoccupe2_4 %>%
+  fct_relevel(
+    "Un peu ou pas du tout", "Assez", "Très", "Extrêmement"
+  )
+
+## Recodage de climat$preoccupe2 en climat$preoccupe2_rec (on vire les sans opinions)
+climatRegr$preoccupe2_rec <- fct_recode(climatRegr$preoccupe2,
+                                        NULL = "Sans opinion"
+)
+
+## Réordonnancement de climatRegr$preoccupe2_rec en climatRegr$preoccupe2_rec_rev
+climatRegr$preoccupe2_rec_rev <- climatRegr$preoccupe2_rec %>%
+  fct_relevel(
+    "Extrêmement préoccupé·e", "Très préoccupé·e", "Assez préoccupé·e",
+    "Un peu préoccupé·e", "Pas du tout préoccupé·e"
+  )
+
+
+
+
+
+# Traitements ----
+# sur climatRegr (seulement recherche)
+
+# Avion perso et pro ----
+
+# tris à plat
+
+freq(climatRegr$avionperso)
+freq(climatRegr$avion_pro_perso)
+
+
+# Graphique tri croisé ----
+
+a <- lprop(table(climatRegr$preoccupe2_4, climatRegr$avionperso_rec))
+b <- lprop(table(climatRegr$preoccupe2_4, climatRegr$vols_dicho_rec))
+avion <- cbind(a[1:4, 2], b[1:4, 2])
+colnames(avion) <- c("Privé", "Pro")
+class(avion)
+avion <- as.data.frame(as.table(avion))
+avion_2 = 
+  tibble(Freq = c(-80, 0, 0, 80),
+         Var2 = c("Privé", "Privé", "Pro", "Pro"), 
+         Var1=levels(avion$Var1)) # pour définir la longueur de l'axe des abscisses
+
+
+avion$Freq = ifelse(avion$Var2 == "Privé", avion$Freq * -1, avion$Freq)
+ggplot(avion, aes(x = Var1, y = Freq, fill = Var2)) +
+  geom_bar(stat = "identity", color="black", fill="black")+
+  geom_blank(data = avion_2,
+             mapping = aes(y = Freq))  + 
+  facet_share(~Var2, dir = "h", scales = "free", reverse_num = T) +
+  coord_flip()+ 
+  labs(x="", y = "%", fill="") +
+  theme(legend.position = "bottom")+theme_classic()+theme(
+    plot.title = element_blank(),axis.title.y = element_blank())
+
+# pas réussi à réduire cet espace bizarre à gauche
+
+
+# Même graphique par sexe ----
+
+## pour les Femmes
+
+a <- lprop(table(climatRegr$preoccupe2_4[climatRegr$sexe=="Femme"], 
+                 climatRegr$avionperso_rec[climatRegr$sexe=="Femme"]))
+b <- lprop(table(climatRegr$preoccupe2_4[climatRegr$sexe=="Femme"], 
+                 climatRegr$vols_dicho_rec[climatRegr$sexe=="Femme"]))
+avion <- cbind(a[1:4, 2], b[1:4, 2])
+colnames(avion) <- c("Privé", "Pro")
+class(avion)
+avion <- as.data.frame(as.table(avion))
+avion_2 = 
+  tibble(Freq = c(-80, 0, 0, 80),
+         Var2 = c("Privé", "Privé", "Pro", "Pro"), 
+         Var1=levels(avion$Var1)) # pour définir la longueur de l'axe des abscisses
+
+
+avion$Freq = ifelse(avion$Var2 == "Privé", avion$Freq * -1, avion$Freq)
+ggplot(avion, aes(x = Var1, y = Freq, fill = Var2)) +
+  geom_bar(stat = "identity", color="black", fill="black")+
+  geom_blank(data = avion_2,
+             mapping = aes(y = Freq))  + 
+  facet_share(~Var2, dir = "h", scales = "free", reverse_num = T) +
+  coord_flip()+ 
+  labs(x="", y = "%", fill="") +
+  theme(legend.position = "bottom")+theme_classic()+theme(
+    plot.title = element_blank(),axis.title.y = element_blank())
+
+# pas réussi à réduire cet espace bizarre à gauche
+
+
+## pour les Hommes
+
+a <- lprop(table(climatRegr$preoccupe2_4[climatRegr$sexe=="Homme"], 
+                 climatRegr$avionperso_rec[climatRegr$sexe=="Homme"]))
+b <- lprop(table(climatRegr$preoccupe2_4[climatRegr$sexe=="Homme"], 
+                 climatRegr$vols_dicho_rec[climatRegr$sexe=="Homme"]))
+avion <- cbind(a[1:4, 2], b[1:4, 2])
+colnames(avion) <- c("Privé", "Pro")
+class(avion)
+avion <- as.data.frame(as.table(avion))
+avion_2 = 
+  tibble(Freq = c(-80, 0, 0, 80),
+         Var2 = c("Privé", "Privé", "Pro", "Pro"), 
+         Var1=levels(avion$Var1)) # pour définir la longueur de l'axe des abscisses
+
+
+avion$Freq = ifelse(avion$Var2 == "Privé", avion$Freq * -1, avion$Freq)
+ggplot(avion, aes(x = Var1, y = Freq, fill = Var2)) +
+  geom_bar(stat = "identity", color="black", fill="black")+
+  geom_blank(data = avion_2,
+             mapping = aes(y = Freq))  + 
+  facet_share(~Var2, dir = "h", scales = "free", reverse_num = T) +
+  coord_flip()+ 
+  labs(x="", y = "%", fill="") +
+  theme(legend.position = "bottom")+theme_classic()+theme(
+    plot.title = element_blank(),axis.title.y = element_blank())
+
+# pas réussi à réduire cet espace bizarre à gauche
+
+
+# Les deux sexes ensemble
+
+a <- lprop(table(climatRegr$preoccupe2_4[climatRegr$sexe=="Homme"], 
+                 climatRegr$avionperso_rec[climatRegr$sexe=="Homme"]))
+b <- lprop(table(climatRegr$preoccupe2_4[climatRegr$sexe=="Homme"], 
+                 climatRegr$vols_dicho_rec[climatRegr$sexe=="Homme"]))
+c <- lprop(table(climatRegr$preoccupe2_4[climatRegr$sexe=="Femme"], 
+                 climatRegr$avionperso_rec[climatRegr$sexe=="Femme"]))
+d <- lprop(table(climatRegr$preoccupe2_4[climatRegr$sexe=="Femme"], 
+                 climatRegr$vols_dicho_rec[climatRegr$sexe=="Femme"]))
+avion_hommes <- cbind(a[1:4, 2], b[1:4, 2])
+avion_femmes <- cbind(c[1:4, 2], d[1:4, 2])
+
+colnames(avion_hommes) <- c("Privé", "Pro")
+colnames(avion_femmes) <- c("Privé", "Pro")
+
+class(avion)
+avion_hommes <- as.data.frame(as.table(avion_hommes))
+avion_femmes <- as.data.frame(as.table(avion_femmes))
+avion_hommes$sexe <- "Homme"
+avion_femmes$sexe <- "Femme"
+avion <- rbind(avion_femmes, avion_hommes)
+avion_2 = 
+  tibble(Freq = c(-80, 0, 0, 80),
+         Var2 = c("Privé", "Privé", "Pro", "Pro"), 
+         Var1=levels(avion$Var1), 
+         sexe=1) # pour définir la longueur de l'axe des abscisses
+
+
+avion$Freq = ifelse(avion$Var2 == "Privé", avion$Freq * -1, avion$Freq)
+ggplot(avion, aes(x = Var1, y = Freq, fill = sexe, group=sexe, color=sexe)) +
+  geom_bar(stat = "identity", color="black", fill="black")+
+  geom_blank(data = avion_2,
+             mapping = aes(y = Freq))  + 
+  facet_share(~Var2, dir = "h", scales = "free", reverse_num = T) +
+  coord_flip()+ 
+  labs(x="", y = "%", fill="") +
+  theme(legend.position = "bottom")+theme_classic()+theme(
+    plot.title = element_blank(),axis.title.y = element_blank())
+
+avion_2 = 
+  tibble(Freq = c(-70, 0, 0, 70, -70, 0, 0, 70),
+         Var2 = c("Privé", "Privé", "Pro", "Pro", "Privé", "Privé", "Pro", "Pro"), 
+         Var1=c(levels(avion$Var1), levels(avion$Var1)), 
+         sexe=c("Homme", "Femme", "Homme", "Femme", "Homme", "Femme", "Homme", "Femme")) # pour définir la longueur de l'axe des abscisses
+ggplot(avion, aes(x = Var1, y = Freq, fill = sexe)) +
+  geom_bar(stat = "identity", position = position_dodge(), color="black")+
+  geom_blank(data = avion_2,
+             mapping = aes(y = Freq))  +
+  facet_share(~Var2, dir = "h", scales = "free", reverse_num = T) +
+  scale_fill_grey(start=0, end=1)+
+  coord_flip()+ 
+  labs(x="", y = "%", fill="") +
+  theme(legend.position = "bottom")+theme_classic()+theme(
+    plot.title = element_blank(),axis.title.y = element_blank())+
+  geom_label(aes(label = paste(" (",round(abs(Freq)),"%)", sep=""), group=sexe), 
+             fill="white", colour = "black", 
+             position= position_dodge(1), 
+             size = 3)
+# pas réussi à réduire cet espace bizarre à gauche
+
+
+
+
+# Régressions logistiques : comparaison de l'effet de l'inquiétude sur les vols pros et persos----
+
+# recodages spécifique pour la représentation graphique de la régression ----
+## Réordonnancement de climatRegr$preoccupe2_rec en climatRegr$preoccupe2_rec_rev
+climatRegr$preoccupe2_rec_rev <- climatRegr$preoccupe2_rec %>%
+  fct_relevel(
+    "Extrêmement préoccupé·e",  "Pas du tout préoccupé·e",
+    "Un peu préoccupé·e", "Assez préoccupé·e",
+    "Très préoccupé·e"
+  )
+
+
+# contrôle par sexe et sitpro ----
+
+reg1 <- glm(vols_dicho_rec~preoccupe2_rec_rev+sexe+sitpro2, data=climatRegr, 
+            family = binomial())
+reg2 <- glm(avionperso_rec~preoccupe2_rec_rev+sexe+sitpro2, data=climatRegr, 
+            family = binomial())
+ggcoef_compare(list("Vols pro"=reg1, "Vols perso"=reg2), 
+               conf.level = 0.9, exponentiate = T)
+
+# contrôle par sexe, sitpro et discipline ----
+
+## Réordonnancement de climatRegr$preoccupe2_rec en climatRegr$preoccupe2_rec_rev
+climatRegr$preoccupe2_rec_rev <- climatRegr$preoccupe2_rec %>%
+  fct_relevel(
+    "Extrêmement préoccupé·e",
+    "Très préoccupé·e",  "Assez préoccupé·e",
+    "Un peu préoccupé·e", 
+    "Pas du tout préoccupé·e"
+  )
+
+reg1 <- glm(vols_dicho_rec~preoccupe2_rec_rev+sexe+sitpro2
+            +discipline_agr5, data=climatRegr, 
+            family = binomial())
+reg2 <- glm(avionperso_rec~preoccupe2_rec_rev+sexe+sitpro2
+            +discipline_agr5, data=climatRegr, 
+            family = binomial())
+ggcoef_compare(list("Vols pro"=reg1, "Vols perso"=reg2),
+               conf.level = 0.9, exponentiate = T)
+a <- ggcoef_model(reg1, include = "preoccupe2_rec_rev")
+b <- ggcoef_model(reg2, include = "preoccupe2_rec_rev")
+plot_grid(a,b)
+
+
+# Renoncer à une conférence internationale (en cours) ----
+
+
+iorder(climatRegr$preoccupe2_4)
+## Réordonnancement de climatRegr$preoccupe2_4
+climatRegr$preoccupe2_4 <- climatRegr$preoccupe2_4 %>%
+  fct_relevel(
+    "Extrêmement", "Très", "Assez", "Un peu ou pas du tout"
+  )
+reg1 <- glm(renoncedep.env_dicho1 ~ preoccupe2_4+sexe+sitpro2 +
+              volsnbtranch2, data=climatRegr,
+            family = binomial())
+ggcoef_model(reg1, exponentiate = T)
+# permet de voir que les inquiets, ils renoncent plus 
+# et que donc, s'ils étaient pas inquiets, ils auraient encore plus de vols
+
+
