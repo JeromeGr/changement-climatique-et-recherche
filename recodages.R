@@ -1120,6 +1120,7 @@ climat$tpsdomtrav.veloMin<-climat$tpsdomtrav.velo_h*60+climat$tpsdomtrav.velo_m
 climat$tpsdomtrav.marcheMin<-climat$tpsdomtrav.marche_h*60+climat$tpsdomtrav.marche_m
 
 #Construction d'un "score écolo"
+# On suppose que si au moins une case a été cochée, les autres sont "Non"
 climat$ScoreEcolo<-0
 climat$ScoreEcolo[climat$dixannees.bilan=="Oui" & !is.na(climat$dixannees.bilan)]<-climat$ScoreEcolo[climat$dixannees.bilan=="Oui" & !is.na(climat$dixannees.bilan)]+1
 climat$ScoreEcolo[climat$dixannees.giec=="Oui" & !is.na(climat$dixannees.giec)]<-climat$ScoreEcolo[climat$dixannees.giec=="Oui" & !is.na(climat$dixannees.giec)]+1
@@ -1206,16 +1207,11 @@ climat$projets.prive[climat$projets.prive_r2=="Responsable projet privé oui"]<-
 
 
 #Financements : regroupement membres et responsables
-climat$particip_ANR<-0
-climat$particip_ANR[climat$projets.anr_r2 == "Responsable projet ANR oui" | climat$projets.anr_m2 == "Membre projet ANR oui"]<-1
-climat$particip_Fr<-0
-climat$particip_Fr[climat$projets.france_r2 == "Responsable projet France oui" | climat$projets.france_m2 =="Membre projet France oui"]<-1
-climat$particip_Europ<-0
-climat$particip_Europ[climat$projets.europe_r2 =="Responsable projet européen oui" | climat$projets.europe_m2 == "Membre projet européen oui"]<-1
-climat$particip_Intern<-0
-climat$particip_Intern[climat$projets.inter_r2 == "Responsable projet international oui" | climat$projets.inter_m2 == "Membre projet international oui"]<-1
-climat$particip_prive<-0
-climat$particip_prive[climat$projets.prive_r2 == "Responsable projet privé oui" | climat$projets.prive_m2 == "Membre projet privé oui"]<-1
+climat$particip_ANR <- climat$projets.anr_r2 == "Responsable projet ANR oui" | climat$projets.anr_m2 == "Membre projet ANR oui"
+climat$particip_Fr <- climat$projets.france_r2 == "Responsable projet France oui" | climat$projets.france_m2 == "Membre projet France oui"
+climat$particip_Europ <- climat$projets.europe_r2 == "Responsable projet européen oui" | climat$projets.europe_m2 == "Membre projet européen oui"
+climat$particip_Intern <- climat$projets.inter_r2 == "Responsable projet international oui" | climat$projets.inter_m2 == "Membre projet international oui"
+climat$particip_prive <- climat$projets.prive_r2 == "Responsable projet privé oui" | climat$projets.prive_m2 == "Membre projet privé oui"
 
 
 #Membre ou responsable d'un projet financé
@@ -1226,6 +1222,28 @@ climat$Profin_Mb_Resp[is.na(climat$Profin_Mb_Resp) & (climat$projets.anr_m2 == "
                                                         climat$projets.europe_m2 == "Membre projet européen oui" | climat$projets.inter_m2 == "Membre projet international oui" | 
                                                         climat$projets.prive_r2  == "Responsable projet privé oui") ]<-"Membre d'au moins 1 projet financé"
 climat$Profin_Mb_Resp[is.na(climat$Profin_Mb_Resp)]<-"Ni membre ni resp d'un 1 projet financé"
+
+
+# Construction d'un "score international"
+# On suppose que si au moins une case a été cochée dans le tableau, les autres sont "Non"
+climat$ScoreInternational <- with(climat,
+                                  if_else(is.na(international.poste) & is.na(international.naiss) &
+                                              is.na(international.natio) & is.na(international.scol) &
+                                              is.na(international.etudes) & is.na(international.postdoc) &
+                                              is.na(international.travail) & is.na(international.prog) & 
+                                              is.na(international.asso),
+                                          NA_real_,
+                                          coalesce(international.poste == "Oui", 0) +
+                                              coalesce(international.naiss == "Oui", 0) +
+                                              coalesce(international.natio == "Oui", 0) +
+                                              coalesce(international.scol == "Oui", 0) +
+                                              coalesce(international.etudes == "Oui", 0) +
+                                              coalesce(international.postdoc == "Oui", 0) +
+                                              coalesce(international.travail == "Oui", 0) +
+                                              coalesce(international.prog == "Oui", 0) +
+                                              coalesce(international.asso == "Oui", 0) +
+                                              particip_Europ + particip_Intern))
+
 
 #REvenu : on agrège les catégories avec peu de monde
 climat$revenuAgr<-ifelse(climat$revenu %in% c("De 10 000 à 15 000 euros par mois", "Plus de 15 000 par mois", "De 8 000 à 9 999 euros par mois"), "Au moins 8000 euros par mois", as.character(climat$revenu))
@@ -1682,12 +1700,6 @@ climatACM <- rename.variable(climatACM, "solreducperso.info", "chgt_inform")
 climatACM <- rename.variable(climatACM, "solreducperso.exp", "exp")
 climatACM <- rename.variable(climatACM, "solreducperso.domicile", "domic_trav")
 climatACM <- rename.variable(climatACM, "solreducrech", "secteur")
-
-freq(climat$solreducperso.conf)
-freq(climat$solreducperso.donnees)
-freq(climat$solreducperso.info)
-freq(climat$solreducperso.exp)
-freq(climat$solreducperso.domicile)
 
 climatACM$avion_conf<-fct_recode(climatACM$avion_conf, 
                                          ">1/3"="Oui, d'au moins un tiers",
