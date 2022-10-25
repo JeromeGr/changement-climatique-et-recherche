@@ -1436,14 +1436,15 @@ vars <- paste0("quizfacteurs.",
                c("voiture", "avion", "TGV",
                  "ordi", "visio", "these", "steak"))
 
-climat$quizfacteurs.corpearson <- transmute(rowwise(climat), cor_quiz(c_across(all_of(vars)),
-                                                                      method="pearson"))[[1]]
-climat$quizfacteurs.corspearman <- transmute(rowwise(climat), cor_quiz(c_across(all_of(vars)),
-                                                                       method="spearman"))[[1]]
-climat$quizfacteurs.corkendall <- transmute(rowwise(climat), cor_quiz(c_across(all_of(vars)),
-                                                                      method="kendall"))[[1]]
-climat$quizfacteurs.corpearson2 <- transmute(rowwise(climat), cor_quiz2(c_across(all_of(vars))))[[1]]
-climat$quizfacteurs.ecartabs <- transmute(rowwise(climat), ecartabs_quiz(c_across(all_of(vars))))[[1]]
+# Désactivé car prend du temps
+# climat$quizfacteurs.corpearson <- transmute(rowwise(climat), cor_quiz(c_across(all_of(vars)),
+#                                                                       method="pearson"))[[1]]
+# climat$quizfacteurs.corspearman <- transmute(rowwise(climat), cor_quiz(c_across(all_of(vars)),
+#                                                                        method="spearman"))[[1]]
+# climat$quizfacteurs.corkendall <- transmute(rowwise(climat), cor_quiz(c_across(all_of(vars)),
+#                                                                       method="kendall"))[[1]]
+# climat$quizfacteurs.corpearson2 <- transmute(rowwise(climat), cor_quiz2(c_across(all_of(vars))))[[1]]
+# climat$quizfacteurs.ecartabs <- transmute(rowwise(climat), ecartabs_quiz(c_across(all_of(vars))))[[1]]
 
 
 rm(cor_quiz, vars)
