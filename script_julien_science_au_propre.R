@@ -612,6 +612,16 @@ freq(climatRegr$nbpublistranch)
 # Renoncer à une conférence internationale (en cours) ----
 
 
+## Recodage de climatRegr$renoncedep.env en climatRegr$renoncedep.env_dicho1
+climatRegr$renoncedep.env_dicho1 <- climatRegr$renoncedep.env %>%
+  fct_recode(
+    "Oui_determinant" = "Oui, c'était une raison déterminante",
+    "Non" = "Oui, mais c'était une raison secondaire"
+  )
+climatRegr$renoncedep.env_dicho1 <- fct_relevel(climatRegr$renoncedep.env_dicho1,
+                                                "Non")
+
+
 ## Réordonnancement de climatRegr$preoccupe2_4
 climatRegr$preoccupe2_4 <- climatRegr$preoccupe2_4 %>%
   fct_relevel(
@@ -624,6 +634,111 @@ ggcoef_model(reg1, exponentiate = T)
 # permet de voir que les inquiets, ils renoncent plus 
 # et que donc, s'ils étaient pas inquiets, ils auraient encore plus de vols
 
+
+# stats desc -----
+
+
+freq(climat_recherche$solreducrech3)
+a <- lapply(list(group_by(climatRegr, sexe),
+                 group_by(climatRegr, nbpublistranch),
+                 group_by(climatRegr, preoccupe2_4),
+                 group_by(climatRegr, as.character(ScoreEcolo)),
+                 group_by(climatRegr, sitpro2),
+                 group_by(climatRegr, volsnbtranch)
+),
+function(df) {
+  variable <- colnames(df)[[group_cols(data=df)]]
+  res <- summarize(df, renoncer=mean(renoncedep.env=="Oui, c'était une raison déterminante",
+                                            na.rm=TRUE),
+                   variable=variable)
+  rename(res, modalites=1)
+}) %>%
+  bind_rows() %>%
+  drop_na(modalites) 
+
+a
+a$modalites <- paste(a$variable, a$modalites)
+labels <- a$modalites
+ggplot(a,aes(y=100*renoncer, x=fct_rev(modalites), 
+             label=modalites, color=variable, 
+             shape=variable)) +
+  geom_point() + 
+  geom_segment( aes(x=modalites, xend=modalites, 
+                    y=0, yend=100*renoncer))+ coord_flip()+
+  theme_minimal()+
+  guides(color=guide_none(), shape=guide_none()) +
+  labs(x="", y="Distance totale parcourue")+ 
+  scale_x_discrete(limits=rev(labels))
+
+
+
+a <- lapply(list(group_by(climatRegr, sexe),
+                 group_by(climatRegr, sitpro2),
+                 group_by(climatRegr, discipline_agr5),
+                 group_by(climatRegr, carriere),
+                 group_by(climatRegr, nbpublistranch),
+                 group_by(climatRegr, volsnbtranch)
+),
+function(df) {
+  variable <- colnames(df)[[group_cols(data=df)]]
+  res <- summarize(df, renoncer=mean(renoncedep.env=="Oui, c'était une raison déterminante",
+                                     na.rm=TRUE),
+                   variable=variable)
+  rename(res, modalites=1)
+}) %>%
+  bind_rows() %>%
+  drop_na(modalites) 
+
+a
+a$modalites <- paste(a$variable, a$modalites)
+labels <- a$modalites
+ggplot(a,aes(y=100*renoncer, x=fct_rev(modalites), 
+             label=modalites, color=variable, 
+             shape=variable)) +
+  geom_point() + 
+  geom_segment( aes(x=modalites, xend=modalites, 
+                    y=0, yend=100*renoncer))+ coord_flip()+
+  theme_minimal()+
+  guides(color=guide_none(), shape=guide_none()) +
+  labs(x="", y="Distance totale parcourue")+ 
+  scale_x_discrete(limits=rev(labels))
+
+
+a <- lapply(list(group_by(climatRegr, opinionecolo.decroissance),
+                 group_by(climatRegr, opinionecolo.techno),
+                 group_by(climatRegr, dixannees.bilan),
+                 group_by(climatRegr, dixannees.giec),
+                 group_by(climatRegr, dixannees.asso),
+                 group_by(climatRegr, dixannees.marche),
+                 group_by(climatRegr, dixannees.vote),
+                 group_by(climatRegr, preoccupe2_4),
+                 group_by(climatRegr, chgtpratique),
+                 group_by(climatRegr, solreducrech),
+                 group_by(climatRegr, solreducperso.conf)
+),
+function(df) {
+  variable <- colnames(df)[[group_cols(data=df)]]
+  res <- summarize(df, renoncer=mean(renoncedep.env=="Oui, c'était une raison déterminante",
+                                     na.rm=TRUE),
+                   variable=variable)
+  rename(res, modalites=1)
+}) %>%
+  bind_rows() %>%
+  drop_na(modalites) 
+
+a$modalites <- paste(a$variable, a$modalites)
+labels <- a$modalites
+ggplot(a,aes(y=100*renoncer, x=fct_rev(modalites), 
+             label=modalites, color=variable)) +
+  geom_point(shape=1) + 
+  geom_segment(aes(x=modalites, xend=modalites, 
+                    y=0, yend=100*renoncer))+
+  coord_flip()+
+  theme_minimal()+
+  guides(color=guide_none(), shape=guide_none()) +
+  labs(x="", y="Renoncer à une conf internationale 
+       pour des raisons écolos (raison déterminante)")+ 
+  scale_x_discrete(limits=rev(labels))
 
 # Examen de la variable score internationalisation ----
 
@@ -970,6 +1085,151 @@ base_acp <- climatRegr[,
                        )]
 
 acp <- PCA(base_acp, quanti.sup = 10)
+
+
+# En décomposant les dimensions du score écolo
+
+## Recodage de climatRegr$dixannees.marche en climatRegr$dixannees.marche_num
+climatRegr$dixannees.marche_num <- climatRegr$dixannees.marche %>%
+  fct_recode(
+    "1" = "Oui",
+    "0" = "Non",
+    NULL = "Je ne souhaite pas répondre"
+  ) %>%
+  as.character() %>%
+  as.numeric()
+
+climatRegr$dixannees.asso_num <- climatRegr$dixannees.asso %>%
+  fct_recode(
+    "1" = "Oui",
+    "0" = "Non",
+    NULL = "Je ne souhaite pas répondre"
+  ) %>%
+  as.character() %>%
+  as.numeric()
+climatRegr$dixannees.giec_num <- climatRegr$dixannees.giec %>%
+  fct_recode(
+    "1" = "Oui",
+    "0" = "Non",
+    NULL = "Je ne souhaite pas répondre"
+  ) %>%
+  as.character() %>%
+  as.numeric()
+climatRegr$dixannees.vote_num <- climatRegr$dixannees.vote %>%
+  fct_recode(
+    "1" = "Oui",
+    "0" = "Non",
+    NULL = "Je ne souhaite pas répondre"
+  ) %>%
+  as.character() %>%
+  as.numeric()
+climatRegr$dixannees.bilan_num <- climatRegr$dixannees.bilan %>%
+  fct_recode(
+    "1" = "Oui",
+    "0" = "Non",
+    NULL = "Je ne souhaite pas répondre"
+  ) %>%
+  as.character() %>%
+  as.numeric()
+
+# acp
+
+
+base_acp <- climatRegr[,
+                       c("opinionecolo.decroissance_num",
+                         "opinionecolo.cata_num",
+                         "opinionecolo.techno_num",
+                         "opinionecolo.proteger_num",
+                         "opinionecolo.efforts_num",
+                         "opinionecolo.contraintes_num",
+                         "opinionecolo.effondrement_num",
+                         "preoccupe2num",
+                         "dixannees.marche_num", 
+                         "dixannees.giec_num", 
+                         "dixannees.vote_num", 
+                         "dixannees.asso_num", 
+                         "dixannees.bilan_num",
+                         "ScoreEcolo_reduit", 
+                         "ScoreEcolo", 
+                         "ScoreEcoloPond" 
+                       )]
+
+acp <- PCA(base_acp, quanti.sup = 14:16)
+
+
+base_acp <- climatRegr[,
+                       c("dixannees.marche_num", 
+                         "dixannees.giec_num", 
+                         "dixannees.vote_num", 
+                         "dixannees.asso_num", 
+                         "dixannees.bilan_num",
+                         "ScoreEcolo_reduit", 
+                         "ScoreEcolo", 
+                         "ScoreEcoloPond" 
+                       )]
+
+acp <- PCA(base_acp, quanti.sup = 6:8)
+
+
+# ACP distances par motif ----
+
+
+
+summary(climatRegr$volsdist_totconf)
+summary(climatRegr$volsdist_totterrain)
+summary(climatRegr$volsdist_totcours)
+summary(climatRegr$volsdist_totsejrech)
+summary(climatRegr$volsdist_totjury)
+summary(climatRegr$volsdist_totworkshop)
+summary(climatRegr$volsdist_toteval)
+summary(climatRegr$volsdist_totfinanc)
+
+base_acp <- climatRegr[,c(
+  "volsdist_totconf",
+  "volsdist_totterrain",
+  "volsdist_totcours",
+  "volsdist_totsejrech",
+  "volsdist_totjury",
+  "volsdist_totworkshop",
+  "volsdist_toteval",
+  "volsdist_totfinanc"
+)]
+PCA(base_acp)
+PCA(base_acp, scale.unit=TRUE)
+
+
+a <- tapply(climat$volsdist_totterrain, 
+            climat$enfagesexe, mean, na.rm=T)
+b <- tapply(climat$volsdist_totconf, 
+            climat$enfagesexe, mean, na.rm=T)
+c <- tapply(climat$volsdist_totcours, 
+            climat$enfagesexe, mean, na.rm=T)
+d <- tapply(climat$volsdist_totsejrech, 
+            climat$enfagesexe, mean, na.rm=T)
+e <- tapply(climat$volsdist_totjury, 
+            climat$enfagesexe, mean, na.rm=T)
+f <- tapply(climat$volsdist_totworkshop, 
+            climat$enfagesexe, mean, na.rm=T)
+g <- tapply(climat$volsdist_toteval, 
+            climat$enfagesexe, mean, na.rm=T)
+h <- tapply(climat$volsdist_totfinanc, 
+            climat$enfagesexe, mean, na.rm=T)
+
+motifs <- cbind(a, b, c, d, e, f, g, h)
+colnames(motifs) <- c("confs", "terrain", "cours", "sejourrech", "jury", "workshop",
+                      "eval", "financ")
+library(FactoMineR)
+library(explor)
+library(factoextra)
+
+acp <- PCA(motifs, scale.unit=F)
+
+
+fviz_pca_biplot(acp, repel = T)+ xlim(-2.5, 4) + ylim (-3, 3)
+fviz_pca_biplot(acp, repel = T)+ xlim(-2.5, 4) + ylim (-3, 3)
+
+fviz_pca_ind(acp, repel = T)
+fviz_pca_biplot(acp, axes = c(1,3), repel = T)+ xlim(-2.5, 4) + ylim (-3, 3)
 
 
 
