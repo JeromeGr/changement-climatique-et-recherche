@@ -340,6 +340,88 @@ ggplot(avion, aes(x = Var1, y = Freq, fill = Var2)) +
 # pas réussi à réduire cet espace bizarre à gauche
 
 
+# avec le score écolo ----
+
+
+a <- lprop(table(climatRegr$ScoreEcolo, climatRegr$avionperso_rec))
+b <- lprop(table(climatRegr$ScoreEcolo, climatRegr$vols_dicho_rec))
+avion <- cbind(a[1:6, 2], b[1:6, 2])
+colnames(avion) <- c("Privé", "Pro")
+class(avion)
+avion <- as.data.frame(as.table(avion))
+avion_2 = 
+  tibble(Freq = c(-80, 0, 0, 80, 0, 80),
+         Var2 = c("Privé", "Privé", "Pro", "Pro", "Pro", "Pro"), 
+         Var1=levels(avion$Var1)) # pour définir la longueur de l'axe des abscisses
+
+
+avion$Freq = ifelse(avion$Var2 == "Privé", avion$Freq * -1, avion$Freq)
+ggplot(avion, aes(x = Var1, y = Freq, fill = Var2)) +
+  geom_bar(stat = "identity", color="black", fill="black")+
+  geom_blank(data = avion_2,
+             mapping = aes(y = Freq))  + 
+  facet_share(~Var2, dir = "h", scales = "free", reverse_num = T) +
+  coord_flip()+ 
+  labs(x="", y = "%", fill="") +
+  theme(legend.position = "bottom")+theme_classic()+theme(
+    plot.title = element_blank(),axis.title.y = element_blank())
+
+
+
+# avec la décroissance ----
+
+
+a <- lprop(table(climatRegr$opinionecolo.decroissance, climatRegr$avionperso_rec))
+b <- lprop(table(climatRegr$opinionecolo.decroissance, climatRegr$vols_dicho_rec))
+avion <- cbind(a[1:4, 2], b[1:4, 2])
+colnames(avion) <- c("Privé", "Pro")
+class(avion)
+avion <- as.data.frame(as.table(avion))
+avion_2 = 
+  tibble(Freq = c(-80, 0, 0, 80),
+         Var2 = c("Privé", "Privé", "Pro", "Pro"), 
+         Var1=levels(avion$Var1)) # pour définir la longueur de l'axe des abscisses
+
+
+avion$Freq = ifelse(avion$Var2 == "Privé", avion$Freq * -1, avion$Freq)
+ggplot(avion, aes(x = Var1, y = Freq, fill = Var2)) +
+  geom_bar(stat = "identity", color="black", fill="black")+
+  geom_blank(data = avion_2,
+             mapping = aes(y = Freq))  + 
+  facet_share(~Var2, dir = "h", scales = "free", reverse_num = T) +
+  coord_flip()+ 
+  labs(x="", y = "%", fill="") +
+  theme(legend.position = "bottom")+theme_classic()+theme(
+    plot.title = element_blank(),axis.title.y = element_blank())
+
+
+# avec les changements profonds ----
+
+
+a <- lprop(table(climatRegr$chgtpratique, climatRegr$avionperso_rec))
+b <- lprop(table(climatRegr$chgtpratique, climatRegr$vols_dicho_rec))
+avion <- cbind(a[1:4, 2], b[1:4, 2])
+colnames(avion) <- c("Privé", "Pro")
+class(avion)
+avion <- as.data.frame(as.table(avion))
+avion_2 = 
+  tibble(Freq = c(-80, 0, 0, 80),
+         Var2 = c("Privé", "Privé", "Pro", "Pro"), 
+         Var1=levels(avion$Var1)) # pour définir la longueur de l'axe des abscisses
+
+
+avion$Freq = ifelse(avion$Var2 == "Privé", avion$Freq * -1, avion$Freq)
+ggplot(avion, aes(x = Var1, y = Freq, fill = Var2)) +
+  geom_bar(stat = "identity", color="black", fill="black")+
+  geom_blank(data = avion_2,
+             mapping = aes(y = Freq))  + 
+  facet_share(~Var2, dir = "h", scales = "free", reverse_num = T) +
+  coord_flip()+ 
+  labs(x="", y = "%", fill="") +
+  theme(legend.position = "bottom")+theme_classic()+theme(
+    plot.title = element_blank(),axis.title.y = element_blank())
+
+
 # Même graphique par sexe ----
 
 ## pour les Femmes
@@ -487,6 +569,7 @@ reg2 <- glm(avionperso_rec~preoccupe2_rec_rev+sexe+sitpro2, data=climatRegr,
 ggcoef_compare(list("Vols pro"=reg1, "Vols perso"=reg2), 
                conf.level = 0.9, exponentiate = T)
 
+
 # contrôle par sexe, sitpro et discipline ----
 
 ## Réordonnancement de climatRegr$preoccupe2_rec en climatRegr$preoccupe2_rec_rev
@@ -511,10 +594,24 @@ b <- ggcoef_model(reg2, include = "preoccupe2_rec_rev")
 plot_grid(a,b)
 
 
+#essais avec le score d'internationalisation
+
+reg1 <- glm(vols_dicho_rec~preoccupe2_rec_rev+sexe+sitpro2+
+              ScoreInternational+nbpublistranch+
+              discipline_agr5, data=climatRegr, 
+            family = binomial())
+reg2 <- glm(avionperso_rec~preoccupe2_rec_rev+sexe+sitpro2+
+              ScoreInternational+nbpublistranch+
+              discipline_agr5
+              , data=climatRegr, 
+            family = binomial())
+ggcoef_compare(list("Vols pro"=reg1, "Vols perso"=reg2), 
+               conf.level = 0.9, exponentiate = T)
+freq(climatRegr$nbpublistranch)
+
 # Renoncer à une conférence internationale (en cours) ----
 
 
-iorder(climatRegr$preoccupe2_4)
 ## Réordonnancement de climatRegr$preoccupe2_4
 climatRegr$preoccupe2_4 <- climatRegr$preoccupe2_4 %>%
   fct_relevel(
@@ -526,5 +623,353 @@ reg1 <- glm(renoncedep.env_dicho1 ~ preoccupe2_4+sexe+sitpro2 +
 ggcoef_model(reg1, exponentiate = T)
 # permet de voir que les inquiets, ils renoncent plus 
 # et que donc, s'ils étaient pas inquiets, ils auraient encore plus de vols
+
+
+# Examen de la variable score internationalisation ----
+
+freq(climatRegr$international.poste)
+freq(climatRegr$international.naiss)
+freq(climatRegr$international.natio)
+freq(climatRegr$international.scol)
+freq(climatRegr$international.etudes)
+freq(climatRegr$international.postdoc)
+freq(climatRegr$international.travail)
+freq(climatRegr$international.prog)
+freq(climatRegr$international.asso)
+
+
+a <- rbind(
+lprop(table(climatRegr$international.poste, climatRegr$vols_dicho_rec))[-3,2],
+lprop(table(climatRegr$international.naiss, climatRegr$vols_dicho_rec))[-3,2],
+lprop(table(climatRegr$international.natio, climatRegr$vols_dicho_rec))[-3,2],
+lprop(table(climatRegr$international.scol, climatRegr$vols_dicho_rec))[-3,2],
+lprop(table(climatRegr$international.etudes, climatRegr$vols_dicho_rec))[-3,2],
+lprop(table(climatRegr$international.postdoc, climatRegr$vols_dicho_rec))[-3,2],
+lprop(table(climatRegr$international.travail, climatRegr$vols_dicho_rec))[-3,2],
+lprop(table(climatRegr$international.prog, climatRegr$vols_dicho_rec))[-3,2],
+lprop(table(climatRegr$international.asso, climatRegr$vols_dicho_rec))[-3,2]
+)
+rownames(a) <- c(
+  "poste",
+  "naiss",
+  "natio",
+  "scol",
+  "etudes",
+  "postdoc",
+  "travail",
+  "prog",
+  "asso"
+)
+# colnames(a) <- paste("pro_", colnames(a), sep="")
+a <- as.data.frame(as.table(a))
+a$type <- "pro"
+
+b <- rbind(
+  lprop(table(climatRegr$international.poste, climatRegr$avionperso_rec))[-3,2],
+  lprop(table(climatRegr$international.naiss, climatRegr$avionperso_rec))[-3,2],
+  lprop(table(climatRegr$international.natio, climatRegr$avionperso_rec))[-3,2],
+  lprop(table(climatRegr$international.scol, climatRegr$avionperso_rec))[-3,2],
+  lprop(table(climatRegr$international.etudes, climatRegr$avionperso_rec))[-3,2],
+  lprop(table(climatRegr$international.postdoc, climatRegr$avionperso_rec))[-3,2],
+  lprop(table(climatRegr$international.travail, climatRegr$avionperso_rec))[-3,2],
+  lprop(table(climatRegr$international.prog, climatRegr$avionperso_rec))[-3,2],
+  lprop(table(climatRegr$international.asso, climatRegr$avionperso_rec))[-3,2]
+)
+rownames(b) <- c(
+  "poste",
+  "naiss",
+  "natio",
+  "scol",
+  "etudes",
+  "postdoc",
+  "travail",
+  "prog",
+  "asso"
+)
+# colnames(b) <- paste("perso_", colnames(b), sep="")
+b <- as.data.frame(as.table(b))
+b$type <- "perso"
+
+c <- rbind(a,b)
+as.data.frame(as.table(c))
+
+ggplot(c, aes(y=Freq, x=Var1, fill=Var2))+
+  geom_bar(stat="identity", position=position_dodge(), 
+           color="black")+
+  facet_grid(~type)+
+  coord_flip()+
+  scale_fill_grey(start=0, end=1)
+
+
+# avec les heures de vol ----
+
+freq(climat$volsnbtranch)
+
+
+a <- rbind(
+  lprop(table(climatRegr$international.poste, climatRegr$volsnbtranch))[1:2,-9],
+  lprop(table(climatRegr$international.naiss, climatRegr$volsnbtranch))[1:2,-9],
+  lprop(table(climatRegr$international.natio, climatRegr$volsnbtranch))[1:2,-9],
+  lprop(table(climatRegr$international.scol, climatRegr$volsnbtranch))[1:2,-9],
+  lprop(table(climatRegr$international.etudes, climatRegr$volsnbtranch))[1:2,-9],
+  lprop(table(climatRegr$international.postdoc, climatRegr$volsnbtranch))[1:2,-9],
+  lprop(table(climatRegr$international.travail, climatRegr$volsnbtranch))[1:2,-9],
+  lprop(table(climatRegr$international.prog, climatRegr$volsnbtranch))[1:2,-9],
+  lprop(table(climatRegr$international.asso, climatRegr$volsnbtranch))[1:2,-9]
+)
+
+rownames(a) <- paste(c(
+  "poste","poste",
+  "naiss","naiss",
+  "natio","natio",
+  "scol","scol",
+  "etudes","etudes",
+  "postdoc","postdoc",
+  "travail","travail",
+  "prog","prog",
+  "asso", "asso"
+),rownames(a))
+
+# colnames(a) <- paste("pro_", colnames(a), sep="")
+a <- as.data.frame(as.table(a))
+
+
+ggplot(a, aes(y=Freq, x=Var1, fill=Var2))+
+  geom_bar(stat="identity", position=position_fill(), 
+           color="black")+
+  coord_flip()+
+  scale_fill_grey(start=1, end=0)
+
+
+
+# Examen des variables du score écolo ----
+
+freq(climatRegr$dixannees.bilan)
+freq(climatRegr$dixannees.giec)
+freq(climatRegr$dixannees.asso)
+freq(climatRegr$dixannees.marche)
+freq(climatRegr$dixannees.vote)
+
+
+
+a <- rbind(
+  lprop(table(climatRegr$dixannees.bilan, climatRegr$vols_dicho_rec))[1:2,2],
+  lprop(table(climatRegr$dixannees.giec, climatRegr$vols_dicho_rec))[1:2,2],
+  lprop(table(climatRegr$dixannees.asso, climatRegr$vols_dicho_rec))[1:2,2],
+  lprop(table(climatRegr$dixannees.marche, climatRegr$vols_dicho_rec))[1:2,2],
+  lprop(table(climatRegr$dixannees.vote, climatRegr$vols_dicho_rec))[1:2,2]
+)
+rownames(a) <- c(
+  "bilan",
+  "giec",
+  "asso",
+  "marche",
+  "vote"
+)
+a <- as.data.frame(as.table(a))
+a$type <- "pro"
+
+b <- rbind(
+  lprop(table(climatRegr$dixannees.bilan, climatRegr$avionperso_rec))[1:2,2],
+  lprop(table(climatRegr$dixannees.giec, climatRegr$avionperso_rec))[1:2,2],
+  lprop(table(climatRegr$dixannees.asso, climatRegr$avionperso_rec))[1:2,2],
+  lprop(table(climatRegr$dixannees.marche, climatRegr$avionperso_rec))[1:2,2],
+  lprop(table(climatRegr$dixannees.vote, climatRegr$avionperso_rec))[1:2,2]
+)
+rownames(b) <- c(
+  "bilan",
+  "giec",
+  "asso",
+  "marche",
+  "vote"
+)
+b <- as.data.frame(as.table(b))
+b$type <- "perso"
+
+c <- rbind(a,b)
+
+
+ggplot(c, aes(y=Freq, x=Var1, fill=Var2))+
+  geom_bar(stat="identity", position=position_dodge(), 
+           color="black")+
+  facet_grid(~type)+
+  coord_flip()+
+  scale_fill_grey(start=0, end=1)
+
+
+# avec les heures de vol
+
+
+a <- rbind(
+  lprop(table(climatRegr$dixannees.bilan, climatRegr$volsnbtranch))[1:2,-9],
+  lprop(table(climatRegr$dixannees.giec, climatRegr$volsnbtranch))[1:2,-9],
+  lprop(table(climatRegr$dixannees.asso, climatRegr$volsnbtranch))[1:2,-9],
+  lprop(table(climatRegr$dixannees.marche, climatRegr$volsnbtranch))[1:2,-9],
+  lprop(table(climatRegr$dixannees.vote, climatRegr$volsnbtranch))[1:2,-9]
+)
+
+rownames(a) <- paste(c(
+  "bilan", "bilan",
+  "giec", "giec",
+  "asso", "asso",
+  "marche", "marche",
+  "vote", "vote"
+),rownames(a))
+
+# colnames(a) <- paste("pro_", colnames(a), sep="")
+a <- as.data.frame(as.table(a))
+
+
+ggplot(a, aes(y=Freq, x=Var1, fill=Var2))+
+  geom_bar(stat="identity", position=position_fill(), 
+           color="black")+
+  coord_flip()+
+  scale_fill_grey(start=1, end=0)
+
+
+# variable de synthèse écolo ----
+
+freq(climatRegr$opinionecolo.decroissance)
+freq(climatRegr$opinionecolo.cata)
+freq(climatRegr$opinionecolo.techno)
+freq(climatRegr$opinionecolo.proteger)
+freq(climatRegr$opinionecolo.efforts)
+freq(climatRegr$opinionecolo.contraintes)
+freq(climatRegr$opinionecolo.effondrement)
+
+
+
+climatRegr <- mutate(climatRegr,
+                     opinionecolo.decroissance_num=as.numeric(
+                       fct_relevel(
+                         opinionecolo.decroissance, 
+                         "Pas du tout d'accord", 
+                         "Plutôt pas d'accord", 
+                         "Sans opinion", 
+                         "Plutôt d'accord",
+                         "Tout à fait d'accord")) - 1,
+                     opinionecolo.cata_num=as.numeric(
+                       fct_relevel(
+                         opinionecolo.cata, 
+                         "Pas du tout d'accord", 
+                         "Plutôt pas d'accord", 
+                         "Sans opinion", 
+                         "Plutôt d'accord",
+                         "Tout à fait d'accord")) - 1,
+                     opinionecolo.techno_num=as.numeric(
+                       fct_relevel(
+                         opinionecolo.techno, 
+                         "Pas du tout d'accord", 
+                         "Plutôt pas d'accord", 
+                         "Sans opinion", 
+                         "Plutôt d'accord",
+                         "Tout à fait d'accord")) - 1,
+                     opinionecolo.proteger_num=as.numeric(
+                       fct_relevel(
+                         opinionecolo.proteger, 
+                         "Pas du tout d'accord", 
+                         "Plutôt pas d'accord", 
+                         "Sans opinion", 
+                         "Plutôt d'accord",
+                         "Tout à fait d'accord")) - 1,
+                     opinionecolo.efforts_num=as.numeric(
+                       fct_relevel(
+                         opinionecolo.efforts, 
+                         "Pas du tout d'accord", 
+                         "Plutôt pas d'accord", 
+                         "Sans opinion", 
+                         "Plutôt d'accord",
+                         "Tout à fait d'accord")) - 1,
+                     opinionecolo.contraintes_num=as.numeric(
+                       fct_relevel(
+                         opinionecolo.contraintes, 
+                         "Pas du tout d'accord", 
+                         "Plutôt pas d'accord", 
+                         "Sans opinion", 
+                         "Plutôt d'accord",
+                         "Tout à fait d'accord")) - 1,
+                     opinionecolo.effondrement_num=as.numeric(
+                       fct_relevel(
+                         opinionecolo.effondrement, 
+                         "Pas du tout d'accord", 
+                         "Plutôt pas d'accord", 
+                         "Sans opinion", 
+                         "Plutôt d'accord",
+                         "Tout à fait d'accord")) - 1)
+
+base_acp <- climatRegr[,
+                       c(
+                         
+                         "opinionecolo.decroissance_num",
+                         "opinionecolo.cata_num",
+                         "opinionecolo.techno_num",
+                         "opinionecolo.proteger_num",
+                         "opinionecolo.efforts_num",
+                         "opinionecolo.contraintes_num",
+                         "opinionecolo.effondrement_num"
+                       )]
+
+
+# ACP ----
+library(FactoMineR)
+acp <- PCA(base_acp)
+
+
+base_acp <- climatRegr[,
+                       c(
+                         
+                         "opinionecolo.decroissance_num",
+                         "opinionecolo.cata_num",
+                         "opinionecolo.techno_num",
+                         "opinionecolo.proteger_num",
+                         "opinionecolo.efforts_num",
+                         "opinionecolo.contraintes_num",
+                         "opinionecolo.effondrement_num",
+                         "preoccupe2num", 
+                         "ScoreEcolo"
+                       )]
+
+acp <- PCA(base_acp)
+
+
+base_acp <- climatRegr[,
+                       c("opinionecolo.decroissance_num",
+                         "opinionecolo.cata_num",
+                         "opinionecolo.techno_num",
+                         "opinionecolo.proteger_num",
+                         "opinionecolo.efforts_num",
+                         "opinionecolo.contraintes_num",
+                         "opinionecolo.effondrement_num",
+                         "preoccupe2num", 
+                         "ScoreEcoloPond"
+                       )]
+
+acp <- PCA(base_acp)
+
+# avec un score écolo juste avec les trois variables d'implication politique
+
+# On suppose que si au moins une case a été cochée, les autres sont "Non"
+climatRegr$ScoreEcolo_reduit<-0
+climatRegr$ScoreEcolo_reduit[climatRegr$dixannees.asso=="Oui"& !is.na(climatRegr$dixannees.asso)]<-climatRegr$ScoreEcolo[climatRegr$dixannees.asso=="Oui" & !is.na(climatRegr$dixannees.asso)]+1
+climatRegr$ScoreEcolo_reduit[climatRegr$dixannees.marche=="Oui" & !is.na(climatRegr$dixannees.marche)]<-climatRegr$ScoreEcolo[climatRegr$dixannees.marche=="Oui" & !is.na(climatRegr$dixannees.marche)]+1
+climatRegr$ScoreEcolo_reduit[climatRegr$dixannees.vote=="Oui" & !is.na(climatRegr$dixannees.vote)]<-climatRegr$ScoreEcolo[climatRegr$dixannees.vote=="Oui" & !is.na(climatRegr$dixannees.vote)]+1
+climatRegr$ScoreEcolo_reduit[is.na(climatRegr$dixannees.asso) & is.na(climatRegr$dixannees.marche) & is.na(climatRegr$dixannees.vote)]<-NA
+
+
+base_acp <- climatRegr[,
+                       c("opinionecolo.decroissance_num",
+                         "opinionecolo.cata_num",
+                         "opinionecolo.techno_num",
+                         "opinionecolo.proteger_num",
+                         "opinionecolo.efforts_num",
+                         "opinionecolo.contraintes_num",
+                         "opinionecolo.effondrement_num",
+                         "preoccupe2num", 
+                         "ScoreEcolo_reduit", 
+                         "ScoreEcolo"
+                       )]
+
+acp <- PCA(base_acp, quanti.sup = 10)
+
 
 
