@@ -1150,14 +1150,15 @@ climat$opinionecolo.effondrement2[climat$opinionecolo.cata == "Sans opinion"] <-
 
 
 # participation à une ANR, ERC, etc.
+tableaurempli <-
+    rowSums(!is.na(as.matrix(select(climat,
+                                    paste0("projets.", c("anr", "europe", "france", "inter", "prive"), "_n"),
+                                    paste0("projets.", c("anr", "europe", "france", "inter", "prive"), "_m"),
+                                    paste0("projets.", c("anr", "europe", "france", "inter", "prive"), "_r"))))) > 0
 for(inst in c("anr", "europe", "france", "inter", "prive")) {
   varnon <- paste0("projets.", inst, "_n")
   varr <- paste0("projets.", inst, "_r")
   varm <- paste0("projets.", inst, "_m")
-  # Indique si au moins une case a été cochée sur la ligne (Responsable, membre, non)
-  unecochee <- (!is.na(climat[[varnon]]) & climat[[varnon]] == 1) |
-               (!is.na(climat[[varr]]) & climat[[varr]] == 1) |
-               (!is.na(climat[[varm]]) & climat[[varm]] == 1)
   for(sit in c("r", "m")) {
     var <- paste0("projets.", inst, "_", sit)
     var2 <- paste0("projets.", inst, "_", sit, "2")
@@ -1168,20 +1169,22 @@ for(inst in c("anr", "europe", "france", "inter", "prive")) {
                prive="projet privé")[inst]
     sit2 <- c(r="Responsable", m="Membre")[sit]
     # NA signifie non coché, ce qui mélange Non réponse et Non :
-    # on les sépare selon qu'une (autre) case a été cochée sur la ligne ou non
+    # on les sépare selon qu'une (autre) case a été cochée dans le tableau ou non
     # 1 signifie coché
     # 0 signifie que le répondant n'est pas allé jusqu'à cette question/page
     # Si Oui et Non ont été cochés tous les deux, on retient Oui
     # Vérification avec :
     # table(paste(climat$projets.anr_r, climat$projets.anr_m, climat$projets.anr_n),
     #             climat$projets.anr_m2, useNA="a")
-    climat[[var2]] <- if_else(is.na(climat[[var]]) & unecochee,
+    climat[[var2]] <- if_else(is.na(climat[[var]]) & tableaurempli,
                               paste(sit2, inst2, "non"),
                               if_else(climat[[var]] == 1,
                                       paste(sit2, inst2, "oui"),
                                       NA_character_))
   }
 }
+
+rm(tableaurempli, unecochee)
 
 #On met dans une même variable membres et responsables
 #Certains ont coché membre ET responsable. Par défaut, on les considère comme responsable seulement
@@ -1436,14 +1439,15 @@ vars <- paste0("quizfacteurs.",
                c("voiture", "avion", "TGV",
                  "ordi", "visio", "these", "steak"))
 
-climat$quizfacteurs.corpearson <- transmute(rowwise(climat), cor_quiz(c_across(all_of(vars)),
-                                                                      method="pearson"))[[1]]
-climat$quizfacteurs.corspearman <- transmute(rowwise(climat), cor_quiz(c_across(all_of(vars)),
-                                                                       method="spearman"))[[1]]
-climat$quizfacteurs.corkendall <- transmute(rowwise(climat), cor_quiz(c_across(all_of(vars)),
-                                                                      method="kendall"))[[1]]
-climat$quizfacteurs.corpearson2 <- transmute(rowwise(climat), cor_quiz2(c_across(all_of(vars))))[[1]]
-climat$quizfacteurs.ecartabs <- transmute(rowwise(climat), ecartabs_quiz(c_across(all_of(vars))))[[1]]
+# Désactivé car prend du temps
+# climat$quizfacteurs.corpearson <- transmute(rowwise(climat), cor_quiz(c_across(all_of(vars)),
+#                                                                       method="pearson"))[[1]]
+# climat$quizfacteurs.corspearman <- transmute(rowwise(climat), cor_quiz(c_across(all_of(vars)),
+#                                                                        method="spearman"))[[1]]
+# climat$quizfacteurs.corkendall <- transmute(rowwise(climat), cor_quiz(c_across(all_of(vars)),
+#                                                                       method="kendall"))[[1]]
+# climat$quizfacteurs.corpearson2 <- transmute(rowwise(climat), cor_quiz2(c_across(all_of(vars))))[[1]]
+# climat$quizfacteurs.ecartabs <- transmute(rowwise(climat), ecartabs_quiz(c_across(all_of(vars))))[[1]]
 
 
 rm(cor_quiz, vars)
