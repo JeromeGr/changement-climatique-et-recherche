@@ -98,118 +98,81 @@ climat_recherche$chgtpratiquenum=as.numeric(fct_relevel(
 # recodages milan multiniveaux ----
 
 
-
-library(lmerTest)
-
-library(lme4)
-
-
 climatRegr <- subset(climatRegr, !sitpro2 %in% c(
-  
   "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
-  
   "Chargé·e d'études/de mission","Adjoint·e technique",
-  
   "Autre"))
 
+# climatRegr <- group_by(climatRegr, unite.labintel) %>%
+#     filter(n() > 1)
+# 
+# climatRegr <- group_by(climatRegr, discipline) %>%
+#     filter(n() > 1)
+
 
 climatRegr <- mutate(climatRegr,
-                     
                      nbpublis2=pmin(nbpublis, 100),
-                     
                      tourisme=startsWith(as.character(apportconf.tourisme), "Oui"),
-                     
                      avionpersonum=recode(avionperso,
-                                          
                                           "Aucun aller-retour"=0,
-                                          
                                           "1 ou 2 allers-retours"=1.5,
-                                          
                                           "3 ou 4 allers-retours"=2.5,
-                                          
                                           "Plus de 5 allers-retours"=6),
-                     
                      chgtpratiquenum=as.numeric(fct_relevel(chgtpratique, "Non, pas du tout d'accord",
-                                                            
                                                             "Non, plutôt pas d'accord", "Sans opinion",
-                                                            
                                                             "Oui, plutôt d'accord",
-                                                            
                                                             "Oui, tout à fait d'accord")) - 1,
-                     
                      preoccupe2num=as.numeric(fct_relevel(preoccupe2, "Pas du tout préoccupé·e", "Sans opinion",
-                                                          
                                                           "Un peu préoccupé·e", "Assez préoccupé·e", 
-                                                          
-                                                          "Très préoccupé·e", "Extrêmement préoccupé·e")) - 1)
+                                                          "Très préoccupé·e", "Extrêmement préoccupé·e")) - 1,
+                     solreducrechnum=as.numeric(fct_rev(solreducrech)) - 1)
 
-
+# Création des variables par labo et par discipline
 climatRegr <- group_by(climatRegr, unite.labintel) %>%
-  
-  mutate(volshnum_m=mean(volshnum, na.rm=TRUE),
-         
-         nbpublis2_m=mean(nbpublis2, na.rm=TRUE),
-         
-         ScoreEcolo_m=mean(ScoreEcolo, na.rm=TRUE),
-         
-         tourisme_m=mean(tourisme, na.rm=TRUE),
-         
-         avionpersonum_m=mean(avionpersonum, na.rm=TRUE),
-         
-         chgtpratiquenum_m=mean(chgtpratiquenum, na.rm=TRUE),
-         
-         preoccupe2num_m=mean(preoccupe2num, na.rm=TRUE))
-
+  mutate(volshnum_labo=mean(volshnum, na.rm=TRUE),
+         nbpublis2_labo=mean(nbpublis2, na.rm=TRUE),
+         ScoreEcolo_labo=mean(ScoreEcolo, na.rm=TRUE),
+         ScoreInternational_labo=mean(ScoreInternational, na.rm=TRUE),
+         tourisme_labo=mean(tourisme, na.rm=TRUE),
+         avionpersonum_labo=mean(avionpersonum, na.rm=TRUE),
+         chgtpratiquenum_labo=mean(chgtpratiquenum, na.rm=TRUE),
+         preoccupe2num_labo=mean(preoccupe2num, na.rm=TRUE),
+         solreducrechnum_labo=mean(solreducrechnum, na.rm=TRUE)) %>%
+  ungroup()
 
 climatRegr <- group_by(climatRegr, discipline) %>%
-  
-  mutate(volshnum_md=mean(volshnum, na.rm=TRUE),
-         
-         nbpublis2_md=mean(nbpublis2, na.rm=TRUE),
-         
-         ScoreEcolo_md=mean(ScoreEcolo, na.rm=TRUE),
-         
-         tourisme_md=mean(tourisme, na.rm=TRUE),
-         
-         avionpersonum_md=mean(avionpersonum, na.rm=TRUE),
-         
-         chgtpratiquenum_md=mean(chgtpratiquenum, na.rm=TRUE),
-         
-         preoccupe2num_md=mean(preoccupe2num, na.rm=TRUE))
+  mutate(volshnum_disc=mean(volshnum, na.rm=TRUE),
+         nbpublis2_disc=mean(nbpublis2, na.rm=TRUE),
+         ScoreEcolo_disc=mean(ScoreEcolo, na.rm=TRUE),
+         ScoreInternational_disc=mean(ScoreInternational, na.rm=TRUE),
+         tourisme_disc=mean(tourisme, na.rm=TRUE),
+         avionpersonum_disc=mean(avionpersonum, na.rm=TRUE),
+         chgtpratiquenum_disc=mean(chgtpratiquenum, na.rm=TRUE),
+         preoccupe2num_disc=mean(preoccupe2num, na.rm=TRUE),
+         solreducrechnum_disc=mean(solreducrechnum, na.rm=TRUE)) %>%
+  ungroup()
 
-
+# Création de la variable d'écart au labo et à la discipline
 climatRegr <- mutate(climatRegr,
+                     volshnum_c=volshnum - volshnum_labo - volshnum_disc + mean(volshnum, na.rm=TRUE),
+                     nbpublis2_c=nbpublis2 - nbpublis2_labo - nbpublis2_disc + mean(nbpublis2, na.rm=TRUE),
+                     ScoreEcolo_c=ScoreEcolo - ScoreEcolo_labo - ScoreEcolo_disc + mean(ScoreEcolo, na.rm=TRUE),
+                     ScoreInternational_c=ScoreInternational - ScoreInternational_labo - ScoreInternational_disc + mean(ScoreInternational, na.rm=TRUE),
+                     tourisme_c=tourisme - tourisme_labo - tourisme_disc + mean(tourisme, na.rm=TRUE),
+                     avionpersonum_c=avionpersonum - avionpersonum_labo - avionpersonum_disc + mean(avionpersonum, na.rm=TRUE),
+                     chgtpratiquenum_c=chgtpratiquenum - chgtpratiquenum_labo - chgtpratiquenum_disc + mean(chgtpratiquenum, na.rm=TRUE),
+                     preoccupe2num_c=preoccupe2num - preoccupe2num_labo - preoccupe2num_disc + mean(preoccupe2num, na.rm=TRUE),
+                     solreducrechnum_c=solreducrechnum - solreducrechnum_labo - solreducrechnum_disc + mean(solreducrechnum, na.rm=TRUE),
                      
-                     volshnum_c=volshnum - volshnum_m - volshnum_md,
-                     
-                     nbpublis2_c=nbpublis2 - nbpublis2_m - nbpublis2_md,
-                     
-                     ScoreEcolo_c=ScoreEcolo - ScoreEcolo_m - ScoreEcolo_md,
-                     
-                     tourisme_c=tourisme - tourisme_m - tourisme_md,
-                     
-                     avionpersonum_c=avionpersonum - avionpersonum_m - avionpersonum_md,
-                     
-                     chgtpratiquenum_c=chgtpratiquenum - chgtpratiquenum_m - chgtpratiquenum_md,
-                     
-                     preoccupe2num_c=preoccupe2num - preoccupe2num_m - preoccupe2num_md)
-
-
-
-reg1 <- lmer(volsdist_tot ~ sexe + ageAgr + sitpro2 +
-               
-               nbpublis2_c + nbpublis2_m + nbpublis2_md +
-               
-               chgtpratiquenum_c + chgtpratiquenum_m + chgtpratiquenum_md +
-               
-               chgtpratiquenum_c*nbpublis2_c +
-               
-               (1 | unite.labintel) + (1 | discipline),
-             
-             data=climatRegr)
-
-summary(reg1, correlation=F)
-
+                     volshnum_clabo=volshnum - volshnum_labo,
+                     nbpublis2_clabo=nbpublis2 - nbpublis2_labo,
+                     ScoreEcolo_clabo=ScoreEcolo - ScoreEcolo_labo,
+                     ScoreInternational_clabo=ScoreInternational - ScoreInternational_labo,
+                     tourisme_clabo=tourisme - tourisme_labo,
+                     avionpersonum_clabo=avionpersonum - avionpersonum_labo,
+                     chgtpratiquenum_clabo=chgtpratiquenum - chgtpratiquenum_labo,
+                     preoccupe2num_clabo=preoccupe2num - preoccupe2num_labo,
+                     solreducrechnum_c=solreducrechnum - solreducrechnum_labo)
 
 
 
@@ -635,6 +598,23 @@ ggcoef_model(reg1, exponentiate = T)
 # et que donc, s'ils étaient pas inquiets, ils auraient encore plus de vols
 
 
+freq(climatRegr$ScoreEcolo_m)
+reg1 <- glm(renoncedep.env_dicho1 ~ discipline_agr5+
+              sexe+
+              sitpro2 +
+              volsnbtranch2, data=climatRegr,
+            family = binomial())
+ggcoef_model(reg1, exponentiate = T)
+
+
+
+
+
+
+
+# install.packages("remotes")
+# remotes::install_github("glmmTMB/glmmTMB/glmmTMB@master")
+
 # stats desc -----
 
 
@@ -739,6 +719,8 @@ ggplot(a,aes(y=100*renoncer, x=fct_rev(modalites),
   labs(x="", y="Renoncer à une conf internationale 
        pour des raisons écolos (raison déterminante)")+ 
   scale_x_discrete(limits=rev(labels))
+
+
 
 # Examen de la variable score internationalisation ----
 
