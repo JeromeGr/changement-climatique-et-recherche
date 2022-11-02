@@ -1579,8 +1579,8 @@ climat$enfantsage_rec <- factor(climat$enfantsage_rec,
 
 
 
-#######################
-#Modalités de référence dans les régressions
+#######################-
+#Modalités de référence dans les régressions----
 
 
 climatRegr <- climat
@@ -1684,8 +1684,8 @@ climatRegr$reducrechexemp<-fct_relevel(climatRegr$reducrechexemp, "Non")
 climatRegr$tresdecroissance<-as.factor(climatRegr$tresdecroissance)
 climatRegr$tresdecroissance<-fct_relevel(climatRegr$tresdecroissance, "Non")
 
-################
-#Recodage pour les ACM
+################-
+#Recodage pour les ACM----
 
 climatACM<-climat
 
@@ -1736,7 +1736,7 @@ climatACM$secteur[climatACM$secteur=="La recherche peut bénéficier d'un statut
 
 # Creation de la base Recherche intitulée climatRegr_r ----
 
-climatRegr <- subset(climatRegr, !sitpro2 %in% c(
+climatRegr_r <- subset(climatRegr, !sitpro2 %in% c(
   "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
   "Chargé·e d'études/de mission","Adjoint·e technique",
   "Autre"))
