@@ -35,36 +35,55 @@ climatRegr <- mutate(climatRegr,
                                                             "Oui, tout à fait d'accord")) - 1,
                      preoccupe2num=as.numeric(fct_relevel(preoccupe2, "Pas du tout préoccupé·e", "Sans opinion",
                                                           "Un peu préoccupé·e", "Assez préoccupé·e", 
-                                                          "Très préoccupé·e", "Extrêmement préoccupé·e")) - 1)
+                                                          "Très préoccupé·e", "Extrêmement préoccupé·e")) - 1,
+                     solreducrechnum=as.numeric(fct_rev(solreducrech)) - 1)
 
 # Création des variables par labo et par discipline
 climatRegr <- group_by(climatRegr, unite.labintel) %>%
     mutate(volshnum_labo=mean(volshnum, na.rm=TRUE),
            nbpublis2_labo=mean(nbpublis2, na.rm=TRUE),
            ScoreEcolo_labo=mean(ScoreEcolo, na.rm=TRUE),
+           ScoreInternational_labo=mean(ScoreInternational, na.rm=TRUE),
            tourisme_labo=mean(tourisme, na.rm=TRUE),
            avionpersonum_labo=mean(avionpersonum, na.rm=TRUE),
            chgtpratiquenum_labo=mean(chgtpratiquenum, na.rm=TRUE),
-           preoccupe2num_labo=mean(preoccupe2num, na.rm=TRUE))
+           preoccupe2num_labo=mean(preoccupe2num, na.rm=TRUE),
+           solreducrechnum_labo=mean(solreducrechnum, na.rm=TRUE)) %>%
+    ungroup()
 
 climatRegr <- group_by(climatRegr, discipline) %>%
     mutate(volshnum_disc=mean(volshnum, na.rm=TRUE),
            nbpublis2_disc=mean(nbpublis2, na.rm=TRUE),
            ScoreEcolo_disc=mean(ScoreEcolo, na.rm=TRUE),
+           ScoreInternational_disc=mean(ScoreInternational, na.rm=TRUE),
            tourisme_disc=mean(tourisme, na.rm=TRUE),
            avionpersonum_disc=mean(avionpersonum, na.rm=TRUE),
            chgtpratiquenum_disc=mean(chgtpratiquenum, na.rm=TRUE),
-           preoccupe2num_disc=mean(preoccupe2num, na.rm=TRUE))
+           preoccupe2num_disc=mean(preoccupe2num, na.rm=TRUE),
+           solreducrechnum_disc=mean(solreducrechnum, na.rm=TRUE)) %>%
+    ungroup()
 
 # Création de la variable d'écart au labo et à la discipline
 climatRegr <- mutate(climatRegr,
-                     volshnum_c=volshnum - volshnum_labo - volshnum_disc,
-                     nbpublis2_c=nbpublis2 - nbpublis2_labo - nbpublis2_disc,
-                     ScoreEcolo_c=ScoreEcolo - ScoreEcolo_labo - ScoreEcolo_disc,
-                     tourisme_c=tourisme - tourisme_labo - tourisme_disc,
-                     avionpersonum_c=avionpersonum - avionpersonum_labo - avionpersonum_disc,
-                     chgtpratiquenum_c=chgtpratiquenum - chgtpratiquenum_labo - chgtpratiquenum_disc,
-                     preoccupe2num_c=preoccupe2num - preoccupe2num_labo - preoccupe2num_disc)
+                     volshnum_c=volshnum - volshnum_labo - volshnum_disc + mean(volshnum, na.rm=TRUE),
+                     nbpublis2_c=nbpublis2 - nbpublis2_labo - nbpublis2_disc + mean(nbpublis2, na.rm=TRUE),
+                     ScoreEcolo_c=ScoreEcolo - ScoreEcolo_labo - ScoreEcolo_disc + mean(ScoreEcolo, na.rm=TRUE),
+                     ScoreInternational_c=ScoreInternational - ScoreInternational_labo - ScoreInternational_disc + mean(ScoreInternational, na.rm=TRUE),
+                     tourisme_c=tourisme - tourisme_labo - tourisme_disc + mean(tourisme, na.rm=TRUE),
+                     avionpersonum_c=avionpersonum - avionpersonum_labo - avionpersonum_disc + mean(avionpersonum, na.rm=TRUE),
+                     chgtpratiquenum_c=chgtpratiquenum - chgtpratiquenum_labo - chgtpratiquenum_disc + mean(chgtpratiquenum, na.rm=TRUE),
+                     preoccupe2num_c=preoccupe2num - preoccupe2num_labo - preoccupe2num_disc + mean(preoccupe2num, na.rm=TRUE),
+                     solreducrechnum_c=solreducrechnum - solreducrechnum_labo - solreducrechnum_disc + mean(solreducrechnum, na.rm=TRUE),
+
+                     volshnum_clabo=volshnum - volshnum_labo,
+                     nbpublis2_clabo=nbpublis2 - nbpublis2_labo,
+                     ScoreEcolo_clabo=ScoreEcolo - ScoreEcolo_labo,
+                     ScoreInternational_clabo=ScoreInternational - ScoreInternational_labo,
+                     tourisme_clabo=tourisme - tourisme_labo,
+                     avionpersonum_clabo=avionpersonum - avionpersonum_labo,
+                     chgtpratiquenum_clabo=chgtpratiquenum - chgtpratiquenum_labo,
+                     preoccupe2num_clabo=preoccupe2num - preoccupe2num_labo,
+                     solreducrechnum_c=solreducrechnum - solreducrechnum_labo)
 
 # Régression linéaire avec distribution normale (incorrect)
 reg1 <- lmer(volshnum ~ sexe + ageAgr + sitpro2 +
@@ -109,8 +128,7 @@ library(glmmTMB)
 
 form <- volshnum ~ sexe + ageAgr + sitpro2 +
     nbpublis2_c + nbpublis2_labo + nbpublis2_disc +
-    chgtpratiquenum_c + chgtpratiquenum_labo + chgtpratiquenum_disc +
-    chgtpratiquenum_c*nbpublis2_c +
+    ScoreEcolo_c + ScoreEcolo_labo + ScoreEcolo_disc +
     (1 | unite.labintel) + (1 | discipline)
 
 dat <- drop_na(climatRegr, all.vars(form))
@@ -169,3 +187,50 @@ testCategorical(sim, dat$ageAgr)
 testCategorical(sim, droplevels(dat$sitpro2))
 testDispersion(sim)
 testZeroInflation(sim)
+
+
+# Analyses avec distribution Tweedie
+regtweedie <- glmmTMB(volshnum ~ sexe + ageAgr + sitpro2 +
+                          nbpublis2_c + nbpublis2_labo + nbpublis2_disc +
+                          chgtpratiquenum_c + chgtpratiquenum_labo + chgtpratiquenum_disc +
+                          ScoreEcolo_c + ScoreEcolo_labo + ScoreEcolo_disc +
+                          #preoccupe2num_c + preoccupe2num_labo + preoccupe2num_disc +
+                          avionpersonum_c + avionpersonum_labo + avionpersonum_disc +
+                          ScoreInternational_c + ScoreInternational_labo + ScoreInternational_disc +
+                          #international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso +
+                          #projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 +
+                          ScoreEcolo_c*ScoreInternational_c + ScoreEcolo_c*ScoreInternational_labo + ScoreEcolo_c*ScoreInternational_disc +
+                          nbpublis2_c*ScoreEcolo_c + nbpublis2_c*ScoreEcolo_labo + nbpublis2_c*ScoreEcolo_disc +
+                      (1 | unite.labintel) + (1 | discipline),
+                      family="tweedie",
+                      data=climatRegr,
+                      control=glmmTMBControl(parallel=4))
+
+regtweedie <- glmmTMB(volshnum ~ sexe + ageAgr + sitpro2 +
+                          nbpublis2_c + nbpublis2_labo + nbpublis2_disc +
+                          chgtpratiquenum_c + chgtpratiquenum_labo + chgtpratiquenum_disc +
+                          ScoreEcolo_c + ScoreEcolo_labo + ScoreEcolo_disc +
+                          #preoccupe2num_c + preoccupe2num_labo + preoccupe2num_disc +
+                          avionpersonum_c + avionpersonum_labo + avionpersonum_disc +
+                          ScoreInternational_c + ScoreInternational_labo + ScoreInternational_disc +
+                          #international.poste + international.natio +  international.naiss + international.scol + international.etudes + international.postdoc + international.travail + international.prog + international.asso +
+                          #projets.anr_m2 + projets.anr_r2 + projets.france_m2 + projets.france_r2 + projets.europe_m2 + projets.europe_r2 + projets.inter_m2 + projets.inter_r2 +projets.prive_m2 + projets.prive_r2 +
+                          ScoreEcolo_c*ScoreInternational_c + ScoreEcolo_c*ScoreInternational_labo + ScoreEcolo_c*ScoreInternational_disc +
+                          nbpublis2_c*ScoreEcolo_c + nbpublis2_c*ScoreEcolo_labo + nbpublis2_c*ScoreEcolo_disc +
+                          carriere*ScoreInternational_c + carriere*ScoreInternational_labo + carriere*ScoreInternational_disc +
+                          (1 | unite.labintel) + (1 | discipline),
+                      family="tweedie",
+                      data=climatRegr,
+                      control=glmmTMBControl(parallel=4))
+summary(regtweedie)
+
+library(ggeffects)
+mydf <- ggeffect(regtweedie, terms = c("ScoreEcolo_c [quart2]", "ScoreInternational_disc [quart2]"))
+ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
+    stat_smooth(method = "lm", se = FALSE) +
+    scale_y_log10() +
+    labs(
+        y = get_y_title(mydf),
+        x = get_x_title(mydf),
+        colour = get_legend_title(mydf)
+    )

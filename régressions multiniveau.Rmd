@@ -1,0 +1,388 @@
+---
+title: "Régressions multiniveau"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+source("recodages.R")
+knitr::opts_chunk$set(echo = TRUE)
+
+library(glmmTMB)
+library(tidyverse)
+library(gtsummary)
+
+climatRegr <- subset(climatRegr, !sitpro2 %in% c(
+    "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
+    "Chargé·e d'études/de mission","Adjoint·e technique",
+    "Autre"))
+
+
+climatRegr <- mutate(climatRegr,
+                     nbpublis2=pmin(nbpublis, 100),
+                     tourisme=startsWith(as.character(apportconf.tourisme), "Oui"),
+                     avionpersonum=recode(avionperso,
+                                          "Aucun aller-retour"=0,
+                                          "1 ou 2 allers-retours"=1.5,
+                                          "3 ou 4 allers-retours"=2.5,
+                                          "Plus de 5 allers-retours"=6),
+                     chgtpratiquenum=as.numeric(fct_relevel(chgtpratique, "Non, pas du tout d'accord",
+                                                            "Non, plutôt pas d'accord", "Sans opinion",
+                                                            "Oui, plutôt d'accord",
+                                                            "Oui, tout à fait d'accord")) - 1,
+                     preoccupe2num=as.numeric(fct_relevel(preoccupe2, "Pas du tout préoccupé·e", "Sans opinion",
+                                                          "Un peu préoccupé·e", "Assez préoccupé·e", 
+                                                          "Très préoccupé·e", "Extrêmement préoccupé·e")) - 1,
+                     solreducrechnum=as.numeric(fct_rev(solreducrech)) - 1)
+
+# climatRegr <- group_by(climatRegr, unite.labintel) %>%
+#     filter(n() > 1)
+# 
+# climatRegr <- group_by(climatRegr, discipline) %>%
+#     filter(n() > 1)
+
+
+# ACP score écolo
+
+climatRegr <- mutate(climatRegr,
+                     opinionecolo.decroissance_num=as.numeric(
+                       fct_relevel(
+                         opinionecolo.decroissance, 
+                         "Pas du tout d'accord", 
+                         "Plutôt pas d'accord", 
+                         "Sans opinion", 
+                         "Plutôt d'accord",
+                         "Tout à fait d'accord")) - 1,
+                     opinionecolo.cata_num=as.numeric(
+                       fct_relevel(
+                         opinionecolo.cata, 
+                         "Pas du tout d'accord", 
+                         "Plutôt pas d'accord", 
+                         "Sans opinion", 
+                         "Plutôt d'accord",
+                         "Tout à fait d'accord")) - 1,
+                     opinionecolo.techno_num=as.numeric(
+                       fct_relevel(
+                         opinionecolo.techno, 
+                         "Pas du tout d'accord", 
+                         "Plutôt pas d'accord", 
+                         "Sans opinion", 
+                         "Plutôt d'accord",
+                         "Tout à fait d'accord")) - 1,
+                     opinionecolo.proteger_num=as.numeric(
+                       fct_relevel(
+                         opinionecolo.proteger, 
+                         "Pas du tout d'accord", 
+                         "Plutôt pas d'accord", 
+                         "Sans opinion", 
+                         "Plutôt d'accord",
+                         "Tout à fait d'accord")) - 1,
+                     opinionecolo.efforts_num=as.numeric(
+                       fct_relevel(
+                         opinionecolo.efforts, 
+                         "Pas du tout d'accord", 
+                         "Plutôt pas d'accord", 
+                         "Sans opinion", 
+                         "Plutôt d'accord",
+                         "Tout à fait d'accord")) - 1,
+                     opinionecolo.contraintes_num=as.numeric(
+                       fct_relevel(
+                         opinionecolo.contraintes, 
+                         "Pas du tout d'accord", 
+                         "Plutôt pas d'accord", 
+                         "Sans opinion", 
+                         "Plutôt d'accord",
+                         "Tout à fait d'accord")) - 1,
+                     opinionecolo.effondrement_num=as.numeric(
+                       fct_relevel(
+                         opinionecolo.effondrement, 
+                         "Pas du tout d'accord", 
+                         "Plutôt pas d'accord", 
+                         "Sans opinion", 
+                         "Plutôt d'accord",
+                         "Tout à fait d'accord")) - 1)
+
+climatRegr$dixannees.marche_num <- climatRegr$dixannees.marche %>%
+  fct_recode(
+    "1" = "Oui",
+    "0" = "Non",
+    NULL = "Je ne souhaite pas répondre"
+  ) %>%
+  as.character() %>%
+  as.numeric()
+
+climatRegr$dixannees.asso_num <- climatRegr$dixannees.asso %>%
+  fct_recode(
+    "1" = "Oui",
+    "0" = "Non",
+    NULL = "Je ne souhaite pas répondre"
+  ) %>%
+  as.character() %>%
+  as.numeric()
+climatRegr$dixannees.giec_num <- climatRegr$dixannees.giec %>%
+  fct_recode(
+    "1" = "Oui",
+    "0" = "Non",
+    NULL = "Je ne souhaite pas répondre"
+  ) %>%
+  as.character() %>%
+  as.numeric()
+climatRegr$dixannees.vote_num <- climatRegr$dixannees.vote %>%
+  fct_recode(
+    "1" = "Oui",
+    "0" = "Non",
+    NULL = "Je ne souhaite pas répondre"
+  ) %>%
+  as.character() %>%
+  as.numeric()
+climatRegr$dixannees.bilan_num <- climatRegr$dixannees.bilan %>%
+  fct_recode(
+    "1" = "Oui",
+    "0" = "Non",
+    NULL = "Je ne souhaite pas répondre"
+  ) %>%
+  as.character() %>%
+  as.numeric()
+
+base_acp <- climatRegr[,
+                       c("opinionecolo.decroissance_num",
+                         "opinionecolo.cata_num",
+                         "opinionecolo.techno_num",
+                         "opinionecolo.proteger_num",
+                         "opinionecolo.efforts_num",
+                         "opinionecolo.contraintes_num",
+                         "opinionecolo.effondrement_num",
+                         "preoccupe2num",
+                         "dixannees.marche_num", 
+                         "dixannees.giec_num", 
+                         "dixannees.vote_num", 
+                         "dixannees.asso_num", 
+                         "dixannees.bilan_num"
+                       )]
+
+acp <- FactoMineR::PCA(base_acp)
+
+climatRegr$ScoreEcoloACP <- acp$ind$coord[,1]
+
+# Création des variables par labo et par discipline
+climatRegr <- group_by(climatRegr, unite.labintel) %>%
+    mutate(volshnum_labo=mean(volshnum, na.rm=TRUE),
+           nbpublis2_labo=mean(nbpublis2, na.rm=TRUE),
+           ScoreEcolo_labo=mean(ScoreEcolo, na.rm=TRUE),
+           ScoreEcoloACP_labo=mean(ScoreEcoloACP, na.rm=TRUE),
+           ScoreInternational_labo=mean(ScoreInternational, na.rm=TRUE),
+           tourisme_labo=mean(tourisme, na.rm=TRUE),
+           avionpersonum_labo=mean(avionpersonum, na.rm=TRUE),
+           chgtpratiquenum_labo=mean(chgtpratiquenum, na.rm=TRUE),
+           preoccupe2num_labo=mean(preoccupe2num, na.rm=TRUE),
+           solreducrechnum_labo=mean(solreducrechnum, na.rm=TRUE)) %>%
+    ungroup()
+
+climatRegr <- group_by(climatRegr, discipline) %>%
+    mutate(volshnum_disc=mean(volshnum, na.rm=TRUE),
+           nbpublis2_disc=mean(nbpublis2, na.rm=TRUE),
+           ScoreEcolo_disc=mean(ScoreEcolo, na.rm=TRUE),
+           ScoreEcoloACP_disc=mean(ScoreEcoloACP, na.rm=TRUE),
+           ScoreInternational_disc=mean(ScoreInternational, na.rm=TRUE),
+           tourisme_disc=mean(tourisme, na.rm=TRUE),
+           avionpersonum_disc=mean(avionpersonum, na.rm=TRUE),
+           chgtpratiquenum_disc=mean(chgtpratiquenum, na.rm=TRUE),
+           preoccupe2num_disc=mean(preoccupe2num, na.rm=TRUE),
+           solreducrechnum_disc=mean(solreducrechnum, na.rm=TRUE)) %>%
+    ungroup()
+
+# Création de la variable d'écart au labo et à la discipline
+climatRegr <- mutate(climatRegr,
+                     volshnum_c=volshnum - volshnum_labo - volshnum_disc + mean(volshnum, na.rm=TRUE),
+                     nbpublis2_c=nbpublis2 - nbpublis2_labo - nbpublis2_disc + mean(nbpublis2, na.rm=TRUE),
+                     ScoreEcolo_c=ScoreEcolo - ScoreEcolo_labo - ScoreEcolo_disc + mean(ScoreEcolo, na.rm=TRUE),
+                     ScoreEcoloACP_c=ScoreEcoloACP - ScoreEcoloACP_labo - ScoreEcoloACP_disc + mean(ScoreEcoloACP, na.rm=TRUE),
+                     ScoreInternational_c=ScoreInternational - ScoreInternational_labo - ScoreInternational_disc + mean(ScoreInternational, na.rm=TRUE),
+                     tourisme_c=tourisme - tourisme_labo - tourisme_disc + mean(tourisme, na.rm=TRUE),
+                     avionpersonum_c=avionpersonum - avionpersonum_labo - avionpersonum_disc + mean(avionpersonum, na.rm=TRUE),
+                     chgtpratiquenum_c=chgtpratiquenum - chgtpratiquenum_labo - chgtpratiquenum_disc + mean(chgtpratiquenum, na.rm=TRUE),
+                     preoccupe2num_c=preoccupe2num - preoccupe2num_labo - preoccupe2num_disc + mean(preoccupe2num, na.rm=TRUE),
+                     solreducrechnum_c=solreducrechnum - solreducrechnum_labo - solreducrechnum_disc + mean(solreducrechnum, na.rm=TRUE),
+
+                     volshnum_clabo=volshnum - volshnum_labo,
+                     nbpublis2_clabo=nbpublis2 - nbpublis2_labo,
+                     ScoreEcolo_clabo=ScoreEcolo - ScoreEcolo_labo,
+                     ScoreEcoloACP_clabo=ScoreEcoloACP - ScoreEcoloACP_labo,
+                     ScoreInternational_clabo=ScoreInternational - ScoreInternational_labo,
+                     tourisme_clabo=tourisme - tourisme_labo,
+                     avionpersonum_clabo=avionpersonum - avionpersonum_labo,
+                     chgtpratiquenum_clabo=chgtpratiquenum - chgtpratiquenum_labo,
+                     preoccupe2num_clabo=preoccupe2num - preoccupe2num_labo,
+                     solreducrechnum_clabo=solreducrechnum - solreducrechnum_labo,
+
+                     nbpublis2_cdisc=nbpublis2 - nbpublis2_labo,
+                     ScoreEcolo_cdisc=ScoreEcolo - ScoreEcolo_labo,
+                     ScoreEcoloACP_cdisc=ScoreEcoloACP - ScoreEcoloACP_labo,
+                     ScoreInternational_cdisc=ScoreInternational - ScoreInternational_labo,
+                     tourisme_cdisc=tourisme - tourisme_disc,
+                     avionpersonum_cdisc=avionpersonum - avionpersonum_disc,
+                     chgtpratiquenum_cdisc=chgtpratiquenum - chgtpratiquenum_disc,
+                     preoccupe2num_cdisc=preoccupe2num - preoccupe2num_disc,
+                     solreducrechnum_cdisc=solreducrechnum - solreducrechnum_disc)
+```
+
+```{r}
+reg1 <- glmmTMB(volshnum ~ sexe + ageAgr + sitpro2 + carriere +
+                    nbpublis2_c + nbpublis2_labo + nbpublis2_disc +
+                    ScoreEcoloACP_c + ScoreEcoloACP_labo + ScoreEcoloACP_disc +
+                    avionpersonum_c + avionpersonum_labo + avionpersonum_disc +
+                    ScoreInternational_c + ScoreInternational_labo + ScoreInternational_disc +
+                    (1 | unite.labintel) + (1 | discipline),
+                family="tweedie",
+                data=climatRegr,
+                control=glmmTMBControl(parallel=4))
+
+reg2 <- update(reg1, ~ . +
+                   ScoreEcoloACP_c*ScoreInternational_c + ScoreEcoloACP_c*ScoreInternational_labo + ScoreEcoloACP_c*ScoreInternational_disc +
+                   carriere*ScoreInternational_c + carriere*ScoreInternational_labo + carriere*ScoreInternational_disc +
+                   nbpublis2_c*ScoreEcoloACP_c + nbpublis2_c*ScoreEcoloACP_labo + nbpublis2_c*ScoreEcoloACP_disc +
+               avionpersonum_c*ScoreEcoloACP_c + avionpersonum_c*ScoreEcolo_labo + avionpersonum_c*ScoreEcoloACP_disc)
+
+
+tbls <- lapply(list(reg1, reg2),
+               function(m) tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=TRUE))
+tbl_merge(tbls, paste0("M", seq_along(tbls)))
+
+library(ggeffects)
+mydf <- ggeffect(reg2, terms = c("ScoreEcoloACP_c [quart2]", "ScoreInternational_disc [quart2]"))
+ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
+    stat_smooth(method = "lm", se = FALSE) +
+    scale_y_log10() +
+    labs(
+        y = get_y_title(mydf),
+        x = get_x_title(mydf),
+        colour = get_legend_title(mydf)
+    )
+
+library(ggeffects)
+mydf <- ggeffect(reg2, terms = c("ScoreInternational_labo [quart2]", "carriere"))
+ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
+    #geom_point() +
+    stat_smooth(method = "lm", se = FALSE) +
+    scale_y_log10() +
+    labs(
+        y = get_y_title(mydf),
+        x = get_x_title(mydf),
+        colour = get_legend_title(mydf)
+    )
+
+mydf <- ggeffect(reg2, terms = c("nbpublis2_c [quart2]", "ScoreEcoloACP_disc [quart2]"))
+ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
+    stat_smooth(method = "lm", se = FALSE) +
+    scale_y_log10() +
+    labs(
+        y = get_y_title(mydf),
+        x = get_x_title(mydf),
+        colour = get_legend_title(mydf)
+    )
+
+library(ggeffects)
+mydf <- ggeffect(reg2, terms = c("avionpersonum_c [quart2]", "ScoreEcoloACP_c [quart2]"))
+ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
+    #geom_point() +
+    stat_smooth(method = "lm", se = FALSE) +
+    scale_y_log10() +
+    labs(
+        y = get_y_title(mydf),
+        x = get_x_title(mydf),
+        colour = get_legend_title(mydf)
+    )
+```
+
+## Score international
+
+Dans le modèle 1, le score international individuel et le score moyen du laboration augmentent les heures de vol.
+
+## Score écolo
+
+Dans le modèle 1, le score écolo individuel n'a pas d'effet sur les vols. En revanche, le score écolo moyen de la discipline augmente le nombre d'heures de vol. Ce résultat contre-intuitif tient probablement à des caractéristiques des disciplines qui étudient la Terre et l'environnement. Dans le modèle 2, quand on met le score écolo individuel en interaction avec le score international moyen de la discipline, on voit qu'il a un effet négatif très fort pour les personnes dans des disciplines peu internationalisées, mais aucun effet dans dans les disciplines très internationalisées. On peut interpréter ce résultat comme une pression institutionnelle à voyager qui n'existe que dans certaines disciplines, et qui empêche les opinions individuelles d'avoir un effet sur les pratiques.
+
+## Carrière
+
+Dans le modèle 1, le fait de chercher actuellement à être promu ou recruté augmente les heures de vol. Dans le modèle 2, on voit que le fait d'être dans cette situation augmente les vols principalement quand on est dans un laboratoire peu internationalisé, alors que cela n'a aucun effet dans un laboratoire très internationalisé. Encore une fois, il semble que dans les contextes très internationalisés, les marges de maœuvre individuelles n'existent pas.
+
+## Publications
+
+Dans le modèle 1, le nombre de publications individuelles et du laboratoire augmente les heures de vols. Dans le modèle 2, on voit que quand on est dans une discipline très écolo, l'effet d'une publication supplémentaire sur les heures de vol est moins fort que quand on est dans une discipline peu écolo.
+
+## Avion dans le cadre personnel
+
+Dans le modèle 1, le nombre de vols en avion dans le cadre personnel au niveau individuel, du laboratoire et même de la discipline (limite significatif) augmente le nombre d'heures de vols dans le cadre professionnel. Dans le modèle 2, on voit que le nombre de vols personnels a plus d'effet sur les vols professionnels chez les écolos que chez les moins écolos ; autrement dit, chez ceux qui volent peu dans le cadre personnel, l'opinion écolo joue plus fortement sur les comportements professionnels que chez ceux qui volent beaucoup. Encore une fois, on retrouve le fait que les opinions jouent peu sur les pratiques dans les contextes très internationalisés (mais cette fois au niveau individuel, ce qui est logique puisqu'il s'agit d'un comportement dans le cadre personnel).
+
+
+# Comparaison discipline, laboratoire et les deux
+
+La plupart des effets apparaissent à un seul des niveaux quand on contrôle les deux, mais sont captés par l'autre quand on ne les contrôle pas simultanément. 
+Effets au niveau laboratoire : nombre de publications, nombre de vols dans le cadre personnel, score international.
+Effets au niveau discipline : score écolo.
+
+L'effet du nombre de vols dans le cadre personnel est plus significatif au niveau laboratoire, mais il devient presque significatif au niveau discipline uniquement quand on contrôle le laboratoire.
+Le score international n'a aucun effet au niveau discipline, même si on ne contrôle pas le laboratoire.
+
+```{r}
+reg1disc <- glmmTMB(volshnum ~ sexe + ageAgr + sitpro2 + carriere +
+                        nbpublis2_c + nbpublis2_disc +
+                        ScoreEcolo_c + ScoreEcolo_disc +
+                        avionpersonum_c + avionpersonum_disc +
+                        ScoreInternational_c + ScoreInternational_disc +
+                        (1 | discipline),
+                    family="tweedie",
+                    data=rename_with(select(climatRegr, !ends_with("_c")), ~ sub("_cdisc", "_c", .)),
+                    control=glmmTMBControl(parallel=4))
+
+reg2disc <- update(reg1disc, ~ . +
+                       ScoreEcolo_c*ScoreInternational_c + ScoreEcolo_c*ScoreInternational_disc +
+                       carriere*ScoreInternational_c + carriere*ScoreInternational_disc +
+                       nbpublis2_c*ScoreEcolo_c + nbpublis2_c*ScoreEcolo_disc +
+                       avionpersonum_c*ScoreEcolo_c + avionpersonum_c*ScoreEcolo_disc)
+
+reg1labo <- glmmTMB(volshnum ~ sexe + ageAgr + sitpro2 + carriere +
+                        nbpublis2_c + nbpublis2_labo +
+                        ScoreEcolo_c + ScoreEcolo_labo +
+                        avionpersonum_c + avionpersonum_labo +
+                        ScoreInternational_c + ScoreInternational_labo +
+                        (1 | unite.labintel),
+                    family="tweedie",
+                    data=rename_with(select(climatRegr, !ends_with("_c")), ~ sub("_clabo", "_c", .)),
+                    control=glmmTMBControl(parallel=4))
+
+reg2labo <- update(reg1labo, ~ . +
+                       ScoreEcolo_c*ScoreInternational_c + ScoreEcolo_c*ScoreInternational_labo +
+                       carriere*ScoreInternational_c + carriere*ScoreInternational_labo +
+                       nbpublis2_c*ScoreEcolo_c + nbpublis2_c*ScoreEcolo_labo +
+                       avionpersonum_c*ScoreEcolo_c + avionpersonum_c*ScoreEcolo_labo)
+
+tbls <- lapply(list(reg1, reg1disc, reg1labo),
+               function(m) tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=TRUE))
+tbl_merge(tbls, c("Discipline & labo", "Discipline", "Labo"))
+
+tbls <- lapply(list(reg2, reg2disc, reg2labo),
+               function(m) tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=TRUE))
+tbl_merge(tbls, c("Discipline & labo", "Discipline", "Labo"))
+```
+
+# Différents motifs de vol
+
+Le score écolo de la discipline augmente la distance de vol uniquement pour le terrain et les réunions/ateliers (et dans ces cas il est hautement significatif) ; l'effet est très fort pour le terrain. Quand on prend la distance totale, p=0.06 à cause des effectifs plus faibles que pour les heures de vol.
+
+```{r}
+regdist1 <- update(reg1, volsdist_tot ~ .)
+regdistconf1 <- update(reg1, volsdist_totconf ~ .)
+regdistsejrech1 <- update(reg1, volsdist_totsejrech ~ .)
+regdistworkshop1 <- update(reg1, volsdist_totworkshop ~ .)
+regdistcours1 <- update(reg1, volsdist_totcours ~ .)
+regdistterrain1 <- update(reg1, volsdist_totterrain ~ .)
+regdisteval1 <- update(reg1, volsdist_toteval ~ .)
+#regdistjury1 <- update(reg1, volsdist_totjury ~ .)
+regdistautre1 <- update(reg1, volsdist_totautre ~ .)
+
+tbls <- lapply(lst(regdist1, regdistconf1, regdistsejrech1, regdistworkshop1, regdistcours1, regdistterrain1, regdisteval1, regdistautre1),
+               function(m) tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=TRUE, conf.int=FALSE))
+tbl_merge(tbls, names(tbls))
+
+```
+
