@@ -1732,6 +1732,15 @@ climatACM$secteur[climatACM$secteur=="La recherche doit réduire ses émissions 
 climatACM$secteur[climatACM$secteur=="La recherche peut bénéficier d'un statut dérogatoire"]<-"Statut dérog"
 
 
+
+
+# Creation de la base Recherche intitulée climatRegr_r ----
+
+climatRegr <- subset(climatRegr, !sitpro2 %in% c(
+  "Ingénieur·e d'études", "Assistant ingénieur·e", "Technicien·ne",
+  "Chargé·e d'études/de mission","Adjoint·e technique",
+  "Autre"))
+
 ####################################@
 #Rebus
 #On met le temps de vol à zéro pour ceux qui ont indiqué aucun vol et qui sont dans le module 1
@@ -1742,4 +1751,5 @@ climatACM$secteur[climatACM$secteur=="La recherche peut bénéficier d'un statut
 #Idem pour le nombre de vol
 #climat$volsnb_tot<-ifelse(climat$volsnb==0 & climat$tiragemodule=="1", 0, climat$volsnb_tot)
 #climat$volsnb_tot<-ifelse(climat$volsnb==0 & climat$tiragemodule=="1" & !(climat$volsnb_tot>0), 0, climat$volsnb_tot)
+
 
