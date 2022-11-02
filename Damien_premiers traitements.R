@@ -23,23 +23,35 @@ describe(climatRegr$solevolges.conf)
 
 # icut(climatRegr, solevolges.conf)
 
-####### attention je travaille sur la base climatRegr_recherche apparemment adaptée aux régressions et avec que le personnel de recherche 
+####### attention je travaille sur la base climatRegr apparemment adaptée aux régressions et avec que le personnel de recherche 
 
 #construction dicho j'ai fortement diminué l'avion pro O/N 
-climatRegr_recherche$SolevolgesFD <- climatRegr_recherche$solevolges.conf=="Fortement diminué"
-climatRegr_recherche$SolevolgesFD[climatRegr_recherche$SolevolgesFD == TRUE] <- 1
-climatRegr_recherche$SolevolgesFD[climatRegr_recherche$SolevolgesFD == FALSE] <- 0
-climatRegr_recherche$SolevolgesFD[is.na(climatRegr_recherche$SolevolgesFD)] <- 0
-describe(climatRegr_recherche$SolevolgesFD)
+climatRegr$SolevolgesFD <- climatRegr$solevolges.conf=="Fortement diminué"
+climatRegr$SolevolgesFD[climatRegr$SolevolgesFD == TRUE] <- 1
+climatRegr$SolevolgesFD[climatRegr$SolevolgesFD == FALSE] <- 0
+climatRegr$SolevolgesFD[is.na(climatRegr$SolevolgesFD)] <- 0
+describe(climatRegr$SolevolgesFD)
 #  je ne sais pas pourquoi describe ne fonctionne plus d'un seul coup ! 
 
-# climatRegr_recherche$SolevolgesFD <- recode_factor(as.character(climatRegr_recherche$solevolges.conf), "Fortement diminué"="Oui", .default="Non", .missing="Non")
-# describe(climatRegr_recherche$SolevolgesFD)
-# str(climatRegr_recherche$SolevolgesFD)
+# climatRegr$SolevolgesFD <- recode_factor(as.character(climatRegr$solevolges.conf), "Fortement diminué"="Oui", .default="Non", .missing="Non")
+# describe(climatRegr$SolevolgesFD)
+# str(climatRegr$SolevolgesFD)
 # autre recodage plus efficace by Milan 
 
+
+# Un joli tableau croisé --------------------------------------------------
+
+# library(gtsummary)
+climat %>%
+  tbl_cross(row="solevolges.conf", col = "sexe", percent = "row")
+
+climat %>%
+  tbl_cross(col="solevolges.conf", row = "sexe", percent = "row")
+
+
+
 ############################# première régression avec les options d'affichage ! ################################
-res.reg01 <- glm(SolevolgesFD ~ sexe + ageAgr  + sitpro_reduite + avionperso +  revenuTete, data=climatRegr_recherche, family = binomial(link = logit))
+res.reg01 <- glm(SolevolgesFD ~ sexe + ageAgr  + sitpro_reduite + avionperso +  revenuTete, data=climatRegr, family = binomial(link = logit))
 summary(res.reg01)
 tidy(res.reg01, conf.int = TRUE, exponentiate = FALSE)
 view(tidy_plus_plus(res.reg01, exponentiate = FALSE))
@@ -66,10 +78,10 @@ ggcoef_model(res.reg01,exponentiate = FALSE)
 
 ############################################# des variations du modèle ############################################## 
 
-res.reg01 <- glm(SolevolgesFD ~ sexe + ageAgr  + sitpro2 + avionperso + avionpersochgt + revenuTete, data=climatRegr_recherche, family = binomial(link = logit))
+res.reg01 <- glm(SolevolgesFD ~ sexe + ageAgr  + sitpro2 + avionperso + avionpersochgt + revenuTete, data=climatRegr, family = binomial(link = logit))
 summary(res.reg01)
 
-res.reg02 <- glm(SolevolgesFD ~ sexe + ageAgr  + sitpro2 + avionperso +  revenuTete + visiousages.reunion15 + visiousages.seminaire + visiousages.conf  +visioprivilegiee.emissions  , data=climatRegr_recherche, family = binomial(link = logit))
+res.reg02 <- glm(SolevolgesFD ~ sexe + ageAgr  + sitpro2 + avionperso +  revenuTete + visiousages.reunion15 + visiousages.seminaire + visiousages.conf  +visioprivilegiee.emissions  , data=climatRegr, family = binomial(link = logit))
 summary(res.reg02)
 confint(res.reg02)
 tidy(res.reg02, conf.int = TRUE, exponentiate = TRUE)
