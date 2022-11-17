@@ -1184,7 +1184,7 @@ for(inst in c("anr", "europe", "france", "inter", "prive")) {
   }
 }
 
-rm(tableaurempli, unecochee)
+rm(tableaurempli)
 
 #On met dans une même variable membres et responsables
 #Certains ont coché membre ET responsable. Par défaut, on les considère comme responsable seulement
