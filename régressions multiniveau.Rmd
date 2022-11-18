@@ -240,7 +240,7 @@ reg2 <- update(reg1, ~ . +
                    ScoreEcoloACP_c*ScoreInternational_c + ScoreEcoloACP_c*ScoreInternational_labo + ScoreEcoloACP_c*ScoreInternational_disc +
                    carriere*ScoreInternational_c + carriere*ScoreInternational_labo + carriere*ScoreInternational_disc +
                    nbpublis2_c*ScoreEcoloACP_c + nbpublis2_c*ScoreEcoloACP_labo + nbpublis2_c*ScoreEcoloACP_disc +
-               avionpersonum_c*ScoreEcoloACP_c + avionpersonum_c*ScoreEcolo_labo + avionpersonum_c*ScoreEcoloACP_disc)
+               avionpersonum_c*ScoreEcoloACP_c + avionpersonum_c*ScoreEcoloACP_labo + avionpersonum_c*ScoreEcoloACP_disc)
 
 
 tbls <- lapply(list(reg1, reg2),
