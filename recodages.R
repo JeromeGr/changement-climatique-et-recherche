@@ -1248,6 +1248,66 @@ climat$ScoreInternational <- with(climat,
                                               particip_Europ + particip_Intern))
 
 
+
+
+# Construction d'un score international perso et pro
+
+
+
+climatRegr$ScoreInternational_perso <- with(climatRegr,
+                                            if_else(is.na(international.poste) & is.na(international.naiss) &
+                                                      is.na(international.natio) & is.na(international.scol) &
+                                                      is.na(international.etudes) & is.na(international.postdoc) &
+                                                      is.na(international.travail) & is.na(international.prog) & 
+                                                      is.na(international.asso),
+                                                    NA_real_,
+                                                    coalesce(international.naiss == "Oui", 0) +
+                                                      coalesce(international.natio == "Oui", 0) +
+                                                      coalesce(international.scol == "Oui", 0) +
+                                                      coalesce(international.etudes == "Oui", 0)))
+
+climatRegr$ScoreInternational_pro <- with(climatRegr,
+                                          if_else(is.na(international.poste) & is.na(international.naiss) &
+                                                    is.na(international.natio) & is.na(international.scol) &
+                                                    is.na(international.etudes) & is.na(international.postdoc) &
+                                                    is.na(international.travail) & is.na(international.prog) & 
+                                                    is.na(international.asso),
+                                                  NA_real_,
+                                                  coalesce(international.poste == "Oui", 0) +
+                                                    coalesce(international.postdoc == "Oui", 0) +
+                                                    coalesce(international.travail == "Oui", 0) +
+                                                    coalesce(international.prog == "Oui", 0) +
+                                                    coalesce(international.asso == "Oui", 0) +
+                                                    particip_Europ + particip_Intern))
+
+
+
+
+# Création des variables par labo et par discipline
+climatRegr <- group_by(climatRegr, unite.labintel) %>%
+  mutate(ScoreInternational_perso_labo=mean(ScoreInternational_perso, na.rm=TRUE),
+         ScoreInternational_pro_labo=mean(ScoreInternational_pro, na.rm=TRUE)) %>%
+  ungroup()
+climatRegr <- group_by(climatRegr, discipline) %>%
+  mutate(ScoreInternational_perso_disc=mean(ScoreInternational_perso, na.rm=TRUE),
+         ScoreInternational_pro_disc=mean(ScoreInternational_pro, na.rm=TRUE)) %>%
+  ungroup()
+
+
+# Création de la variable d'écart au labo et à la discipline
+climatRegr <- mutate(climatRegr,
+                     ScoreInternational_perso_c=ScoreInternational_perso - ScoreInternational_perso_labo - ScoreInternational_perso_disc + mean(ScoreInternational_perso, na.rm=TRUE),
+                     ScoreInternational_pro_c=ScoreInternational_pro - ScoreInternational_pro - ScoreInternational_pro_disc + mean(ScoreInternational_pro, na.rm=TRUE),
+                     
+                     ScoreInternational_c_perso_labo=ScoreInternational_perso - ScoreInternational_perso_labo,
+                     ScoreInternational_c_pro_labo=ScoreInternational_pro - ScoreInternational_pro_labo,
+                     
+                     ScoreInternational_c_perso_disc=ScoreInternational_perso - ScoreInternational_perso_labo,
+                     ScoreInternational_c_pro_disc=ScoreInternational_pro - ScoreInternational_pro_labo,
+)
+
+
+
 #REvenu : on agrège les catégories avec peu de monde
 climat$revenuAgr<-ifelse(climat$revenu %in% c("De 10 000 à 15 000 euros par mois", "Plus de 15 000 par mois", "De 8 000 à 9 999 euros par mois"), "Au moins 8000 euros par mois", as.character(climat$revenu))
 
