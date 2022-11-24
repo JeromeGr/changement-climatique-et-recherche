@@ -1396,6 +1396,33 @@ fviz_pca_biplot(acp, axes = c(1,3), repel = T)+ xlim(-2.5, 4) + ylim (-3, 3)
 
 # regressions multiniveaux julien ----
 
+# Recodages ----
+
+
+# Création des variables par labo et par discipline
+climatRegr <- group_by(climatRegr, unite.labintel) %>%
+  mutate(ScoreInternational_perso_labo=mean(ScoreInternational_perso, na.rm=TRUE),
+         ScoreInternational_pro_labo=mean(ScoreInternational_pro, na.rm=TRUE)) %>%
+  ungroup()
+climatRegr <- group_by(climatRegr, discipline) %>%
+  mutate(ScoreInternational_perso_disc=mean(ScoreInternational_perso, na.rm=TRUE),
+         ScoreInternational_pro_disc=mean(ScoreInternational_pro, na.rm=TRUE)) %>%
+  ungroup()
+
+
+# Création de la variable d'écart au labo et à la discipline
+climatRegr <- mutate(climatRegr,
+                     ScoreInternational_perso_c=ScoreInternational_perso - ScoreInternational_perso_labo - ScoreInternational_perso_disc + mean(ScoreInternational_perso, na.rm=TRUE),
+                     ScoreInternational_pro_c=ScoreInternational_pro -  ScoreInternational_pro_disc + mean(ScoreInternational_pro, na.rm=TRUE),
+                     
+                     ScoreInternational_c_perso_labo=ScoreInternational_perso - ScoreInternational_perso_labo,
+                     ScoreInternational_c_pro_labo=ScoreInternational_pro - ScoreInternational_pro_labo,
+                     
+                     ScoreInternational_c_perso_disc=ScoreInternational_perso - ScoreInternational_perso_labo,
+                     ScoreInternational_c_pro_disc=ScoreInternational_pro - ScoreInternational_pro_labo,
+)
+
+
 
 # Traitements ----
 
@@ -1441,14 +1468,17 @@ reg1 <- glmmTMB(volshnum ~ sexe + ageAgr + sitpro2 + carriere +
                   ScoreEcoloACP_c + ScoreEcoloACP_labo + ScoreEcoloACP_disc +
                   avionpersonum_c + avionpersonum_labo + avionpersonum_disc +
                   ScoreInternational_pro_c + ScoreInternational_pro_labo + ScoreInternational_pro_disc +
+                  ScoreInternational_perso_c + ScoreInternational_perso_labo + ScoreInternational_perso_disc +
                   (1 | unite.labintel) + (1 | discipline),
-                family="tweedie",
+                family="nbinom2",
                 data=climatRegr,
                 control=glmmTMBControl(parallel=4))
 
 reg2 <- update(reg1, ~ . +
                  ScoreEcoloACP_c*ScoreInternational_pro_c + ScoreEcoloACP_c*ScoreInternational_pro_labo + ScoreEcoloACP_c*ScoreInternational_pro_disc +
                  carriere*ScoreInternational_pro_c + carriere*ScoreInternational_pro_labo + carriere*ScoreInternational_pro_disc +
+                 ScoreEcoloACP_c*ScoreInternational_perso_c + ScoreEcoloACP_c*ScoreInternational_perso_labo + ScoreEcoloACP_c*ScoreInternational_perso_disc +
+                 carriere*ScoreInternational_perso_c + carriere*ScoreInternational_perso_labo + carriere*ScoreInternational_perso_disc +
                  nbpublis2_c*ScoreEcoloACP_c + nbpublis2_c*ScoreEcoloACP_labo + nbpublis2_c*ScoreEcoloACP_disc +
                  avionpersonum_c*ScoreEcoloACP_c + avionpersonum_c*ScoreEcoloACP_labo + avionpersonum_c*ScoreEcoloACP_disc)
 
@@ -1462,7 +1492,7 @@ function(m) tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=
 tbl_merge(tbls, paste0("M", seq_along(tbls)))
 
 library(ggeffects)
-mydf <- ggeffect(reg2, terms = c("ScoreEcoloACP_c [quart2]", "ScoreInternational_disc [quart2]"))
+mydf <- ggeffect(reg2, terms = c("ScoreEcoloACP_c [quart2]", "ScoreInternational_pro_disc [quart2]"))
 ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
   stat_smooth(method = "lm", se = FALSE) +
   scale_y_log10() +
