@@ -1724,6 +1724,10 @@ climatRegr$reducrechexemp<-fct_relevel(climatRegr$reducrechexemp, "Non")
 climatRegr$tresdecroissance<-as.factor(climatRegr$tresdecroissance)
 climatRegr$tresdecroissance<-fct_relevel(climatRegr$tresdecroissance, "Non")
 
+climatRegr$labopratiques.tri <- relevel(climatRegr$labopratiques.tri, "Non")
+climatRegr$labopratiques.train <- relevel(climatRegr$labopratiques.train, "Non")
+climatRegr$labopratiques.charte <- relevel(climatRegr$labopratiques.charte, "Non")
+
 ################-
 #Recodage pour les ACM----
 
