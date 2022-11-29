@@ -1357,6 +1357,40 @@ climat$trav.metropole <- recode_factor(climat$trav.AAV2020,
                                        .default="Autre")
 
 
+
+
+## Recodage de climat$trav.dep en climat$trav_zone
+climat$trav_zone <- climat$trav.dep %>%
+  fct_recode(
+    "loin" = "04",
+    "loin" = "06",
+    "loin" = "09",
+    "loin" = "15",
+    "loin" = "23",
+    "loin" = "29",
+    "loin" = "2B",
+    "loin" = "31",
+    "loin" = "64",
+    "loin" = "65",
+    "loin" = "66",
+    "IDF" = "75",
+    "IDF" = "77",
+    "loin" = "81",
+    "loin" = "83",
+    "IDF" = "91",
+    "IDF" = "92",
+    "IDF" = "93",
+    "IDF" = "94",
+    "IDF" = "95",
+    "loin" = "97",
+    "loin" = "98"
+  )%>% as.character()
+
+
+climat$trav_zone[!is.na(climat$trav_zone) &
+                   ! climat$trav_zone %in% c("loin", "IDF")] <- "peu_loin"
+
+
 #Le quiz
 
 recode_quiz <- function(x, rep) {

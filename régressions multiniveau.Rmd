@@ -4,7 +4,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-source("recodages.R")
+source("recodages.R", encoding = "UTF-8")
 knitr::opts_chunk$set(echo = TRUE)
 
 library(glmmTMB)
@@ -341,7 +341,7 @@ regdisteval1 <- update(reg1, volsdist_toteval ~ .)
 #regdistjury1 <- update(reg1, volsdist_totjury ~ .)
 regdistautre1 <- update(reg1, volsdist_totautre ~ .)
 
-tbls <- lapply(lst(regdist1, regdistconf1, regdistsejrech1, regdistworkshop1, regdistcours1, regdistterrain1, regdisteval1, regdistautre1),
+tbls <- lapply(lst(regdist1, regdistconf1, regdistterrain1, regdistsejrech1, regdistworkshop1, regdistcours1, regdisteval1, regdistautre1),
                function(m) tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=TRUE, conf.int=FALSE))
 tbl_merge(tbls, names(tbls))
 
