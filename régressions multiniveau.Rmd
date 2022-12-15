@@ -192,10 +192,35 @@ climatRegr_r[paste0(vars, "_c")] <-
     select(climatRegr_r, all_of(paste0(vars, "_labo"))) -
     select(climatRegr_r, all_of(paste0(vars, "_disc"))) +
     transmute(climatRegr_r, across(all_of(vars), ~ mean(.x, na.rm=TRUE)))
+
+# Standardiser les variables au niveau labo et discipline
+# pour que l'écart-type des moyennes par labo/discipline soit égal à 1
+sd_labo <- select(climatRegr_r, unite.labintel, all_of(paste0(vars, "_labo"))) %>%
+    group_by(unite.labintel)  %>%
+    summarize(across(everything(), ~ mean(.x, na.rm=TRUE))) %>%
+    select(-unite.labintel) %>%
+    apply(2, sd, na.rm=T)
+climatRegr_r[names(sd_labo)] <- sweep(climatRegr_r[names(sd_labo)], 2, sd_labo, "/")
+
+sd_disc <- select(climatRegr_r, discipline, all_of(paste0(vars, "_disc"))) %>%
+    group_by(discipline)  %>%
+    summarize(across(everything(), ~ mean(.x, na.rm=TRUE))) %>%
+    select(-discipline) %>%
+    apply(2, sd, na.rm=T)
+climatRegr_r[names(sd_disc)] <- sweep(climatRegr_r[names(sd_disc)], 2, sd_disc, "/")
+
+# Standardiser les variables individuelles pour que leur écart-type soit égal à 1
+sd_ind <- select(climatRegr_r,
+                 all_of(paste0(vars, "_c")),
+                 all_of(paste0(vars, "_clabo")),
+                 all_of(paste0(vars, "_cdisc"))) %>%
+    apply(2, sd, na.rm=TRUE)
+climatRegr_r[names(sd_ind)] <- sweep(climatRegr_r[names(sd_ind)], 2, sd_ind, "/")
+
 ```
 
 ```{r}
-reg0 <- glmmTMB(volshnum ~ sexe + ageAgr + trav.idf + sitpro2 + carriere +
+reg0 <- glmmTMB(volshnum ~ sexe + ageAgr + trav_zone_dom + sitpro2 + carriere +
                     revenuTete_c + revenuTete_labo + revenuTete_disc +
                     nbpublis2_c + nbpublis2_labo + nbpublis2_disc +
                     ScoreEcoloACP_c + ScoreEcoloACP_labo + ScoreEcoloACP_disc +
