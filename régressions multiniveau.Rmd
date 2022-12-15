@@ -232,14 +232,11 @@ reg0 <- glmmTMB(volshnum ~ sexe + ageAgr + trav_zone_dom + sitpro2 + carriere +
 reg1 <- update(reg0, ~ . +
                    ScoreInternational_perso_c + ScoreInternational_perso_labo + ScoreInternational_perso_disc +
                    ScoreInternational_pro_c + ScoreInternational_pro_labo + ScoreInternational_pro_disc +
-                   projet_fr_c + projet_fr_labo + projet_fr_disc +
-                   projet_intern_c + projet_intern_labo + projet_intern_disc +
                avionpersonum_c + avionpersonum_labo + avionpersonum_disc)
 
 reg2 <- update(reg1, ~ . +
-                   ScoreEcoloACP_c*ScoreInternational_pro_c + ScoreEcoloACP_c*ScoreInternational_pro_labo + ScoreEcoloACP_c*ScoreInternational_pro_disc +
-                   carriere*ScoreInternational_pro_c + carriere*ScoreInternational_pro_labo + carriere*ScoreInternational_pro_disc +
-                   nbpublis2_c*ScoreEcoloACP_c + nbpublis2_c*ScoreEcoloACP_labo + nbpublis2_c*ScoreEcoloACP_disc +
+# ScoreEcoloACP_c*nbpublis2_c                   carriere*ScoreInternational_pro_c + carriere*ScoreInternational_pro_labo + carriere*ScoreInternational_pro_disc +
+                   ScoreEcoloACP_c*nbpublis2_c + ScoreEcoloACP_c*nbpublis2_labo + ScoreEcoloACP_c*nbpublis2_disc +
                    avionpersonum_c*ScoreEcoloACP_c + avionpersonum_c*ScoreEcoloACP_labo + avionpersonum_c*ScoreEcoloACP_disc)
 
 
@@ -248,7 +245,7 @@ tbls <- lapply(list(reg0, reg1, reg2),
 tbl_merge(tbls, paste0("M", 0:(length(tbls)-1)))
 
 library(ggeffects)
-mydf <- ggeffect(reg2, terms = c("ScoreEcoloACP_c [quart2]", "ScoreInternational_pro_disc [quart2]"))
+mydf <- ggeffect(reg2, terms = c("ScoreEcoloACP_c [quart2]", "nbpublis2_disc [quart2]"))
 ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
     stat_smooth(method = "lm", se = FALSE) +
     scale_y_log10() +
