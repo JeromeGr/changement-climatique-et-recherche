@@ -211,6 +211,7 @@ climatRegr_r[names(sd_disc)] <- sweep(climatRegr_r[names(sd_disc)], 2, sd_disc, 
 
 # Standardiser les variables individuelles pour que leur écart-type soit égal à 1
 sd_ind <- select(climatRegr_r,
+                 all_of(vars),
                  all_of(paste0(vars, "_c")),
                  all_of(paste0(vars, "_clabo")),
                  all_of(paste0(vars, "_cdisc"))) %>%
