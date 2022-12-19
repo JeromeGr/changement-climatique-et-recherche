@@ -161,16 +161,19 @@ base_acp <- climatRegr_r[,
                            "dixannees.bilan_num"
                          )]
 
-acp <- FactoMineR::PCA(base_acp)
+acp <- FactoMineR::PCA(missMDA::imputePCA(base_acp, 1)$completeObs)
 
 climatRegr_r$ScoreEcoloACP <- acp$ind$coord[,1]
 
 # Liste des variables à centrer par labo/discipline
-vars <- c("volshnum", "nbpublis2", "ScoreEcolo", "ScoreEcoloACP",
+vars <- c("nbpublis2", "ScoreEcolo", "ScoreEcoloACP",
           "ScoreInternational", "ScoreInternational_perso", "ScoreInternational_pro", "tourisme",
           "avionpersonum", "chgtpratiquenum", "preoccupe2num", "solreducrechnum",
           "projet", "projet_fr", "projet_intern",
           "revenuTete", "paienum", "parbacp5")
+
+# Standardiser les variables individuelles pour que leur écart-type soit égal à 1
+climatRegr_r[vars] <- scale(climatRegr_r[vars])
 
 # Création des moyennes par labo (_labo) et des variables centrées par labo (_clabo)
 climatRegr_r <- group_by(climatRegr_r, unite.labintel) %>%
@@ -209,42 +212,59 @@ sd_disc <- select(climatRegr_r, discipline, all_of(paste0(vars, "_disc"))) %>%
     apply(2, sd, na.rm=T)
 climatRegr_r[names(sd_disc)] <- sweep(climatRegr_r[names(sd_disc)], 2, sd_disc, "/")
 
-# Standardiser les variables individuelles pour que leur écart-type soit égal à 1
-climatRegr_r[c(vars, paste0(vars, "_c"), paste0(vars, "_clabo"), paste0(vars, "_cdisc"))] <-
-    scale(climatRegr_r[c(vars, paste0(vars, "_c"), paste0(vars, "_clabo"), paste0(vars, "_cdisc"))])
-                                                                                                                
+# Standardiser les variables individuelles centrées pour que leur écart-type soit égal à 1
+climatRegr_r[c(paste0(vars, "_c"), paste0(vars, "_clabo"), paste0(vars, "_cdisc"))] <-
+    scale(climatRegr_r[c(paste0(vars, "_c"), paste0(vars, "_clabo"), paste0(vars, "_cdisc"))])
 ```
 
 ```{r}
-reg0 <- glmmTMB(volshnum ~ sexe + ageAgr + trav_zone_dom + sitpro2 + carriere +
-                    revenuTete_c + revenuTete_labo + revenuTete_disc +
-                    nbpublis2_c + nbpublis2_labo + nbpublis2_disc +
-                    ScoreEcoloACP_c + ScoreEcoloACP_labo + ScoreEcoloACP_disc +
+reg0 <- glmmTMB(volshnum ~ sexe + ageAgr + sitpro2 + carriere +
+                    nbpublis2 + nbpublis2_labo + nbpublis2_disc +
+                    ScoreEcoloACP + ScoreEcoloACP_labo + ScoreEcoloACP_disc +
                     (1 | unite.labintel) + (1 | discipline),
                 family="tweedie",
                 data=climatRegr_r,
                 control=glmmTMBControl(parallel=4))
 
 reg1 <- update(reg0, ~ . +
-                   ScoreInternational_perso_c + ScoreInternational_perso_labo + ScoreInternational_perso_disc +
-                   ScoreInternational_pro_c + ScoreInternational_pro_labo + ScoreInternational_pro_disc +
-               avionpersonum_c + avionpersonum_labo + avionpersonum_disc)
+                   #revenuTete + revenuTete_labo + revenuTete_disc +
+                   #ScoreInternational_perso + ScoreInternational_perso_labo + ScoreInternational_perso_disc +
+                   ScoreInternational_pro + ScoreInternational_pro_labo + ScoreInternational_pro_disc +
+                   avionpersonum + avionpersonum_labo + avionpersonum_disc)
 
 reg2 <- update(reg1, ~ . +
-# ScoreEcoloACP_c*nbpublis2_c                   carriere*ScoreInternational_pro_c + carriere*ScoreInternational_pro_labo + carriere*ScoreInternational_pro_disc +
-                   ScoreEcoloACP_c*nbpublis2_c + ScoreEcoloACP_c*nbpublis2_labo + ScoreEcoloACP_c*nbpublis2_disc +
-                   avionpersonum_c*ScoreEcoloACP_c + avionpersonum_c*ScoreEcoloACP_labo + avionpersonum_c*ScoreEcoloACP_disc)
+                   ScoreEcoloACP*nbpublis2 + ScoreEcoloACP*nbpublis2_labo + ScoreEcoloACP*nbpublis2_disc +
+                   ScoreEcoloACP*ScoreInternational_pro + ScoreEcoloACP*ScoreInternational_pro_labo + ScoreEcoloACP*ScoreInternational_pro_disc +
+                   ScoreEcoloACP*ScoreEcoloACP_labo + ScoreEcoloACP*ScoreEcoloACP_disc)
 
+# Calcul du R²
+# cor(model.response(model.frame(reg1)), fitted(reg1))^2
+# Explication de l'avertissement qui arrive si on centre la variable dépendante :
+# https://github.com/easystats/performance/issues/366
+# performance::r2(reg0)
+# performance::icc(reg0)
+# performance::icc(reg0, by_group=T)
+# performance::compare_performance(reg0, reg1, reg2)
+
+# Bootstrap
+# Attention, fait une erreur si les données contiennent des valeurs manquantes
+# qui ont été sautées automatiquement
+# library(lme4)
+# parameters::bootstrap_parameters(reg2, iterations=100)
 
 tbls <- lapply(list(reg0, reg1, reg2),
-               function(m) tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=TRUE))
-tbl_merge(tbls, paste0("M", 0:(length(tbls)-1)))
+               function(m) tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=TRUE, tidy_fun=broom.mixed::tidy) %>% add_glance_table())
+tbl_merge(tbls, paste0("M", 0:(length(tbls)-1))) %>%
+      modify_table_body(~ .x %>% arrange(row_type == "glance_statistic", endsWith(variable, "sd__(Intercept)")))
 
+# ggpredict fixe les autres variables numériques à leur moyenne,
+# et les autres variables catégorielles à leur référence
+# (ggeffect et ggemmeans mettent les catégorielles à leur proportion moyenne)
 library(ggeffects)
-mydf <- ggeffect(reg2, terms = c("ScoreEcoloACP_c [quart2]", "nbpublis2_disc [quart2]"))
+mydf <- ggpredict(reg2, terms = c("ScoreEcoloACP [quart2]", "ScoreInternational_pro_disc [quart2]"))
 ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
     stat_smooth(method = "lm", se = FALSE) +
-    scale_y_log10() +
+    coord_cartesian(ylim=c(0, NA)) +
     labs(
         y = get_y_title(mydf),
         x = get_x_title(mydf),
@@ -252,33 +272,10 @@ ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
     )
 
 library(ggeffects)
-mydf <- ggeffect(reg2, terms = c("ScoreInternational_pro_labo [quart2]", "carriere"))
-ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
-    #geom_point() +
-    stat_smooth(method = "lm", se = FALSE) +
-    scale_y_log10() +
-    labs(
-        y = get_y_title(mydf),
-        x = get_x_title(mydf),
-        colour = get_legend_title(mydf)
-    )
-
-mydf <- ggeffect(reg2, terms = c("nbpublis2_c [quart2]", "ScoreEcoloACP_disc [quart2]"))
+mydf <- ggpredict(reg2, terms = c("ScoreEcoloACP [quart2]", "ScoreEcoloACP_labo [quart2]"))
 ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
     stat_smooth(method = "lm", se = FALSE) +
-    scale_y_log10() +
-    labs(
-        y = get_y_title(mydf),
-        x = get_x_title(mydf),
-        colour = get_legend_title(mydf)
-    )
-
-library(ggeffects)
-mydf <- ggeffect(reg2, terms = c("avionpersonum_c [quart2]", "ScoreEcoloACP_c [quart2]"))
-ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
-    #geom_point() +
-    stat_smooth(method = "lm", se = FALSE) +
-    scale_y_log10() +
+    coord_cartesian(ylim=c(0, NA)) +
     labs(
         y = get_y_title(mydf),
         x = get_x_title(mydf),
@@ -286,35 +283,26 @@ ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
     )
 ```
 
-## Score international
+Les variables indépendantes sont centrées-réduites au niveau correspondant : les coefficients mesurent l'effet d'un écart-type entre individus/laboratoires/disciplines selon le cas.
 
-Dans le modèle 1, le score international individuel et le score moyen du laboration augmentent les heures de vol.
+Je commente les effets significatifs au seuil de 10% uniquement.
 
-## Score écolo
+Le revenu par tête n'est pas utilisé car il a beaucoup de valeurs manquantes.
 
-Dans le modèle 1, le score écolo individuel n'a pas d'effet sur les vols. En revanche, le score écolo moyen de la discipline augmente le nombre d'heures de vol. Ce résultat contre-intuitif tient probablement à des caractéristiques des disciplines qui étudient la Terre et l'environnement. Dans le modèle 2, quand on met le score écolo individuel en interaction avec le score international moyen de la discipline, on voit qu'il a un effet négatif très fort pour les personnes dans des disciplines peu internationalisées, mais aucun effet dans dans les disciplines très internationalisées. On peut interpréter ce résultat comme une pression institutionnelle à voyager qui n'existe que dans certaines disciplines, et qui empêche les opinions individuelles d'avoir un effet sur les pratiques.
+## Niveau individuel
 
-## Carrière
+Effet de l'âge, du statut, du fait de chercher à être promu, du nombre de publications, du score international professionnel, et des vols dans le cadre personnel. Effet du sexe uniquement dans le modèle 0. Aucun effet du score écolo.
 
-Dans le modèle 1, le fait de chercher actuellement à être promu ou recruté augmente les heures de vol. Dans le modèle 2, on voit que le fait d'être dans cette situation augmente les vols principalement quand on est dans un laboratoire peu internationalisé, alors que cela n'a aucun effet dans un laboratoire très internationalisé. Encore une fois, il semble que dans les contextes très internationalisés, les marges de maœuvre individuelles n'existent pas.
+## Niveau laboratoire
 
-## Publications
+Effet du nombre de publications moyen, et des vols dans le cadre personnel moyens du laboratoire. Interaction à la limite de la significativité (10%) entre le score écolo individuel et le score écolo moyen du laboratoire : être écolo dans un laboratoire écolo diminue plus les vols qu'ailleurs.
 
-Dans le modèle 1, le nombre de publications individuelles et du laboratoire augmente les heures de vols. Dans le modèle 2, on voit que quand on est dans une discipline très écolo, l'effet d'une publication supplémentaire sur les heures de vol est moins fort que quand on est dans une discipline peu écolo.
+## Niveau discipline
 
-## Avion dans le cadre personnel
+Effet négatif (!) des vols dans le cadre personnel moyens de la discipline. Difficile à expliquer, mais on trouve le même effet (un peu moins fort et non significatif) dans un modèle sans le niveau laboratoire.
+Interaction entre le score écolo individuel et le score international moyen de la discipline : le score écolo ne diminue les vols que dans les disciplines peu ou moyennement internationalisées.
 
-Dans le modèle 1, le nombre de vols en avion dans le cadre personnel au niveau individuel, du laboratoire et même de la discipline (limite significatif) augmente le nombre d'heures de vols dans le cadre professionnel. Dans le modèle 2, on voit que le nombre de vols personnels a plus d'effet sur les vols professionnels chez les écolos que chez les moins écolos ; autrement dit, chez ceux qui volent peu dans le cadre personnel, l'opinion écolo joue plus fortement sur les comportements professionnels que chez ceux qui volent beaucoup. Encore une fois, on retrouve le fait que les opinions jouent peu sur les pratiques dans les contextes très internationalisés (mais cette fois au niveau individuel, ce qui est logique puisqu'il s'agit d'un comportement dans le cadre personnel).
-
-
-# Comparaison discipline, laboratoire et les deux
-
-La plupart des effets apparaissent à un seul des niveaux quand on contrôle les deux, mais sont captés par l'autre quand on ne les contrôle pas simultanément. 
-Effets au niveau laboratoire : nombre de publications, nombre de vols dans le cadre personnel, score international.
-Effets au niveau discipline : score écolo.
-
-L'effet du nombre de vols dans le cadre personnel est plus significatif au niveau laboratoire, mais il devient presque significatif au niveau discipline uniquement quand on contrôle le laboratoire.
-Le score international n'a aucun effet au niveau discipline, même si on ne contrôle pas le laboratoire.
+# Comparaison entre laboratoire, discipline et les deux
 
 ```{r}
 drop_terms <- function(f, pattern) {
@@ -323,14 +311,14 @@ drop_terms <- function(f, pattern) {
 
 reg1disc <- glmmTMB(update(drop_terms(reg1$call$formula, "_labo|\\|"), ~ . + (1 | discipline)),
                     family="tweedie",
-                    data=rename_with(select(climatRegr_r, !ends_with("_c")), ~ sub("_cdisc", "_c", .)),
+                    data=climatRegr_r,
                     control=glmmTMBControl(parallel=4))
 
 reg2disc <- update(reg1disc, update(drop_terms(reg2$call$formula, "_labo|\\|"), ~ . + (1 | discipline)))
 
 reg1labo <- glmmTMB(update(drop_terms(reg1$call$formula, "_disc|\\|"), ~ . + (1 | unite.labintel)),
                     family="tweedie",
-                    data=rename_with(select(climatRegr_r, !ends_with("_c")), ~ sub("_clabo", "_c", .)),
+                    data=climatRegr_r,
                     control=glmmTMBControl(parallel=4))
 
 reg2labo <- update(reg1labo, update(drop_terms(reg2$call$formula, "_disc|\\|"), ~ . + (1 | unite.labintel)))
@@ -346,7 +334,12 @@ tbl_merge(tbls, c("Discipline & labo", "Discipline", "Labo"))
 
 # Différents motifs de vol
 
-Le score écolo de la discipline augmente la distance de vol uniquement pour le terrain et les réunions/ateliers (et dans ces cas il est hautement significatif) ; l'effet est très fort pour le terrain. Quand on prend la distance totale, p=0.06 à cause des effectifs plus faibles que pour les heures de vol.
+Le score écolo de la discipline augmente la distance de vol uniquement pour le terrain, avec un effet très fort pour le terrain (effet significatif à 6% pour la distance totale). Le score écolo individuel diminue la distance de vol uniquement pour les cours (effet non significatif pour la distance totale).
+
+Les vols dans le cadre personnel moyens du laboratoire augmentent la distance de vol uniquement pour les conférences et les réunions/workshops (effet significatif pour la distance totale). Les vols dans le cadre personnel moyens de la discipline diminuent la distance de vol uniquement pour les cours (effet non significatif pour la distance totale). Les vols dans le cadre personnel individuels augmentent la distance de vol pour des séjours de recherche, mais diminue celle pour le terrain.
+
+Le nombre de publications individuel augmente la distance de vol uniquement pour les conférences (effet significatif pour la distance totale).
+
 
 ```{r}
 regdist1 <- update(reg1, volsdist_tot ~ .)
