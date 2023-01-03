@@ -1308,6 +1308,32 @@ climat$revenuTete[climat$revenu=="De 8 000 à 9 999 euros par mois" & !is.na(cli
 climat$revenuTete[climat$revenu=="De 10 000 à 15 000 euros par mois" & !is.na(climat$revenu)]<-12500/climat$tailleFiscFoyer[climat$revenu=="De 10 000 à 15 000 euros par mois" & !is.na(climat$revenu)]
 climat$revenuTete[climat$revenu=="Plus de 15 000 par mois" & !is.na(climat$revenu)]<-20000/climat$tailleFiscFoyer[climat$revenu=="Plus de 15 000 par mois" & !is.na(climat$revenu)]
 
+
+# deuxième calcul, efface le précédent (test julien)
+
+# une part par adulte, une demie part par enfant
+# on corrige pour l'instant juste le truc en ne comptant pas les enfants de plus de 20 ans
+climat$couple1[climat$couple=="Oui"]<-1
+climat$couple1[climat$couple=="Non"]<-0
+#si le plus jeune enfant a plus de 20 ans, 0
+climat$enfants_foyer <- climat$enfantsnb
+climat$enfants_foyer[climat$enfantsage>=20] <- 0
+# on considère comme sans enfants les personnes n'ayant pas répondu à la question mais ayant répondu à la suivante
+climat$enfants_foyer[is.na(climat$enfants_foyer) &
+                       !is.na(climat$dippar.m)] <- 0
+
+climat$tailleFiscFoyer<-1+climat$couple1*0.5+climat$enfants_foyer*0.4
+
+climat$revenuTete[climat$revenu=="Moins de 1 500 euros par mois" & !is.na(climat$revenu) ]<-750/climat$tailleFiscFoyer[climat$revenu=="Moins de 1 500 euros par mois" & !is.na(climat$revenu)]
+climat$revenuTete[climat$revenu=="De 1 500 à 2 499 euros par mois" & !is.na(climat$revenu)]<-2000/climat$tailleFiscFoyer[climat$revenu=="De 1 500 à 2 499 euros par mois" & !is.na(climat$revenu)]
+climat$revenuTete[climat$revenu=="De 2 500 à 3 499 euros par mois" & !is.na(climat$revenu)]<-3000/climat$tailleFiscFoyer[climat$revenu=="De 2 500 à 3 499 euros par mois" & !is.na(climat$revenu)]
+climat$revenuTete[climat$revenu=="De 3 500 à 4 499 euros par mois" & !is.na(climat$revenu)]<-4000/climat$tailleFiscFoyer[climat$revenu=="De 3 500 à 4 499 euros par mois" & !is.na(climat$revenu)]
+climat$revenuTete[climat$revenu=="De 6 000 à 7 999 euros par mois" & !is.na(climat$revenu)]<-7000/climat$tailleFiscFoyer[climat$revenu=="De 6 000 à 7 999 euros par mois" & !is.na(climat$revenu)]
+climat$revenuTete[climat$revenu=="De 8 000 à 9 999 euros par mois" & !is.na(climat$revenu)]<-9000/climat$tailleFiscFoyer[climat$revenu=="De 8 000 à 9 999 euros par mois" & !is.na(climat$revenu)]
+climat$revenuTete[climat$revenu=="De 10 000 à 15 000 euros par mois" & !is.na(climat$revenu)]<-12500/climat$tailleFiscFoyer[climat$revenu=="De 10 000 à 15 000 euros par mois" & !is.na(climat$revenu)]
+climat$revenuTete[climat$revenu=="Plus de 15 000 par mois" & !is.na(climat$revenu)]<-20000/climat$tailleFiscFoyer[climat$revenu=="Plus de 15 000 par mois" & !is.na(climat$revenu)]
+
+
 #S'estimer bien ou mal payé
 climat$malpaye[climat$paie %in% c("Mal payé·e" , "Très mal payé·e")]<-"Oui"
 climat$malpaye[climat$paie %in% c("Bien payé·e", "Correctement payé·e", "Très bien payé·e")]<-"Non"
