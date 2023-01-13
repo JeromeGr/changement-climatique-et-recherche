@@ -1,0 +1,364 @@
+---
+title: "Régressions multiniveau Julien 2"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+source("recodages.R", encoding = "UTF-8")
+knitr::opts_chunk$set(echo = TRUE)
+
+library(glmmTMB)
+library(tidyverse)
+library(gtsummary)
+
+
+climatRegr_r <- mutate(climatRegr_r,
+                       nbpublis2=pmin(nbpublis, 100),
+                       tourisme=startsWith(as.character(apportconf.tourisme), "Oui"),
+                       revenuTete=revenuTete/1000,
+                       parbacp5=dippar.p == "Bac +4 ou 5" | dippar.p == "Doctorat" |
+                           dippar.m == "Bac +4 ou 5" | dippar.m == "Doctorat",
+                       avionpersonum=recode(avionperso,
+                                            "Aucun aller-retour"=0,
+                                            "1 ou 2 allers-retours"=1.5,
+                                            "3 ou 4 allers-retours"=2.5,
+                                            "Plus de 5 allers-retours"=6),
+                       chgtpratiquenum=as.numeric(fct_relevel(chgtpratique, "Non, pas du tout d'accord",
+                                                              "Non, plutôt pas d'accord", "Sans opinion",
+                                                              "Oui, plutôt d'accord",
+                                                              "Oui, tout à fait d'accord")) - 1,
+                       preoccupe2num=as.numeric(fct_relevel(preoccupe2, "Pas du tout préoccupé·e", "Sans opinion",
+                                                            "Un peu préoccupé·e", "Assez préoccupé·e", 
+                                                            "Très préoccupé·e", "Extrêmement préoccupé·e")) - 1,
+                       paienum=as.numeric(fct_relevel(paie, c("Très bien payé·e", "Bien payé·e", "Correctement payé·e", "Mal payé·e", "Très mal payé·e"))),
+                       solreducrechnum=as.numeric(fct_rev(solreducrech)) - 1,
+                       projet=Profin_Mb_Resp == "Membre d'au moins 1 projet financé" | Profin_Mb_Resp == "Responsable d'au moins 1 projet financé",
+                       projet_fr=particip_ANR | particip_Fr,
+                       projet_intern=particip_Europ | particip_Intern)
+
+# climatRegr <- group_by(climatRegr, unite.labintel) %>%
+#     filter(n() > 1)
+# 
+# climatRegr <- group_by(climatRegr, discipline) %>%
+#     filter(n() > 1)
+
+
+# ACP score écolo
+
+climatRegr_r <- mutate(climatRegr_r,
+                       opinionecolo.decroissance_num=as.numeric(
+                           fct_relevel(
+                               opinionecolo.decroissance, 
+                               "Pas du tout d'accord", 
+                               "Plutôt pas d'accord", 
+                               "Sans opinion", 
+                               "Plutôt d'accord",
+                               "Tout à fait d'accord")) - 1,
+                       opinionecolo.cata_num=as.numeric(
+                           fct_relevel(
+                               opinionecolo.cata, 
+                               "Pas du tout d'accord", 
+                               "Plutôt pas d'accord", 
+                               "Sans opinion", 
+                               "Plutôt d'accord",
+                               "Tout à fait d'accord")) - 1,
+                       opinionecolo.techno_num=as.numeric(
+                           fct_relevel(
+                               opinionecolo.techno, 
+                               "Pas du tout d'accord", 
+                               "Plutôt pas d'accord", 
+                               "Sans opinion", 
+                               "Plutôt d'accord",
+                               "Tout à fait d'accord")) - 1,
+                       opinionecolo.proteger_num=as.numeric(
+                           fct_relevel(
+                               opinionecolo.proteger, 
+                               "Pas du tout d'accord", 
+                               "Plutôt pas d'accord", 
+                               "Sans opinion", 
+                               "Plutôt d'accord",
+                               "Tout à fait d'accord")) - 1,
+                       opinionecolo.efforts_num=as.numeric(
+                           fct_relevel(
+                               opinionecolo.efforts, 
+                               "Pas du tout d'accord", 
+                               "Plutôt pas d'accord", 
+                               "Sans opinion", 
+                               "Plutôt d'accord",
+                               "Tout à fait d'accord")) - 1,
+                       opinionecolo.contraintes_num=as.numeric(
+                           fct_relevel(
+                               opinionecolo.contraintes, 
+                               "Pas du tout d'accord", 
+                               "Plutôt pas d'accord", 
+                               "Sans opinion", 
+                               "Plutôt d'accord",
+                               "Tout à fait d'accord")) - 1,
+                       opinionecolo.effondrement_num=as.numeric(
+                           fct_relevel(
+                               opinionecolo.effondrement, 
+                               "Pas du tout d'accord", 
+                               "Plutôt pas d'accord", 
+                               "Sans opinion", 
+                               "Plutôt d'accord",
+                               "Tout à fait d'accord")) - 1)
+
+climatRegr_r$dixannees.marche_num <- climatRegr_r$dixannees.marche %>%
+    fct_recode(
+        "1" = "Oui",
+        "0" = "Non",
+        NULL = "Je ne souhaite pas répondre"
+    ) %>%
+    as.character() %>%
+    as.numeric()
+
+climatRegr_r$dixannees.asso_num <- climatRegr_r$dixannees.asso %>%
+    fct_recode(
+        "1" = "Oui",
+        "0" = "Non",
+        NULL = "Je ne souhaite pas répondre"
+    ) %>%
+    as.character() %>%
+    as.numeric()
+climatRegr_r$dixannees.giec_num <- climatRegr_r$dixannees.giec %>%
+    fct_recode(
+        "1" = "Oui",
+        "0" = "Non",
+        NULL = "Je ne souhaite pas répondre"
+    ) %>%
+    as.character() %>%
+    as.numeric()
+climatRegr_r$dixannees.vote_num <- climatRegr_r$dixannees.vote %>%
+    fct_recode(
+        "1" = "Oui",
+        "0" = "Non",
+        NULL = "Je ne souhaite pas répondre"
+    ) %>%
+    as.character() %>%
+    as.numeric()
+climatRegr_r$dixannees.bilan_num <- climatRegr_r$dixannees.bilan %>%
+    fct_recode(
+        "1" = "Oui",
+        "0" = "Non",
+        NULL = "Je ne souhaite pas répondre"
+    ) %>%
+    as.character() %>%
+    as.numeric()
+
+base_acp <- climatRegr_r[,
+                         c("opinionecolo.decroissance_num",
+                           "opinionecolo.cata_num",
+                           "opinionecolo.techno_num",
+                           "opinionecolo.proteger_num",
+                           "opinionecolo.efforts_num",
+                           "opinionecolo.contraintes_num",
+                           "opinionecolo.effondrement_num",
+                           "preoccupe2num",
+                           "dixannees.marche_num", 
+                           "dixannees.giec_num", 
+                           "dixannees.vote_num", 
+                           "dixannees.asso_num", 
+                           "dixannees.bilan_num"
+                         )]
+
+acp <- FactoMineR::PCA(missMDA::imputePCA(base_acp, 1)$completeObs)
+
+climatRegr_r$ScoreEcoloACP <- acp$ind$coord[,1]
+
+# Liste des variables à centrer par labo/discipline
+vars <- c("nbpublis2", "ScoreEcolo", "ScoreEcoloACP",
+          "ScoreInternational", "ScoreInternational_perso", "ScoreInternational_pro", "tourisme",
+          "avionpersonum", "chgtpratiquenum", "preoccupe2num", "solreducrechnum",
+          "projet", "projet_fr", "projet_intern",
+          "revenuTete", "paienum", "parbacp5")
+
+# Standardiser les variables individuelles pour que leur écart-type soit égal à 1
+climatRegr_r[vars] <- scale(climatRegr_r[vars])
+
+# Création des moyennes par labo (_labo) et des variables centrées par labo (_clabo)
+climatRegr_r <- group_by(climatRegr_r, unite.labintel) %>%
+    mutate(across(all_of(vars), ~ mean(.x, na.rm=TRUE), .names="{.col}_labo"),
+           across(all_of(vars), ~ .x - mean(.x, na.rm=TRUE), .names="{.col}_clabo")) %>%
+    ungroup()
+
+# Création des moyennes par discipline (_discipline) et des variables centrées par discipline (_cdisc)
+climatRegr_r <- group_by(climatRegr_r, discipline) %>%
+    mutate(across(all_of(vars), ~ mean(.x, na.rm=TRUE), .names="{.col}_disc"),
+           across(all_of(vars), ~ .x - mean(.x, na.rm=TRUE), .names="{.col}_cdisc")) %>%
+    ungroup()
+
+# Création des variables centrées par labo et discipline (_c)
+# On rajoute la moyenne de la variable d'origine
+# pour que leur moyenne soit à 0 alors qu'on a soustrait deux fois la moyenne
+climatRegr_r[paste0(vars, "_c")] <-
+    select(climatRegr_r, all_of(vars)) -
+    select(climatRegr_r, all_of(paste0(vars, "_labo"))) -
+    select(climatRegr_r, all_of(paste0(vars, "_disc"))) +
+    transmute(climatRegr_r, across(all_of(vars), ~ mean(.x, na.rm=TRUE)))
+
+# Standardiser les variables au niveau labo et discipline
+# pour que l'écart-type des moyennes par labo/discipline soit égal à 1
+sd_labo <- select(climatRegr_r, unite.labintel, all_of(paste0(vars, "_labo"))) %>%
+    group_by(unite.labintel)  %>%
+    summarize(across(everything(), ~ mean(.x, na.rm=TRUE))) %>%
+    select(-unite.labintel) %>%
+    apply(2, sd, na.rm=T)
+climatRegr_r[names(sd_labo)] <- sweep(climatRegr_r[names(sd_labo)], 2, sd_labo, "/")
+
+sd_disc <- select(climatRegr_r, discipline, all_of(paste0(vars, "_disc"))) %>%
+    group_by(discipline)  %>%
+    summarize(across(everything(), ~ mean(.x, na.rm=TRUE))) %>%
+    select(-discipline) %>%
+    apply(2, sd, na.rm=T)
+climatRegr_r[names(sd_disc)] <- sweep(climatRegr_r[names(sd_disc)], 2, sd_disc, "/")
+
+# Standardiser les variables individuelles centrées pour que leur écart-type soit égal à 1
+climatRegr_r[c(paste0(vars, "_c"), paste0(vars, "_clabo"), paste0(vars, "_cdisc"))] <-
+    scale(climatRegr_r[c(paste0(vars, "_c"), paste0(vars, "_clabo"), paste0(vars, "_cdisc"))])
+```
+
+```{r}
+reg0 <- glmmTMB(volshnum ~ sexe + ageAgr + sitpro2 + 
+                    ScoreEcoloACP + ScoreEcoloACP_labo + ScoreEcoloACP_disc +
+                   revenuTete + revenuTete_labo + revenuTete_disc +
+                    (1 | unite.labintel) + (1 | discipline),
+                family="tweedie",
+                data=climatRegr_r,
+                control=glmmTMBControl(parallel=4))
+
+reg1 <- update(reg0, ~ . +
+                   # revenuTete + revenuTete_labo + revenuTete_disc +
+                   #ScoreInternational_perso + ScoreInternational_perso_labo + ScoreInternational_perso_disc +
+                 carriere +
+                    nbpublis2 + nbpublis2_labo + nbpublis2_disc +
+                   ScoreInternational_pro + ScoreInternational_pro_labo + ScoreInternational_pro_disc +
+                   avionpersonum + avionpersonum_labo + avionpersonum_disc)
+
+reg2 <- update(reg1, ~ . +
+                   ScoreEcoloACP*nbpublis2 + ScoreEcoloACP*nbpublis2_labo + ScoreEcoloACP*nbpublis2_disc +
+                   ScoreEcoloACP*ScoreInternational_pro + ScoreEcoloACP*ScoreInternational_pro_labo + ScoreEcoloACP*ScoreInternational_pro_disc +
+                   ScoreEcoloACP*ScoreEcoloACP_labo + ScoreEcoloACP*ScoreEcoloACP_disc)
+
+# Calcul du R²
+# cor(model.response(model.frame(reg1)), fitted(reg1))^2
+# Explication de l'avertissement qui arrive si on centre la variable dépendante :
+# https://github.com/easystats/performance/issues/366
+# performance::r2(reg0)
+# performance::icc(reg0)
+# performance::icc(reg0, by_group=T)
+# performance::compare_performance(reg0, reg1, reg2)
+
+# Bootstrap
+# Attention, fait une erreur si les données contiennent des valeurs manquantes
+# qui ont été sautées automatiquement
+# library(lme4)
+# parameters::bootstrap_parameters(reg2, iterations=100)
+
+tbls <- lapply(list(reg0, reg1, reg2),
+               function(m) tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=TRUE, tidy_fun=broom.mixed::tidy) %>% add_glance_table())
+tbl_merge(tbls, paste0("M", 0:(length(tbls)-1))) %>%
+      modify_table_body(~ .x %>% arrange(row_type == "glance_statistic", endsWith(variable, "sd__(Intercept)")))
+
+# ggpredict fixe les autres variables numériques à leur moyenne,
+# et les autres variables catégorielles à leur référence
+# (ggeffect et ggemmeans mettent les catégorielles à leur proportion moyenne)
+library(ggeffects)
+mydf <- ggpredict(reg2, terms = c("ScoreEcoloACP [quart2]", "ScoreInternational_pro_disc [quart2]"))
+ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
+    stat_smooth(method = "lm", se = FALSE) +
+    coord_cartesian(ylim=c(0, NA)) +
+    labs(
+        y = get_y_title(mydf),
+        x = get_x_title(mydf),
+        colour = get_legend_title(mydf)
+    )
+
+library(ggeffects)
+mydf <- ggpredict(reg2, terms = c("ScoreEcoloACP [quart2]", "ScoreEcoloACP_labo [quart2]"))
+ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
+    stat_smooth(method = "lm", se = FALSE) +
+    coord_cartesian(ylim=c(0, NA)) +
+    labs(
+        y = get_y_title(mydf),
+        x = get_x_title(mydf),
+        colour = get_legend_title(mydf)
+    )
+```
+
+Les variables indépendantes sont centrées-réduites au niveau correspondant : les coefficients mesurent l'effet d'un écart-type entre individus/laboratoires/disciplines selon le cas.
+
+Je commente les effets significatifs au seuil de 10% uniquement.
+
+Le revenu par tête n'est pas utilisé car il a beaucoup de valeurs manquantes.
+
+## Niveau individuel
+
+Effet de l'âge, du statut, du fait de chercher à être promu, du nombre de publications, du score international professionnel, et des vols dans le cadre personnel. Effet du sexe uniquement dans le modèle 0. Aucun effet du score écolo.
+
+## Niveau laboratoire
+
+Effet du nombre de publications moyen, et des vols dans le cadre personnel moyens du laboratoire. Interaction à la limite de la significativité (10%) entre le score écolo individuel et le score écolo moyen du laboratoire : être écolo dans un laboratoire écolo diminue plus les vols qu'ailleurs.
+
+## Niveau discipline
+
+Effet négatif (!) des vols dans le cadre personnel moyens de la discipline. Difficile à expliquer, mais on trouve le même effet (un peu moins fort et non significatif) dans un modèle sans le niveau laboratoire.
+Interaction entre le score écolo individuel et le score international moyen de la discipline : le score écolo ne diminue les vols que dans les disciplines peu ou moyennement internationalisées.
+
+<!-- # Comparaison entre laboratoire, discipline et les deux -->
+
+<!-- ```{r} -->
+<!-- drop_terms <- function(f, pattern) { -->
+<!--     update(f, drop.terms(terms(f), which(grepl(pattern, attr(terms(f), "term.labels"))), keep.response=TRUE)) -->
+<!-- } -->
+
+<!-- reg1disc <- glmmTMB(update(drop_terms(reg1$call$formula, "_labo|\\|"), ~ . + (1 | discipline)), -->
+<!--                     family="tweedie", -->
+<!--                     data=climatRegr_r, -->
+<!--                     control=glmmTMBControl(parallel=4)) -->
+
+<!-- reg2disc <- update(reg1disc, update(drop_terms(reg2$call$formula, "_labo|\\|"), ~ . + (1 | discipline))) -->
+
+<!-- reg1labo <- glmmTMB(update(drop_terms(reg1$call$formula, "_disc|\\|"), ~ . + (1 | unite.labintel)), -->
+<!--                     family="tweedie", -->
+<!--                     data=climatRegr_r, -->
+<!--                     control=glmmTMBControl(parallel=4)) -->
+
+<!-- reg2labo <- update(reg1labo, update(drop_terms(reg2$call$formula, "_disc|\\|"), ~ . + (1 | unite.labintel))) -->
+
+<!-- tbls <- lapply(list(reg1, reg1disc, reg1labo), -->
+<!--                function(m) tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=TRUE)) -->
+<!-- tbl_merge(tbls, c("Discipline & labo", "Discipline", "Labo")) -->
+
+<!-- tbls <- lapply(list(reg2, reg2disc, reg2labo), -->
+<!--                function(m) tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=TRUE)) -->
+<!-- tbl_merge(tbls, c("Discipline & labo", "Discipline", "Labo")) -->
+<!-- ``` -->
+
+# Différents motifs de vol
+
+Le score écolo de la discipline augmente la distance de vol uniquement pour le terrain, avec un effet très fort pour le terrain (effet significatif à 6% pour la distance totale). Le score écolo individuel diminue la distance de vol uniquement pour les cours (effet non significatif pour la distance totale).
+
+Les vols dans le cadre personnel moyens du laboratoire augmentent la distance de vol uniquement pour les conférences et les réunions/workshops (effet significatif pour la distance totale). Les vols dans le cadre personnel moyens de la discipline diminuent la distance de vol uniquement pour les cours (effet non significatif pour la distance totale). Les vols dans le cadre personnel individuels augmentent la distance de vol pour des séjours de recherche, mais diminue celle pour le terrain.
+
+Le nombre de publications individuel augmente la distance de vol uniquement pour les conférences (effet significatif pour la distance totale).
+
+
+```{r}
+regdist1 <- update(reg1, volsdist_tot ~ .)
+regdistconf1 <- update(reg1, volsdist_totconf ~ .)
+regdistsejrech1 <- update(reg1, volsdist_totsejrech ~ .)
+regdistworkshop1 <- update(reg1, volsdist_totworkshop ~ .)
+regdistcours1 <- update(reg1, volsdist_totcours ~ .)
+regdistterrain1 <- update(reg1, volsdist_totterrain ~ .)
+# regdisteval1 <- update(reg1, volsdist_toteval ~ .)
+#regdistjury1 <- update(reg1, volsdist_totjury ~ .)
+# regdistautre1 <- update(reg1, volsdist_totautre ~ .)
+
+tbls <- lapply(lst(regdist1, regdistconf1, regdistterrain1, regdistsejrech1, regdistworkshop1
+                   # , regdistcours1, regdisteval1, regdistautre1
+                   ),
+               function(m) tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=TRUE, conf.int=FALSE))
+tbl_merge(tbls, names(tbls))
+
+```
+
