@@ -161,9 +161,12 @@ base_acp <- climatRegr_r[,
                            "dixannees.bilan_num"
                          )]
 
-acp <- FactoMineR::PCA(missMDA::imputePCA(base_acp, 1)$completeObs)
-
-climatRegr_r$ScoreEcoloACP <- acp$ind$coord[,1]
+# Ne pas imputer les personnes qui ont répondu à moins de la moitié des questions
+manquant_acp <- rowSums(is.na(base_acp)) > 6
+base_acp_complete <- missMDA::imputePCA(base_acp[!manquant_acp,], 1)$completeObs
+acp <- FactoMineR::PCA(base_acp_complete)
+climatRegr_r$ScoreEcoloACP <- NA
+climatRegr_r$ScoreEcoloACP[!manquant_acp] <- acp$ind$coord[,1]
 
 # Liste des variables à centrer par labo/discipline
 vars <- c("nbpublis2", "ScoreEcolo", "ScoreEcoloACP",
