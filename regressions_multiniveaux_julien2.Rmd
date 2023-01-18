@@ -13,6 +13,8 @@ library(gtsummary)
 
 
 climatRegr_r <- mutate(climatRegr_r,
+                       sexenum=if_else(sexe == "Femme", 1, 0),
+                       carrierenum=if_else(carriere == "Oui", 1, 0),
                        nbpublis2=pmin(nbpublis, 100),
                        tourisme=startsWith(as.character(apportconf.tourisme), "Oui"),
                        revenuTete=revenuTete/1000,
@@ -169,14 +171,17 @@ climatRegr_r$ScoreEcoloACP <- NA
 climatRegr_r$ScoreEcoloACP[!manquant_acp] <- acp$ind$coord[,1]
 
 # Liste des variables à centrer par labo/discipline
-vars <- c("nbpublis2", "ScoreEcolo", "ScoreEcoloACP",
-          "ScoreInternational", "ScoreInternational_perso", "ScoreInternational_pro", "tourisme",
-          "avionpersonum", "chgtpratiquenum", "preoccupe2num", "solreducrechnum",
-          "projet", "projet_fr", "projet_intern",
-          "revenuTete", "paienum", "parbacp5")
+vars_centrer <- c("nbpublis2", "ScoreEcolo", "ScoreEcoloACP",
+                  "ScoreInternational", "ScoreInternational_perso", "ScoreInternational_pro", "tourisme",
+                  "avionpersonum", "chgtpratiquenum", "preoccupe2num", "solreducrechnum",
+                  "projet", "projet_fr", "projet_intern",
+                  "revenuTete", "paienum", "parbacp5")
+
+# Liste des variables à moyenner par labo/discipline
+vars <- c(vars_centrer, "sexenum", "carrierenum")
 
 # Standardiser les variables individuelles pour que leur écart-type soit égal à 1
-climatRegr_r[vars] <- scale(climatRegr_r[vars])
+climatRegr_r[vars_centrer] <- scale(climatRegr_r[vars_centrer])
 
 # Création des moyennes par labo (_labo) et des variables centrées par labo (_clabo)
 climatRegr_r <- group_by(climatRegr_r, unite.labintel) %>%
@@ -278,7 +283,7 @@ reg0 <- glmmTMB(volshnum ~ sexe + ageAgr + sitpro2 +
 reg1 <- update(reg0, ~ . +
                    # revenuTete + revenuTete_labo + revenuTete_disc +
                    #ScoreInternational_perso + ScoreInternational_perso_labo + ScoreInternational_perso_disc +
-                 carriere +
+                 carriere + sexe_labo + sexe_disc +
                     nbpublis2 + nbpublis2_labo + nbpublis2_disc +
                    ScoreInternational_pro + ScoreInternational_pro_labo + ScoreInternational_pro_disc +
                    avionpersonum + avionpersonum_labo + avionpersonum_disc)
