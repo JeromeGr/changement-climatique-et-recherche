@@ -161,9 +161,12 @@ base_acp <- climatRegr_r[,
                            "dixannees.bilan_num"
                          )]
 
-acp <- FactoMineR::PCA(missMDA::imputePCA(base_acp, 1)$completeObs)
-
-climatRegr_r$ScoreEcoloACP <- acp$ind$coord[,1]
+# Ne pas imputer les personnes qui ont répondu à moins de la moitié des questions
+manquant_acp <- rowSums(is.na(base_acp)) > 6
+base_acp_complete <- missMDA::imputePCA(base_acp[!manquant_acp,], 1)$completeObs
+acp <- FactoMineR::PCA(base_acp_complete)
+climatRegr_r$ScoreEcoloACP <- NA
+climatRegr_r$ScoreEcoloACP[!manquant_acp] <- acp$ind$coord[,1]
 
 # Liste des variables à centrer par labo/discipline
 vars <- c("nbpublis2", "ScoreEcolo", "ScoreEcoloACP",
@@ -217,6 +220,52 @@ climatRegr_r[c(paste0(vars, "_c"), paste0(vars, "_clabo"), paste0(vars, "_cdisc"
     scale(climatRegr_r[c(paste0(vars, "_c"), paste0(vars, "_clabo"), paste0(vars, "_cdisc"))])
 ```
 
+
+```{r}
+
+# Recodages avion pro et perso ----
+## Recodage de climatRegr$vols_dicho en climatRegr$vols_dicho_rec
+climatRegr_r$vols_dicho_rec <- climatRegr_r$vols_dicho %>%
+  fct_recode(
+    "Pro_Non" = "N'a pas volé en 2019",
+    "Pro_Oui" = "A volé en 2019"
+  )
+
+## Recodage de climatRegr$avionperso en climatRegr$avionperso_rec
+climatRegr_r$avionperso_rec <- climatRegr_r$avionperso %>%
+  fct_recode(
+    "Perso_Non" = "Aucun aller-retour",
+    "Perso_Oui" = "1 ou 2 allers-retours",
+    "Perso_Oui" = "3 ou 4 allers-retours",
+    "Perso_Oui" = "Plus de 5 allers-retours"
+  )
+
+# 
+# t.test(climatRegr_r$ScoreEcoloACP 
+#               climatRegr_r$vols_dicho_rec)
+# 
+# t.test(climatRegr_r$ScoreEcoloACP, climatRegr_r$avionperso_rec, 
+#        mean, na.rm=T)~~
+
+
+
+a <- tapply(climatRegr_r$ScoreInternational, climatRegr_r$discipline_agr5, 
+       mean, na.rm=T)
+b <- tapply(climatRegr_r$volshnum, climatRegr_r$discipline_agr5, 
+            mean, na.rm=T)
+c <- as.data.frame(cbind(a,b))
+c$labels=rownames(c)
+library(ggrepel)
+ggplot(c, aes(x=a, y=b, label=labels))+
+  geom_point()+ylim(0,20)+
+  geom_text_repel(max.overlaps = Inf)+
+  geom_smooth(method=lm)+theme_minimal()+
+  labs(x= "Score internationalisation", y = "nb d'heures de vol")
+
+
+```
+
+
 ```{r}
 reg0 <- glmmTMB(volshnum ~ sexe + ageAgr + sitpro2 + 
                     ScoreEcoloACP + ScoreEcoloACP_labo + ScoreEcoloACP_disc +
@@ -263,9 +312,9 @@ tbl_merge(tbls, paste0("M", 0:(length(tbls)-1))) %>%
 # et les autres variables catégorielles à leur référence
 # (ggeffect et ggemmeans mettent les catégorielles à leur proportion moyenne)
 library(ggeffects)
-mydf <- ggpredict(reg2, terms = c("ScoreEcoloACP [quart2]", "ScoreInternational_pro_disc [quart2]"))
+mydf <- ggpredict(reg2, terms = c("ScoreEcoloACP [quart2]", "ScoreInternational_pro_disc [-0.67, 0.13, 0.98]"))
 ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
-    stat_smooth(method = "lm", se = FALSE) +
+    geom_point() +
     coord_cartesian(ylim=c(0, NA)) +
     labs(
         y = get_y_title(mydf),
