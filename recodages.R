@@ -1303,6 +1303,7 @@ climat$revenuTete[climat$revenu=="Moins de 1 500 euros par mois" & !is.na(climat
 climat$revenuTete[climat$revenu=="De 1 500 à 2 499 euros par mois" & !is.na(climat$revenu)]<-2000/climat$tailleFiscFoyer[climat$revenu=="De 1 500 à 2 499 euros par mois" & !is.na(climat$revenu)]
 climat$revenuTete[climat$revenu=="De 2 500 à 3 499 euros par mois" & !is.na(climat$revenu)]<-3000/climat$tailleFiscFoyer[climat$revenu=="De 2 500 à 3 499 euros par mois" & !is.na(climat$revenu)]
 climat$revenuTete[climat$revenu=="De 3 500 à 4 499 euros par mois" & !is.na(climat$revenu)]<-4000/climat$tailleFiscFoyer[climat$revenu=="De 3 500 à 4 499 euros par mois" & !is.na(climat$revenu)]
+climat$revenuTete[climat$revenu=="De 4 500 à 5 999 euros par mois" & !is.na(climat$revenu)]<-5250/climat$tailleFiscFoyer[climat$revenu=="De 4 500 à 5 999 euros par mois" & !is.na(climat$revenu)]
 climat$revenuTete[climat$revenu=="De 6 000 à 7 999 euros par mois" & !is.na(climat$revenu)]<-7000/climat$tailleFiscFoyer[climat$revenu=="De 6 000 à 7 999 euros par mois" & !is.na(climat$revenu)]
 climat$revenuTete[climat$revenu=="De 8 000 à 9 999 euros par mois" & !is.na(climat$revenu)]<-9000/climat$tailleFiscFoyer[climat$revenu=="De 8 000 à 9 999 euros par mois" & !is.na(climat$revenu)]
 climat$revenuTete[climat$revenu=="De 10 000 à 15 000 euros par mois" & !is.na(climat$revenu)]<-12500/climat$tailleFiscFoyer[climat$revenu=="De 10 000 à 15 000 euros par mois" & !is.na(climat$revenu)]
