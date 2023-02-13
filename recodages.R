@@ -1308,9 +1308,14 @@ climat$couple1[climat$couple=="Non"]<-0
 #si le plus jeune enfant a plus de 20 ans, 0
 climat$enfants_foyer <- climat$enfantsnb
 climat$enfants_foyer[climat$enfantsage>=20] <- 0
-# on considère comme sans enfants les personnes n'ayant pas répondu à la question mais ayant répondu à la suivante
+# on considère comme sans enfants les personnes n'ayant pas répondu à la question
+# mais ayant répondu à la précédente et la suivante
 climat$enfants_foyer[is.na(climat$enfants_foyer) &
+                       !is.na(climat$couple) &
                        !is.na(climat$dippar.m)] <- 0
+
+climat$enfants_foyer_agr <- cut(climat$enfants_foyer, c(0, 1, 2, 3, Inf), right=FALSE,
+                                labels=c("Aucun", "1 enfant", "2 enfants", "3 enfants et plus"))
 
 climat$tailleFiscFoyer<-1+climat$couple1*0.5+climat$enfants_foyer*0.4
 
