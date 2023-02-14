@@ -1330,6 +1330,12 @@ climat$revenuTete[climat$revenu=="De 8 000 à 9 999 euros par mois" & !is.na(cli
 climat$revenuTete[climat$revenu=="De 10 000 à 15 000 euros par mois" & !is.na(climat$revenu)]<-12500/climat$tailleFiscFoyer[climat$revenu=="De 10 000 à 15 000 euros par mois" & !is.na(climat$revenu)]
 climat$revenuTete[climat$revenu=="Plus de 15 000 par mois" & !is.na(climat$revenu)]<-20000/climat$tailleFiscFoyer[climat$revenu=="Plus de 15 000 par mois" & !is.na(climat$revenu)]
 
+# Fait de chercher à être promu pour les titulaires
+# On exclut les chargé.es de mission, dont les statuts/contrats sont variables
+climat$carriere_tit <- if_else(climat$sitpro %in% c("Maître·sse de conférences", "Directeur·rice de recherche", "Professeur·e des universités",
+                                                    "Chargé·e de recherche", "Ingénieur·e de recherche", "Ingénieur·e d'études",
+                                                    "Assistant ingénieur·e", "Technicien·ne", "Adjoint·e technique"),
+                               climat$carriere, factor("Non"))
 
 #S'estimer bien ou mal payé
 climat$malpaye[climat$paie %in% c("Mal payé·e" , "Très mal payé·e")]<-"Oui"
