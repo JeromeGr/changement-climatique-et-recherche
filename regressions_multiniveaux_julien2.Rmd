@@ -15,6 +15,7 @@ library(gtsummary)
 climatRegr_r <- mutate(climatRegr_r,
                        sexenum=if_else(sexe == "Femme", 1, 0),
                        carrierenum=if_else(carriere == "Oui", 1, 0),
+                       carriere_titnum=if_else(carriere_tit == "Oui", 1, 0),
                        nbpublis2=pmin(nbpublis, 100),
                        tourisme=startsWith(as.character(apportconf.tourisme), "Oui"),
                        revenuTete=revenuTete/1000,
@@ -175,10 +176,10 @@ vars_centrer <- c("nbpublis2", "ScoreEcolo", "ScoreEcoloACP",
                   "ScoreInternational", "ScoreInternational_perso", "ScoreInternational_pro", "tourisme",
                   "avionpersonum", "chgtpratiquenum", "preoccupe2num", "solreducrechnum",
                   "projet", "projet_fr", "projet_intern",
-                  "revenuTete", "paienum", "parbacp5")
+                  "revenuTete", "paienum", "parbacp5", "enfants_foyer")
 
 # Liste des variables à moyenner par labo/discipline
-vars <- c(vars_centrer, "sexenum", "carrierenum")
+vars <- c(vars_centrer, "sexenum", "carrierenum", "carriere_titnum")
 
 # Standardiser les variables individuelles pour que leur écart-type soit égal à 1
 climatRegr_r[vars_centrer] <- scale(climatRegr_r[vars_centrer])
@@ -272,7 +273,7 @@ ggplot(c, aes(x=a, y=b, label=labels))+
 
 
 ```{r}
-reg0 <- glmmTMB(volshnum ~ sexe + ageAgr + sitpro2 + 
+reg0 <- glmmTMB(volshnum ~ sexenum + ageAgr + sitpro2 +
                     ScoreEcoloACP + ScoreEcoloACP_labo + ScoreEcoloACP_disc +
                    revenuTete + revenuTete_labo + revenuTete_disc +
                     (1 | unite.labintel) + (1 | discipline),
@@ -283,7 +284,8 @@ reg0 <- glmmTMB(volshnum ~ sexe + ageAgr + sitpro2 +
 reg1 <- update(reg0, ~ . +
                    # revenuTete + revenuTete_labo + revenuTete_disc +
                    #ScoreInternational_perso + ScoreInternational_perso_labo + ScoreInternational_perso_disc +
-                 carriere +
+                   sexenum_labo + sexenum_disc +
+                   carriere_titnum + carriere_titnum_labo + carriere_titnum_disc +
                     nbpublis2 + nbpublis2_labo + nbpublis2_disc +
                    ScoreInternational_pro + ScoreInternational_pro_labo + ScoreInternational_pro_disc +
                    avionpersonum + avionpersonum_labo + avionpersonum_disc)
@@ -317,7 +319,7 @@ tbl_merge(tbls, paste0("M", 0:(length(tbls)-1))) %>%
 # et les autres variables catégorielles à leur référence
 # (ggeffect et ggemmeans mettent les catégorielles à leur proportion moyenne)
 library(ggeffects)
-mydf <- ggpredict(reg2, terms = c("ScoreEcoloACP [quart2]", "ScoreInternational_pro_disc [-0.67, 0.13, 0.98]"))
+mydf <- ggpredict(reg2, terms = c("ScoreEcoloACP [quart2]", "sexenum_disc [quart2]"))
 ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
     geom_point() +
     coord_cartesian(ylim=c(0, NA)) +
