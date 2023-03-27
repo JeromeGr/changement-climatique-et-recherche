@@ -380,7 +380,7 @@ ggcoef_model(reg1, exponentiate = T, include=
              return_data = F)
 library(broom.helpers)
 ?ggcoef_model
-summary(reg1)
+tbl_regression(reg1, exponentiate=TRUE)
 exp(-0.14059 )
 
 
