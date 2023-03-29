@@ -1317,10 +1317,10 @@ climat$enfants_foyer[is.na(climat$enfants_foyer) &
 climat$enfants_foyer_agr <- cut(climat$enfants_foyer, c(0, 1, 2, 3, Inf), right=FALSE,
                                 labels=c("Aucun", "1 enfant", "2 enfants", "3 enfants et plus"))
 
-climat$tailleFiscFoyer<-1+climat$couple1*0.5+climat$enfants_foyer*0.4
+climat$tailleFiscFoyer<-1+climat$couple1*0.5#+climat$enfants_foyer*0.4
 
 climat$revenuTete <- NA
-climat$revenuTete[climat$revenu=="Moins de 1 500 euros par mois" & !is.na(climat$revenu) ]<-750/climat$tailleFiscFoyer[climat$revenu=="Moins de 1 500 euros par mois" & !is.na(climat$revenu)]
+climat$revenuTete[climat$revenu=="Moins de 1 500 euros par mois" & !is.na(climat$revenu) ]<-1200/climat$tailleFiscFoyer[climat$revenu=="Moins de 1 500 euros par mois" & !is.na(climat$revenu)]
 climat$revenuTete[climat$revenu=="De 1 500 à 2 499 euros par mois" & !is.na(climat$revenu)]<-2000/climat$tailleFiscFoyer[climat$revenu=="De 1 500 à 2 499 euros par mois" & !is.na(climat$revenu)]
 climat$revenuTete[climat$revenu=="De 2 500 à 3 499 euros par mois" & !is.na(climat$revenu)]<-3000/climat$tailleFiscFoyer[climat$revenu=="De 2 500 à 3 499 euros par mois" & !is.na(climat$revenu)]
 climat$revenuTete[climat$revenu=="De 3 500 à 4 499 euros par mois" & !is.na(climat$revenu)]<-4000/climat$tailleFiscFoyer[climat$revenu=="De 3 500 à 4 499 euros par mois" & !is.na(climat$revenu)]
@@ -1330,9 +1330,91 @@ climat$revenuTete[climat$revenu=="De 8 000 à 9 999 euros par mois" & !is.na(cli
 climat$revenuTete[climat$revenu=="De 10 000 à 15 000 euros par mois" & !is.na(climat$revenu)]<-12500/climat$tailleFiscFoyer[climat$revenu=="De 10 000 à 15 000 euros par mois" & !is.na(climat$revenu)]
 climat$revenuTete[climat$revenu=="Plus de 15 000 par mois" & !is.na(climat$revenu)]<-20000/climat$tailleFiscFoyer[climat$revenu=="Plus de 15 000 par mois" & !is.na(climat$revenu)]
 
+
+
+climat$revenuMenage <- NA
+climat$revenuMenage[climat$revenu=="Moins de 1 500 euros par mois" & !is.na(climat$revenu) ]<-1200
+climat$revenuMenage[climat$revenu=="De 1 500 à 2 499 euros par mois" & !is.na(climat$revenu)]<-2000
+climat$revenuMenage[climat$revenu=="De 2 500 à 3 499 euros par mois" & !is.na(climat$revenu)]<-3000
+climat$revenuMenage[climat$revenu=="De 3 500 à 4 499 euros par mois" & !is.na(climat$revenu)]<-4000
+climat$revenuMenage[climat$revenu=="De 4 500 à 5 999 euros par mois" & !is.na(climat$revenu)]<-5250
+climat$revenuMenage[climat$revenu=="De 6 000 à 7 999 euros par mois" & !is.na(climat$revenu)]<-7000
+climat$revenuMenage[climat$revenu=="De 8 000 à 9 999 euros par mois" & !is.na(climat$revenu)]<-9000
+climat$revenuMenage[climat$revenu=="De 10 000 à 15 000 euros par mois" & !is.na(climat$revenu)]<-12500
+climat$revenuMenage[climat$revenu=="Plus de 15 000 par mois" & !is.na(climat$revenu)]<-20000
+
+
+# origine sociale ----
+
+
+## Recodage de climat$statutpar.p en climat$statutpar.p_rec
+climat$statutpar.p_rec <- climat$statutpar.p %>%
+  fct_recode(
+    "Public" = "Fonctionnaire ou salarié·e du public",
+    "Privé" = "Salarié·e du privé",
+    "Privé" = "À son compte ou libéral",
+    "Sans emploi" = "Au chômage",
+    "Sans emploi" = "Inactif/Inactive ou retraité·e",
+    NULL = "Décédé·e",
+    NULL = "Ne sait pas"
+  )
+
+## Recodage de climat$statutpar.m en climat$statutpar.m_rec
+climat$statutpar.m_rec <- climat$statutpar.m %>%
+  fct_recode(
+    "Public" = "Fonctionnaire ou salarié·e du public",
+    "Privé" = "Salarié·e du privé",
+    "Privé" = "À son compte ou libéral",
+    "Sans emploi" = "Au chômage",
+    "Sans emploi" = "Inactif/Inactive ou retraité·e",
+    NULL = "Décédé·e",
+    NULL = "Ne sait pas"
+  )
+
+
+table(climat$revenuTete, climat$statutpar.p_rec, useNA = "always")
+
+climat$statut_parents <- paste(climat$statutpar.m_rec, climat$statutpar.p_rec)
+
+## Recodage de climat$statut_parents en climat$statut_parents_rec
+climat$statut_parents_rec <- climat$statut_parents %>%
+  fct_recode(
+    NULL = "NA NA",
+    "Privé" = "NA Privé",
+    "Public" = "NA Public",
+    NULL = "NA Sans emploi",
+    "Privé" = "Privé NA",
+    "Privé" = "Privé Privé",
+    "Privé" = "Privé Sans emploi",
+    "Public" = "Public NA",
+    "Privé Public" = "Public Privé",
+    "Public" = "Public Public",
+    "Public" = "Public Sans emploi",
+    NULL = "Sans emploi NA",
+    "Privé" = "Sans emploi Privé",
+    "Privé" = "Sans emploi Public",
+    NULL = "Sans emploi Sans emploi"
+  )
+
+
+## Recodage de climat$statut_parents_rec en climat$un_parent_public
+climat$un_parent_public <- climat$statut_parents_rec %>%
+  fct_recode(
+    "Non" = "Privé",
+    "Oui" = "Public",
+    "Oui" = "Privé Public"
+  )
+
 # Fait de chercher à être promu pour les titulaires
 # On exclut les chargé.es de mission, dont les statuts/contrats sont variables
 climat$carriere_tit <- if_else(climat$sitpro %in% c("Maître·sse de conférences", "Directeur·rice de recherche", "Professeur·e des universités",
+                                                    "Chargé·e de recherche", "Ingénieur·e de recherche", "Ingénieur·e d'études",
+                                                    "Assistant ingénieur·e", "Technicien·ne", "Adjoint·e technique"),
+                               climat$carriere, factor("Non"))
+
+# Fait de chercher à être titularisé pour les précaires
+# On exclut les chargé.es de mission, dont les statuts/contrats sont variables
+climat$carriere_prec <- if_else(!climat$sitpro %in% c("Maître·sse de conférences", "Directeur·rice de recherche", "Professeur·e des universités",
                                                     "Chargé·e de recherche", "Ingénieur·e de recherche", "Ingénieur·e d'études",
                                                     "Assistant ingénieur·e", "Technicien·ne", "Adjoint·e technique"),
                                climat$carriere, factor("Non"))

@@ -16,11 +16,15 @@ climatRegr_r <- mutate(climatRegr_r,
                        sexenum=if_else(sexe == "Femme", 1, 0),
                        carrierenum=if_else(carriere == "Oui", 1, 0),
                        carriere_titnum=if_else(carriere_tit == "Oui", 1, 0),
+                       carriere_precnum=if_else(carriere_prec == "Oui", 1, 0),
                        nbpublis2=pmin(nbpublis, 100),
                        tourisme=startsWith(as.character(apportconf.tourisme), "Oui"),
                        revenuTete=revenuTete/1000,
+                       revenuMenage=revenuMenage/1000,
                        parbacp5=dippar.p == "Bac +4 ou 5" | dippar.p == "Doctorat" |
                            dippar.m == "Bac +4 ou 5" | dippar.m == "Doctorat",
+                       un_parent_publicnum = ifelse(un_parent_public=="Oui", 1,0),
+                       enfant_moins_5_ansnum = ifelse(enfantsage_rec=="moins de 5 ans", 1, 0),
                        avionpersonum=recode(avionperso,
                                             "Aucun aller-retour"=0,
                                             "1 ou 2 allers-retours"=1.5,
@@ -176,10 +180,10 @@ vars_centrer <- c("nbpublis2", "ScoreEcolo", "ScoreEcoloACP",
                   "ScoreInternational", "ScoreInternational_perso", "ScoreInternational_pro", "tourisme",
                   "avionpersonum", "chgtpratiquenum", "preoccupe2num", "solreducrechnum",
                   "projet", "projet_fr", "projet_intern",
-                  "revenuTete", "paienum", "parbacp5", "enfants_foyer")
+                  "revenuTete", "revenuMenage", "paienum", "parbacp5", "enfants_foyer", "un_parent_publicnum", "enfant_moins_5_ansnum")
 
 # Liste des variables à moyenner par labo/discipline
-vars <- c(vars_centrer, "sexenum", "carrierenum", "carriere_titnum")
+vars <- c(vars_centrer, "sexenum", "carrierenum", "carriere_titnum", "carriere_precnum", "couple1")
 
 # Standardiser les variables individuelles pour que leur écart-type soit égal à 1
 climatRegr_r[vars_centrer] <- scale(climatRegr_r[vars_centrer])
@@ -273,9 +277,13 @@ ggplot(c, aes(x=a, y=b, label=labels))+
 
 
 ```{r}
-reg0 <- glmmTMB(volshnum ~ sexenum + ageAgr + sitpro2 +
+reg0 <- glmmTMB(volshnum ~  sexenum + ageAgr + sitpro2 +
                     ScoreEcoloACP + ScoreEcoloACP_labo + ScoreEcoloACP_disc +
                    revenuTete + revenuTete_labo + revenuTete_disc +
+                   #revenuMenage + revenuMenage_labo + revenuMenage_disc +
+                  # couple1 + couple1_labo + couple1_disc+
+                  # parbacp5 + parbacp5_labo +parbacp5_disc+
+                  # un_parent_publicnum+ un_parent_publicnum_labo + un_parent_publicnum_disc +
                     (1 | unite.labintel) + (1 | discipline),
                 family="tweedie",
                 data=climatRegr_r,
@@ -283,12 +291,14 @@ reg0 <- glmmTMB(volshnum ~ sexenum + ageAgr + sitpro2 +
 
 reg1 <- update(reg0, ~ . +
                    # revenuTete + revenuTete_labo + revenuTete_disc +
-                   #ScoreInternational_perso + ScoreInternational_perso_labo + ScoreInternational_perso_disc +
-                   sexenum_labo + sexenum_disc +
-                   carriere_titnum + carriere_titnum_labo + carriere_titnum_disc +
+                   # ScoreInternational_perso + ScoreInternational_perso_labo + ScoreInternational_perso_disc +
+                   # sexenum_labo + sexenum_disc +
+                   # carriere_titnum + carriere_titnum_labo + carriere_titnum_disc +
                     nbpublis2 + nbpublis2_labo + nbpublis2_disc +
                    ScoreInternational_pro + ScoreInternational_pro_labo + ScoreInternational_pro_disc +
-                   avionpersonum + avionpersonum_labo + avionpersonum_disc)
+                 # enfant_moins_5_ansnum + enfant_moins_5_ansnum_labo + enfant_moins_5_ansnum_disc+
+                   avionpersonum + avionpersonum_labo + avionpersonum_disc 
+               )
 
 reg2 <- update(reg1, ~ . +
                    ScoreEcoloACP*nbpublis2 + ScoreEcoloACP*nbpublis2_labo + ScoreEcoloACP*nbpublis2_disc +
@@ -314,31 +324,33 @@ tbls <- lapply(list(reg0, reg1, reg2),
                function(m) tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=TRUE, tidy_fun=broom.mixed::tidy) %>% add_glance_table())
 tbl_merge(tbls, paste0("M", 0:(length(tbls)-1))) %>%
       modify_table_body(~ .x %>% arrange(row_type == "glance_statistic", endsWith(variable, "sd__(Intercept)")))
+# 
+# representation effets interactions
 
-# ggpredict fixe les autres variables numériques à leur moyenne,
-# et les autres variables catégorielles à leur référence
-# (ggeffect et ggemmeans mettent les catégorielles à leur proportion moyenne)
-library(ggeffects)
-mydf <- ggpredict(reg2, terms = c("ScoreEcoloACP [quart2]", "sexenum_disc [quart2]"))
-ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
-    geom_point() +
-    coord_cartesian(ylim=c(0, NA)) +
-    labs(
-        y = get_y_title(mydf),
-        x = get_x_title(mydf),
-        colour = get_legend_title(mydf)
-    )
-
-library(ggeffects)
-mydf <- ggpredict(reg2, terms = c("ScoreEcoloACP [quart2]", "ScoreEcoloACP_labo [quart2]"))
-ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
-    stat_smooth(method = "lm", se = FALSE) +
-    coord_cartesian(ylim=c(0, NA)) +
-    labs(
-        y = get_y_title(mydf),
-        x = get_x_title(mydf),
-        colour = get_legend_title(mydf)
-    )
+# # ggpredict fixe les autres variables numériques à leur moyenne,
+# # et les autres variables catégorielles à leur référence
+# # (ggeffect et ggemmeans mettent les catégorielles à leur proportion moyenne)
+# library(ggeffects)
+# mydf <- ggpredict(reg2, terms = c("ScoreEcoloACP [quart2]", "sexenum_disc [quart2]"))
+# ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
+#     geom_point() +
+#     coord_cartesian(ylim=c(0, NA)) +
+#     labs(
+#         y = get_y_title(mydf),
+#         x = get_x_title(mydf),
+#         colour = get_legend_title(mydf)
+#     )
+# 
+# library(ggeffects)
+# mydf <- ggpredict(reg2, terms = c("ScoreEcoloACP [quart2]", "ScoreEcoloACP_labo [quart2]"))
+# ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
+#     stat_smooth(method = "lm", se = FALSE) +
+#     coord_cartesian(ylim=c(0, NA)) +
+#     labs(
+#         y = get_y_title(mydf),
+#         x = get_x_title(mydf),
+#         colour = get_legend_title(mydf)
+#     )
 ```
 
 Les variables indépendantes sont centrées-réduites au niveau correspondant : les coefficients mesurent l'effet d'un écart-type entre individus/laboratoires/disciplines selon le cas.
