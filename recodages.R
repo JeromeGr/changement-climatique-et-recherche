@@ -48,6 +48,23 @@ climat$age <- droplevels(climat$age)
 
 climat$sexe <- fct_recode(climat$sexe, NULL="Autre")
 
+climat$agenum <- climat$age %>%
+  fct_recode(
+    "22" = "18-24 ans",
+    "27" = "25-29 ans",
+    "32" = "30-34 ans",
+    "37" = "35-39 ans",
+    "42" = "40-44 ans",
+    "47" = "45-49 ans",
+    "52" = "50-54 ans",
+    "57" = "55-59 ans",
+    "62" = "60-64 ans",
+    "67" = "65-69 ans",
+    "72" = "70 ans ou plus"
+  ) %>%
+    as.character() %>%
+    as.numeric()
+
 #Regroupement catégories d'âge (pour avoir des catégories plus homogènes en termes de nombre de personnes)
 climat$ageAgr<-as.character(climat$age)
 climat$ageAgr[climat$age %in% c("70 ans ou plus", "65-69 ans")]<-"65 ans et plus"
