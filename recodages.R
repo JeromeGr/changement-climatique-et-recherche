@@ -1388,9 +1388,6 @@ climat$statutpar.m_rec <- climat$statutpar.m %>%
     NULL = "Ne sait pas"
   )
 
-
-table(climat$revenuTete, climat$statutpar.p_rec, useNA = "always")
-
 climat$statut_parents <- paste(climat$statutpar.m_rec, climat$statutpar.p_rec)
 
 ## Recodage de climat$statut_parents en climat$statut_parents_rec
