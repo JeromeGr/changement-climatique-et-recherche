@@ -344,7 +344,10 @@ climat$enfantsage_rec <- as.factor(climat$enfantsage_rec)
 
 
 # Fusionner les deux variables de discipline (chercheurs vs. ITA)
-climat$discipline <- coalesce(climat$discipline, climat$disciplineita)
+# On ne garde que la discipline des ITA des BAP A à D, qui participent directement à la recherche
+climat$disciplineita_rech <- if_else(substr(climat$bap, 1, 5) %in% c("BAP A", "BAP B", "BAP C", "BAP D"),
+                                     climat$disciplineita, factor(NA_character_))
+climat$discipline <- coalesce(climat$discipline, climat$disciplineita_rech)
 
 # Discipline agrégée
 # Noms inspirés de https://data.esr.gouv.fr/FR/T895/P311/tableau_des_enseignants_de_l_enseignement_superieur_public_niveau_etablissement_-_ressources_humaines#TDB
