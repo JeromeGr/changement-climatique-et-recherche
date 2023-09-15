@@ -930,6 +930,9 @@ climat$volsdist_totautre <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(cl
   ifelse(!is.na(climat$volsmotif4) & climat$volsmotif4=="Autre", climat$volsdist_tot4, 0) +
   ifelse(!is.na(climat$volsmotif5) & climat$volsmotif5=="Autre", climat$volsdist_tot5, 0), NA )
 
+climat$volsdist_totconfreu <- climat$volsdist_totconf + climat$volsdist_totworkshop +
+    climat$volsdist_totjury + climat$volsdist_totfinanc + climat$volsdist_toteval
+
 #Nombre de vols par motif
 
 climat$volsnbconf <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Conférence, présentation", climat$volsnb1, 0) + 
