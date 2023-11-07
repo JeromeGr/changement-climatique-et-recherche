@@ -3,7 +3,19 @@ source("recodages.R")
 library(ggrepel)
 library(paletteer)
 
-
+climat$sitpro_reduite<- climat$sitpro_reduite %>%
+  fct_recode(
+    "Directeur de recherche" = "Directeur·rice de recherche",
+    "Professeur des universités" = "Professeur·e des universités",
+    "Chargé de recherche" = "Chargé·e de recherche",
+    "Maître de conférences" = "Maître·sse de conférences",
+    "Ingénieur de recherche" = "Ingénieur·e de recherche",
+    "Post-doctorant" = "Post-doctorant·e",
+    "Doctorant contractuel" = "Doctorant·e contractuel·le",
+    "Ingénieur d'études" = "Ingénieur·e d'études",
+    "Assistant ingénieur" = "Assistant ingénieur·e",
+    "Technicien" = "Technicien·ne"
+  )
 
 ### Section 1
 
@@ -30,7 +42,7 @@ lapply(list(group_by(climat, discipline_agr5),
     scale_y_continuous(labels=scales::percent) +
     scale_color_paletteer_d("ggsci::category10_d3") +
     guides(color=guide_none(), shape=guide_none()) +
-    labs(x="Très ou extrêmement préoccupé·e",
+    labs(x="Très ou extrêmement préoccupé",
          y="Réduire les émissions de la recherche de plus d'un tiers") +
     theme_minimal()
 
@@ -255,3 +267,10 @@ lapply(list(group_by(climat, discipline_agr5),
          y="Émissions carbone parmi les principaux critères de sélection") +
     theme_minimal()
 
+cprop(table(climat$solinstit.selection,
+            cut(climat$volsdist_tot, c(0, 1, 5000, Inf), right=FALSE, dig.lab=5),
+            exclude=c(NA, "Non concerné·e")))
+
+cprop(table(climat$solinstit.limitevols,
+            cut(climat$volsdist_tot, c(0, 1, 5000, Inf), right=FALSE, dig.lab=5),
+            exclude=c(NA, "Non concerné·e")))
