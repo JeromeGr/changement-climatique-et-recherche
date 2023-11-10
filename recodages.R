@@ -933,6 +933,23 @@ climat$volsdist_totautre <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(cl
 climat$volsdist_totconfreu <- climat$volsdist_totconf + climat$volsdist_totworkshop +
     climat$volsdist_totjury + climat$volsdist_totfinanc + climat$volsdist_toteval
 
+#Calcul distance totale vols intérieurs vs vols internationaux
+climat$volsdist_interieur <- ifelse(!is.na(climat$volsdist_tot),
+                                    ifelse(climat$volsdepart1pays %in% "FR" & climat$volsarrivee1pays %in% "FR", climat$volsdist_tot1, 0) +
+                                        ifelse(climat$volsdepart2pays %in% "FR" & climat$volsarrivee2pays %in% "FR", climat$volsdist_tot2, 0) +
+                                        ifelse(climat$volsdepart3pays %in% "FR" & climat$volsarrivee3pays %in% "FR", climat$volsdist_tot3, 0) +
+                                        ifelse(climat$volsdepart4pays %in% "FR" & climat$volsarrivee4pays %in% "FR", climat$volsdist_tot4, 0) +
+                                        ifelse(climat$volsdepart5pays %in% "FR" & climat$volsarrivee5pays %in% "FR", climat$volsdist_tot5, 0),
+                                    NA)
+
+climat$volsdist_internat <- ifelse(!is.na(climat$volsdist_tot),
+                                   ifelse(climat$volsdepart1pays %in% "FR" & climat$volsarrivee1pays %in% "FR", 0, climat$volsdist_tot1) +
+                                       ifelse(climat$volsdepart2pays %in% "FR" & climat$volsarrivee2pays %in% "FR", 0, climat$volsdist_tot2) +
+                                       ifelse(climat$volsdepart3pays %in% "FR" & climat$volsarrivee3pays %in% "FR", 0, climat$volsdist_tot3) +
+                                       ifelse(climat$volsdepart4pays %in% "FR" & climat$volsarrivee4pays %in% "FR", 0, climat$volsdist_tot4) +
+                                       ifelse(climat$volsdepart5pays %in% "FR" & climat$volsarrivee5pays %in% "FR", 0, climat$volsdist_tot5),
+                                   NA)
+
 #Nombre de vols par motif
 
 climat$volsnbconf <- ifelse(!(is.na(climat$volsnb_tot)), ifelse(!is.na(climat$volsmotif1) & climat$volsmotif1=="Conférence, présentation", climat$volsnb1, 0) + 
