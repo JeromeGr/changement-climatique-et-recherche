@@ -1,6 +1,8 @@
 # Génération de la liste des aéroports à proposer pour auto-complétion
 using DataFrames, CSV, Statistics
 cd("/home/milan/Recherche/Enquête climat/Enquête 2/")
+
+# Fichier issu de https://ourairports.com
 airports = DataFrame(CSV.File("airports.csv"))
 trads = DataFrame(CSV.File("grands aéroports traductions.csv"))
 pays = Dict("AU" => "Australie", "BO" => "Bolivie", "BZ" => "Belize", "CA" => "Canada",

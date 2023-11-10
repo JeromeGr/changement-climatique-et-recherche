@@ -2,6 +2,7 @@
 
 library(tidyverse)
 
+# Fichier issu de https://ourairports.com
 airports <- read.csv("Aéroports/airports.csv", na.strings="")
 # En cas d'homonymie, on prend le plus grand aéroport, puis celui qui a un code IATA,
 # puis celui déclaré comme ouvert, puis l'européen

@@ -1,3 +1,12 @@
+# Codage des variables géographiques sur le lieu de travail et de résidence
+
+# Le questionnaire proposait une liste de communes en autocomplétion,
+# qui affichait aussi leur code postal. Pour les choix dans la liste,
+# une première étape vise à récupérer le code commune correspondant à partir
+# de la table de l'Insee. Pour les saisies hors liste, une deuxième étape
+# récupère les codes postaux nettoyés manuellement et impute des codes communes
+# en retenant la plus grand commune qui a le code postal en question.
+
 library(tidyverse)
 
 # chargement de la base communes insee (pour avoir les infos sur les villes)
