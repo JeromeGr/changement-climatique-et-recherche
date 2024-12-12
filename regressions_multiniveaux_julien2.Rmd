@@ -48,7 +48,9 @@ climatRegr_r <- mutate(climatRegr_r,
                        respprojet=Profin_Mb_Resp == "Responsable d'au moins 1 projet financé",
                        respprojetnum=as.numeric(respprojet),
                        idfnum=ifelse(trav_zone == "IDF", 1, 0),
-                       loinnum=ifelse(trav_zone == "loin", 1, 0))
+                       loinnum=ifelse(trav_zone == "loin", 1, 0),
+                       res.aeroport.bisquare=res.aeroport.bisquare120,
+                       trav.aeroport.bisquare=trav.aeroport.bisquare120)
 
 # climatRegr <- group_by(climatRegr, unite.labintel) %>%
 #     filter(n() > 1)
