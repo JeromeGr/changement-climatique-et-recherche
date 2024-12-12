@@ -304,9 +304,9 @@ reg1 <- update(reg0, ~ . +
                    #idfnum + idfnum_labo + idfnum_disc +
                    #loinnum + #loinnum_labo + loinnum_disc +
                    #trav_zone +
-                   res.aeroport.bisquare + res.aeroport_labo + res.aeroport_disc +
+                   res.aeroport.bisquare + res.aeroport.bisquare_labo + res.aeroport.bisquare_disc +
                    #I(res.dep %in% c(75, 77, 92:95)) +
-                   # trav.aeroport + trav.aeroport_labo + trav.aeroport_disc +
+                   # trav.aeroport.bisquare + trav.aeroport.bisquare_labo + trav.aeroport.bisquare_disc +
                    revenuAdulte + revenuAdulte_labo + revenuAdulte_disc +
                    #ScoreInternational_perso + ScoreInternational_perso_labo + ScoreInternational_perso_disc +
                    ScoreEcoloACP + ScoreEcoloACP_labo + ScoreEcoloACP_disc +
