@@ -17,9 +17,12 @@ climatRegr_r <- mutate(climatRegr_r,
                        carrierenum=if_else(carriere == "Oui", 1, 0),
                        carriere_titnum=if_else(carriere_tit == "Oui", 1, 0),
                        carriere_precnum=if_else(carriere_prec == "Oui", 1, 0),
+                       rangAnum=if_else(sitpro2 == "Directeur·rice de recherche" | sitpro2 == "Professeur·e des universités", 1, 0),
+                       titnum=if_else(sitpro2 == "Directeur·rice de recherche" | sitpro2 == "Professeur·e des universités" | sitpro2 == "Chargé·e de recherche" | sitpro2 == "Maître·sse de conférences" | sitpro2 == "Ingénieur·e de recherche", 1, 0),
                        nbpublis2=pmin(nbpublis, 100),
                        tourisme=startsWith(as.character(apportconf.tourisme), "Oui"),
                        revenuTete=revenuTete/1000,
+                       revenuAdulte=revenuAdulte/1000,
                        revenuMenage=revenuMenage/1000,
                        parbacp5=dippar.p == "Bac +4 ou 5" | dippar.p == "Doctorat" |
                            dippar.m == "Bac +4 ou 5" | dippar.m == "Doctorat",
@@ -41,7 +44,11 @@ climatRegr_r <- mutate(climatRegr_r,
                        solreducrechnum=as.numeric(fct_rev(solreducrech)) - 1,
                        projet=Profin_Mb_Resp == "Membre d'au moins 1 projet financé" | Profin_Mb_Resp == "Responsable d'au moins 1 projet financé",
                        projet_fr=particip_ANR | particip_Fr,
-                       projet_intern=particip_Europ | particip_Intern)
+                       projet_intern=particip_Europ | particip_Intern,
+                       respprojet=Profin_Mb_Resp == "Responsable d'au moins 1 projet financé",
+                       respprojetnum=as.numeric(respprojet),
+                       idfnum=ifelse(trav_zone == "IDF", 1, 0),
+                       loinnum=ifelse(trav_zone == "loin", 1, 0))
 
 # climatRegr <- group_by(climatRegr, unite.labintel) %>%
 #     filter(n() > 1)
@@ -180,10 +187,11 @@ vars_centrer <- c("nbpublis2", "ScoreEcolo", "ScoreEcoloACP",
                   "ScoreInternational", "ScoreInternational_perso", "ScoreInternational_pro", "tourisme",
                   "avionpersonum", "chgtpratiquenum", "preoccupe2num", "solreducrechnum",
                   "projet", "projet_fr", "projet_intern",
-                  "revenuTete", "revenuMenage", "paienum", "parbacp5", "enfants_foyer", "un_parent_publicnum", "enfant_moins_5_ansnum")
+                  "revenuTete", "revenuAdulte", "revenuMenage", "paienum", "parbacp5",
+                  "enfants_foyer", "un_parent_publicnum", "enfant_moins_5_ansnum", "res.aeroport.bisquare", "trav.aeroport.bisquare")
 
 # Liste des variables à moyenner par labo/discipline
-vars <- c(vars_centrer, "sexenum", "carrierenum", "carriere_titnum", "carriere_precnum", "couple1")
+vars <- c(vars_centrer, "sexenum", "carrierenum", "carriere_titnum", "carriere_precnum", "couple1", "rangAnum", "titnum", "agenum", "respprojetnum", "idfnum", "loinnum")
 
 # Standardiser les variables individuelles pour que leur écart-type soit égal à 1
 climatRegr_r[vars_centrer] <- scale(climatRegr_r[vars_centrer])
@@ -277,28 +285,32 @@ ggplot(c, aes(x=a, y=b, label=labels))+
 
 
 ```{r}
-reg0 <- glmmTMB(volshnum ~  sexenum + ageAgr + sitpro2 +
-                    ScoreEcoloACP + ScoreEcoloACP_labo + ScoreEcoloACP_disc +
-                   revenuTete + revenuTete_labo + revenuTete_disc +
-                   #revenuMenage + revenuMenage_labo + revenuMenage_disc +
-                  # couple1 + couple1_labo + couple1_disc+
-                  # parbacp5 + parbacp5_labo +parbacp5_disc+
-                  # un_parent_publicnum+ un_parent_publicnum_labo + un_parent_publicnum_disc +
+reg0 <- glmmTMB(volshnum ~ sexenum + sexenum_labo + sexenum_disc +
+                    sitpro2 + #trav_zone +
+                    age + # agenum + agenum_labo + agenum_disc +
+                    nbpublis2 + nbpublis2_labo + nbpublis2_disc +
+                    ScoreInternational_pro + ScoreInternational_pro_labo + ScoreInternational_pro_disc +
+                    carriere_titnum + carriere_titnum_labo + carriere_titnum_disc +
+                    respprojetnum + respprojetnum_disc + respprojetnum_labo +
+                    #enfants_foyer + enfants_foyer_labo + enfants_foyer_disc +
+                    #titnum_labo + titnum_disc +
+                    #rangAnum_labo + rangAnum_disc +
                     (1 | unite.labintel) + (1 | discipline),
                 family="tweedie",
                 data=climatRegr_r,
                 control=glmmTMBControl(parallel=4))
 
 reg1 <- update(reg0, ~ . +
-                   # revenuTete + revenuTete_labo + revenuTete_disc +
-                   # ScoreInternational_perso + ScoreInternational_perso_labo + ScoreInternational_perso_disc +
-                   # sexenum_labo + sexenum_disc +
-                   # carriere_titnum + carriere_titnum_labo + carriere_titnum_disc +
-                    nbpublis2 + nbpublis2_labo + nbpublis2_disc +
-                   ScoreInternational_pro + ScoreInternational_pro_labo + ScoreInternational_pro_disc +
-                 # enfant_moins_5_ansnum + enfant_moins_5_ansnum_labo + enfant_moins_5_ansnum_disc+
-                   avionpersonum + avionpersonum_labo + avionpersonum_disc 
-               )
+                   #idfnum + idfnum_labo + idfnum_disc +
+                   #loinnum + #loinnum_labo + loinnum_disc +
+                   #trav_zone +
+                   res.aeroport.bisquare + res.aeroport_labo + res.aeroport_disc +
+                   #I(res.dep %in% c(75, 77, 92:95)) +
+                   # trav.aeroport + trav.aeroport_labo + trav.aeroport_disc +
+                   revenuAdulte + revenuAdulte_labo + revenuAdulte_disc +
+                   #ScoreInternational_perso + ScoreInternational_perso_labo + ScoreInternational_perso_disc +
+                   ScoreEcoloACP + ScoreEcoloACP_labo + ScoreEcoloACP_disc +
+                   avionpersonum + avionpersonum_labo + avionpersonum_disc)
 
 reg2 <- update(reg1, ~ . +
                    ScoreEcoloACP*nbpublis2 + ScoreEcoloACP*nbpublis2_labo + ScoreEcoloACP*nbpublis2_disc +
@@ -324,33 +336,116 @@ tbls <- lapply(list(reg0, reg1, reg2),
                function(m) tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=TRUE, tidy_fun=broom.mixed::tidy) %>% add_glance_table())
 tbl_merge(tbls, paste0("M", 0:(length(tbls)-1))) %>%
       modify_table_body(~ .x %>% arrange(row_type == "glance_statistic", endsWith(variable, "sd__(Intercept)")))
-# 
-# representation effets interactions
 
-# # ggpredict fixe les autres variables numériques à leur moyenne,
-# # et les autres variables catégorielles à leur référence
-# # (ggeffect et ggemmeans mettent les catégorielles à leur proportion moyenne)
-# library(ggeffects)
-# mydf <- ggpredict(reg2, terms = c("ScoreEcoloACP [quart2]", "sexenum_disc [quart2]"))
-# ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
-#     geom_point() +
-#     coord_cartesian(ylim=c(0, NA)) +
-#     labs(
-#         y = get_y_title(mydf),
-#         x = get_x_title(mydf),
-#         colour = get_legend_title(mydf)
-#     )
-# 
-# library(ggeffects)
-# mydf <- ggpredict(reg2, terms = c("ScoreEcoloACP [quart2]", "ScoreEcoloACP_labo [quart2]"))
-# ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
-#     stat_smooth(method = "lm", se = FALSE) +
-#     coord_cartesian(ylim=c(0, NA)) +
-#     labs(
-#         y = get_y_title(mydf),
-#         x = get_x_title(mydf),
-#         colour = get_legend_title(mydf)
-#     )
+# ggpredict fixe les autres variables numériques à leur moyenne,
+# et les autres variables catégorielles à leur référence
+# (ggeffect et ggemmeans mettent les catégorielles à leur proportion moyenne)
+library(ggeffects)
+mydf <- ggpredict(reg2, terms = c("ScoreEcoloACP [quart2]", "sexenum_disc [quart2]"))
+ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
+    geom_point() +
+    coord_cartesian(ylim=c(0, NA)) +
+    labs(
+        y = get_y_title(mydf),
+        x = get_x_title(mydf),
+        colour = get_legend_title(mydf)
+    )
+
+library(ggeffects)
+mydf <- ggpredict(reg2, terms = c("ScoreEcoloACP [quart2]", "ScoreEcoloACP_labo [quart2]"))
+ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
+    stat_smooth(method = "lm", se = FALSE) +
+    coord_cartesian(ylim=c(0, NA)) +
+    labs(
+        y = get_y_title(mydf),
+        x = get_x_title(mydf),
+        colour = get_legend_title(mydf)
+    )
+
+
+# Graphique des coefficients
+library(broom.mixed)
+library(wesanderson)
+a <- tidy(reg1, conf.int = T, exponentiate=T)
+a <- a[a$term %in% c("agenum", "agenum_labo", "agenum_disc",
+                     "sexenum" , "sexenum_labo" , "sexenum_disc" , 
+                     "ScoreEcoloACP" , "ScoreEcoloACP_labo" , 
+                     "ScoreEcoloACP_disc" ,
+                     "revenuTete" , "revenuTete_labo" , "revenuTete_disc",
+                     "revenuAdulte" , "revenuAdulte_labo" , "revenuAdulte_disc",
+                     "carriere_titnum" ,"carriere_titnum_disc" ,"carriere_titnum_labo" ,
+                     "nbpublis2" , "nbpublis2_labo" , "nbpublis2_disc" ,
+                     "ScoreInternational_pro" , "ScoreInternational_pro_labo" , 
+                     "ScoreInternational_pro_disc" ,
+                     "avionpersonum", "avionpersonum_labo", "avionpersonum_disc",
+                     "respprojetnum", "respprojetnum_labo", "respprojetnum_disc"),]
+
+## Recodage de a$term en a$term_rec
+a$term_rec <- a$term %>%
+    fct_recode(
+        "Vols privés" = "avionpersonum",
+        "Vols privés" = "avionpersonum_disc",
+        "Vols privés" = "avionpersonum_labo",
+        "Moment-clé de la carrière" = "carriere_titnum",
+        "Moment-clé de la carrière" = "carriere_titnum_disc",
+        "Moment-clé de la carrière" = "carriere_titnum_labo",
+        "Nombre de publications" = "nbpublis2",
+        "Nombre de publications" = "nbpublis2_disc",
+        "Nombre de publications" = "nbpublis2_labo",
+        "Niveau de vie" = "revenuTete",
+        "Niveau de vie" = "revenuTete_disc",
+        "Niveau de vie" = "revenuTete_labo",
+        "Revenu par adulte" = "revenuAdulte",
+        "Revenu par adulte" = "revenuAdulte_disc",
+        "Revenu par adulte" = "revenuAdulte_labo",
+        "Sensibilité à l'écologie" = "ScoreEcoloACP",
+        "Sensibilité à l'écologie" = "ScoreEcoloACP_disc",
+        "Sensibilité à l'écologie" = "ScoreEcoloACP_labo",
+        "Internationalisation" = "ScoreInternational_pro",
+        "Internationalisation" = "ScoreInternational_pro_disc",
+        "Internationalisation" = "ScoreInternational_pro_labo",
+        "Sexe" = "sexenum",
+        "Sexe" = "sexenum_disc",
+        "Sexe" = "sexenum_labo",
+        "Âge" = "agenum",
+        "Âge" = "agenum_disc",
+        "Âge" = "agenum_labo",
+        "Responsable de projet" = "respprojetnum",
+        "Responsable de projet" = "respprojetnum_disc",
+        "Responsable de projet" = "respprojetnum_labo"
+    )
+a$group <- case_when(grepl("_labo", a$term) ~ "Laboratoire",
+                     grepl("_disc", a$term) ~ "Discipline",
+                     TRUE ~ "Individu")
+a <- as.data.frame(a)
+
+## Réordonnancement de a$term_rec
+a$term_rec <- a$term_rec %>%
+    fct_relevel(
+        "Revenu par adulte", "Vols privés", "Sensibilité à l'écologie",
+        "Responsable de projet", "Internationalisation",
+        "Nombre de publications", "Moment-clé de la carrière", "Sexe", "Âge"
+    )
+
+
+## Réordonnancement de a$group
+a$group <- a$group %>%
+    fct_relevel( "Discipline", "Laboratoire",
+                 "Individu"
+    )
+a$shape <- ifelse(a$p.value<=0.05, "", "non")
+ggplot(a, aes(x=estimate, y=term_rec, group=group, color=group, shape=group)) +
+    geom_pointrange(
+        aes(xmin =  conf.low, xmax = conf.high, 
+            color = group,
+            shape=paste(group, shape)),
+        position = position_dodge(0.4)
+    )+geom_vline(xintercept =1)+
+    guides(color = guide_legend(reverse = TRUE),shape=F)+
+    theme_minimal()+
+    scale_color_manual(values=wes_palette(n=3, name="GrandBudapest1"))+
+    labs(x="", y="", color="Niveau")+
+    scale_shape_manual(values=c(0, 15, 1, 16,2,17 ))
 ```
 
 Les variables indépendantes sont centrées-réduites au niveau correspondant : les coefficients mesurent l'effet d'un écart-type entre individus/laboratoires/disciplines selon le cas.
