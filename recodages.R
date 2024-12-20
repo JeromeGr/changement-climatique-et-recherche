@@ -862,6 +862,24 @@ climat$volsh_tot2 <- if_else(is.na(climat$volsdist5) | climat$volsdist5 == 0 |
                              climat$volsh_tot,
                              climat$volshnum)
 
+# Imputation de la distance totale de vol à partir de nombre d'heures de vol et de trajets
+climat_imp <- mutate(climat,
+                     volsdist_tot=na_if(volsdist_tot, 0),
+                     volsnb=na_if(volsnb, 0),
+                     volsh=na_if(volsh, "0h"))
+mod <- lm(volsdist_tot ~ volsh * volsnb, data=climat_imp)
+climat$volsdist_tot_imp <- predict(mod, climat_imp)
+climat$volsdist_tot_imp[climat$volsnb == 0 | climat$volsh == "0h"] <- 0
+rm(climat_imp, mod)
+
+# Imputation en prenant simplement la distance moyenne
+climat$volsdist_tot_imp2 <- with(climat,
+                             case_when(volsnb == 0 ~ 0,
+                                       volsh == "De 1h à 10h" ~ mean(volsdist_tot[volsh == "De 1h à 10h"], na.rm=TRUE),
+                                       volsh == "De 11h à 20h" ~ mean(volsdist_tot[volsh == "De 11h à 20h"], na.rm=TRUE),
+                                       volsh == "De 20h à 50h" ~ mean(volsdist_tot[volsh == "De 20h à 50h"], na.rm=TRUE),
+                                       volsh == "Plus de 50h" ~ mean(volsdist_tot[volsh == "Plus de 50h" ], na.rm=TRUE)))
+
 
 ####Création de variables à partir des données du module sur l'avion
 
