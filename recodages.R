@@ -1279,10 +1279,10 @@ climat$particip_prive <- climat$projets.prive_r2 == "Responsable projet privé o
 climat$Profin_Mb_Resp <- NA
 climat$Profin_Mb_Resp[!is.na(climat$projets.anr_m2) & !is.na(climat$projets.france_m2) & 
                           !is.na(climat$projets.europe_m2) & !is.na(climat$projets.inter_m2) &
-                          !is.na(climat$projets.prive_m2)] <- "Ni membre ni resp d'un 1 projet financé"
+                          !is.na(climat$projets.prive_m2)] <- "Ni membre ni resp d'1 projet financé"
 climat$Profin_Mb_Resp[climat$projets.anr_m2 == "Membre projet ANR oui" | climat$projets.france_m2 == "Membre projet France oui" |
                           climat$projets.europe_m2 == "Membre projet européen oui" | climat$projets.inter_m2 == "Membre projet international oui" |
-                          climat$projets.prive_r2 == "Responsable projet privé oui"] <- "Membre d'au moins 1 projet financé"
+                          climat$projets.prive_m2 == "Membre projet privé oui"] <- "Membre d'au moins 1 projet financé"
 climat$Profin_Mb_Resp[climat$projets.anr_r2 == "Responsable projet ANR oui" | climat$projets.france_r2 == "Responsable projet France oui" | 
                           climat$projets.europe_r2 == "Responsable projet européen oui" | climat$projets.inter_r2 == "Responsable projet international oui" |
                           climat$projets.prive_r2 == "Responsable projet privé oui"] <- "Responsable d'au moins 1 projet financé"
