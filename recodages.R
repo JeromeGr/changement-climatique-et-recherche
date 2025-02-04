@@ -1898,7 +1898,7 @@ climatRegr$discipline <- relevel(climatRegr$discipline , ref = "25 : Mathématiq
 climatRegr$carriere <- relevel(climatRegr$carriere, ref = "Non")
 
 climatRegr$Profin_Mb_Resp <- as.factor(climatRegr$Profin_Mb_Resp)
-climatRegr$Profin_Mb_Resp <- relevel(climatRegr$Profin_Mb_Resp, ref = "Ni membre ni resp d'un 1 projet financé")
+climatRegr$Profin_Mb_Resp <- relevel(climatRegr$Profin_Mb_Resp, ref = "Ni membre ni resp d'1 projet financé")
 
 climatRegr$visiopdtconf <- relevel(climatRegr$visiopdtconf, ref = "1 à 3 fois par mois")
 climatRegr$visioavtconf <- relevel(climatRegr$visioavtconf, ref = "1 à 3 fois par mois")
