@@ -20,7 +20,11 @@ climatRegr_r <- mutate(climatRegr_r,
                        rangAnum=if_else(sitpro2 == "Directeur·rice de recherche" | sitpro2 == "Professeur·e des universités", 1, 0),
                        titnum=if_else(sitpro2 == "Directeur·rice de recherche" | sitpro2 == "Professeur·e des universités" | sitpro2 == "Chargé·e de recherche" | sitpro2 == "Maître·sse de conférences" | sitpro2 == "Ingénieur·e de recherche", 1, 0),
                        nbpublis2=pmin(nbpublis, 100),
+                       nbpublis2_log=log(nbpublis2+1),
                        tourisme=startsWith(as.character(apportconf.tourisme), "Oui"),
+                       revenuTete_log=log(revenuTete),
+                       revenuAdulte_log=log(revenuAdulte),
+                       revenuMenage_log=log(revenuMenage),
                        revenuTete=revenuTete/1000,
                        revenuAdulte=revenuAdulte/1000,
                        revenuMenage=revenuMenage/1000,
@@ -185,11 +189,13 @@ climatRegr_r$ScoreEcoloACP <- NA
 climatRegr_r$ScoreEcoloACP[!manquant_acp] <- acp$ind$coord[,1]
 
 # Liste des variables à centrer par labo/discipline
-vars_centrer <- c("nbpublis2", "ScoreEcolo", "ScoreEcoloACP",
+vars_centrer <- c("nbpublis2", "nbpublis2_log", "ScoreEcolo", "ScoreEcoloACP",
                   "ScoreInternational", "ScoreInternational_perso", "ScoreInternational_pro", "tourisme",
                   "avionpersonum", "chgtpratiquenum", "preoccupe2num", "solreducrechnum",
                   "projet", "projet_fr", "projet_intern",
-                  "revenuTete", "revenuAdulte", "revenuMenage", "paienum", "parbacp5",
+                  "revenuTete", "revenuAdulte", "revenuMenage",
+                  "revenuTete_log", "revenuAdulte_log", "revenuMenage_log",
+                  "paienum", "parbacp5",
                   "enfants_foyer", "un_parent_publicnum", "enfant_moins_5_ansnum", "res.aeroport.bisquare", "trav.aeroport.bisquare")
 
 # Liste des variables à moyenner par labo/discipline
