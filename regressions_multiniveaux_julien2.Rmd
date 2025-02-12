@@ -190,7 +190,8 @@ climatRegr_r$ScoreEcoloACP[!manquant_acp] <- acp$ind$coord[,1]
 
 # Liste des variables à centrer par labo/discipline
 vars_centrer <- c("nbpublis2", "nbpublis2_log", "ScoreEcolo", "ScoreEcoloACP",
-                  "ScoreInternational", "ScoreInternational_perso", "ScoreInternational_pro", "tourisme",
+                  "ScoreInternational", "ScoreInternational_perso",
+                  "ScoreInternational_pro", "ScoreInternational_pro2", "tourisme",
                   "avionpersonum", "chgtpratiquenum", "preoccupe2num", "solreducrechnum",
                   "projet", "projet_fr", "projet_intern",
                   "revenuTete", "revenuAdulte", "revenuMenage",
