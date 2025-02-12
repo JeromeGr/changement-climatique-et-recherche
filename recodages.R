@@ -1341,7 +1341,18 @@ climat$ScoreInternational_pro <- with(climat,
                                                     coalesce(international.asso == "Oui", 0) +
                                                     particip_Europ + particip_Intern))
 
-
+#Sans l'histoire des projets qui se téléscope avec les questions sur membres et resp de projet
+climat$ScoreInternational_pro2 <- with(climat,
+                                       if_else(is.na(international.poste) & is.na(international.naiss) &
+                                                   is.na(international.natio) & is.na(international.scol) &
+                                                   is.na(international.etudes) & is.na(international.postdoc) &
+                                                   is.na(international.travail) & is.na(international.prog) & 
+                                                   is.na(international.asso),
+                                               NA_real_,
+                                               coalesce(international.poste == "Oui", 0) +
+                                                   coalesce(international.postdoc == "Oui", 0) +
+                                                   coalesce(international.travail == "Oui", 0) +
+                                                   coalesce(international.asso == "Oui", 0)))
 
 
 
