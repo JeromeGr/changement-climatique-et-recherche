@@ -205,17 +205,21 @@ vars <- c(vars_centrer, "sexenum", "carrierenum", "carriere_titnum", "carriere_p
 # Standardiser les variables individuelles pour que leur écart-type soit égal à 1
 climatRegr_r[vars_centrer] <- scale(climatRegr_r[vars_centrer])
 
-# Création des moyennes par labo (_labo) et des variables centrées par labo (_clabo)
-climatRegr_r <- group_by(climatRegr_r, unite.labintel) %>%
-    mutate(across(all_of(vars), ~ mean(.x, na.rm=TRUE), .names="{.col}_labo"),
-           across(all_of(vars), ~ .x - mean(.x, na.rm=TRUE), .names="{.col}_clabo")) %>%
-    ungroup()
-
 # Création des moyennes par discipline (_discipline) et des variables centrées par discipline (_cdisc)
 climatRegr_r <- group_by(climatRegr_r, discipline) %>%
     mutate(across(all_of(vars), ~ mean(.x, na.rm=TRUE), .names="{.col}_disc"),
            across(all_of(vars), ~ .x - mean(.x, na.rm=TRUE), .names="{.col}_cdisc")) %>%
     ungroup()
+
+# Création des moyennes par labo (_labo),
+# des moyennes par labo centrées par discipline(s) (_labodisc),
+# et des variables centrées par labo (_clabo)
+climatRegr_r <- group_by(climatRegr_r, unite.labintel) %>%
+    mutate(across(all_of(vars), ~ mean(.x, na.rm=TRUE), .names="{.col}_labo"),
+           across(all_of(vars), ~ mean(.x, na.rm=TRUE) - mean(get(paste0(cur_column(), "_disc")), na.rm=TRUE), .names="{.col}_labodisc"),
+           across(all_of(vars), ~ .x - mean(.x, na.rm=TRUE), .names="{.col}_clabo")) %>%
+    ungroup()
+# et des variables centrées par labo (_clabodisc) à l'intérieur des disciplines
 
 # Création des variables centrées par labo et discipline (_c)
 # On rajoute la moyenne de la variable d'origine
@@ -223,6 +227,13 @@ climatRegr_r <- group_by(climatRegr_r, discipline) %>%
 climatRegr_r[paste0(vars, "_c")] <-
     select(climatRegr_r, all_of(vars)) -
     select(climatRegr_r, all_of(paste0(vars, "_labo"))) -
+    select(climatRegr_r, all_of(paste0(vars, "_disc"))) +
+    transmute(climatRegr_r, across(all_of(vars), ~ mean(.x, na.rm=TRUE)))
+
+# Création des variables centrées par labo centrés par discipline(s) (_clabodisc)
+climatRegr_r[paste0(vars, "_clabodisc")] <-
+    select(climatRegr_r, all_of(vars)) -
+    select(climatRegr_r, all_of(paste0(vars, "_labodisc"))) -
     select(climatRegr_r, all_of(paste0(vars, "_disc"))) +
     transmute(climatRegr_r, across(all_of(vars), ~ mean(.x, na.rm=TRUE)))
 
