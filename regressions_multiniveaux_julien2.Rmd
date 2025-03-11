@@ -246,6 +246,13 @@ sd_labo <- select(climatRegr_r, unite.labintel, all_of(paste0(vars, "_labo"))) %
     apply(2, sd, na.rm=T)
 climatRegr_r[names(sd_labo)] <- sweep(climatRegr_r[names(sd_labo)], 2, sd_labo, "/")
 
+sd_labodisc <- select(climatRegr_r, unite.labintel, all_of(paste0(vars, "_labodisc"))) %>%
+    group_by(unite.labintel)  %>%
+    summarize(across(everything(), ~ mean(.x, na.rm=TRUE))) %>%
+    select(-unite.labintel) %>%
+    apply(2, sd, na.rm=T)
+climatRegr_r[names(sd_labodisc)] <- sweep(climatRegr_r[names(sd_labodisc)], 2, sd_labodisc, "/")
+
 sd_disc <- select(climatRegr_r, discipline, all_of(paste0(vars, "_disc"))) %>%
     group_by(discipline)  %>%
     summarize(across(everything(), ~ mean(.x, na.rm=TRUE))) %>%
@@ -254,8 +261,8 @@ sd_disc <- select(climatRegr_r, discipline, all_of(paste0(vars, "_disc"))) %>%
 climatRegr_r[names(sd_disc)] <- sweep(climatRegr_r[names(sd_disc)], 2, sd_disc, "/")
 
 # Standardiser les variables individuelles centrées pour que leur écart-type soit égal à 1
-climatRegr_r[c(paste0(vars, "_c"), paste0(vars, "_clabo"), paste0(vars, "_cdisc"))] <-
-    scale(climatRegr_r[c(paste0(vars, "_c"), paste0(vars, "_clabo"), paste0(vars, "_cdisc"))])
+climatRegr_r[c(paste0(vars, "_c"), paste0(vars, "_clabo"), paste0(vars, "_clabodisc"), paste0(vars, "_cdisc"))] <-
+    scale(climatRegr_r[c(paste0(vars, "_c"), paste0(vars, "_clabo"), paste0(vars, "_clabodisc"), paste0(vars, "_cdisc"))])
 ```
 
 
