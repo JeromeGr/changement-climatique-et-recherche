@@ -219,7 +219,6 @@ climatRegr_r <- group_by(climatRegr_r, unite.labintel) %>%
            across(all_of(vars), ~ mean(.x, na.rm=TRUE) - mean(get(paste0(cur_column(), "_disc")), na.rm=TRUE), .names="{.col}_labodisc"),
            across(all_of(vars), ~ .x - mean(.x, na.rm=TRUE), .names="{.col}_clabo")) %>%
     ungroup()
-# et des variables centrées par labo (_clabodisc) à l'intérieur des disciplines
 
 # Création des variables centrées par labo et discipline (_c)
 # On rajoute la moyenne de la variable d'origine
