@@ -39,12 +39,14 @@ d <- read.csv("2017-1.csv") |>
   bind_rows(read.csv("2019-9.csv")) |> 
   bind_rows(read.csv("2019-10.csv")) |>
   bind_rows(read.csv("2019-11.csv")) |> 
-  distinct(docid, .keep_all = TRUE)  # attention je vire les doublons sur docid, mais en fait ça ne sert à rien 
+  distinct(docid, .keep_all = TRUE)  # attention je vire les doublons sur docid, mais en fait ça ne sert plus à rien 
 
 write_parquet(d, "HAL_in.parquet")
 
 
 d <- read_parquet("Hal_in.parquet")
+
+
 # Comptage du nombre d'auteurs -----
 
 d <- d |> 
@@ -52,10 +54,6 @@ d <- d |>
   nbauteur = str_count(authFullName_s,",") +1
 )
 
-# t <- d |> 
-#   filter(nbauteur > 1000) |> 
-#   arrange(desc(nbauteur))
-# write.csv(t,"testnbauteur.csv")
 
 # séparation des dommaines dans autant de variables -----
 d <- d |> 
@@ -64,113 +62,48 @@ d <- d |>
     ",",
     names = c(paste0("dom", 1:60)), 
     too_few = "align_start")
+
+# Fonction pour faire les listes par niveau d'agrégation disciplinaire 
+byniv <- function(niveau){
+  toto <- d |> 
+    pivot_longer(
+      cols = starts_with("dom"),
+      names_to = "dom", 
+      values_to = "domaines"
+    ) |> 
+    filter(!is.na(domaines) & (substr(domaines,1,2)==str_glue("{niveau}."))) |> 
+    distinct(docid, halId_s, domaines, .keep_all = TRUE) |>   # je dédoublonne car manifestement bcp mettent trois fois le même code discipline ! 
+    group_by(domaines) |> 
+    mutate(NbRef = row_number(),
+           MoyAut = round(mean(nbauteur),1),
+           MedianAuteur = median(nbauteur),
+           MinAut = min(nbauteur),
+           MaxAut = max(nbauteur)
+    ) |> 
+    arrange(domaines, desc(NbRef)) |> 
+    distinct(domaines, .keep_all = TRUE) |> 
+    ungroup() |> 
+    select(domaines, NbRef, MoyAut, MedianAuteur, MaxAut, MinAut) 
   
-# Tidying la base en longeur pour pouvoir compter les publis par domaines ----
-## pour toute la base ----
-dd <- d |> 
-  pivot_longer(
-    cols = starts_with("dom"),
-    names_to = "dom", 
-    values_to = "domaines"
-  ) |> 
-  filter(!is.na(domaines)) |> 
-  filter(substr(domaines,1,2)=="0.")
+  write.csv(toto, str_glue("StatsNiv{niveau}.csv"), row.names = FALSE)
+  
+  titi <- toto |> select(domaines)
+  write.csv(titi, str_glue("DisciplinesNiv{niveau}.csv"), row.names = FALSE)
+  
+  return(toto)
+}
 
-## Pour le niveau le plus agrégé 0. Niv0-----
-Niv0 <- d |> 
-  pivot_longer(
-    cols = starts_with("dom"),
-    names_to = "dom", 
-    values_to = "domaines"
-  ) |> 
-  filter(!is.na(domaines) & (substr(domaines,1,2)=="0.")) |> 
-  distinct(docid, halId_s, domaines, .keep_all = TRUE)  # je dédoublonne car manifestement bcp mettent trois fois le même code discipline ! 
-
-## Pour le Niv1 d'agrégation ----
-Niv1 <- d |> 
-  pivot_longer(
-    cols = starts_with("dom"),
-    names_to = "dom", 
-    values_to = "domaines"
-  ) |> 
-  filter(!is.na(domaines) & (substr(domaines,1,2)=="1.")) |> 
-  distinct(docid, halId_s, domaines, .keep_all = TRUE)  # je dédoublonne car manifestement bcp mettent trois fois le même code discipline ! 
+MyNiv0 <- byniv(0)
+MyNiv1 <- byniv(1)
+MyNiv2 <- byniv(2)
 
 
-## Pour le Niv2 d'agrégation ----
-Niv2 <- d |> 
-  pivot_longer(
-    cols = starts_with("dom"),
-    names_to = "dom", 
-    values_to = "domaines"
-  ) |> 
-  filter(!is.na(domaines) & (substr(domaines,1,2)=="2."))|> 
-  distinct(docid, halId_s, domaines, .keep_all = TRUE)  # je dédoublonne car manifestement bcp mettent trois fois le même code discipline ! 
 
 
-# Obtenir la liste des discipline par niveau 0, 1 et 2 ----
-listNiv0 <- Niv0 |> 
-  distinct(domaines) |> 
-  arrange(domaines)
-
-listNiv1 <- Niv1 |> 
-  distinct(domaines) |> 
-  arrange(domaines)
-
-listNiv2 <- Niv2 |> 
-  distinct(domaines) |> 
-  arrange(domaines)
-
-write.csv(listNiv0, "Niv0.csv")
-write.csv(listNiv1, "Niv1.csv")
-write.csv(listNiv2, "Niv2.csv")
-
-# Création des tables avec les données agrégées de publication par niveau de publi-----
-Niv0a <- Niv0 |> 
-  group_by(domaines) |> 
-  mutate(NbRef = row_number(),
-         MoyAut = round(mean(nbauteur),1),
-         MedianAuteur = median(nbauteur),
-         MinAut = min(nbauteur),
-         MaxAut = max(nbauteur)
-         ) |> 
-  arrange(domaines, desc(NbRef)) |> 
-  distinct(domaines, .keep_all = TRUE) |> 
-  ungroup() |> 
-  select(domaines, NbRef, MoyAut, MedianAuteur, MaxAut, MinAut) 
-
-write_csv(Niv0a, "StatsNiv0.csv") 
 
 
-Niv1a <- Niv1 |> 
-  group_by(domaines) |> 
-  mutate(NbRef = row_number(),
-         MoyAut = round(mean(nbauteur),1),
-         MedianAuteur = median(nbauteur),
-         MinAut = min(nbauteur),
-         MaxAut = max(nbauteur)
-  ) |> 
-  arrange(domaines, desc(NbRef)) |> 
-  distinct(domaines, .keep_all = TRUE) |> 
-  ungroup() |> 
-  select(domaines, NbRef, MoyAut, MedianAuteur, MaxAut, MinAut) 
 
-write_csv(Niv1a, "StatsNiv1.csv")  
 
-Niv2a <- Niv2 |> 
-  group_by(domaines) |> 
-  mutate(NbRef = row_number(),
-         MoyAut = round(mean(nbauteur),1),
-         MedianAuteur = median(nbauteur),
-         MinAut = min(nbauteur),
-         MaxAut = max(nbauteur)
-  ) |> 
-  arrange(domaines, desc(NbRef)) |> 
-  distinct(domaines, .keep_all = TRUE) |> 
-  ungroup() |> 
-  select(domaines, NbRef, MoyAut, MedianAuteur, MaxAut, MinAut) 
-
-write_csv(Niv2a, "StatsNiv2.csv") 
 
 
 
