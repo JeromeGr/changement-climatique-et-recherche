@@ -17,6 +17,8 @@ source("Aéroports/aéroports.R")
 
 source("codes_postaux/recodage_des_codes_postaux.R")
 
+source("Distances/distances aéroports.R")
+
 source("pondération.R")
 
 attr(climat$res.dep, "label") <- "Département du lieu de résidence"
