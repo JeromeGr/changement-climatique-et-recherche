@@ -348,6 +348,9 @@ climat$enfantsage_rec <- as.factor(climat$enfantsage_rec)
 climat$disciplineita_rech <- if_else(substr(climat$bap, 1, 5) %in% c("BAP A", "BAP B", "BAP C", "BAP D"),
                                      climat$disciplineita, factor(NA_character_))
 climat$discipline <- coalesce(climat$discipline, climat$disciplineita_rech)
+climat$discipline_num <- climat$discipline %>%
+    str_extract("^[0-9]+") %>% # extrait le numéro
+    str_remove("^0+")          # supprime les zéros en tête
 
 # Discipline agrégée
 # Noms inspirés de https://data.esr.gouv.fr/FR/T895/P311/tableau_des_enseignants_de_l_enseignement_superieur_public_niveau_etablissement_-_ressources_humaines#TDB
@@ -1618,6 +1621,56 @@ climat$trav_zone_dom <- climat$trav_zone_dom %>%
     "IDF", "loin", "peu_loin", "dom"
   )
 
+
+# Nombre de co-auteurs par discipline, d'après
+# Mike Thelwall, Nabeil Maflahi, Research coauthorship 1900–2020: Continuous, universal, and ongoing expansion.
+# Quantitative Science Studies 2022; 3 (2): 331–344. doi: https://doi.org/10.1162/qss_a_00188
+climat <- climat %>%
+    mutate(coauteur = case_when(
+        discipline == "17 : Philosophie" ~ 1.35,
+        discipline == "21 : Histoire et civilisations : histoire et archéologie des mondes anciens et des mondes médiévaux" ~ 2,
+        discipline == "22 : Histoire et civilisations : histoire des mondes modernes, histoire du monde contemporain" ~ 1.3,
+        discipline == "18 : Architecture et Arts : plastiques, du spectacle, musique, musicologie, esthétique, sciences de l'art" ~ 2.3,
+        discipline == "45 : Microbiologie, maladies transmissibles et hygiène" ~ 6.3,
+        discipline == "16 : Psychologie, psychologie clinique, psychologie sociale" ~ 3.3,
+        discipline == "69 : Neurosciences" ~ 5.5,
+        discipline == "48 : Anesthésiologie, réanimation, médecine d'urgence, pharmacologie et thérapeutique" ~ 5.5,
+        discipline == "17 : Philosophie" ~ 1.35,
+        discipline_agr5 == "Droit, gestion" ~ 2.7,
+        discipline_agr5 == "Autres sciences sociales" ~ 2.3,
+        discipline_agr5 == "Économie" ~ 2.4,
+        discipline_agr5 == "Lettres" ~ 1.7,
+        discipline_agr5 == "Santé et recherche médicale" ~ 5,
+        discipline_agr5 == "Histoire, anthropologie" ~ 2,
+        discipline_agr5 == "Mathématiques" ~ 2.7,
+        discipline_agr5 == "Informatique" ~ 3.4,
+        discipline_agr5 == "Physique" ~ 4.2,
+        discipline_agr5 == "Chimie" ~ 5,
+        discipline_agr5 == "Astronomie" ~ 4.2,
+        discipline_agr5 == "Géologie" ~ 4.1,
+        discipline_agr5 == "Météo, océano, physique environt" ~ 4.1,
+        discipline_agr5 == "Ingénierie" ~ 3.8,
+        discipline_agr5 == "Biologie" ~ 6,
+        discipline_agr5 == "Écologie, organismes et populations" ~ 4.1,
+        
+        TRUE ~ NA_real_ # Si la discipline ne correspond pas, mettre NA
+    ))
+
+# Nombre de coauteurs dans HAL (articles publiés dans des revues entre 2017-2019)
+coauteurs_hal <- read.csv("HAL_in/StatsBySection.csv", dec=",")
+
+climat <- climat %>%
+    left_join(coauteurs_hal %>%
+                  rename("coauteur_hal"="MoyGeoAut") %>%
+                  mutate(discipline_num=as.character(section)) %>%
+                  select("discipline_num", "coauteur_hal"),
+              by="discipline_num")
+rm(coauteurs_hal)
+
+# Proportion publis en anglais
+climat$proppublisang <- climat$nbpublisang/climat$nbpublis
+climat$proppublisang[climat$proppublisang > 1] <- 1
+climat$proppublisang[climat$nbpublis == 0] <- 0
 
 #Le quiz
 

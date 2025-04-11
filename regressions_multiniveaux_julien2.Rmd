@@ -21,6 +21,10 @@ climatRegr_r <- mutate(climatRegr_r,
                        titnum=if_else(sitpro2 == "Directeur·rice de recherche" | sitpro2 == "Professeur·e des universités" | sitpro2 == "Chargé·e de recherche" | sitpro2 == "Maître·sse de conférences" | sitpro2 == "Ingénieur·e de recherche", 1, 0),
                        nbpublis2=pmin(nbpublis, 100),
                        nbpublis2_log=log(nbpublis2+1),
+                       nbpublis2_log_divcoaut=log((nbpublis2+1)/coauteur),
+                       nbpublis2_log_divcoauthal=log((nbpublis2+1)/coauteur_hal),
+                       nbpublisang_log=log(nbpublisang+1),
+                       nopubli=ifelse(nbpublis == 0, 1, 0),
                        tourisme=startsWith(as.character(apportconf.tourisme), "Oui"),
                        revenuTete_log=log(revenuTete),
                        revenuAdulte_log=log(revenuAdulte),
@@ -37,6 +41,26 @@ climatRegr_r <- mutate(climatRegr_r,
                                             "1 ou 2 allers-retours"=1.5,
                                             "3 ou 4 allers-retours"=2.5,
                                             "Plus de 5 allers-retours"=6),
+                       materielnum=recode(maxmateriel,
+                                          "Aucun materiel" = 0,
+                                          "Très grande infrastructure" = 2, 
+                                          "Dispositifs extensifs" = 2,
+                                          "Petit materiel" = 1,
+                                          "Materiel couteux" = 3,
+                                          "Materiel très couteux" = 5,
+                                          "Materiel couteux et très couteux" = 7,
+                                          .default = 0,
+                                          .missing = 0),
+                       coutmateriel=recode(maxmateriel, 
+                                           "Petit materiel" = 1,
+                                           "Materiel couteux" = 3,
+                                           "Materiel très couteux" = 6,
+                                           "Materiel couteux et très couteux" = 7,
+                                           .default = 0,
+                                           .missing = 0),
+                       materiel.extensifnum=ifelse(materiel.extensif == "Oui", 1, 0),
+                       materiel.tgirnum=ifelse(materiel.tgir == "Oui", 1, 0),
+                       materiel.infonum=ifelse(materiel.info == "Oui", 1, 0),
                        chgtpratiquenum=as.numeric(fct_relevel(chgtpratique, "Non, pas du tout d'accord",
                                                               "Non, plutôt pas d'accord", "Sans opinion",
                                                               "Oui, plutôt d'accord",
@@ -189,7 +213,9 @@ climatRegr_r$ScoreEcoloACP <- NA
 climatRegr_r$ScoreEcoloACP[!manquant_acp] <- acp$ind$coord[,1]
 
 # Liste des variables à centrer par labo/discipline
-vars_centrer <- c("nbpublis2", "nbpublis2_log", "ScoreEcolo", "ScoreEcoloACP",
+vars_centrer <- c("nbpublis2", "nbpublis2_log", "coauteur", "coauteur_hal",
+                  "nbpublis2_log_divcoaut", "nbpublis2_log_divcoauthal",
+                  "ScoreEcolo", "ScoreEcoloACP",
                   "ScoreInternational", "ScoreInternational_perso",
                   "ScoreInternational_pro", "ScoreInternational_pro2", "tourisme",
                   "avionpersonum", "chgtpratiquenum", "preoccupe2num", "solreducrechnum",
@@ -197,10 +223,13 @@ vars_centrer <- c("nbpublis2", "nbpublis2_log", "ScoreEcolo", "ScoreEcoloACP",
                   "revenuTete", "revenuAdulte", "revenuMenage",
                   "revenuTete_log", "revenuAdulte_log", "revenuMenage_log",
                   "paienum", "parbacp5",
+                  "materielnum", "coutmateriel",
                   "enfants_foyer", "un_parent_publicnum", "enfant_moins_5_ansnum", "res.aeroport.bisquare", "trav.aeroport.bisquare")
 
 # Liste des variables à moyenner par labo/discipline
-vars <- c(vars_centrer, "sexenum", "carrierenum", "carriere_titnum", "carriere_precnum", "couple1", "rangAnum", "titnum", "agenum", "respprojetnum", "idfnum", "loinnum")
+vars <- c(vars_centrer, "sexenum", "carrierenum", "carriere_titnum", "carriere_precnum", "couple1",
+          "rangAnum", "titnum", "agenum", "respprojetnum", "idfnum", "loinnum",
+          "nopubli", "materiel.extensifnum", "materiel.tgirnum", "materiel.infonum")
 
 # Standardiser les variables individuelles pour que leur écart-type soit égal à 1
 climatRegr_r[vars_centrer] <- scale(climatRegr_r[vars_centrer])
@@ -314,7 +343,7 @@ ggplot(c, aes(x=a, y=b, label=labels))+
 reg0 <- glmmTMB(volshnum ~ sexenum + sexenum_labo + sexenum_disc +
                     sitpro2 + #trav_zone +
                     age + # agenum + agenum_labo + agenum_disc +
-                    nbpublis2 + nbpublis2_labo + nbpublis2_disc +
+                    nbpublis2 + nbpublis2_labo + nbpublis2_disc + coauteur_hal +
                     ScoreInternational_pro + ScoreInternational_pro_labo + ScoreInternational_pro_disc +
                     carriere_titnum + carriere_titnum_labo + carriere_titnum_disc +
                     respprojetnum + respprojetnum_disc + respprojetnum_labo +
