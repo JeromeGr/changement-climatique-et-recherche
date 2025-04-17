@@ -1,81 +1,81 @@
-"section","nom","NbRef","MoyAut","MoyGeoAut","MedianAuteur","MinAut","MaxAut"
-1,"Droit privé et sciences criminelles",23818,"1,1","1,1",1,1,25
-2,"Droit public",23818,"1,1","1,1",1,1,25
-3,"Histoire du droit et des institutions",33973,"1,2","1,1",1,1,35
-4,"Science politique",5007,"1,5","1,3",1,1,41
-5,"Sciences économiques",7492,"2,5","2,1",2,1,36
-6,"Sciences de gestion",6259,"2,5","2,2",2,1,26
-7,"Sciences du langage : linguistique et phonétique générales",3912,"1,7","1,4",1,1,60
-8,"Langues et littératures anciennes",9109,"1,2","1,1",1,1,12
-9,"Langue et littérature françaises",8165,"1,1","1,1",1,1,12
-10,"Littératures comparées",8165,"1,1","1,1",1,1,12
-11,"Langues et littératures anglaises et anglo-saxonnes",8165,"1,1","1,1",1,1,12
-12,"Langues et littératures germaniques et scandinaves",8165,"1,1","1,1",1,1,12
-13,"Langues et littératures slaves",8165,"1,1","1,1",1,1,12
-14,"Langues et littératures romanes : espagnol, italien, portugais, autres langues romanes",8165,"1,1","1,1",1,1,12
-15,"Langues et littératures arabes, chinoises, japonaises, hébraïques, d'autres domaines linguistiques",8165,"1,1","1,1",1,1,12
-16,"Psychologie, psychologie clinique, psychologie sociale",3018,4,"2,8",3,1,190
-17,"Philosophie",2744,"1,3","1,1",1,1,11
-18,"Architecture et Arts : plastiques, du spectacle, musique, musicologie, esthétique, sciences de l'art",7405,"1,5","1,2",1,1,120
-19,"Sociologie, démographie",6885,"1,8","1,5",1,1,205
-20,"Anthropologie biologique, ethnologie, préhistoire",3271,"2,5","1,6",1,1,144
-21,"Histoire et civilisations : histoire et archéologie des mondes anciens et des mondes médiévaux ; de l'art",10517,"1,3","1,2",1,1,35
-22,"Histoire et civilisations : histoire des mondes modernes, histoire du monde contemporain ; de l'art ; de la musique",10517,"1,3","1,2",1,1,35
-23,"Géographie physique, humaine, économique et régionale",4054,"2,6","1,9",2,1,120
-24,"Aménagement de l'espace, urbanisme",1819,"1,9","1,5",1,1,120
-25,"Mathématiques",12343,"2,8","2,4",2,1,76
-26,"Mathématiques appliquées et applications des mathématiques",13613,"3,1","2,5",4,1,301
-27,"Informatique",15879,"4,9","3,6",4,1,1575
-28,"Milieux denses et matériaux",10017,"6,1",5,4,1,1247
-29,"Constituants élémentaires",5661,"304,3","15,1",5,1,5214
-30,"Milieux dilués et optique",3440,"7,4","5,7",6,1,378
-31,"Chimie théorique, physique, analytique",4729,"6,4","5,4",5,1,162
-32,"Chimie organique, inorganique, industrielle",3974,"6,3","5,5",6,1,74
-33,"Chimie des matériaux",8540,"6,5","5,8",6,1,87
-34,"Astronomie, astrophysique",6875,"26,9",9,9,1,3542
-35,"Structure et évolution de la Terre et des autres planètes",4628,7,"5,5",6,1,437
-36,"Terre solide : géodynamique des enveloppes supérieures, paléobiosphère",4523,7,"5,5",6,1,437
-37,"Météorologie, océanographie physique et physique de l'environnement",5543,"8,2","6,2",6,1,286
-42,"Morphologie et morphogenèse",288,"8,3","6,2",7,1,140
-43,"Biophysique et imagerie médicale",1679,"9,4","7,2",9,1,1273
-44,"Biochimie, biologie cellulaire et moléculaire, physiologie et nutrition",7035,"8,1","6,4",7,1,382
-45,"Microbiologie, maladies transmissibles et hygiène",7514,"9,3","7,3",8,1,287
-46,"Santé publique, environnement et société",7172,"9,7","5,9",7,1,859
-47,"Cancérologie, génétique, hématologie, immunologie",8120,"12,3",9,11,1,436
-48,"Anesthésiologie, réanimation, médecine d'urgence, pharmacologie et thérapeutique",14835,"10,9","7,6",8,1,1273
-49,"Pathologie nerveuse et musculaire, pathologie mentale, handicap et rééducation",2231,"8,9","6,5",7,1,213
-50,"Pathologie ostéo-articulaire, dermatologie et chirurgie plastique",890,"9,4","7,4",7,1,137
-51,"Pathologie cardiorespiratoire et vasculaire",2362,"11,3","7,9",9,1,846
-52,"Maladies des appareils digestif et urinaire",1129,"11,5","8,7",9,1,308
-53,"Médecine interne, gériatrie, chirurgie générale et médecine générale",899,"8,9","6,7",7,1,487
-54,"Développement et pathologie de l'enfant, gynécologie-obstétrique, endocrinologie et reproduction",2162,"9,2","7,3",8,1,93
-55,"Pathologie de la tête et du cou",942,"11,7","8,2",9,1,487
-56,"Développement, croissance et prévention",5382,"11,3","7,1",8,1,859
-57,"Sciences biologiques, médecine et chirurgie buccales",7849,"10,9",8,8,1,436
-58,"Sciences physiques et physiologiques endodontiques et prothétiques",3675,"8,4","6,6",7,1,1273
-60,"Mécanique, génie mécanique, génie civil",9590,"4,6",4,4,1,316
-61,"Génie informatique, automatique et traitement du signal",19143,"4,9","3,7",4,1,1575
-62,"Énergétique, génie des procédés",4365,"5,3","4,7",4,1,87
-63,"Génie Électrique, Électronique, optronique et systèmes",4095,"5,8",5,5,1,135
-64,"Biochimie et biologie moléculaire",5957,"9,2","7,3",8,1,139
-65,"Biologie cellulaire",2531,"9,2","7,1",8,1,382
-66,"Physiologie",9682,8,"6,2",7,1,382
-67,"Biologie des populations et écologie",8778,"7,8","5,4",7,1,512
-68,"Biologie des organismes",6643,"7,5","5,4",7,1,299
-69,"Neurosciences",4498,"8,5","6,2",6,1,561
-70,"Sciences de l'éducation",3964,2,"1,6",1,1,50
-71,"Sciences de l'information et de la communication",3139,"1,8","1,5",1,1,28
-72,"Épistémologie, histoire des sciences et des techniques",2004,"1,5","1,3",1,1,50
-73,"Cultures et langues régionales",99185,"1,9","1,4",1,1,1047
-74,"Sciences et techniques des activités physiques et sportives",9391,"2,6","2,1",7,1,50
-76,"Théologie catholique",1608,"1,2","1,1",1,1,19
-77,"Théologie protestante",1608,"1,2","1,1",1,1,19
-80,"Sciences physico-chimiques et ingénierie appliquée à la santé (ex-39)",1783,"7,8","6,1",7,1,287
-81,"Sciences du médicament et des autres produits de santé (ex-40)",8291,"10,3",7,7,1,859
-82,"Sciences biologiques, fondamentales et cliniques (ex-41)",15839,"9,4","7,3",11,1,436
-85,"Sciences physico-chimiques et ingénierie appliquée à la santé (ex-39)",1783,"7,8","6,1",7,1,287
-86,"Sciences du médicament et des autres produits de santé (ex-40)",8291,"10,3",7,7,1,859
-87,"Sciences biologiques, fondamentales et cliniques (ex-41)",15839,"9,4","7,3",11,1,436
-90,"Maïeutique",535,"8,5",7,7,1,85
-91,"Sciences de la rééducation et de la réadaptation",10616,"5,4","3,3",6,1,561
-92,"Sciences infirmières",14302,11,"7,7",8,1,1273
+"","section","nom","NbRef","MoyAut","MoyGeoAut","MedianAuteur","MinAut","MaxAut"
+"1",1,"Droit privé et sciences criminelles",23818,1.1,1.1,1,1,25
+"2",2,"Droit public",23818,1.1,1.1,1,1,25
+"3",3,"Histoire du droit et des institutions",33973,1.2,1.1,1,1,35
+"4",4,"Science politique",5007,1.5,1.3,1,1,41
+"5",5,"Sciences économiques",7492,2.5,2.1,2,1,36
+"6",6,"Sciences de gestion",6259,2.5,2.2,2,1,26
+"7",7,"Sciences du langage : linguistique et phonétique générales",3912,1.7,1.4,1,1,60
+"8",8,"Langues et littératures anciennes",9109,1.2,1.1,1,1,12
+"9",9,"Langue et littérature françaises",8165,1.1,1.1,1,1,12
+"10",10,"Littératures comparées",8165,1.1,1.1,1,1,12
+"11",11,"Langues et littératures anglaises et anglo-saxonnes",8165,1.1,1.1,1,1,12
+"12",12,"Langues et littératures germaniques et scandinaves",8165,1.1,1.1,1,1,12
+"13",13,"Langues et littératures slaves",8165,1.1,1.1,1,1,12
+"14",14,"Langues et littératures romanes : espagnol, italien, portugais, autres langues romanes",8165,1.1,1.1,1,1,12
+"15",15,"Langues et littératures arabes, chinoises, japonaises, hébraïques, d'autres domaines linguistiques",8165,1.1,1.1,1,1,12
+"16",16,"Psychologie, psychologie clinique, psychologie sociale",3018,4,2.8,3,1,190
+"17",17,"Philosophie",2744,1.3,1.1,1,1,11
+"18",18,"Architecture et Arts : plastiques, du spectacle, musique, musicologie, esthétique, sciences de l'art",7405,1.5,1.2,1,1,120
+"19",19,"Sociologie, démographie",6885,1.8,1.5,1,1,205
+"20",20,"Anthropologie biologique, ethnologie, préhistoire",3271,2.5,1.6,1,1,144
+"21",21,"Histoire et civilisations : histoire et archéologie des mondes anciens et des mondes médiévaux ; de l'art",10517,1.3,1.2,1,1,35
+"22",22,"Histoire et civilisations : histoire des mondes modernes, histoire du monde contemporain ; de l'art ; de la musique",10517,1.3,1.2,1,1,35
+"23",23,"Géographie physique, humaine, économique et régionale",4054,2.6,1.9,2,1,120
+"24",24,"Aménagement de l'espace, urbanisme",1819,1.9,1.5,1,1,120
+"25",25,"Mathématiques",12343,2.8,2.4,2,1,76
+"26",26,"Mathématiques appliquées et applications des mathématiques",13613,3.1,2.5,4,1,301
+"27",27,"Informatique",15879,4.9,3.6,4,1,1575
+"28",28,"Milieux denses et matériaux",10017,6.1,5,4,1,1247
+"29",29,"Constituants élémentaires",5661,304.3,15.1,5,1,5214
+"30",30,"Milieux dilués et optique",3440,7.4,5.7,6,1,378
+"31",31,"Chimie théorique, physique, analytique",4729,6.4,5.4,5,1,162
+"32",32,"Chimie organique, inorganique, industrielle",3974,6.3,5.5,6,1,74
+"33",33,"Chimie des matériaux",8540,6.5,5.8,6,1,87
+"34",34,"Astronomie, astrophysique",6875,26.9,9,9,1,3542
+"35",35,"Structure et évolution de la Terre et des autres planètes",4628,7,5.5,6,1,437
+"36",36,"Terre solide : géodynamique des enveloppes supérieures, paléobiosphère",4523,7,5.5,6,1,437
+"37",37,"Météorologie, océanographie physique et physique de l'environnement",5543,8.2,6.2,6,1,286
+"38",42,"Morphologie et morphogenèse",288,8.3,6.2,7,1,140
+"39",43,"Biophysique et imagerie médicale",1679,9.4,7.2,9,1,1273
+"40",44,"Biochimie, biologie cellulaire et moléculaire, physiologie et nutrition",7035,8.1,6.4,7,1,382
+"41",45,"Microbiologie, maladies transmissibles et hygiène",7514,9.3,7.3,8,1,287
+"42",46,"Santé publique, environnement et société",7172,9.7,5.9,7,1,859
+"43",47,"Cancérologie, génétique, hématologie, immunologie",8120,12.3,9,11,1,436
+"44",48,"Anesthésiologie, réanimation, médecine d'urgence, pharmacologie et thérapeutique",14835,10.9,7.6,8,1,1273
+"45",49,"Pathologie nerveuse et musculaire, pathologie mentale, handicap et rééducation",2231,8.9,6.5,7,1,213
+"46",50,"Pathologie ostéo-articulaire, dermatologie et chirurgie plastique",890,9.4,7.4,7,1,137
+"47",51,"Pathologie cardiorespiratoire et vasculaire",2362,11.3,7.9,9,1,846
+"48",52,"Maladies des appareils digestif et urinaire",1129,11.5,8.7,9,1,308
+"49",53,"Médecine interne, gériatrie, chirurgie générale et médecine générale",899,8.9,6.7,7,1,487
+"50",54,"Développement et pathologie de l'enfant, gynécologie-obstétrique, endocrinologie et reproduction",2162,9.2,7.3,8,1,93
+"51",55,"Pathologie de la tête et du cou",942,11.7,8.2,9,1,487
+"52",56,"Développement, croissance et prévention",5382,11.3,7.1,8,1,859
+"53",57,"Sciences biologiques, médecine et chirurgie buccales",7849,10.9,8,8,1,436
+"54",58,"Sciences physiques et physiologiques endodontiques et prothétiques",3675,8.4,6.6,7,1,1273
+"55",60,"Mécanique, génie mécanique, génie civil",9590,4.6,4,4,1,316
+"56",61,"Génie informatique, automatique et traitement du signal",19143,4.9,3.7,4,1,1575
+"57",62,"Énergétique, génie des procédés",4365,5.3,4.7,4,1,87
+"58",63,"Génie Électrique, Électronique, optronique et systèmes",4095,5.8,5,5,1,135
+"59",64,"Biochimie et biologie moléculaire",5957,9.2,7.3,8,1,139
+"60",65,"Biologie cellulaire",2531,9.2,7.1,8,1,382
+"61",66,"Physiologie",9682,8,6.2,7,1,382
+"62",67,"Biologie des populations et écologie",8778,7.8,5.4,7,1,512
+"63",68,"Biologie des organismes",6643,7.5,5.4,7,1,299
+"64",69,"Neurosciences",4498,8.5,6.2,6,1,561
+"65",70,"Sciences de l'éducation",3964,2,1.6,1,1,50
+"66",71,"Sciences de l'information et de la communication",3139,1.8,1.5,1,1,28
+"67",72,"Épistémologie, histoire des sciences et des techniques",2004,1.5,1.3,1,1,50
+"68",73,"Cultures et langues régionales",99185,1.9,1.4,1,1,1047
+"69",74,"Sciences et techniques des activités physiques et sportives",9391,2.6,2.1,7,1,50
+"70",76,"Théologie catholique",1608,1.2,1.1,1,1,19
+"71",77,"Théologie protestante",1608,1.2,1.1,1,1,19
+"72",80,"Sciences physico-chimiques et ingénierie appliquée à la santé (ex-39)",1783,7.8,6.1,7,1,287
+"73",81,"Sciences du médicament et des autres produits de santé (ex-40)",8291,10.3,7,7,1,859
+"74",82,"Sciences biologiques, fondamentales et cliniques (ex-41)",15839,9.4,7.3,11,1,436
+"75",85,"Sciences physico-chimiques et ingénierie appliquée à la santé (ex-39)",1783,7.8,6.1,7,1,287
+"76",86,"Sciences du médicament et des autres produits de santé (ex-40)",8291,10.3,7,7,1,859
+"77",87,"Sciences biologiques, fondamentales et cliniques (ex-41)",15839,9.4,7.3,11,1,436
+"78",90,"Maïeutique",535,8.5,7,7,1,85
+"79",91,"Sciences de la rééducation et de la réadaptation",10616,5.4,3.3,6,1,561
+"80",92,"Sciences infirmières",14302,11,7.7,8,1,1273
