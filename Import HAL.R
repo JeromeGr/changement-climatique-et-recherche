@@ -129,7 +129,7 @@ HAL <- d |>
 
 
 ## j'importe la base de Milan -----
-domain <- read_excel("domain.xlsx", col_types = c("numeric", 
+domain <- read_excel("Recodage domaines HAL-sections CNU.xlsx", col_types = c("numeric", 
                                                   "text", "text", "text", "text", "text", 
                                                   "text", "text", "text", "text", "text", 
                                                   "text", "text", "text")) # j'ai modifié le fichier de Milan à la main pour n'avoir qu'une section par ligne 
@@ -243,6 +243,7 @@ CNUs <- CNU_section |>
 
 
 write.xlsx(CNUs,"StatsBySection.xlsx")
+write.csv(CNUs,"StatsBySection.csv", row.names = FALSE)
 
 
 
