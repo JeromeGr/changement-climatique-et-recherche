@@ -1657,7 +1657,7 @@ climat <- climat %>%
     ))
 
 # Nombre de coauteurs dans HAL (articles publiés dans des revues entre 2017-2019)
-coauteurs_hal <- read.csv("HAL_in/StatsBySection.csv", dec=",")
+coauteurs_hal <- read.csv("HAL_in/StatsBySection.csv")
 
 climat <- climat %>%
     left_join(coauteurs_hal %>%
