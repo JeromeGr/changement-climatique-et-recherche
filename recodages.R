@@ -1357,7 +1357,19 @@ climat$ScoreInternational_pro2 <- with(climat,
                                                    coalesce(international.travail == "Oui", 0) +
                                                    coalesce(international.asso == "Oui", 0)))
 
-
+# Et en gardant quand même le programme international
+climat$ScoreInternational_pro3 <- with(climat,
+                                       if_else(is.na(international.poste) & is.na(international.naiss) &
+                                                   is.na(international.natio) & is.na(international.scol) &
+                                                   is.na(international.etudes) & is.na(international.postdoc) &
+                                                   is.na(international.travail) & is.na(international.prog) & 
+                                                   is.na(international.asso),
+                                               NA_real_,
+                                               coalesce(international.poste == "Oui", 0) +
+                                                   coalesce(international.postdoc == "Oui", 0) +
+                                                   coalesce(international.travail == "Oui", 0) +
+                                                   coalesce(international.prog == "Oui", 0) +
+                                                   coalesce(international.asso == "Oui", 0)))
 
 
 #REvenu : on agrège les catégories avec peu de monde
@@ -1671,6 +1683,8 @@ rm(coauteurs_hal)
 climat$proppublisang <- climat$nbpublisang/climat$nbpublis
 climat$proppublisang[climat$proppublisang > 1] <- 1
 climat$proppublisang[climat$nbpublis == 0] <- 0
+
+climat$ScoreInternational_pro4 <- climat$ScoreInternational_pro3 + climat$proppublisang
 
 #Le quiz
 

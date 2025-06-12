@@ -18,7 +18,9 @@ climatRegr_r <- mutate(climatRegr_r,
                        carriere_titnum=if_else(carriere_tit == "Oui", 1, 0),
                        carriere_precnum=if_else(carriere_prec == "Oui", 1, 0),
                        rangAnum=if_else(sitpro2 == "Directeur·rice de recherche" | sitpro2 == "Professeur·e des universités", 1, 0),
+                       rangBnum=if_else(sitpro2 == "Chargé·e de recherche" | sitpro2 == "Maître·sse de conférences" | sitpro2 == "Ingénieur·e de recherche", 1, 0),
                        titnum=if_else(sitpro2 == "Directeur·rice de recherche" | sitpro2 == "Professeur·e des universités" | sitpro2 == "Chargé·e de recherche" | sitpro2 == "Maître·sse de conférences" | sitpro2 == "Ingénieur·e de recherche", 1, 0),
+                       precairenum=if_else(sitpro2 == "Post-doctorant·e" | sitpro2 == "ATER", 1, 0),
                        nbpublis2=pmin(nbpublis, 100),
                        nbpublis2_log=log(nbpublis2+1),
                        nbpublis2_log_divcoaut=log((nbpublis2+1)/coauteur),
@@ -73,8 +75,20 @@ climatRegr_r <- mutate(climatRegr_r,
                        projet=Profin_Mb_Resp == "Membre d'au moins 1 projet financé" | Profin_Mb_Resp == "Responsable d'au moins 1 projet financé",
                        projet_fr=particip_ANR | particip_Fr,
                        projet_intern=particip_Europ | particip_Intern,
-                       respprojet=Profin_Mb_Resp == "Responsable d'au moins 1 projet financé",
-                       respprojetnum=as.numeric(respprojet),
+                       mb_aumoins1projet=if_else(projets.anr_m2 == "Membre projet ANR oui" |
+                                                     projets.france_m2 == "Membre projet France oui" |
+                                                     projets.europe_m2 == "Membre projet européen oui" |
+                                                     projets.inter_m2 == "Membre projet international oui" |
+                                                     projets.prive_m2 == "Membre projet privé oui",
+                                                 1, 0),
+                       resp_aumoins1projet=if_else(projets.anr_r2 == "Responsable projet ANR oui" |
+                                                       projets.france_r2 == "Responsable projet France oui" |
+                                                       projets.europe_r2 == "Responsable projet européen oui" |
+                                                       projets.inter_r2 == "Responsable projet international oui" |
+                                                       projets.prive_r2 == "Responsable projet privé oui",
+                                                   1, 0),
+                       mbresp_aumoins1projet=if_else(mb_aumoins1projet == 1 | resp_aumoins1projet == 1,
+                                                     1, 0),
                        idfnum=ifelse(trav_zone == "IDF", 1, 0),
                        loinnum=ifelse(trav_zone == "loin", 1, 0),
                        res.aeroport.bisquare=res.aeroport.bisquare120,
@@ -213,22 +227,25 @@ climatRegr_r$ScoreEcoloACP <- NA
 climatRegr_r$ScoreEcoloACP[!manquant_acp] <- acp$ind$coord[,1]
 
 # Liste des variables à centrer par labo/discipline
-vars_centrer <- c("nbpublis2", "nbpublis2_log", "coauteur", "coauteur_hal",
+vars_centrer <- c( "agenum", "nbpublis2", "nbpublis2_log", "coauteur", "coauteur_hal",
                   "nbpublis2_log_divcoaut", "nbpublis2_log_divcoauthal",
                   "ScoreEcolo", "ScoreEcoloACP",
                   "ScoreInternational", "ScoreInternational_perso",
-                  "ScoreInternational_pro", "ScoreInternational_pro2", "tourisme",
-                  "avionpersonum", "chgtpratiquenum", "preoccupe2num", "solreducrechnum",
+                  "ScoreInternational_pro", "ScoreInternational_pro2",
+                  "ScoreInternational_pro3", "ScoreInternational_pro4",
+                  "tourisme", "avionpersonum", "chgtpratiquenum", "preoccupe2num", "solreducrechnum",
                   "projet", "projet_fr", "projet_intern",
                   "revenuTete", "revenuAdulte", "revenuMenage",
                   "revenuTete_log", "revenuAdulte_log", "revenuMenage_log",
                   "paienum", "parbacp5",
-                  "materielnum", "coutmateriel",
-                  "enfants_foyer", "un_parent_publicnum", "enfant_moins_5_ansnum", "res.aeroport.bisquare", "trav.aeroport.bisquare")
+                  "materielnum", "coutmateriel", "enfants_foyer",
+                  "res.aeroport.bisquare", "trav.aeroport.bisquare")
 
 # Liste des variables à moyenner par labo/discipline
 vars <- c(vars_centrer, "sexenum", "carrierenum", "carriere_titnum", "carriere_precnum", "couple1",
-          "rangAnum", "titnum", "agenum", "respprojetnum", "idfnum", "loinnum",
+          "rangAnum", "rangBnum", "titnum", "precairenum",
+          "mb_aumoins1projet", "resp_aumoins1projet", "mbresp_aumoins1projet",
+          "idfnum", "loinnum",  "un_parent_publicnum", "enfant_moins_5_ansnum",
           "nopubli", "materiel.extensifnum", "materiel.tgirnum", "materiel.infonum")
 
 # Standardiser les variables individuelles pour que leur écart-type soit égal à 1
@@ -340,16 +357,16 @@ ggplot(c, aes(x=a, y=b, label=labels))+
 
 
 ```{r}
-reg0 <- glmmTMB(volshnum ~ sexenum + sexenum_labo + sexenum_disc +
-                    sitpro2 + #trav_zone +
-                    age + # agenum + agenum_labo + agenum_disc +
-                    nbpublis2 + nbpublis2_labo + nbpublis2_disc + coauteur_hal +
-                    ScoreInternational_pro + ScoreInternational_pro_labo + ScoreInternational_pro_disc +
+reg0 <- glmmTMB(volsdist_tot_imp ~ sexenum + sexenum_labo + sexenum_disc +
+                    agenum + agenum_labo + agenum_disc +
+                    I(agenum^2) + I(agenum_labo^2) + I(agenum_disc^2) +
+                    sitpro2 + rangAnum_labo + rangAnum_disc +
+                    rangBnum_labo + rangBnum_disc + precairenum_labo + precairenum_disc +
+                    nbpublis2_log_divcoauthal + nbpublis2_log_divcoauthal_labo + nbpublis2_log_divcoauthal_disc +
+                    ScoreInternational_pro4 + ScoreInternational_pro4_labo + ScoreInternational_pro4_disc +
+                    mbresp_aumoins1projet + mbresp_aumoins1projet_labo + mbresp_aumoins1projet_disc +
+                    coutmateriel + coutmateriel_labo + coutmateriel_disc +
                     carriere_titnum + carriere_titnum_labo + carriere_titnum_disc +
-                    respprojetnum + respprojetnum_disc + respprojetnum_labo +
-                    #enfants_foyer + enfants_foyer_labo + enfants_foyer_disc +
-                    #titnum_labo + titnum_disc +
-                    #rangAnum_labo + rangAnum_disc +
                     (1 | unite.labintel) + (1 | discipline),
                 family="tweedie",
                 data=climatRegr_r,
@@ -359,13 +376,14 @@ reg1 <- update(reg0, ~ . +
                    #idfnum + idfnum_labo + idfnum_disc +
                    #loinnum + #loinnum_labo + loinnum_disc +
                    #trav_zone +
-                   res.aeroport.bisquare + res.aeroport.bisquare_labo + res.aeroport.bisquare_disc +
+                   # res.aeroport.bisquare + res.aeroport.bisquare_labo + res.aeroport.bisquare_disc +
                    #I(res.dep %in% c(75, 77, 92:95)) +
                    # trav.aeroport.bisquare + trav.aeroport.bisquare_labo + trav.aeroport.bisquare_disc +
-                   revenuAdulte + revenuAdulte_labo + revenuAdulte_disc +
                    #ScoreInternational_perso + ScoreInternational_perso_labo + ScoreInternational_perso_disc +
+                   paienum + paienum_labo + paienum_disc +
                    ScoreEcoloACP + ScoreEcoloACP_labo + ScoreEcoloACP_disc +
-                   avionpersonum + avionpersonum_labo + avionpersonum_disc)
+                   avionpersonum + avionpersonum_labo + avionpersonum_disc +
+                   revenuAdulte_log + revenuAdulte_log_labo + revenuAdulte_log_disc)
 
 reg2 <- update(reg1, ~ . +
                    ScoreEcoloACP*nbpublis2 + ScoreEcoloACP*nbpublis2_labo + ScoreEcoloACP*nbpublis2_disc +
