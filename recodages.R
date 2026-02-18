@@ -332,15 +332,15 @@ climat$enfantsnb_rec <- fct_recode(climat$enfantsnb_rec,
 
 
 #recodage du nombre d'enfants avec l'âge
-climat$enfantsage_rec <- NULL
-climat$enfantsage_rec[climat$enfantsage <= 5] <- "moins de 5 ans"
+climat$enfantsage_rec <- NA
+climat$enfantsage_rec[climat$enfantsage <= 5] <- "Moins de 6 ans"
 climat$enfantsage_rec[climat$enfantsage <= 15 &
-                                  climat$enfantsage > 5 ] <- "Entre 5 et 15 ans"
-# climat$enfantsage_rec[climat$enfantsage <= 15 &
-#                                   climat$enfantsage > 10 ] <- "Entre 10 et 15 ans"
+                          climat$enfantsage > 5 ] <- "Entre 6 et 15 ans"
 climat$enfantsage_rec[climat$enfantsage > 15 ] <- "Plus de 15 ans"
-climat$enfantsage_rec[climat$enfantsnb_rec == "0" ] <- "Sans enfant"
-climat$enfantsage_rec <- as.factor(climat$enfantsage_rec)
+climat$enfantsage_rec[climat$enfantsnb_rec == "0"] <- "Sans enfant"
+climat$enfantsage_rec <- factor(climat$enfantsage_rec,
+                                levels=c("Sans enfant", "Moins de 6 ans",
+                                         "Entre 6 et 15 ans", "Plus de 15 ans"))
 
 
 # Fusionner les deux variables de discipline (chercheurs vs. ITA)
@@ -1941,9 +1941,6 @@ climat$conffois5ans <- factor(climat$conffois5ans,
                                 "Deux fois par an", "Trois fois par an", "Plus de trois fois par an"
                               )
 )
-
-climat$enfantsage_rec <- factor(climat$enfantsage_rec,
-                                levels = c("Sans enfant", "moins de 5 ans", "Entre 5 et 15 ans", "Plus de 15 ans"))
 
 
 

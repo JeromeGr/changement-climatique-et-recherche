@@ -37,7 +37,7 @@ climatRegr_r <- mutate(climatRegr_r,
                        parbacp5=dippar.p == "Bac +4 ou 5" | dippar.p == "Doctorat" |
                            dippar.m == "Bac +4 ou 5" | dippar.m == "Doctorat",
                        un_parent_publicnum = ifelse(un_parent_public=="Oui", 1,0),
-                       enfant_moins_5_ansnum = ifelse(enfantsage_rec=="moins de 5 ans", 1, 0),
+                       enfant_moins_6_ansnum = ifelse(enfantsage_rec=="Moins de 6 ans", 1, 0),
                        avionpersonum=recode(avionperso,
                                             "Aucun aller-retour"=0,
                                             "1 ou 2 allers-retours"=1.5,
