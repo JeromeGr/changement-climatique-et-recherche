@@ -352,6 +352,49 @@ climat$discipline_num <- climat$discipline %>%
     str_extract("^[0-9]+") %>% # extrait le numéro
     str_remove("^0+")          # supprime les zéros en tête
 
+climat$discipline_detaillee <- 
+    fct_collapse(
+        climat$discipline,
+        "Autres santé"=c(
+            "42 : Morphologie et morphogenèse",
+            "48 : Anesthésiologie, réanimation, médecine d'urgence, pharmacologie et thérapeutique",
+            "49 : Pathologie nerveuse et musculaire, pathologie mentale, handicap et rééducation",
+            "50 : Pathologie ostéo-articulaire, dermatologie et chirurgie plastique",
+            "51 : Pathologie cardiorespiratoire et vasculaire",
+            "52 : Maladies des appareils digestif et urinaire",
+            "53 : Médecine interne, gériatrie, chirurgie générale et médecine générale",
+            "54 : Développement et pathologie de l'enfant, gynécologie-obstétrique, endocrinologie et reproduction",
+            "55 : Pathologie de la tête et du cou",
+            "56 : Développement, croissance et prévention",
+            "57 : Sciences biologiques, médecine et chirurgie buccales",
+            "58 : Sciences physiques et physiologiques endodontiques et prothétiques",
+            "90 : Maïeutique",
+            "91 : Sciences de la rééducation et de la réadaptation"),
+        "Langues et littératures étrangères"=c(
+            "11 : Langues et littératures anglaises et anglo-saxonnes",
+            "12 : Langues et littératures germaniques et scandinaves",
+            "13 : Langues et littératures slaves",
+            "14 : Langues et littératures romanes : espagnol, italien, portugais, autres langues romanes",
+            "15 : Langues et littératures arabes, chinoises, japonaises, hébraïques, d'autres domaines linguistiques"
+        ),
+        "Langue et littérature françaises et régionales"=c(
+            "09 : Langue et littérature françaises",
+            "73 : Cultures et langues régionales"
+        ),
+        "Droit public et histoire du droit"=c(
+            "02 : Droit public",
+            "03 : Histoire du droit et des institutions"
+        ),
+        "Sciences humaines 7x"=c(
+            "70 : Sciences de l'éducation",
+            "71 : Sciences de l'information et de la communication",
+            "72 : Épistémologie, histoire des sciences et des techniques",
+            "73 : Cultures et langues régionales",
+            "74 : Sciences et techniques des activités physiques et sportives",
+            "76 : Théologie catholique",
+            "77 : Théologie protestante")) %>%
+    droplevels()
+
 # Discipline agrégée
 # Noms inspirés de https://data.esr.gouv.fr/FR/T895/P311/tableau_des_enseignants_de_l_enseignement_superieur_public_niveau_etablissement_-_ressources_humaines#TDB
 

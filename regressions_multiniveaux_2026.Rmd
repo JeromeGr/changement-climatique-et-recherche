@@ -1,5 +1,5 @@
 ---
-title: "Régressions multiniveau Julien 2"
+title: "Régressions multiniveau Nature"
 output: html_document
 ---
 
@@ -14,8 +14,8 @@ library(gtsummary)
 
 climatRegr_r <- mutate(climatRegr_r,
                        sexenum=if_else(sexe == "Femme", 1, 0),
-                       sexenum_jeunes=if_else(agenum < 45, sexenum, NA_real_),
-                       sexenum_vieux=if_else(agenum >= 45, sexenum, NA_real_),
+                       sexenum_jeunes=if_else(agenum < 40, sexenum, NA_real_),
+                       sexenum_vieux=if_else(agenum >= 40, sexenum, NA_real_),
                        
                        sexenum_inf35ans=if_else(agenum < 32, sexenum, NA_real_),
                        sexenum_35_55ans=if_else(agenum > 31 & agenum < 45, sexenum, NA_real_),
@@ -63,16 +63,31 @@ climatRegr_r <- mutate(climatRegr_r,
                                           "Materiel couteux et très couteux" = 7,
                                           .default = 0,
                                           .missing = 0),
-                       coutmateriel=recode(maxmateriel, 
-                                           "Petit materiel" = 1,
-                                           "Materiel couteux" = 3,
-                                           "Materiel très couteux" = 6,
-                                           "Materiel couteux et très couteux" = 7,
-                                           .default = 0,
-                                           .missing = 0),
+                       # coutmateriel_old=recode(maxmateriel, 
+                       #                     "Petit materiel" = 1,
+                       #                     "Materiel couteux" = 3,
+                       #                     "Materiel très couteux" = 6,
+                       #                     "Materiel couteux et très couteux" = 7,
+                       #                     .default = 0,
+                       #                     .missing = 0),
+                       coutmateriel=case_when(materiel.trescouteux == "Oui" & materiel.couteux  == "Oui" ~ 7,
+                                              materiel.trescouteux == "Oui" ~ 6,
+                                              materiel.couteux == "Oui" ~ 3,
+                                              materiel.petit == "Oui" ~ 1,
+                                              !is.na(materiel) ~ 0),
+                       materiel.experimentalnum=case_when(materiel.trescouteux == "Oui" ~ 1,
+                                                          materiel.couteux  == "Oui" ~ 1,
+                                                          materiel.petit == "Oui" ~ 1,
+                                                          !is.na(materiel) ~ 0),
+                       # coutmateriel=case_when(materiel.tgir == "Oui" ~ 4,
+                       #                        materiel.trescouteux == "Oui" | materiel.extensif == "Oui" ~ 3,
+                       #                        materiel.couteux == "Oui" ~ 2,
+                       #                        materiel.petit == "Oui" ~ 1,
+                       #                        !is.na(materiel) ~ 0),
                        materiel.extensifnum=ifelse(materiel.extensif == "Oui", 1, 0),
                        materiel.tgirnum=ifelse(materiel.tgir == "Oui", 1, 0),
                        materiel.infonum=ifelse(materiel.info == "Oui", 1, 0),
+                       materiel.tgirinfonum=ifelse(materiel.tgir == "Oui" | materiel.info == "Oui", 1, 0),
                        chgtpratiquenum=as.numeric(fct_relevel(chgtpratique, "Non, pas du tout d'accord",
                                                               "Non, plutôt pas d'accord", "Sans opinion",
                                                               "Oui, plutôt d'accord",
@@ -287,13 +302,14 @@ vars <- c(vars_centrer, "sexenum", "sexenum_jeunes", "sexenum_vieux", "sexenum_r
           "rangAnum", "rangBnum", "titnum", "precairenum",
           "mb_aumoins1projet", "resp_aumoins1projet", "mbresp_aumoins1projet",
           "idfnum", "loinnum",  "un_parent_publicnum", "enfant_moins_6_ansnum",
-          "nopubli", "materiel.extensifnum", "materiel.tgirnum", "materiel.infonum")
+          "nopubli", "materiel.extensifnum", "materiel.tgirnum", "materiel.infonum",
+          "materiel.tgirinfonum", "materiel.experimentalnum")
 
 # Standardiser les variables individuelles pour que leur écart-type soit égal à 1
 climatRegr_r[vars_centrer] <- scale(climatRegr_r[vars_centrer])
 
 # Création des moyennes par discipline (_discipline) et des variables centrées par discipline (_cdisc)
-climatRegr_r <- group_by(climatRegr_r, discipline) %>%
+climatRegr_r <- group_by(climatRegr_r, discipline_detaillee) %>%
     mutate(across(all_of(vars), ~ mean(.x, na.rm=TRUE), .names="{.col}_disc"),
            across(all_of(vars), ~ .x - mean(.x, na.rm=TRUE), .names="{.col}_cdisc")) %>%
     ungroup()
@@ -339,10 +355,10 @@ sd_labodisc <- select(climatRegr_r, unite.labintel, all_of(paste0(vars, "_labodi
     apply(2, sd, na.rm=T)
 climatRegr_r[names(sd_labodisc)] <- sweep(climatRegr_r[names(sd_labodisc)], 2, sd_labodisc, "/")
 
-sd_disc <- select(climatRegr_r, discipline, all_of(paste0(vars, "_disc"))) %>%
-    group_by(discipline)  %>%
+sd_disc <- select(climatRegr_r, discipline_detaillee, all_of(paste0(vars, "_disc"))) %>%
+    group_by(discipline_detaillee)  %>%
     summarize(across(everything(), ~ mean(.x, na.rm=TRUE))) %>%
-    select(-discipline) %>%
+    select(-discipline_detaillee) %>%
     apply(2, sd, na.rm=T)
 climatRegr_r[names(sd_disc)] <- sweep(climatRegr_r[names(sd_disc)], 2, sd_disc, "/")
 
@@ -352,83 +368,19 @@ climatRegr_r[c(paste0(vars, "_c"), paste0(vars, "_clabo"), paste0(vars, "_clabod
 ```
 
 
-```{r}
-
-# Recodages avion pro et perso ----
-## Recodage de climatRegr$vols_dicho en climatRegr$vols_dicho_rec
-climatRegr_r$vols_dicho_rec <- climatRegr_r$vols_dicho %>%
-  fct_recode(
-    "Pro_Non" = "N'a pas volé en 2019",
-    "Pro_Oui" = "A volé en 2019"
-  )
-
-## Recodage de climatRegr$avionperso en climatRegr$avionperso_rec
-climatRegr_r$avionperso_rec <- climatRegr_r$avionperso %>%
-  fct_recode(
-    "Perso_Non" = "Aucun aller-retour",
-    "Perso_Oui" = "1 ou 2 allers-retours",
-    "Perso_Oui" = "3 ou 4 allers-retours",
-    "Perso_Oui" = "Plus de 5 allers-retours"
-  )
-
-# 
-# t.test(climatRegr_r$ScoreEcoloACP 
-#               climatRegr_r$vols_dicho_rec)
-# 
-# t.test(climatRegr_r$ScoreEcoloACP, climatRegr_r$avionperso_rec, 
-#        mean, na.rm=T)~~
-
-
-
-a <- tapply(climatRegr_r$ScoreEcoloACP, climatRegr_r$discipline_agr5, 
-       mean, na.rm=T)
-b <- tapply(climatRegr_r$volsdist_tot_imp, climatRegr_r$discipline_agr5, 
-            mean, na.rm=T)
-c <- as.data.frame(cbind(a,b))
-c$labels=rownames(c)
-library(ggrepel)
-ggplot(c, aes(x=a, y=b, label=labels))+
-  geom_point()+
-  geom_text_repel(max.overlaps = Inf)+
-  geom_smooth(method=lm)+theme_minimal()+
-  labs(x= "Score écolo", y = "Distance de vol (en km)")
-
-a <- tapply(climatRegr_r$sexenum, climatRegr_r$discipline_agr5, 
-            mean, na.rm=T)
-b <- tapply(climatRegr_r$volsdist_tot_imp, climatRegr_r$discipline_agr5, 
-            mean, na.rm=T)
-d <- c(table(climatRegr_r$discipline_agr5))
-c <- as.data.frame(cbind(a,b,d))
-c$labels=rownames(c)
-library(ggrepel)
-ggplot(c, aes(x=a, y=b, weight=d))+
-    geom_smooth(method=lm)+theme_minimal()+
-    geom_point(aes(size=d))+
-    geom_text_repel(aes(label=labels), max.overlaps = Inf)+
-    scale_x_continuous(labels=scales::percent) +
-    guides(size="none") +
-    labs(x = "Proportion de femmes (en %)", y = "Distance parcoure en avion en 2019 (en km)")
-weights::wtd.cor(a, d, weight=d)
-
-
-```
-
 
 ```{r}
-climatRegr_r$volsdist_tot_imp <- round(climatRegr_r$volsdist_tot_imp)
-reg0 <- glmmTMB(volsdist_tot_imp ~ sexenum + sexenum_labo + sexenum_disc +
+reg0 <- glmmTMB(round(volsdist_tot_imp) ~ sexenum + sexenum_labo + sexenum_disc +
                     ageAgr + agenum_labo + agenum_disc +
-                    # I(agenum^2) + I(agenum_labo^2) + I(agenum_disc^2) +
-                    # sitpro2 +
-                    # rangAnum_labo + rangAnum_disc +
-                    # rangBnum_labo + rangBnum_disc + precairenum_labo + precairenum_disc +
+                    sitpro2 +
                     nbpublis2_log_divcoauthal + nbpublis2_log_divcoauthal_labo + nbpublis2_log_divcoauthal_disc +
                     ScoreInternational_pro4 + ScoreInternational_pro4_labo + ScoreInternational_pro4_disc +
                     mbresp_aumoins1projet + mbresp_aumoins1projet_labo + mbresp_aumoins1projet_disc +
                     materiel.infonum + materiel.infonum_labo + materiel.infonum_disc +
-                    coutmateriel + coutmateriel_labo + coutmateriel_disc +
-                    # solrisqreducavion + solrisqreducavion_labo + solrisqreducavion_disc +
-                    (1 | unite.labintel) + (1 | discipline),
+                    # materiel.tgirnum + materiel.tgirnum_labo + materiel.tgirnum_disc +
+                    # materiel.tgirinfonum + materiel.tgirinfonum_labo + materiel.tgirinfonum_disc +
+                    materiel.experimentalnum + materiel.experimentalnum_labo + materiel.experimentalnum_disc +
+                    (1 | unite.labintel) + (1 | discipline_detaillee),
                 family="tweedie",
                 data=climatRegr_r,
                 control=glmmTMBControl(parallel=4))
@@ -445,60 +397,52 @@ reg1 <- update(reg0, ~ . +
                    carrierenum + carrierenum_labo + carrierenum_disc +
                    ScoreEcoloACP + ScoreEcoloACP_labo + ScoreEcoloACP_disc +
                    avionpersonum + avionpersonum_labo + avionpersonum_disc +
-                   revenuAdulte_log + revenuAdulte_log_labo + revenuAdulte_log_disc +
-                   enfantsage_rec*sexenum + sexenum_jeunes_disc + sexenum_vieux_disc)
+                   revenuAdulte_log + revenuAdulte_log_labo + revenuAdulte_log_disc)
+
 
 reg2 <- update(reg1, ~ . +
-                   ScoreEcoloACP*nbpublis2 + ScoreEcoloACP*nbpublis2_labo + ScoreEcoloACP*nbpublis2_disc +
-                   ScoreEcoloACP*ScoreInternational_pro + ScoreEcoloACP*ScoreInternational_pro_labo + ScoreEcoloACP*ScoreInternational_pro_disc +
-                   ScoreEcoloACP*ScoreEcoloACP_labo + ScoreEcoloACP*ScoreEcoloACP_disc)
-
-# Calcul du R²
-# cor(model.response(model.frame(reg1)), fitted(reg1))^2
-# Explication de l'avertissement qui arrive si on centre la variable dépendante :
-# https://github.com/easystats/performance/issues/366
-# performance::r2(reg0)
-# performance::icc(reg0)
-# performance::icc(reg0, by_group=T)
-# performance::compare_performance(reg0, reg1, reg2)
-
-# Bootstrap
-# Attention, fait une erreur si les données contiennent des valeurs manquantes
-# qui ont été sautées automatiquement
-# library(lme4)
-# parameters::bootstrap_parameters(reg2, iterations=100)
+                   enfantsage_rec*sexenum - sexenum_disc + sexenum_jeunes_disc + sexenum_vieux_disc +
+                   ScoreEcoloACP*ScoreInternational_pro4 + ScoreEcoloACP*ScoreInternational_pro4_labo + ScoreEcoloACP*ScoreInternational_pro4_disc)
 
 tbls <- lapply(list(reg0, reg1, reg2),
                function(m) tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=TRUE, tidy_fun=broom.mixed::tidy) %>% add_glance_table())
 tbl_merge(tbls, paste0("M", 0:(length(tbls)-1))) %>%
       modify_table_body(~ .x %>% arrange(row_type == "glance_statistic", endsWith(variable, "sd__(Intercept)")))
+```
 
-# ggpredict fixe les autres variables numériques à leur moyenne,
-# et les autres variables catégorielles à leur référence
-# (ggeffect et ggemmeans mettent les catégorielles à leur proportion moyenne)
-library(ggeffects)
-mydf <- ggpredict(reg2, terms = c("ScoreEcoloACP [quart2]", "sexenum_disc [quart2]"))
-ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
-    geom_point() +
+```{R}
+library(marginaleffects)
+mydf <- avg_predictions(reg2, newdata=reg2$frame, re.form=NA,
+                        variables = list("ScoreEcoloACP"=quantile(climatRegr_r$ScoreEcoloACP, na.rm=T, c(.1, .9)),
+                                         "ScoreInternational_pro4_disc"=quantile(climatRegr_r$ScoreInternational_pro4_disc, na.rm=T, c(.1, .5, .9))))
+mydf %>% as_tibble() %>%
+    mutate(score=factor(ScoreInternational_pro4_disc, levels=sort(unique(ScoreInternational_pro4_disc)),
+                        labels=c("1er décile", "Médiane", "9e décile")) %>%
+               fct_rev()) %>%
+    ggplot(aes(x = ScoreEcoloACP, y = estimate, colour = score, shape = score,
+               ymin=conf.low, ymax=conf.high)) +
+    geom_line() +
+    # geom_pointrange() +
+    geom_errorbar(width=0.15, show.legend=FALSE) +
+    geom_point(size=2) +
     coord_cartesian(ylim=c(0, NA)) +
-    labs(
-        y = get_y_title(mydf),
-        x = get_x_title(mydf),
-        colour = get_legend_title(mydf)
-    )
+    labs(x="Score écologique individuel", y="Distance parcourue en avion en 2019 (en km)",
+         color="Score international de la discipline",
+         shape="Score international de la discipline") +
+    scale_color_manual(values=c( "#ca0020", "black", "#0571b0")) +
+    scale_y_continuous(breaks=c(0, 2500, 5000, 7500, 10000, 12500), minor_breaks=NULL) +
+    scale_x_continuous(minor_breaks=NULL) +
+    theme_light()
 
-library(ggeffects)
-mydf <- ggpredict(reg2, terms = c("ScoreEcoloACP [quart2]", "ScoreEcoloACP_labo [quart2]"))
-ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
-    stat_smooth(method = "lm", se = FALSE) +
-    coord_cartesian(ylim=c(0, NA)) +
-    labs(
-        y = get_y_title(mydf),
-        x = get_x_title(mydf),
-        colour = get_legend_title(mydf)
-    )
+# Version qui met les autres variables à leur moyenne
+# vcov=TRUE pour avoir les intervalles de confiance
+# plot_predictions(reg2, newdata=reg2$frame, re.form=NA,
+#                         condition = list("ScoreEcoloACP"=c(-2, 2), "ScoreInternational_pro4_disc"=c(-1, 0, 1)))
+```
 
 # Effet des enfants selon le sexe
+
+```{R}
 # library(ggeffects)
 # mydf <- ggpredict(reg1, terms = list(sexenum=c(0, 1), enfantsage_rec=levels(climatRegr_r$enfantsage_rec)))
 # mydf <- ggemmeans(reg1, terms = c("sexenum", "enfantsage_rec"))
@@ -512,26 +456,36 @@ ggplot(mydf, aes(x = x, y = predicted, colour = group)) +
 #          color="Enfants à charge :")
 
 # Nouvelle version avec le nouveau paquet, donne la même chose que ggeffect et ggemmeans
-mydf <- modelbased::estimate_means(reg1, by=c("sexenum", "enfantsage_rec"), estimate="average", backend="emmeans")
-mydf %>% as_tibble() %>%
-    mutate(sexe=fct_recode(as.character(sexenum), "Femmes"="1", "Hommes"="0")) %>%
-    ggplot(aes(x = sexe, y = Mean, colour = enfantsage_rec, ymin=CI_low, ymax=CI_high)) +
-    geom_pointrange(position=position_dodge(width=0.5)) +
-    coord_cartesian(ylim=c(0, NA)) +
-    labs(x="", y="Distance parcourue en avion en 2019 (en km)",
-         color="Enfants à charge :")
+# Mais les valeurs sont bien trop basses par rapport à ce que prédit predict.glmmTMB
+# mydf <- modelbased::estimate_means(reg1, by=c("sexenum", "enfantsage_rec"), estimate="average", backend="emmeans")
+# mydf %>% as_tibble() %>%
+#     mutate(sexe=fct_recode(as.character(sexenum), "Femmes"="1", "Hommes"="0")) %>%
+#     ggplot(aes(x = sexe, y = Mean, colour = enfantsage_rec, ymin=CI_low, ymax=CI_high)) +
+#     geom_pointrange(position=position_dodge(width=0.5)) +
+#     coord_cartesian(ylim=c(0, NA)) +
+#     labs(x="", y="Distance parcourue en avion en 2019 (en km)",
+#          color="Enfants à charge :")
 
 # Autre version utilisant directement marginaleffects
-mydf <- marginaleffects::avg_predictions(reg1b, re.form=NA, variables=c("sexenum", "enfantsage_rec"))
+library(marginaleffects)
+mydf <- avg_predictions(reg1, re.form=NA, variables=c("sexenum", "enfantsage_rec"))
 mydf %>% as_tibble() %>%
     mutate(sexe=fct_recode(as.character(sexenum), "Femmes"="1", "Hommes"="0")) %>%
-    ggplot(aes(x = sexe, y = estimate, colour = enfantsage_rec, ymin=conf.low, ymax=conf.high)) +
-    geom_pointrange(position=position_dodge(width=0.5)) +
+    ggplot(aes(x = sexe, y = estimate, colour = enfantsage_rec, shape=enfantsage_rec,
+               ymin=conf.low, ymax=conf.high)) +
+    geom_errorbar(width=0.1, position=position_dodge(width=0.5)) +
+    geom_point(position=position_dodge(width=0.5)) +
     coord_cartesian(ylim=c(0, NA)) +
     labs(x="", y="Distance parcourue en avion en 2019 (en km)",
-         color="Enfants à charge :")
-
+         color="Enfants à charge",
+         shape="Enfants à charge") +
+    scale_color_brewer(palette="Set1") +
+    theme_light()
+```
 # Graphique des coefficients
+
+```{R}
+
 library(broom.mixed)
 library(wesanderson)
 a <- tidy(reg1, conf.int = T, exponentiate=T)
@@ -616,77 +570,44 @@ ggplot(a, aes(x=estimate, y=term_rec, group=group, color=group, shape=group)) +
     scale_shape_manual(values=c(0, 15, 1, 16,2,17 ))
 ```
 
-Les variables indépendantes sont centrées-réduites au niveau correspondant : les coefficients mesurent l'effet d'un écart-type entre individus/laboratoires/disciplines selon le cas.
 
-Je commente les effets significatifs au seuil de 10% uniquement.
+# Figure 5 : Distance parcourue en avion selon la proportion de femmes dans chaque discipline agrégée
 
-Le revenu par tête n'est pas utilisé car il a beaucoup de valeurs manquantes.
+```{r}
+library(ggrepel)
+climatRegr_r %>%
+    group_by(discipline_agr5) %>%
+    summarize(sexe=mean(sexenum, na.rm=TRUE),
+              dist=mean(volsdist_tot_imp, na.rm=TRUE),
+              n=n()) %>%
+    drop_na() %>%
+    ggplot(aes(x=sexe, y=dist, weight=n))+
+    geom_smooth(method=lm)+theme_minimal()+
+    geom_point(aes(size=n))+
+    geom_text_repel(aes(label=discipline_agr5), max.overlaps = Inf)+
+    scale_x_continuous(labels=scales::percent) +
+    guides(size="none") +
+    labs(x = "Proportion de femmes (en %)", y = "Distance parcoure en avion en 2019 (en km)")
+weights::wtd.cor(a, d, weight=d)
 
-## Niveau individuel
 
-Effet de l'âge, du statut, du fait de chercher à être promu, du nombre de publications, du score international professionnel, et des vols dans le cadre personnel. Effet du sexe uniquement dans le modèle 0. Aucun effet du score écolo.
-
-## Niveau laboratoire
-
-Effet du nombre de publications moyen, et des vols dans le cadre personnel moyens du laboratoire. Interaction à la limite de la significativité (10%) entre le score écolo individuel et le score écolo moyen du laboratoire : être écolo dans un laboratoire écolo diminue plus les vols qu'ailleurs.
-
-## Niveau discipline
-
-Effet négatif (!) des vols dans le cadre personnel moyens de la discipline. Difficile à expliquer, mais on trouve le même effet (un peu moins fort et non significatif) dans un modèle sans le niveau laboratoire.
-Interaction entre le score écolo individuel et le score international moyen de la discipline : le score écolo ne diminue les vols que dans les disciplines peu ou moyennement internationalisées.
-
-<!-- # Comparaison entre laboratoire, discipline et les deux -->
-
-<!-- ```{r} -->
-<!-- drop_terms <- function(f, pattern) { -->
-<!--     update(f, drop.terms(terms(f), which(grepl(pattern, attr(terms(f), "term.labels"))), keep.response=TRUE)) -->
-<!-- } -->
-
-<!-- reg1disc <- glmmTMB(update(drop_terms(reg1$call$formula, "_labo|\\|"), ~ . + (1 | discipline)), -->
-<!--                     family="tweedie", -->
-<!--                     data=climatRegr_r, -->
-<!--                     control=glmmTMBControl(parallel=4)) -->
-
-<!-- reg2disc <- update(reg1disc, update(drop_terms(reg2$call$formula, "_labo|\\|"), ~ . + (1 | discipline))) -->
-
-<!-- reg1labo <- glmmTMB(update(drop_terms(reg1$call$formula, "_disc|\\|"), ~ . + (1 | unite.labintel)), -->
-<!--                     family="tweedie", -->
-<!--                     data=climatRegr_r, -->
-<!--                     control=glmmTMBControl(parallel=4)) -->
-
-<!-- reg2labo <- update(reg1labo, update(drop_terms(reg2$call$formula, "_disc|\\|"), ~ . + (1 | unite.labintel))) -->
-
-<!-- tbls <- lapply(list(reg1, reg1disc, reg1labo), -->
-<!--                function(m) tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=TRUE)) -->
-<!-- tbl_merge(tbls, c("Discipline & labo", "Discipline", "Labo")) -->
-
-<!-- tbls <- lapply(list(reg2, reg2disc, reg2labo), -->
-<!--                function(m) tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=TRUE)) -->
-<!-- tbl_merge(tbls, c("Discipline & labo", "Discipline", "Labo")) -->
-<!-- ``` -->
+```
 
 # Différents motifs de vol
 
-Le score écolo de la discipline augmente la distance de vol uniquement pour le terrain, avec un effet très fort pour le terrain (effet significatif à 6% pour la distance totale). Le score écolo individuel diminue la distance de vol uniquement pour les cours (effet non significatif pour la distance totale).
-
-Les vols dans le cadre personnel moyens du laboratoire augmentent la distance de vol uniquement pour les conférences et les réunions/workshops (effet significatif pour la distance totale). Les vols dans le cadre personnel moyens de la discipline diminuent la distance de vol uniquement pour les cours (effet non significatif pour la distance totale). Les vols dans le cadre personnel individuels augmentent la distance de vol pour des séjours de recherche, mais diminue celle pour le terrain.
-
-Le nombre de publications individuel augmente la distance de vol uniquement pour les conférences (effet significatif pour la distance totale).
-
-
 ```{r}
-regdist1 <- update(reg1, volsdist_tot ~ .)
-regdistconf1 <- update(reg1, volsdist_totconf ~ .)
-regdistsejrech1 <- update(reg1, volsdist_totsejrech ~ .)
-regdistworkshop1 <- update(reg1, volsdist_totworkshop ~ .)
-regdistcours1 <- update(reg1, volsdist_totcours ~ .)
-regdistterrain1 <- update(reg1, volsdist_totterrain ~ .)
-# regdisteval1 <- update(reg1, volsdist_toteval ~ .)
-#regdistjury1 <- update(reg1, volsdist_totjury ~ .)
-# regdistautre1 <- update(reg1, volsdist_totautre ~ .)
+regdist0 <- update(reg0, volsdist_tot ~ .)
+regdistconf0 <- update(reg0, volsdist_totconf ~ .)
+regdistsejrech0 <- update(reg0, volsdist_totsejrech ~ .)
+regdistworkshop0 <- update(reg0, volsdist_totworkshop ~ .)
+regdistcours0 <- update(reg0, volsdist_totcours ~ .)
+regdistterrain0 <- update(reg0, volsdist_totterrain ~ .)
+# regdisteval0 <- update(reg0, volsdist_toteval ~ .)
+#regdistjury0 <- update(reg0, volsdist_totjury ~ .)
+# regdistautre0 <- update(reg0, volsdist_totautre ~ .)
 
-tbls <- lapply(lst(regdist1, regdistconf1, regdistterrain1, regdistsejrech1, regdistworkshop1
-                   # , regdistcours1, regdisteval1, regdistautre1
+tbls <- lapply(lst(reg0, reg1, reg2, regdist0, regdistconf0, regdistterrain0, regdistsejrech0, regdistworkshop0
+                   # , regdistcours0, regdisteval0, regdistautre0
                    ),
                function(m) tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=TRUE, conf.int=FALSE))
 tbl_merge(tbls, names(tbls))
