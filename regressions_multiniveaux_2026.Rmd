@@ -3,6 +3,8 @@ title: "Régressions multiniveau Nature"
 output: html_document
 ---
 
+# Recodage
+
 ```{r setup, include=FALSE}
 source("recodages.R", encoding = "UTF-8")
 knitr::opts_chunk$set(echo = TRUE)
@@ -368,6 +370,7 @@ climatRegr_r[c(paste0(vars, "_c"), paste0(vars, "_clabo"), paste0(vars, "_clabod
 ```
 
 
+# Régressions
 
 ```{r}
 reg0 <- glmmTMB(volsdist_tot_imp ~ sexenum + sexenum_labo + sexenum_disc +
@@ -410,6 +413,7 @@ tbl_merge(tbls, paste0("M", 0:(length(tbls)-1))) %>%
       modify_table_body(~ .x %>% arrange(row_type == "glance_statistic", endsWith(variable, "sd__(Intercept)")))
 ```
 
+# Effet du score écolo en interaction avec le score international de la discipline
 ```{R}
 library(marginaleffects)
 mydf <- avg_predictions(reg2, newdata=reg2$frame, re.form=NA,
