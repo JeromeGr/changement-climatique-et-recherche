@@ -414,6 +414,7 @@ tbl_merge(tbls, paste0("M", 0:(length(tbls)-1))) %>%
 ```
 
 # Effet du score écolo en interaction avec le score international de la discipline
+
 ```{R}
 library(marginaleffects)
 mydf <- avg_predictions(reg2, newdata=reg2$frame, re.form=NA,
@@ -427,7 +428,7 @@ mydf %>% as_tibble() %>%
                ymin=conf.low, ymax=conf.high)) +
     geom_line() +
     # geom_pointrange() +
-    geom_errorbar(width=0.15, show.legend=FALSE) +
+    geom_errorbar(width=0.1, show.legend=FALSE) +
     geom_point(size=2) +
     coord_cartesian(ylim=c(0, NA)) +
     labs(x="Score écologique individuel", y="Distance parcourue en avion en 2019 (en km)",
@@ -586,14 +587,61 @@ climatRegr_r %>%
               n=n()) %>%
     drop_na() %>%
     ggplot(aes(x=sexe, y=dist, weight=n))+
-    geom_smooth(method=lm)+theme_minimal()+
+    geom_point(data=climatRegr_r %>%
+               group_by(discipline_detaillee) %>%
+               summarize(sexe=mean(sexenum, na.rm=TRUE),
+                         dist=mean(volsdist_tot_imp, na.rm=TRUE),
+                         n=n()) %>%
+               drop_na(),
+           aes(x=sexe, y=dist, weight=n, size=n),
+           color="grey") +
     geom_point(aes(size=n))+
     geom_text_repel(aes(label=discipline_agr5), max.overlaps = Inf)+
     scale_x_continuous(labels=scales::percent) +
     guides(size="none") +
     labs(x = "Proportion de femmes (en %)", y = "Distance parcoure en avion en 2019 (en km)")
-weights::wtd.cor(a, d, weight=d)
 
+dat_agr <- climatRegr_r %>%
+    group_by(discipline_agr5) %>%
+    summarize(sexe=mean(sexenum, na.rm=TRUE),
+              dist=mean(volsdist_tot_imp, na.rm=TRUE),
+              n=n()) %>%
+    drop_na()
+
+dat_det <- climatRegr_r %>%
+    group_by(discipline_detaillee) %>%
+    summarize(sexe=mean(sexenum, na.rm=TRUE),
+              dist=mean(volsdist_tot_imp, na.rm=TRUE),
+              discipline_agr5=unique(discipline_agr5),
+              n=n()) %>%
+    drop_na() %>%
+    left_join(dat_agr, by="discipline_agr5", suffix=c("", "_agr"))
+
+# Version connectant chaque discipline détaillée à sa discipline agrégée
+# ggplot(data=dat_det, aes(x=sexe, y=dist, color=discipline_agr5)) +
+#     geom_point(aes(size=n), shape=1) +
+#     geom_segment(aes(x=sexe, xend=sexe_agr, y=dist, yend=dist_agr)) +
+#     # geom_smooth(aes(weight=n), method=lm) +
+#     geom_text_repel(aes(label=substr(discipline_detaillee, 1, 2)), max.overlaps = Inf) +
+#     geom_point(data=dat_agr, aes(size=n)) +
+#     geom_text_repel(data=dat_agr, aes(label=discipline_agr5), max.overlaps = Inf) +
+#     scale_x_continuous(labels=scales::percent) +
+#     scale_color_manual(values=rep(RColorBrewer::brewer.pal(8, "Dark2"), length.out=16)) +
+#     coord_cartesian(ylim=c(0, NA)) +
+#     guides(size="none", color="none") +
+#     theme_minimal() +
+#     labs(x = "Proportion de femmes (en %)", y = "Distance parcourue en avion en 2019 (en km)")
+
+ggplot(data=dat_det, aes(x=sexe, y=dist)) +
+    geom_point(aes(size=n), color="grey") +
+    geom_smooth(aes(weight=n), method=lm) +
+    geom_point(data=dat_agr, aes(size=n)) +
+    geom_text_repel(data=dat_agr, aes(label=discipline_agr5), max.overlaps = Inf) +
+    scale_x_continuous(labels=scales::percent) +
+    coord_cartesian(ylim=c(0, NA)) +
+    guides(size="none", color="none") +
+    theme_minimal() +
+    labs(x = "Proportion de femmes (en %)", y = "Distance parcourue en avion en 2019 (en km)")
 
 ```
 
