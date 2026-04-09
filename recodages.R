@@ -389,7 +389,6 @@ climat$discipline_detaillee <-
             "70 : Sciences de l'éducation",
             "71 : Sciences de l'information et de la communication",
             "72 : Épistémologie, histoire des sciences et des techniques",
-            "73 : Cultures et langues régionales",
             "74 : Sciences et techniques des activités physiques et sportives",
             "76 : Théologie catholique",
             "77 : Théologie protestante")) %>%
