@@ -370,7 +370,7 @@ climatRegr_r[c(paste0(vars, "_c"), paste0(vars, "_clabo"), paste0(vars, "_clabod
 
 
 ```{r}
-reg0 <- glmmTMB(round(volsdist_tot_imp) ~ sexenum + sexenum_labo + sexenum_disc +
+reg0 <- glmmTMB(volsdist_tot_imp ~ sexenum + sexenum_labo + sexenum_disc +
                     ageAgr + agenum_labo + agenum_disc +
                     sitpro2 +
                     nbpublis2_log_divcoauthal + nbpublis2_log_divcoauthal_labo + nbpublis2_log_divcoauthal_disc +

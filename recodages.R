@@ -914,7 +914,8 @@ climat_imp <- mutate(climat,
                      volsnb=na_if(volsnb, 0),
                      volsh=na_if(volsh, "0h"))
 mod <- lm(volsdist_tot ~ volsh * volsnb, data=climat_imp)
-climat$volsdist_tot_imp <- predict(mod, climat_imp)
+# L'estimation des modèles Tweedie fonctionne mieux avec des valeurs entières
+climat$volsdist_tot_imp <- round(predict(mod, climat_imp))
 climat$volsdist_tot_imp[climat$volsnb == 0 | climat$volsh == "0h"] <- 0
 rm(climat_imp, mod)
 
