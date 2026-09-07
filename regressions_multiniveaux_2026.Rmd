@@ -413,7 +413,41 @@ tbl_merge(tbls, paste0("M", 0:(length(tbls)-1))) %>%
       modify_table_body(~ .x %>% arrange(row_type == "glance_statistic", endsWith(variable, "sd__(Intercept)")))
 ```
 
-# Effet du score écolo en interaction avec le score international de la discipline
+# Figure 2 : Distance parcourue en avion selon la sensibilité à l'écologie par discipline
+
+```{r}
+library(ggrepel)
+
+dat_agr <- climatRegr_r %>%
+    group_by(discipline_agr5) %>%
+    summarize(ScoreEcoloACP=mean(ScoreEcoloACP, na.rm=TRUE),
+              dist=mean(volsdist_tot_imp, na.rm=TRUE),
+              n=n()) %>%
+    drop_na()
+
+dat_det <- climatRegr_r %>%
+    group_by(discipline_detaillee) %>%
+    summarize(ScoreEcoloACP=mean(ScoreEcoloACP, na.rm=TRUE),
+              dist=mean(volsdist_tot_imp, na.rm=TRUE),
+              discipline_agr5=unique(discipline_agr5),
+              n=n()) %>%
+    drop_na() %>%
+    left_join(dat_agr, by="discipline_agr5", suffix=c("", "_agr"))
+
+ggplot(data=dat_det, aes(x=ScoreEcoloACP, y=dist)) +
+    geom_point(aes(size=n), color="dark grey") +
+    geom_smooth(aes(weight=n), method=lm) +
+    geom_point(data=dat_agr, aes(size=n)) +
+    geom_text_repel(data=dat_agr, aes(label=discipline_agr5), max.overlaps = Inf) +
+    coord_cartesian(ylim=c(0, NA)) +
+    guides(size="none", color="none") +
+    theme_minimal() +
+    labs(x = "Score de sensibilité à l'écologie", y = "Distance parcourue en avion en 2019 (en km)")
+
+dat_det %>% with(weights::wtd.cor(ScoreEcoloACP, dist, weight=n))
+```
+
+# Figure 3 : Effet du score écolo en interaction avec le score international de la discipline
 
 ```{R}
 library(marginaleffects)
@@ -445,7 +479,7 @@ mydf %>% as_tibble() %>%
 #                         condition = list("ScoreEcoloACP"=c(-2, 2), "ScoreInternational_pro4_disc"=c(-1, 0, 1)))
 ```
 
-# Effet des enfants selon le sexe
+# Figure 4 : Effet des enfants selon le sexe
 
 ```{R}
 # library(ggeffects)
@@ -487,7 +521,7 @@ mydf %>% as_tibble() %>%
     scale_color_brewer(palette="Set1") +
     theme_light()
 ```
-# Graphique des coefficients
+# Figure 1 : Graphique des coefficients
 
 ```{R}
 
@@ -586,30 +620,30 @@ ggplot(a, aes(x=estimate, y=term_rec, group=group, color=group, shape=group)) +
 ```
 
 
-# Figure 5 : Distance parcourue en avion selon la proportion de femmes dans chaque discipline agrégée
+# Figure 5 : Distance parcourue en avion selon la proportion de femmes dans chaque discipline
 
 ```{r}
 library(ggrepel)
-climatRegr_r %>%
-    group_by(discipline_agr5) %>%
-    summarize(sexe=mean(sexenum, na.rm=TRUE),
-              dist=mean(volsdist_tot_imp, na.rm=TRUE),
-              n=n()) %>%
-    drop_na() %>%
-    ggplot(aes(x=sexe, y=dist, weight=n))+
-    geom_point(data=climatRegr_r %>%
-               group_by(discipline_detaillee) %>%
-               summarize(sexe=mean(sexenum, na.rm=TRUE),
-                         dist=mean(volsdist_tot_imp, na.rm=TRUE),
-                         n=n()) %>%
-               drop_na(),
-           aes(x=sexe, y=dist, weight=n, size=n),
-           color="grey") +
-    geom_point(aes(size=n))+
-    geom_text_repel(aes(label=discipline_agr5), max.overlaps = Inf)+
-    scale_x_continuous(labels=scales::percent) +
-    guides(size="none") +
-    labs(x = "Proportion de femmes (en %)", y = "Distance parcoure en avion en 2019 (en km)")
+# climatRegr_r %>%
+#     group_by(discipline_agr5) %>%
+#     summarize(sexe=mean(sexenum, na.rm=TRUE),
+#               dist=mean(volsdist_tot_imp, na.rm=TRUE),
+#               n=n()) %>%
+#     drop_na() %>%
+#     ggplot(aes(x=sexe, y=dist, weight=n))+
+#     geom_point(data=climatRegr_r %>%
+#                group_by(discipline_detaillee) %>%
+#                summarize(sexe=mean(sexenum, na.rm=TRUE),
+#                          dist=mean(volsdist_tot_imp, na.rm=TRUE),
+#                          n=n()) %>%
+#                drop_na(),
+#            aes(x=sexe, y=dist, weight=n, size=n),
+#            color="grey") +
+#     geom_point(aes(size=n))+
+#     geom_text_repel(aes(label=discipline_agr5), max.overlaps = Inf)+
+#     scale_x_continuous(labels=scales::percent) +
+#     guides(size="none") +
+#     labs(x = "Proportion de femmes (en %)", y = "Distance parcourUe en avion en 2019 (en km)")
 
 dat_agr <- climatRegr_r %>%
     group_by(discipline_agr5) %>%
@@ -643,7 +677,7 @@ dat_det <- climatRegr_r %>%
 #     labs(x = "Proportion de femmes (en %)", y = "Distance parcourue en avion en 2019 (en km)")
 
 ggplot(data=dat_det, aes(x=sexe, y=dist)) +
-    geom_point(aes(size=n), color="dark grey", shape=4) +
+    geom_point(aes(size=n), color="dark grey") +
     geom_smooth(aes(weight=n), method=lm) +
     geom_point(data=dat_agr, aes(size=n)) +
     geom_text_repel(data=dat_agr, aes(label=discipline_agr5), max.overlaps = Inf) +
@@ -653,6 +687,7 @@ ggplot(data=dat_det, aes(x=sexe, y=dist)) +
     theme_minimal() +
     labs(x = "Proportion de femmes (en %)", y = "Distance parcourue en avion en 2019 (en km)")
 
+dat_det %>% with(weights::wtd.cor(sexe, dist, weight=n))
 ```
 
 # Différents motifs de vol
