@@ -328,45 +328,45 @@ climatRegr_r <- group_by(climatRegr_r, unite.labintel) %>%
 # Création des variables centrées par labo et discipline (_c)
 # On rajoute la moyenne de la variable d'origine
 # pour que leur moyenne soit à 0 alors qu'on a soustrait deux fois la moyenne
-climatRegr_r[paste0(vars, "_c")] <-
-    select(climatRegr_r, all_of(vars)) -
-    select(climatRegr_r, all_of(paste0(vars, "_labo"))) -
-    select(climatRegr_r, all_of(paste0(vars, "_disc"))) +
-    transmute(climatRegr_r, across(all_of(vars), ~ mean(.x, na.rm=TRUE)))
+# climatRegr_r[paste0(vars, "_c")] <-
+#     select(climatRegr_r, all_of(vars)) -
+#     select(climatRegr_r, all_of(paste0(vars, "_labo"))) -
+#     select(climatRegr_r, all_of(paste0(vars, "_disc"))) +
+#     transmute(climatRegr_r, across(all_of(vars), ~ mean(.x, na.rm=TRUE)))
 
 # Création des variables centrées par labo centrés par discipline(s) (_clabodisc)
-climatRegr_r[paste0(vars, "_clabodisc")] <-
-    select(climatRegr_r, all_of(vars)) -
-    select(climatRegr_r, all_of(paste0(vars, "_labodisc"))) -
-    select(climatRegr_r, all_of(paste0(vars, "_disc"))) +
-    transmute(climatRegr_r, across(all_of(vars), ~ mean(.x, na.rm=TRUE)))
+# climatRegr_r[paste0(vars, "_clabodisc")] <-
+#     select(climatRegr_r, all_of(vars)) -
+#     select(climatRegr_r, all_of(paste0(vars, "_labodisc"))) -
+#     select(climatRegr_r, all_of(paste0(vars, "_disc"))) +
+#     transmute(climatRegr_r, across(all_of(vars), ~ mean(.x, na.rm=TRUE)))
 
 # Standardiser les variables au niveau labo et discipline
 # pour que l'écart-type des moyennes par labo/discipline soit égal à 1
-sd_labo <- select(climatRegr_r, unite.labintel, all_of(paste0(vars, "_labo"))) %>%
-    group_by(unite.labintel)  %>%
-    summarize(across(everything(), ~ mean(.x, na.rm=TRUE))) %>%
-    select(-unite.labintel) %>%
-    apply(2, sd, na.rm=T)
-climatRegr_r[names(sd_labo)] <- sweep(climatRegr_r[names(sd_labo)], 2, sd_labo, "/")
-
-sd_labodisc <- select(climatRegr_r, unite.labintel, all_of(paste0(vars, "_labodisc"))) %>%
-    group_by(unite.labintel)  %>%
-    summarize(across(everything(), ~ mean(.x, na.rm=TRUE))) %>%
-    select(-unite.labintel) %>%
-    apply(2, sd, na.rm=T)
-climatRegr_r[names(sd_labodisc)] <- sweep(climatRegr_r[names(sd_labodisc)], 2, sd_labodisc, "/")
-
-sd_disc <- select(climatRegr_r, discipline_detaillee, all_of(paste0(vars, "_disc"))) %>%
-    group_by(discipline_detaillee)  %>%
-    summarize(across(everything(), ~ mean(.x, na.rm=TRUE))) %>%
-    select(-discipline_detaillee) %>%
-    apply(2, sd, na.rm=T)
-climatRegr_r[names(sd_disc)] <- sweep(climatRegr_r[names(sd_disc)], 2, sd_disc, "/")
-
-# Standardiser les variables individuelles centrées pour que leur écart-type soit égal à 1
-climatRegr_r[c(paste0(vars, "_c"), paste0(vars, "_clabo"), paste0(vars, "_clabodisc"), paste0(vars, "_cdisc"))] <-
-    scale(climatRegr_r[c(paste0(vars, "_c"), paste0(vars, "_clabo"), paste0(vars, "_clabodisc"), paste0(vars, "_cdisc"))])
+# sd_labo <- select(climatRegr_r, unite.labintel, all_of(paste0(vars, "_labo"))) %>%
+#     group_by(unite.labintel)  %>%
+#     summarize(across(everything(), ~ mean(.x, na.rm=TRUE))) %>%
+#     select(-unite.labintel) %>%
+#     apply(2, sd, na.rm=T)
+# climatRegr_r[names(sd_labo)] <- sweep(climatRegr_r[names(sd_labo)], 2, sd_labo, "/")
+# 
+# sd_labodisc <- select(climatRegr_r, unite.labintel, all_of(paste0(vars, "_labodisc"))) %>%
+#     group_by(unite.labintel)  %>%
+#     summarize(across(everything(), ~ mean(.x, na.rm=TRUE))) %>%
+#     select(-unite.labintel) %>%
+#     apply(2, sd, na.rm=T)
+# climatRegr_r[names(sd_labodisc)] <- sweep(climatRegr_r[names(sd_labodisc)], 2, sd_labodisc, "/")
+# 
+# sd_disc <- select(climatRegr_r, discipline_detaillee, all_of(paste0(vars, "_disc"))) %>%
+#     group_by(discipline_detaillee)  %>%
+#     summarize(across(everything(), ~ mean(.x, na.rm=TRUE))) %>%
+#     select(-discipline_detaillee) %>%
+#     apply(2, sd, na.rm=T)
+# climatRegr_r[names(sd_disc)] <- sweep(climatRegr_r[names(sd_disc)], 2, sd_disc, "/")
+# 
+# # Standardiser les variables individuelles centrées pour que leur écart-type soit égal à 1
+# climatRegr_r[c(paste0(vars, "_c"), paste0(vars, "_clabo"), paste0(vars, "_clabodisc"), paste0(vars, "_cdisc"))] <-
+#     scale(climatRegr_r[c(paste0(vars, "_c"), paste0(vars, "_clabo"), paste0(vars, "_clabodisc"), paste0(vars, "_cdisc"))])
 ```
 
 
@@ -499,13 +499,16 @@ a <- a[a$term %in% c("agenum", "agenum_labo", "agenum_disc",
                      "ScoreEcoloACP" , "ScoreEcoloACP_labo" , 
                      "ScoreEcoloACP_disc" ,
                      "revenuTete" , "revenuTete_labo" , "revenuTete_disc",
-                     "revenuAdulte" , "revenuAdulte_labo" , "revenuAdulte_disc",
-                     "carriere_titnum" ,"carriere_titnum_disc" ,"carriere_titnum_labo" ,
-                     "nbpublis2" , "nbpublis2_labo" , "nbpublis2_disc" ,
-                     "ScoreInternational_pro" , "ScoreInternational_pro_labo" , 
-                     "ScoreInternational_pro_disc" ,
+                     "revenuAdulte_log" , "revenuAdulte_log_labo" , "revenuAdulte_log_disc",
+                     "carrierenum" ,"carrierenum_disc" ,"carrierenum_labo" ,
+                     "nbpublis2_log_divcoauthal", "nbpublis2_log_divcoauthal_labo", "nbpublis2_log_divcoauthal_disc" ,
+                     "ScoreInternational_pro4" , "ScoreInternational_pro4_labo" , 
+                     "ScoreInternational_pro4_disc" ,
                      "avionpersonum", "avionpersonum_labo", "avionpersonum_disc",
-                     "respprojetnum", "respprojetnum_labo", "respprojetnum_disc"),]
+                     "mbresp_aumoins1projet", "mbresp_aumoins1projet_labo", "mbresp_aumoins1projet_disc",
+                     "materiel.experimentalnum", "materiel.experimentalnum_labo", "materiel.experimentalnum_disc",
+                     "materiel.infonum", "materiel.infonum_labo", "materiel.infonum_disc"
+                     ),]
 
 ## Recodage de a$term en a$term_rec
 a$term_rec <- a$term %>%
@@ -513,33 +516,39 @@ a$term_rec <- a$term %>%
         "Vols privés" = "avionpersonum",
         "Vols privés" = "avionpersonum_disc",
         "Vols privés" = "avionpersonum_labo",
-        "Moment-clé de la carrière" = "carriere_titnum",
-        "Moment-clé de la carrière" = "carriere_titnum_disc",
-        "Moment-clé de la carrière" = "carriere_titnum_labo",
-        "Nombre de publications" = "nbpublis2",
-        "Nombre de publications" = "nbpublis2_disc",
-        "Nombre de publications" = "nbpublis2_labo",
+        "Moment-clé de la carrière" = "carrierenum",
+        "Moment-clé de la carrière" = "carrierenum_disc",
+        "Moment-clé de la carrière" = "carrierenum_labo",
+        "Nombre de publications" = "nbpublis2_log_divcoauthal",
+        "Nombre de publications" = "nbpublis2_log_divcoauthal_disc",
+        "Nombre de publications" = "nbpublis2_log_divcoauthal_labo",
         "Niveau de vie" = "revenuTete",
         "Niveau de vie" = "revenuTete_disc",
         "Niveau de vie" = "revenuTete_labo",
-        "Revenu par adulte" = "revenuAdulte",
-        "Revenu par adulte" = "revenuAdulte_disc",
-        "Revenu par adulte" = "revenuAdulte_labo",
+        "Revenu par adulte" = "revenuAdulte_log",
+        "Revenu par adulte" = "revenuAdulte_log_disc",
+        "Revenu par adulte" = "revenuAdulte_log_labo",
         "Sensibilité à l'écologie" = "ScoreEcoloACP",
         "Sensibilité à l'écologie" = "ScoreEcoloACP_disc",
         "Sensibilité à l'écologie" = "ScoreEcoloACP_labo",
-        "Internationalisation" = "ScoreInternational_pro",
-        "Internationalisation" = "ScoreInternational_pro_disc",
-        "Internationalisation" = "ScoreInternational_pro_labo",
+        "Internationalisation" = "ScoreInternational_pro4",
+        "Internationalisation" = "ScoreInternational_pro4_disc",
+        "Internationalisation" = "ScoreInternational_pro4_labo",
         "Sexe" = "sexenum",
         "Sexe" = "sexenum_disc",
         "Sexe" = "sexenum_labo",
         "Âge" = "agenum",
         "Âge" = "agenum_disc",
         "Âge" = "agenum_labo",
-        "Responsable de projet" = "respprojetnum",
-        "Responsable de projet" = "respprojetnum_disc",
-        "Responsable de projet" = "respprojetnum_labo"
+        "Membre d'un projet" = "mbresp_aumoins1projet",
+        "Membre d'un projet" = "mbresp_aumoins1projet_disc",
+        "Membre d'un projet" = "mbresp_aumoins1projet_labo",
+        "Matériel expérimental" = "materiel.experimentalnum",
+        "Matériel expérimental" = "materiel.experimentalnum_disc",
+        "Matériel expérimental" = "materiel.experimentalnum_labo",
+        "Matériel informatique" = "materiel.infonum",
+        "Matériel informatique" = "materiel.infonum_disc",
+        "Matériel informatique" = "materiel.infonum_labo"
     )
 a$group <- case_when(grepl("_labo", a$term) ~ "Laboratoire",
                      grepl("_disc", a$term) ~ "Discipline",
@@ -550,7 +559,8 @@ a <- as.data.frame(a)
 a$term_rec <- a$term_rec %>%
     fct_relevel(
         "Revenu par adulte", "Vols privés", "Sensibilité à l'écologie",
-        "Responsable de projet", "Internationalisation",
+        "Matériel informatique", "Matériel expérimental",
+        "Membre d'un projet", "Internationalisation",
         "Nombre de publications", "Moment-clé de la carrière", "Sexe", "Âge"
     )
 
@@ -568,7 +578,7 @@ ggplot(a, aes(x=estimate, y=term_rec, group=group, color=group, shape=group)) +
             shape=paste(group, shape)),
         position = position_dodge(0.4)
     )+geom_vline(xintercept =1)+
-    guides(color = guide_legend(reverse = TRUE),shape=F)+
+    guides(color = guide_legend(reverse = TRUE),shape="none")+
     theme_minimal()+
     scale_color_manual(values=wes_palette(n=3, name="GrandBudapest1"))+
     labs(x="", y="", color="Niveau")+
@@ -633,7 +643,7 @@ dat_det <- climatRegr_r %>%
 #     labs(x = "Proportion de femmes (en %)", y = "Distance parcourue en avion en 2019 (en km)")
 
 ggplot(data=dat_det, aes(x=sexe, y=dist)) +
-    geom_point(aes(size=n), color="grey") +
+    geom_point(aes(size=n), color="dark grey", shape=4) +
     geom_smooth(aes(weight=n), method=lm) +
     geom_point(data=dat_agr, aes(size=n)) +
     geom_text_repel(data=dat_agr, aes(label=discipline_agr5), max.overlaps = Inf) +
