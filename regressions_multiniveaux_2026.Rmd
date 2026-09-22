@@ -375,11 +375,11 @@ climatRegr_r <- group_by(climatRegr_r, unite.labintel) %>%
 ```{r}
 reg0 <- glmmTMB(volsdist_tot_imp ~ sexenum + sexenum_labo + sexenum_disc +
                     ageAgr + agenum_labo + agenum_disc +
-                    sitpro2 +
+                    sitpro2 + # rangAnum_labo + rangAnum_disc + rangBnum_labo + rangBnum_disc +
                     nbpublis2_log_divcoauthal + nbpublis2_log_divcoauthal_labo + nbpublis2_log_divcoauthal_disc +
                     ScoreInternational_pro4 + ScoreInternational_pro4_labo + ScoreInternational_pro4_disc +
                     mbresp_aumoins1projet + mbresp_aumoins1projet_labo + mbresp_aumoins1projet_disc +
-                    materiel.infonum + materiel.infonum_labo + materiel.infonum_disc +
+                    # materiel.infonum + materiel.infonum_labo + materiel.infonum_disc +
                     # materiel.tgirnum + materiel.tgirnum_labo + materiel.tgirnum_disc +
                     # materiel.tgirinfonum + materiel.tgirinfonum_labo + materiel.tgirinfonum_disc +
                     materiel.experimentalnum + materiel.experimentalnum_labo + materiel.experimentalnum_disc +
@@ -568,9 +568,9 @@ a$term_rec <- a$term %>%
         "Internationalisation" = "ScoreInternational_pro4",
         "Internationalisation" = "ScoreInternational_pro4_disc",
         "Internationalisation" = "ScoreInternational_pro4_labo",
-        "Sexe" = "sexenum",
-        "Sexe" = "sexenum_disc",
-        "Sexe" = "sexenum_labo",
+        "Sexe féminin" = "sexenum",
+        "Sexe féminin" = "sexenum_disc",
+        "Sexe féminin" = "sexenum_labo",
         "Âge" = "agenum",
         "Âge" = "agenum_disc",
         "Âge" = "agenum_labo",
@@ -592,10 +592,12 @@ a <- as.data.frame(a)
 ## Réordonnancement de a$term_rec
 a$term_rec <- a$term_rec %>%
     fct_relevel(
-        "Revenu par adulte", "Vols privés", "Sensibilité à l'écologie",
-        "Matériel informatique", "Matériel expérimental",
+        "Revenu par adulte",
+        "Vols privés", "Sensibilité à l'écologie",
+        "Moment-clé de la carrière",
         "Membre d'un projet", "Internationalisation",
-        "Nombre de publications", "Moment-clé de la carrière", "Sexe", "Âge"
+        "Nombre de publications", "Matériel expérimental",
+        "Âge", "Sexe féminin"
     )
 
 
@@ -616,7 +618,9 @@ ggplot(a, aes(x=estimate, y=term_rec, group=group, color=group, shape=group)) +
     theme_minimal()+
     scale_color_manual(values=wes_palette(n=3, name="GrandBudapest1"))+
     labs(x="", y="", color="Niveau")+
-    scale_shape_manual(values=c(0, 15, 1, 16,2,17 ))
+    scale_x_log10(breaks=c(0.2, 0.33, 0.5, 0.67, 1, 1.5, 2, 3, 5), minor_breaks=NULL) +
+    scale_shape_manual(values=c(0, 15, 1, 16,2,17 )) +
+    coord_cartesian(xlim=c(NA, 3))
 ```
 
 
