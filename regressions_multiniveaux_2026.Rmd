@@ -703,11 +703,12 @@ regdistsejrech0 <- update(reg0, volsdist_totsejrech ~ .)
 regdistworkshop0 <- update(reg0, volsdist_totworkshop ~ .)
 regdistcours0 <- update(reg0, volsdist_totcours ~ .)
 regdistterrain0 <- update(reg0, volsdist_totterrain ~ .)
+regdistdivers0 <- update(reg0, I(volsdist_tot - volsdist_totterrain) ~ .)
 # regdisteval0 <- update(reg0, volsdist_toteval ~ .)
 #regdistjury0 <- update(reg0, volsdist_totjury ~ .)
 # regdistautre0 <- update(reg0, volsdist_totautre ~ .)
 
-tbls <- lapply(lst(reg0, reg1, reg2, regdist0, regdistconf0, regdistterrain0, regdistsejrech0, regdistworkshop0
+tbls <- lapply(lst(reg0, reg1, reg2, regdist0, regdistdivers0, regdistconf0, regdistterrain0, regdistsejrech0, regdistworkshop0
                    # , regdistcours0, regdisteval0, regdistautre0
                    ),
                function(m) tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=TRUE, conf.int=FALSE))
