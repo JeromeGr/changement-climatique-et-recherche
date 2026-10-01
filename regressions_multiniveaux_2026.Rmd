@@ -507,7 +507,7 @@ mydf %>% as_tibble() %>%
 
 # Autre version utilisant directement marginaleffects
 library(marginaleffects)
-mydf <- avg_predictions(reg1, re.form=NA, variables=c("sexenum", "enfantsage_rec"))
+mydf <- avg_predictions(reg2, newdata=reg2$frame, re.form=NA, variables=c("sexenum", "enfantsage_rec"))
 mydf %>% as_tibble() %>%
     mutate(sexe=fct_recode(as.character(sexenum), "Femmes"="1", "Hommes"="0")) %>%
     ggplot(aes(x = sexe, y = estimate, colour = enfantsage_rec, shape=enfantsage_rec,
