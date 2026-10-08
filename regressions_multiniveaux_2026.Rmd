@@ -374,7 +374,7 @@ climatRegr_r <- group_by(climatRegr_r, unite.labintel) %>%
 
 ```{r}
 reg0 <- glmmTMB(volsdist_tot_imp ~ sexenum + sexenum_labo + sexenum_disc +
-                    ageAgr + agenum_labo + agenum_disc +
+                    agenum + agenum_labo + agenum_disc +
                     sitpro2 + # rangAnum_labo + rangAnum_disc + rangBnum_labo + rangBnum_disc +
                     nbpublis2_log_divcoauthal + nbpublis2_log_divcoauthal_labo + nbpublis2_log_divcoauthal_disc +
                     ScoreInternational_pro4 + ScoreInternational_pro4_labo + ScoreInternational_pro4_disc +
@@ -592,12 +592,12 @@ a <- as.data.frame(a)
 ## Réordonnancement de a$term_rec
 a$term_rec <- a$term_rec %>%
     fct_relevel(
+        "Sexe féminin", "Âge",
         "Revenu par adulte",
         "Vols privés", "Sensibilité à l'écologie",
         "Moment-clé de la carrière",
         "Membre d'un projet", "Internationalisation",
-        "Nombre de publications", "Matériel expérimental",
-        "Âge", "Sexe féminin"
+        "Nombre de publications", "Matériel expérimental"
     )
 
 
