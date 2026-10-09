@@ -375,7 +375,7 @@ climatRegr_r <- group_by(climatRegr_r, unite.labintel) %>%
 ```{r}
 reg0 <- glmmTMB(volsdist_tot_imp ~ sexenum + sexenum_labo + sexenum_disc +
                     agenum + agenum_labo + agenum_disc +
-                    sitpro2 + # rangAnum_labo + rangAnum_disc + rangBnum_labo + rangBnum_disc +
+                    sitpro_reduite2 + # rangAnum_labo + rangAnum_disc + rangBnum_labo + rangBnum_disc +
                     nbpublis2_log_divcoauthal + nbpublis2_log_divcoauthal_labo + nbpublis2_log_divcoauthal_disc +
                     ScoreInternational_pro4 + ScoreInternational_pro4_labo + ScoreInternational_pro4_disc +
                     mbresp_aumoins1projet + mbresp_aumoins1projet_labo + mbresp_aumoins1projet_disc +

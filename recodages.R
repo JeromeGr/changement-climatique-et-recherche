@@ -2005,6 +2005,7 @@ climatRegr$revenuAgr <- as.factor(climatRegr$revenuAgr)
 climatRegr$revenuAgr <- relevel(climatRegr$revenuAgr, ref = "De 4 500 à 5 999 euros par mois")
 
 climatRegr$sitpro2 <- relevel(climatRegr$sitpro, ref = "Maître·sse de conférences")
+climatRegr$sitpro_reduite2 <- relevel(climatRegr$sitpro_reduite, ref = "Maître·sse de conférences")
 
 climatRegr$discipline_agr <- relevel(climatRegr$discipline_agr, ref = "Physique")
 climatRegr$discipline_agr2 <- relevel(climatRegr$discipline_agr, ref = "Physique")
