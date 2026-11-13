@@ -391,7 +391,11 @@ climat$discipline_detaillee <-
             "72 : Épistémologie, histoire des sciences et des techniques",
             "74 : Sciences et techniques des activités physiques et sportives",
             "76 : Théologie catholique",
-            "77 : Théologie protestante")) %>%
+            "77 : Théologie protestante"),
+        "Géographie, espace et urbanisme"=c(
+            "23 : Géographie physique, humaine, économique et régionale",
+            "24 : Aménagement de l'espace, urbanisme"
+        )) %>%
     droplevels()
 
 # Discipline agrégée
