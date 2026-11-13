@@ -82,20 +82,20 @@ climat$ageAgr2 <- fct_collapse(climat$age,
                                "60 ans et plus"=c("60-64 ans", "65-69 ans", "70 ans ou plus"))
 
 
-#Age accadémique
-climat$ageaccad<-2020-climat$theseannee
+#Age académique
+climat$ageacad <- if_else(climat$docto == "Oui", -2, 2020 - climat$theseannee)
 
-climat$ageaccad_tranch<-quant.cut(climat$ageaccad, 6)
+climat$ageacad_tranch <- quant.cut(climat$ageacad, 6)
 
-climat$ageaccad_tranch2 <- ifelse(climat$these=="Non", "Pas de thèse",
-                                  as.character(cut(climat$ageaccad,
-                                                   include.lowest = TRUE,
-                                                   right = TRUE,
-                                                   breaks = c(0, 2, 5, 8, 13, 18, 23, 29, 114))))
-climat$ageaccad_tranch2 <- factor(climat$ageaccad_tranch2,
-                                  levels = c(
-                                    "Pas de thèse", "[0,2]", "(2,5]",
-                                    "(5,8]", "(8,13]", "(13,18]", "(18,23]", "(29,114]"))
+climat$ageacad_tranch2 <- ifelse(climat$these=="Non", "Pas de thèse",
+                                 as.character(cut(climat$ageacad,
+                                                  include.lowest = TRUE,
+                                                  right = TRUE,
+                                                  breaks = c(0, 2, 5, 8, 13, 18, 23, 29, 114))))
+climat$ageacad_tranch2 <- factor(climat$ageacad_tranch2,
+                                 levels = c(
+                                     "Pas de thèse", "[0,2]", "(2,5]",
+                                     "(5,8]", "(8,13]", "(13,18]", "(18,23]", "(29,114]"))
 
 
 # variable combinant existence et causes du changement climatique
@@ -2079,7 +2079,7 @@ climatRegr$conffois5ans<-fct_relevel(climatRegr$conffois5ans, "Zéro fois")
 
 climatRegr$volsh2<-fct_relevel(climatRegr$volsh, "De 1h à 10h")
 
-climatRegr$ageaccad_tranch2<-fct_relevel(climatRegr$ageaccad_tranch2, "[0,2]")
+climatRegr$ageacad_tranch2<-fct_relevel(climatRegr$ageacad_tranch2, "[0,2]")
 
 climatRegr$quiz<-fct_relevel(climatRegr$quiz, "Je décline le quiz")
 
