@@ -727,6 +727,42 @@ ggplot(data=dat_det, aes(x=sexe, y=dist)) +
 
 dat_det %>% with(weights::wtd.cor(sexe, dist, weight=n))
 ```
+# Figure : Distance parcourue en avion selon l'utilisation de matériel expérimental
+
+```{r}
+library(ggrepel)
+
+dat_agr <- climatRegr_r %>%
+    group_by(discipline_agr5) %>%
+    summarize(materiel=mean(materiel.experimentalnum, na.rm=TRUE),
+              dist=mean(volsdist_tot_imp, na.rm=TRUE),
+              n=n()) %>%
+    drop_na()
+
+dat_det <- climatRegr_r %>%
+    group_by(discipline_detaillee) %>%
+    summarize(materiel=mean(materiel.experimentalnum, na.rm=TRUE),
+              dist=mean(volsdist_tot_imp, na.rm=TRUE),
+              discipline_agr5=unique(discipline_agr5),
+              n=n()) %>%
+    drop_na() %>%
+    left_join(dat_agr, by="discipline_agr5", suffix=c("", "_agr"))
+
+ggplot(data=dat_det, aes(x=materiel, y=dist)) +
+    geom_point(aes(size=n), color="dark grey") +
+    geom_smooth(aes(weight=n), method=lm) +
+    geom_smooth(data=filter(dat_det, materiel > 0.25), aes(weight=n), method=lm, linetype="dashed") +
+    geom_point(data=dat_agr, aes(size=n)) +
+    geom_text_repel(data=dat_agr, aes(label=discipline_agr5), max.overlaps = Inf) +
+    scale_x_continuous(labels=scales::percent) +
+    coord_cartesian(ylim=c(0, NA)) +
+    guides(size="none", color="none") +
+    theme_minimal() +
+    labs(x = "Matériel expérimental (en %)", y = "Distance parcourue en avion en 2019 (en km)")
+
+dat_det %>% with(weights::wtd.cor(materiel, dist, weight=n))
+dat_det %>% filter(materiel > 0.25) %>% with(weights::wtd.cor(materiel, dist, weight=n))
+```
 
 # Différents motifs de vol
 
