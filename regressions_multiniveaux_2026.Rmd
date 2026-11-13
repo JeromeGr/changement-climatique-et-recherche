@@ -281,7 +281,7 @@ climatRegr_r$ScoreEcoloACP <- NA
 climatRegr_r$ScoreEcoloACP[!manquant_acp] <- acp$ind$coord[,1]
 
 # Liste des variables à centrer par labo/discipline
-vars_centrer <- c( "agenum", "nbpublis2", "nbpublis2_log", "coauteur", "coauteur_hal",
+vars_centrer <- c( "agenum", "ageacad", "nbpublis2", "nbpublis2_log", "coauteur", "coauteur_hal",
                   "nbpublis2_log_divcoaut", "nbpublis2_log_divcoauthal",
                   "ScoreEcolo", "ScoreEcoloACP",
                   "ScoreInternational", "ScoreInternational_perso",
@@ -373,34 +373,39 @@ climatRegr_r <- group_by(climatRegr_r, unite.labintel) %>%
 # Régressions
 
 ```{r}
-reg0 <- glmmTMB(volsdist_tot_imp ~ sexenum + sexenum_labo + sexenum_disc +
-                    agenum + agenum_labo + agenum_disc +
-                    sitpro_reduite2 + # rangAnum_labo + rangAnum_disc + rangBnum_labo + rangBnum_disc +
+reg0 <- glmmTMB(volsdist_tot_imp ~
+                    sitpro_reduite2 +
+                    rangAnum_labo + rangAnum_disc + rangBnum_labo + rangBnum_disc +
                     nbpublis2_log_divcoauthal + nbpublis2_log_divcoauthal_labo + nbpublis2_log_divcoauthal_disc +
                     ScoreInternational_pro4 + ScoreInternational_pro4_labo + ScoreInternational_pro4_disc +
                     mbresp_aumoins1projet + mbresp_aumoins1projet_labo + mbresp_aumoins1projet_disc +
-                    # materiel.infonum + materiel.infonum_labo + materiel.infonum_disc +
-                    # materiel.tgirnum + materiel.tgirnum_labo + materiel.tgirnum_disc +
-                    # materiel.tgirinfonum + materiel.tgirinfonum_labo + materiel.tgirinfonum_disc +
                     materiel.experimentalnum + materiel.experimentalnum_labo + materiel.experimentalnum_disc +
-                    (1 | unite.labintel) + (1 | discipline_detaillee),
+                    ageacad + ageacad_labo + ageacad_disc +
+                    carrierenum + carrierenum_labo + carrierenum_disc +
+                    rr(1 + sitpro_reduite2 + nbpublis2_log_divcoauthal + ScoreInternational_pro4 + mbresp_aumoins1projet + materiel.experimentalnum + ageacad + carrierenum | unite.labintel, 3) +
+                    rr(1 + sitpro_reduite2 + nbpublis2_log_divcoauthal + ScoreInternational_pro4 + mbresp_aumoins1projet + materiel.experimentalnum + ageacad + carrierenum | discipline_detaillee, 2),
                 family="tweedie",
-                data=climatRegr_r,
-                control=glmmTMBControl(parallel=4))
+                data=climatRegr_r)
 
-reg1 <- update(reg0, ~ . +
-                   # idfnum + idfnum_labo + idfnum_disc +
-                   #loinnum + #loinnum_labo + loinnum_disc +
-                   #trav_zone +
-                   # res.aeroport.bisquare + res.aeroport.bisquare_labo + res.aeroport.bisquare_disc +
-                   #I(res.dep %in% c(75, 77, 92:95)) +
-                   # trav.aeroport.bisquare + trav.aeroport.bisquare_labo + trav.aeroport.bisquare_disc +
-                   #ScoreInternational_perso + ScoreInternational_perso_labo + ScoreInternational_perso_disc +
-                   # paienum + paienum_labo + paienum_disc +
-                   carrierenum + carrierenum_labo + carrierenum_disc +
-                   ScoreEcoloACP + ScoreEcoloACP_labo + ScoreEcoloACP_disc +
-                   avionpersonum + avionpersonum_labo + avionpersonum_disc +
-                   revenuAdulte_log + revenuAdulte_log_labo + revenuAdulte_log_disc)
+reg1 <- glmmTMB(volsdist_tot_imp ~
+                    sitpro_reduite2 +
+                    rangAnum_labo + rangAnum_disc + rangBnum_labo + rangBnum_disc +
+                    nbpublis2_log_divcoauthal + nbpublis2_log_divcoauthal_labo + nbpublis2_log_divcoauthal_disc +
+                    ScoreInternational_pro4 + ScoreInternational_pro4_labo + ScoreInternational_pro4_disc +
+                    mbresp_aumoins1projet + mbresp_aumoins1projet_labo + mbresp_aumoins1projet_disc +
+                    materiel.experimentalnum + materiel.experimentalnum_labo + materiel.experimentalnum_disc +
+                    ageacad + ageacad_labo + ageacad_disc +
+                    carrierenum + carrierenum_labo + carrierenum_disc +
+                    ScoreEcoloACP + ScoreEcoloACP_labo + ScoreEcoloACP_disc +
+                    avionpersonum + avionpersonum_labo + avionpersonum_disc +
+                    revenuAdulte_log + revenuAdulte_log_labo + revenuAdulte_log_disc +
+                    sexenum + sexenum_labo + sexenum_disc +
+
+                    rr(1 + sitpro_reduite2 + nbpublis2_log_divcoauthal + ScoreInternational_pro4 + mbresp_aumoins1projet + materiel.experimentalnum + ageacad + carrierenum + ScoreEcoloACP + avionpersonum + revenuAdulte_log + sexenum | unite.labintel, 2) +
+                    rr(1 + sitpro_reduite2 + nbpublis2_log_divcoauthal + ScoreInternational_pro4 + mbresp_aumoins1projet + materiel.experimentalnum + ageacad + carrierenum + ScoreEcoloACP + avionpersonum + revenuAdulte_log + sexenum | discipline_detaillee, 2),
+                control=glmmTMBControl(profile=TRUE),
+                family="tweedie",
+                data=climatRegr_r)
 
 
 reg2 <- update(reg1, ~ . +
@@ -527,9 +532,10 @@ mydf %>% as_tibble() %>%
 
 library(broom.mixed)
 library(wesanderson)
-a <- tidy(reg1, conf.int = T, exponentiate=T)
+a <- tidy(reg1, effects="fixed", conf.int=T, exponentiate=T)
 a <- a[a$term %in% c("agenum", "agenum_labo", "agenum_disc",
-                     "sexenum" , "sexenum_labo" , "sexenum_disc" , 
+                     "ageacad", "ageacad_labo", "ageacad_disc",
+                     "sexenum" , "sexenum_labo" , "sexenum_disc",
                      "ScoreEcoloACP" , "ScoreEcoloACP_labo" , 
                      "ScoreEcoloACP_disc" ,
                      "revenuTete" , "revenuTete_labo" , "revenuTete_disc",
@@ -553,9 +559,9 @@ a$term_rec <- a$term %>%
         "Moment-clé de la carrière" = "carrierenum",
         "Moment-clé de la carrière" = "carrierenum_disc",
         "Moment-clé de la carrière" = "carrierenum_labo",
-        "Nombre de publications" = "nbpublis2_log_divcoauthal",
-        "Nombre de publications" = "nbpublis2_log_divcoauthal_disc",
-        "Nombre de publications" = "nbpublis2_log_divcoauthal_labo",
+        "Nombre de publications\ndepuis 3 ans" = "nbpublis2_log_divcoauthal",
+        "Nombre de publications\ndepuis 3 ans" = "nbpublis2_log_divcoauthal_disc",
+        "Nombre de publications\ndepuis 3 ans" = "nbpublis2_log_divcoauthal_labo",
         "Niveau de vie" = "revenuTete",
         "Niveau de vie" = "revenuTete_disc",
         "Niveau de vie" = "revenuTete_labo",
@@ -574,12 +580,15 @@ a$term_rec <- a$term %>%
         "Âge" = "agenum",
         "Âge" = "agenum_disc",
         "Âge" = "agenum_labo",
-        "Membre d'un projet" = "mbresp_aumoins1projet",
-        "Membre d'un projet" = "mbresp_aumoins1projet_disc",
-        "Membre d'un projet" = "mbresp_aumoins1projet_labo",
-        "Matériel expérimental" = "materiel.experimentalnum",
-        "Matériel expérimental" = "materiel.experimentalnum_disc",
-        "Matériel expérimental" = "materiel.experimentalnum_labo",
+        "Âge académique" = "ageacad",
+        "Âge académique" = "ageacad_disc",
+        "Âge académique" = "ageacad_labo",
+        "Membre d'un projet financé" = "mbresp_aumoins1projet",
+        "Membre d'un projet financé" = "mbresp_aumoins1projet_disc",
+        "Membre d'un projet financé" = "mbresp_aumoins1projet_labo",
+        "Matériel expérimental\nde laboratoire" = "materiel.experimentalnum",
+        "Matériel expérimental\nde laboratoire" = "materiel.experimentalnum_disc",
+        "Matériel expérimental\nde laboratoire" = "materiel.experimentalnum_labo",
         "Matériel informatique" = "materiel.infonum",
         "Matériel informatique" = "materiel.infonum_disc",
         "Matériel informatique" = "materiel.infonum_labo"
@@ -592,12 +601,13 @@ a <- as.data.frame(a)
 ## Réordonnancement de a$term_rec
 a$term_rec <- a$term_rec %>%
     fct_relevel(
-        "Sexe féminin", "Âge",
+        "Sexe féminin",
         "Revenu par adulte",
         "Vols privés", "Sensibilité à l'écologie",
         "Moment-clé de la carrière",
-        "Membre d'un projet", "Internationalisation",
-        "Nombre de publications", "Matériel expérimental"
+        "Âge académique",
+        "Membre d'un projet financé", "Internationalisation",
+        "Nombre de publications\ndepuis 3 ans", "Matériel expérimental\nde laboratoire"
     )
 
 
