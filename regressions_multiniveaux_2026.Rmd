@@ -409,13 +409,37 @@ reg1 <- glmmTMB(volsdist_tot_imp ~
 
 
 reg2 <- update(reg1, ~ . +
-                   enfantsage_rec*sexenum - sexenum_disc + sexenum_jeunes_disc + sexenum_vieux_disc +
+                   enfantsage_rec*sexenum +
                    ScoreEcoloACP*ScoreInternational_pro4 + ScoreEcoloACP*ScoreInternational_pro4_labo + ScoreEcoloACP*ScoreInternational_pro4_disc)
+
+reg3 <- update(reg2, ~ . - sexenum_disc + sexenum_jeunes_disc + sexenum_vieux_disc)
+anova(reg2, reg3, test="LRT")
 
 tbls <- lapply(list(reg0, reg1, reg2),
                function(m) tbl_regression(m, exponentiate=TRUE, add_estimate_to_reference_rows=TRUE, tidy_fun=broom.mixed::tidy) %>% add_glance_table())
 tbl_merge(tbls, paste0("M", 0:(length(tbls)-1))) %>%
       modify_table_body(~ .x %>% arrange(row_type == "glance_statistic", endsWith(variable, "sd__(Intercept)")))
+
+# Calcul de l'ICC
+performance::icc(glmmTMB(volsdist_tot_imp ~ rnorm(length(volsdist_tot_imp)) +
+                             (1 | discipline_detaillee),
+                         family="tweedie", data=climatRegr_r),
+                 by_group=TRUE)
+performance::icc(glmmTMB(volsdist_tot_imp ~ rnorm(length(volsdist_tot_imp)) +
+                             (1 | unite.labintel),
+                         family="tweedie", data=climatRegr_r),
+                 by_group=TRUE)
+performance::icc(glmmTMB(volsdist_tot_imp ~ rnorm(length(volsdist_tot_imp)) +
+                             (1 | discipline_detaillee) + (1 | unite.labintel),
+                         family="tweedie", data=climatRegr_r),
+                 by_group=TRUE)
+
+# Calcul du R²
+# cor(model.response(model.frame(reg1)), fitted(reg1))^2
+# Explication de l'avertissement qui arrive si on centre la variable dépendante :
+# https://github.com/easystats/performance/issues/366
+# performance::r2(reg0)
+# performance::compare_performance(reg0, reg1, reg2)
 ```
 
 # Figure 2 : Distance parcourue en avion selon la sensibilité à l'écologie par discipline
