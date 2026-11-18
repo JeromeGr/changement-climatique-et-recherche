@@ -81,22 +81,17 @@ climat$ageAgr2 <- fct_collapse(climat$age,
                                "50-59 ans"=c("50-54 ans", "55-59 ans"),
                                "60 ans et plus"=c("60-64 ans", "65-69 ans", "70 ans ou plus"))
 
-
-#Age académique
-climat$ageacad <- if_else(climat$docto == "Oui", -2, 2020 - climat$theseannee)
-
-climat$ageacad_tranch <- quant.cut(climat$ageacad, 6)
-
-climat$ageacad_tranch2 <- ifelse(climat$these=="Non", "Pas de thèse",
-                                 as.character(cut(climat$ageacad,
-                                                  include.lowest = TRUE,
-                                                  right = TRUE,
-                                                  breaks = c(0, 2, 5, 8, 13, 18, 23, 29, 114))))
-climat$ageacad_tranch2 <- factor(climat$ageacad_tranch2,
-                                 levels = c(
-                                     "Pas de thèse", "[0,2]", "(2,5]",
-                                     "(5,8]", "(8,13]", "(13,18]", "(18,23]", "(29,114]"))
-
+# Corriger les statuts des personnes qui se disent doctorants, en CDD,
+# sans année de soutenance de thèse, mais qui ont coché un statut de titulaire
+# (5 personnes, qui ont toutes moins de 35 ans)
+climat$sitpro[climat$statut == "CDD" &
+                  climat$these == "Non" &
+                  climat$sitpro %in% c(
+                      "Maître·sse de conférences",
+                      "Professeur·e des universités",
+                      "Chargé·e de recherche",
+                      "Directeur·rice de recherche"
+                  )] <- "Doctorant·e contractuel·le"
 
 # variable combinant existence et causes du changement climatique
 climat$acthum2 <- factor(climat$acthum,
@@ -817,6 +812,53 @@ climat$discipline_agr5 <- fct_recode(
 )
 
 
+# Âge académique
+
+climat$theseannee <- if_else(climat$theseannee >= 1960, climat$theseannee, NA_real_)
+
+mod <- lm(theseannee ~ discipline_detaillee*agenum, data=climat)
+climat$theseannee_imp <- climat$theseannee
+climat$theseannee_imp[is.na(climat$theseannee)] <- predict(mod, climat)[is.na(climat$theseannee)]
+rm(mod)
+
+climat$ageacad <- case_when(
+    # Doctorants
+    climat$sitpro %in% c("Doctorant·e contractuel·le", "Doctorant·e CIFRE") ~ -2,
+    
+    # Autres statuts : priorité à une année de soutenance valide
+    !is.na(climat$theseannee) ~ 2020 - climat$theseannee,
+    
+    # ATER également doctorants, sans année de thèse
+    climat$sitpro == "ATER" & climat$docto == "Oui" ~ -2,
+    
+    # Autres valeurs manquantes, imputation d'un début de carrière
+    # selon l'âge moyen de thèse de leur discipline et âge
+    TRUE ~ 2020 - climat$theseannee_imp,
+)
+
+climat$ageacad_tranch <- quant.cut(climat$ageacad, 6)
+
+climat$ageacad_tranch2 <- ifelse(climat$these=="Non", "Pas de thèse",
+                                 as.character(cut(climat$ageacad,
+                                                  include.lowest = TRUE,
+                                                  right = TRUE,
+                                                  breaks = c(0, 2, 5, 8, 13, 18, 23, 29, 114))))
+climat$ageacad_tranch2 <- factor(climat$ageacad_tranch2,
+                                 levels = c(
+                                     "Pas de thèse", "[0,2]", "(2,5]",
+                                     "(5,8]", "(8,13]", "(13,18]", "(18,23]", "(29,114]"))
+
+climat$ageacad_tranch <- quant.cut(climat$ageacad, 6)
+
+climat$ageacad_tranch2 <- ifelse(climat$these=="Non", "Pas de thèse",
+                                 as.character(cut(climat$ageacad,
+                                                  include.lowest = TRUE,
+                                                  right = TRUE,
+                                                  breaks = c(0, 2, 5, 8, 13, 18, 23, 29, 114))))
+climat$ageacad_tranch2 <- factor(climat$ageacad_tranch2,
+                                 levels = c(
+                                     "Pas de thèse", "[0,2]", "(2,5]",
+                                     "(5,8]", "(8,13]", "(13,18]", "(18,23]", "(29,114]"))
 
 
 ## création d'une variable binaire sur le thème de recherche écolo (pour l'instant oui, non, oui dans le passé)
